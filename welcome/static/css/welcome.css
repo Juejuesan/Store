@@ -1,0 +1,578 @@
+/* =========================================
+   TRUSTY SHOP - WELCOME PAGE CSS
+========================================= */
+
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+
+/* =========================================
+   GLOBAL STYLE
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+
+    font-family: 'Poppins', sans-serif;
+    color: #1e293b;
+    background-color: #ffffff;
+    transition: 0.4s ease;
+
+}
+
+
+/* =========================================
+   NAVBAR
+========================================= */
+
+
+.navbar {
+
+    padding: 15px 0;
+    transition: 0.3s;
+
+}
+
+
+.navbar-brand {
+
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+
+}
+
+
+.navbar-brand i {
+
+    margin-right: 8px;
+
+}
+
+
+.nav-link {
+
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0 8px;
+    transition: 0.3s;
+
+}
+
+
+.nav-link:hover {
+
+    color: #ffd43b !important;
+
+}
+
+
+
+/* =========================================
+   HERO SECTION
+========================================= */
+
+
+.hero-section {
+
+    min-height: 90vh;
+
+    display: flex;
+
+    align-items: center;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #eff6ff,
+        #ffffff
+    );
+
+    padding: 80px 0;
+
+}
+
+
+
+.hero-section h1 {
+
+    font-size: 55px;
+    font-weight: 700;
+    line-height: 1.2;
+
+}
+
+
+
+.hero-section p {
+
+    font-size: 18px;
+    color: #64748b;
+    margin-top: 20px;
+
+}
+
+
+
+.hero-image {
+
+    max-width: 90%;
+
+    animation: floating 3s infinite ease-in-out;
+
+}
+
+
+
+
+@keyframes floating {
+
+
+    0% {
+
+        transform: translateY(0);
+
+    }
+
+
+    50% {
+
+        transform: translateY(-15px);
+
+    }
+
+
+    100% {
+
+        transform: translateY(0);
+
+    }
+
+}
+
+
+
+
+
+/* =========================================
+   BUTTON STYLE
+========================================= */
+
+
+.btn {
+
+    border-radius: 30px;
+
+    padding: 12px 30px;
+
+    font-weight: 500;
+
+    transition: 0.3s;
+
+}
+
+
+
+.btn-primary {
+
+    background-color: #2563eb;
+
+    border-color: #2563eb;
+
+}
+
+
+
+.btn-primary:hover {
+
+    background-color: #1d4ed8;
+
+    transform: translateY(-3px);
+
+}
+
+
+
+.btn-warning:hover {
+
+    transform: translateY(-3px);
+
+}
+
+
+
+
+
+/* =========================================
+   FEATURE SECTION
+========================================= */
+
+
+.feature-card {
+
+    border: none;
+
+    border-radius: 20px;
+
+    padding: 20px;
+
+    transition: 0.4s;
+
+}
+
+
+
+.feature-card:hover {
+
+    transform: translateY(-10px);
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,0.12);
+
+}
+
+
+
+.feature-card i {
+
+    color: #2563eb;
+
+}
+
+
+
+.feature-card h5 {
+
+    font-weight: 600;
+
+}
+
+
+
+
+
+/* =========================================
+   PRODUCT SECTION
+========================================= */
+
+
+#products {
+
+    background-color: #ffffff;
+
+}
+
+
+
+.product-card {
+
+    border: none;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    transition: 0.4s;
+
+}
+
+
+
+.product-card:hover {
+
+    transform: translateY(-12px);
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,0.15);
+
+}
+
+
+
+.product-image {
+
+    height: 230px;
+
+    width: 100%;
+
+    object-fit: cover;
+
+}
+
+
+
+.product-card h5 {
+
+    font-weight: 600;
+
+}
+
+
+
+.product-card .btn {
+
+    border-radius: 25px;
+
+}
+
+
+
+
+
+/* =========================================
+   HOW IT WORKS SECTION
+========================================= */
+
+
+.how-section {
+
+    background-color: #f8fafc;
+
+}
+
+
+
+.how-section i {
+
+    color: #2563eb;
+
+    transition: 0.3s;
+
+}
+
+
+
+.how-section i:hover {
+
+    transform: scale(1.2);
+
+}
+
+
+
+
+
+/* =========================================
+   STATISTICS SECTION
+========================================= */
+
+
+.stats-section {
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #1e40af
+    );
+
+    color:white;
+
+    padding:80px 0;
+
+}
+
+
+
+.stats-section h1 {
+
+    font-size:45px;
+
+    font-weight:700;
+
+}
+
+
+
+.stats-section p {
+
+    font-size:18px;
+
+}
+
+
+
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+
+footer {
+
+    background:#020617 !important;
+
+}
+
+
+
+footer h3 {
+
+    font-weight:700;
+
+}
+
+
+
+footer h5 {
+
+    color:white;
+
+}
+
+
+
+footer p {
+
+    color:#cbd5e1;
+
+}
+
+
+
+
+
+/* =========================================
+   DARK MODE SUPPORT
+========================================= */
+
+
+.dark-mode {
+
+    background:#111827;
+
+    color:white;
+
+}
+
+
+
+.dark-mode .hero-section {
+
+    background:#1f2937;
+
+}
+
+
+
+.dark-mode .hero-section p {
+
+    color:#cbd5e1;
+
+}
+
+
+
+.dark-mode .feature-card {
+
+    background:#1e293b;
+
+    color:white;
+
+}
+
+
+
+.dark-mode .product-card {
+
+    background:#1e293b;
+
+    color:white;
+
+}
+
+
+
+.dark-mode #products {
+
+    background:#111827;
+
+}
+
+
+
+.dark-mode .how-section {
+
+    background:#111827;
+
+}
+
+
+
+.dark-mode .text-muted {
+
+    color:#cbd5e1 !important;
+
+}
+
+
+
+
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+
+@media(max-width:992px){
+
+
+.hero-section {
+
+    text-align:center;
+
+}
+
+
+.hero-section h1 {
+
+    font-size:45px;
+
+}
+
+
+.hero-image {
+
+    margin-top:40px;
+
+}
+
+
+}
+
+
+
+
+@media(max-width:576px){
+
+
+.hero-section h1 {
+
+    font-size:35px;
+
+}
+
+
+.stats-section h1 {
+
+    font-size:35px;
+
+}
+
+
+}
