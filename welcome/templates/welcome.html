@@ -1,199 +1,285 @@
 <!DOCTYPE html>
 {% load static %}
-
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Trusty Shop | Buy and Sell with Confidence</title>
+<title>Trusty Shop | Secure Online Marketplace</title>
 
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+<!-- AOS Animation -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{% static 'css/welcome.css' %}">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
 
 
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet"
-          href="{% static 'css/welcome.css' %}">
+<!-- Font Awesome -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 
 </head>
 
 
 <body>
+<!-- ==================================================
+     NAVBAR SECTION
+================================================== -->
 
-
-<!-- ================= NAVBAR ================= -->
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow">
-
-    <div class="container">
-
-
-        <a class="navbar-brand fw-bold fs-3" href="#">
-            <i class="bi bi-shield-check"></i>
-            Trusty Shop
-        </a>
-
-
-
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarMenu">
-
-            <span class="navbar-toggler-icon"></span>
-
-        </button>
-
-
-
-        <div class="collapse navbar-collapse"
-             id="navbarMenu">
-
-
-            <ul class="navbar-nav mx-auto">
-
-
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">
-                        Home
-                    </a>
-                </li>
-
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        About Us
-                    </a>
-                </li>
-
-
-                <li class="nav-item">
-
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-bell"></i>
-                        Notification
-                    </a>
-
-                </li>
-
-
-                <li class="nav-item">
-
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-cart3"></i>
-                        Cart
-                    </a>
-
-                </li>
-
-
-            </ul>
-
-
-
-
-            <button id="themeToggle"
-                    class="btn btn-light me-2">
-
-                🌙
-
-            </button>
-
-
-
-            <a href="#"
-               class="btn btn-outline-light me-2">
-
-                Login
-
-            </a>
-
-
-
-            <a href="#"
-               class="btn btn-warning">
-
-                Register
-
-            </a>
-
-
-        </div>
-
-
-    </div>
-
-
-</nav>
-
-
-
-
-<!-- ================= HERO SECTION ================= -->
-
-
-<section class="hero-section">
+<nav class="navbar navbar-expand-md cute-navbar fixed-top">
 
 
 <div class="container">
 
 
+
+<!-- SHOP LOGO -->
+
+<a class="navbar-brand" href="#">
+
+
+<span class="logo-circle">
+
+<i class="fa-solid fa-bag-shopping"></i>
+
+</span>
+
+
+Trusty Shop
+
+
+</a>
+
+
+
+
+
+<!-- MOBILE NAVBAR BUTTON -->
+
+<button class="navbar-toggler"
+data-bs-toggle="collapse"
+data-bs-target="#navbar">
+
+
+<i class="fa-solid fa-bars"></i>
+
+
+</button>
+
+
+
+
+
+<!-- NAVBAR MENU -->
+
+<div class="collapse navbar-collapse" id="navbar">
+
+
+<ul class="navbar-nav ms-auto">
+
+
+
+
+
+<!-- HOME -->
+
+<li class="nav-item">
+
+<a class="nav-link active" href="#">
+
+<i class="fa-solid fa-house"></i>
+
+Home
+
+</a>
+
+</li>
+
+
+
+
+
+
+<!-- NOTIFICATION -->
+
+<li class="nav-item">
+
+<a class="nav-link" href="#">
+
+<i class="fa-solid fa-bell"></i>
+
+Noti
+
+</a>
+
+</li>
+
+
+
+
+
+
+<!-- ABOUT -->
+
+<li class="nav-item">
+
+<a class="nav-link" href="#">
+
+<i class="fa-solid fa-circle-info"></i>
+
+About
+
+</a>
+
+</li>
+
+
+
+
+
+
+<!-- CART -->
+
+<li class="nav-item">
+
+<a class="nav-link cart-link" href="#">
+
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+Cart
+
+
+<span class="cart-count">
+
+3
+
+</span>
+
+
+</a>
+
+</li>
+
+
+
+
+
+
+<!-- PROFILE -->
+
+<li class="nav-item">
+
+<a class="nav-link" href="#">
+
+
+<i class="fa-solid fa-user"></i>
+
+Profile
+
+
+</a>
+
+</li>
+
+
+
+
+
+</ul>
+
+
+</div>
+
+
+</div>
+
+
+</nav>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+
+<div class="container">
+
 <div class="row align-items-center">
 
 
+<!-- LEFT CONTENT -->
 
-<div class="col-lg-6">
+<div class="col-lg-6"
+data-aos="fade-right">
 
 
-<h1 class="display-3 fw-bold">
+<div class="badge">
 
-    Buy and Sell
-    <span class="text-primary">
-        with Confidence
-    </span>
+<i class="bi bi-stars"></i>
+
+Trusted Online Marketplace
+
+</div>
+
+
+
+<h1>
+
+Buy & Sell
+
+<span>
+With Confidence
+</span>
 
 </h1>
 
 
 
-<p class="lead mt-4">
+<p>
 
-    Trusty Shop is a secure online marketplace where buyers
-    and sellers can trade safely with wallet payment,
-    escrow protection, and trusted delivery services.
+Trusty Shop connects buyers and sellers
+with secure wallet payment, escrow protection,
+and reliable delivery services.
 
 </p>
 
 
 
-
-<div class="mt-4">
+<div class="hero-buttons">
 
 
 <a href="#products"
-   class="btn btn-primary btn-lg me-3">
+class="primary-btn">
 
-    Explore Products
+Explore Products
+
+<i class="bi bi-arrow-right"></i>
 
 </a>
 
 
 
 <a href="#"
-   class="btn btn-outline-primary btn-lg">
+class="secondary-btn">
 
-    Become a Seller
+Become Seller
 
 </a>
 
@@ -202,25 +288,31 @@
 
 
 </div>
+<!-- END LEFT CONTENT -->
 
 
 
 
-<div class="col-lg-6 text-center">
 
+<!-- RIGHT IMAGE -->
 
-<img src="{% static 'images/shop.png' %}"
-     class="img-fluid hero-image"
-     alt="Shopping">
+<div class="col-lg-6 text-center"
+data-aos="zoom-in">
 
+<div class="hero-circle">
+
+    <img src="{% static 'images/hero_shopping.png' %}"
+         class="hero-image">
 
 </div>
 
 
+</div>
+<!-- END RIGHT IMAGE -->
+
 
 
 </div>
-
 
 </div>
 
@@ -233,45 +325,55 @@
 
 
 
-<!-- ================= TRUST FEATURES ================= -->
-
-<section class="container py-5">
+<!-- ================= FEATURES ================= -->
 
 
-<h2 class="text-center fw-bold mb-5">
+<section id="features"
+class="features section-padding">
 
+
+<div class="container">
+
+
+<div class="section-title"
+data-aos="fade-up">
+
+
+<h2>
 Why Choose Trusty Shop?
-
 </h2>
+
+
+<p>
+A safer way to buy and sell online
+</p>
+
+
+</div>
+
+
 
 
 
 <div class="row g-4">
 
 
-
-<div class="col-md-3">
-
-<div class="card feature-card shadow h-100 text-center">
+<div class="col-md-3"
+data-aos="fade-up">
 
 
-<div class="card-body">
+<div class="feature-box">
 
 
-<i class="bi bi-shield-lock display-4 text-primary"></i>
+<i class="bi bi-shield-lock"></i>
 
-
-<h5 class="mt-3">
-
+<h5>
 Escrow Protection
-
 </h5>
 
 
 <p>
-
-Payment is protected until successful delivery.
-
+Payment stays protected until delivery.
 </p>
 
 
@@ -280,35 +382,27 @@ Payment is protected until successful delivery.
 
 </div>
 
-</div>
 
 
 
 
+<div class="col-md-3"
+data-aos="fade-up"
+data-aos-delay="100">
 
 
-<div class="col-md-3">
-
-<div class="card feature-card shadow h-100 text-center">
+<div class="feature-box">
 
 
-<div class="card-body">
+<i class="bi bi-wallet2"></i>
 
-
-<i class="bi bi-wallet2 display-4 text-primary"></i>
-
-
-<h5 class="mt-3">
-
+<h5>
 Secure Wallet
-
 </h5>
 
 
 <p>
-
-Deposit and withdraw money safely.
-
+Easy deposit and withdrawal system.
 </p>
 
 
@@ -317,35 +411,28 @@ Deposit and withdraw money safely.
 
 </div>
 
-</div>
 
 
 
 
 
-
-<div class="col-md-3">
-
-<div class="card feature-card shadow h-100 text-center">
-
-
-<div class="card-body">
+<div class="col-md-3"
+data-aos="fade-up"
+data-aos-delay="200">
 
 
-<i class="bi bi-truck display-4 text-primary"></i>
+<div class="feature-box">
 
 
-<h5 class="mt-3">
+<i class="bi bi-truck"></i>
 
-Smart Delivery
-
+<h5>
+Fast Delivery
 </h5>
 
 
 <p>
-
 Track your orders easily.
-
 </p>
 
 
@@ -354,36 +441,28 @@ Track your orders easily.
 
 </div>
 
-</div>
 
 
 
 
 
+<div class="col-md-3"
+data-aos="fade-up"
+data-aos-delay="300">
 
 
-<div class="col-md-3">
-
-<div class="card feature-card shadow h-100 text-center">
+<div class="feature-box">
 
 
-<div class="card-body">
+<i class="bi bi-patch-check"></i>
 
-
-<i class="bi bi-patch-check display-4 text-primary"></i>
-
-
-<h5 class="mt-3">
-
-Verified Sellers
-
+<h5>
+Verified Seller
 </h5>
 
 
 <p>
-
-Trusted products reviewed by admin.
-
+Trusted sellers reviewed by admin.
 </p>
 
 
@@ -392,9 +471,8 @@ Trusted products reviewed by admin.
 
 </div>
 
+
 </div>
-
-
 
 
 </div>
@@ -412,120 +490,83 @@ Trusted products reviewed by admin.
 
 
 <section id="products"
-         class="container py-5">
+class="products section-padding">
 
 
-<h2 class="fw-bold text-center mb-5">
+<div class="container">
 
+
+<div class="section-title">
+
+<h2>
 Featured Products
-
 </h2>
 
+</div>
 
 
 
 <div class="row g-4">
 
 
-
 {% for product in products %}
-
 
 
 <div class="col-md-3">
 
 
-
-<div class="card product-card shadow h-100">
-
-
-
-<img src="{% static product.image %}"
-     class="card-img-top product-image">
+<div class="product-card"
+data-aos="flip-left">
 
 
-
-<div class="card-body">
-
+<img src="{% static product.image %}">
 
 
-<h5 class="fw-bold">
+<div class="product-content">
 
+
+<h5>
 {{product.name}}
-
 </h5>
 
 
-<p class="text-muted">
-
+<p>
 {{product.category}}
-
 </p>
 
 
-
-<h4 class="text-primary">
-
+<h4>
 $ {{product.price}}
-
 </h4>
 
 
-
-<p>
-
-⭐ {{product.rating}}
-
-</p>
-
-
-
-<button class="btn btn-primary w-100">
-
+<button>
 View Details
-
 </button>
 
 
-
-</div>
-
-
-
 </div>
 
 
 </div>
 
-
-
+</div>
 {% endfor %}
+    <div class="More">
+        <button >
+See More...
+</button>
+    </div>
 
 
 
 </div>
-
-
-
-
-
-<div class="text-center mt-5">
-
-
-<a href="#"
-   class="btn btn-primary btn-lg">
-
-See More Products
-
-</a>
 
 
 </div>
 
 
 </section>
-
-
 
 
 
@@ -535,158 +576,61 @@ See More Products
 
 <!-- ================= HOW IT WORKS ================= -->
 
-<section class="how-section py-5">
+
+<section id="how"
+class="how-section">
 
 
 <div class="container">
 
 
-<h2 class="text-center fw-bold mb-5">
+<div class="section-title">
 
+<h2>
 How Trusty Shop Works
-
 </h2>
 
+</div>
 
 
 
-<div class="row text-center">
+<div class="steps">
 
 
-
-<div class="col-md-2">
-
-<i class="bi bi-person-plus display-4 text-primary"></i>
-
+<div>
+<i class="bi bi-person-plus"></i>
 <h6>Register</h6>
-
 </div>
 
 
-
-
-<div class="col-md-2">
-
-<i class="bi bi-wallet display-4 text-primary"></i>
-
+<div>
+<i class="bi bi-wallet"></i>
 <h6>Deposit</h6>
-
 </div>
 
 
-
-
-<div class="col-md-2">
-
-<i class="bi bi-cart display-4 text-primary"></i>
-
-<h6>Buy/Sell</h6>
-
+<div>
+<i class="bi bi-cart"></i>
+<h6>Buy / Sell</h6>
 </div>
 
 
-
-
-<div class="col-md-2">
-
-<i class="bi bi-lock display-4 text-primary"></i>
-
+<div>
+<i class="bi bi-lock"></i>
 <h6>Escrow</h6>
-
 </div>
 
 
-
-
-<div class="col-md-2">
-
-<i class="bi bi-truck display-4 text-primary"></i>
-
+<div>
+<i class="bi bi-truck"></i>
 <h6>Delivery</h6>
-
 </div>
 
 
-
-
-<div class="col-md-2">
-
-<i class="bi bi-check-circle display-4 text-primary"></i>
-
+<div>
+<i class="bi bi-check-circle"></i>
 <h6>Complete</h6>
-
 </div>
-
-
-
-
-</div>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-
-<!-- ================= STATISTICS ================= -->
-
-
-<section class="stats-section">
-
-
-<div class="container">
-
-
-<div class="row text-center">
-
-
-<div class="col-md-3">
-
-<h1>500+</h1>
-
-<p>Users</p>
-
-</div>
-
-
-
-<div class="col-md-3">
-
-<h1>1200+</h1>
-
-<p>Products</p>
-
-</div>
-
-
-
-
-<div class="col-md-3">
-
-<h1>800+</h1>
-
-<p>Orders</p>
-
-</div>
-
-
-
-<div class="col-md-3">
-
-<h1>99%</h1>
-
-<p>Trust Rate</p>
-
-</div>
-
-
 
 
 </div>
@@ -696,9 +640,6 @@ How Trusty Shop Works
 
 
 </section>
-
-
-
 
 
 
@@ -706,22 +647,24 @@ How Trusty Shop Works
 
 <!-- ================= FOOTER ================= -->
 
-
-<footer class="bg-dark text-white py-5">
+<footer>
 
 
 <div class="container">
 
 
-<div class="row">
+<div class="row g-5">
 
 
-<div class="col-md-4">
+<!-- BRAND -->
+
+<div class="col-lg-4">
 
 
 <h3>
 
 <i class="bi bi-shield-check"></i>
+
 Trusty Shop
 
 </h3>
@@ -729,9 +672,38 @@ Trusty Shop
 
 <p>
 
-A secure marketplace for everyone.
+A secure online marketplace where buyers and sellers
+trade with confidence using wallet payment,
+escrow protection, and trusted delivery.
 
 </p>
+
+
+
+<div class="social-icons">
+
+
+<a href="#">
+<i class="bi bi-facebook"></i>
+</a>
+
+
+<a href="#">
+<i class="bi bi-instagram"></i>
+</a>
+
+
+<a href="#">
+<i class="bi bi-tiktok"></i>
+</a>
+
+
+<a href="#">
+<i class="bi bi-youtube"></i>
+</a>
+
+
+</div>
 
 
 </div>
@@ -739,7 +711,11 @@ A secure marketplace for everyone.
 
 
 
-<div class="col-md-4">
+
+
+<!-- QUICK LINKS -->
+
+<div class="col-lg-2">
 
 
 <h5>
@@ -749,11 +725,45 @@ Quick Links
 </h5>
 
 
-<p>Home</p>
+<ul>
 
-<p>Products</p>
 
-<p>About Us</p>
+<li>
+<a href="#">
+Home
+</a>
+</li>
+
+
+<li>
+<a href="#products">
+Products
+</a>
+</li>
+
+
+<li>
+<a href="#features">
+Features
+</a>
+</li>
+
+
+<li>
+<a href="#how">
+How It Works
+</a>
+</li>
+
+
+<li>
+<a href="#">
+About Us
+</a>
+</li>
+
+
+</ul>
 
 
 </div>
@@ -761,7 +771,134 @@ Quick Links
 
 
 
-<div class="col-md-4">
+
+
+
+<!-- BUYER -->
+
+<div class="col-lg-2">
+
+
+<h5>
+
+For Buyers
+
+</h5>
+
+
+<ul>
+
+
+<li>
+<a href="#">
+Browse Products
+</a>
+</li>
+
+
+<li>
+<a href="#">
+My Cart
+</a>
+</li>
+
+
+<li>
+<a href="#">
+Order Tracking
+</a>
+</li>
+
+
+<li>
+<a href="#">
+Payment Methods
+</a>
+</li>
+
+
+<li>
+<a href="#">
+Buyer Protection
+</a>
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- SELLER -->
+
+<div class="col-lg-2">
+
+
+<h5>
+
+For Sellers
+
+</h5>
+
+
+<ul>
+
+
+<li>
+<a href="#">
+Become Seller
+</a>
+</li>
+
+
+<li>
+<a href="#">
+Seller Dashboard
+</a>
+</li>
+
+
+<li>
+<a href="#">
+Post Products
+</a>
+</li>
+
+
+<li>
+<a href="#">
+Seller Rules
+</a>
+</li>
+
+
+<li>
+<a href="#">
+Seller Support
+</a>
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- CONTACT -->
+
+<div class="col-lg-2">
 
 
 <h5>
@@ -771,10 +908,37 @@ Contact
 </h5>
 
 
-<p>Email: support@trustyshop.com</p>
+<ul>
 
-<p>Myanmar</p>
 
+<li>
+
+<i class="bi bi-envelope"></i>
+
+support@trustyshop.com
+
+</li>
+
+
+<li>
+
+<i class="bi bi-geo-alt"></i>
+
+Myanmar
+
+</li>
+
+
+<li>
+
+<i class="bi bi-telephone"></i>
+
++95 9 XXX XXX XXX
+
+</li>
+
+
+</ul>
 
 
 </div>
@@ -782,6 +946,9 @@ Contact
 
 
 </div>
+
+
+
 
 
 
@@ -789,11 +956,43 @@ Contact
 
 
 
-<p class="text-center mb-0">
+<!-- BOTTOM FOOTER -->
 
-© 2026 Trusty Shop | Built with Django
+
+<div class="footer-bottom">
+
+
+<p>
+
+© 2026 Trusty Shop. All Rights Reserved.
 
 </p>
+
+
+
+<div>
+
+
+<a href="#">
+Privacy Policy
+</a>
+
+
+<a href="#">
+Terms & Conditions
+</a>
+
+
+<a href="#">
+Help Center
+</a>
+
+
+</div>
+
+
+</div>
+
 
 
 </div>
@@ -805,12 +1004,20 @@ Contact
 
 
 
-<script src="{% static 'js/welcome.js' %}"></script>
 
-
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
+
+<!-- AOS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+
+
+<script src="{% static 'js/welcome.js' %}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
