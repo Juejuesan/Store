@@ -1,0 +1,402 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        {% block title %}
+            Trusty Shop Admin
+        {% endblock %}
+
+    </title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/admin.css' %}">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          rel="stylesheet">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- ================= Sidebar ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-circle">
+
+                <i class="fa-solid fa-store"></i>
+
+            </div>
+
+            <div>
+
+                <h2>Trusty Shop</h2>
+
+                <span>Admin Panel</span>
+
+            </div>
+
+        </div>
+
+
+        <ul class="menu">
+
+            <li class="active">
+
+                <a href="{% url 'dashboard' %}">
+
+                    <i class="fa-solid fa-chart-pie"></i>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'posts' %}">
+
+                    <i class="fa-solid fa-box-open"></i>
+
+                    <span>Posts</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-users"></i>
+
+                    <span>Users</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    <span>Orders</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-wallet"></i>
+
+                    <span>Wallet</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    <span>Reports</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    <span>Settings</span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+        <div class="sidebar-footer">
+
+            <img src="{% static 'images/admin.png' %}"
+                 class="profile-img">
+
+            <div>
+
+                <h4>Administrator</h4>
+
+                <span>Super Admin</span>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+
+
+    <!-- ================= Main ================= -->
+
+    <main class="main">
+
+        <!-- Header -->
+
+        <header class="topbar">
+
+            <button id="toggle-btn">
+
+                <i class="fa-solid fa-bars"></i>
+
+            </button>
+
+            <div class="search-box">
+
+                <i class="fa-solid fa-search"></i>
+
+                <input type="text"
+                       placeholder="Search anything...">
+
+            </div>
+
+
+            <div class="top-icons">
+
+                <div class="clock">
+
+                    <i class="fa-regular fa-clock"></i>
+
+                    <span id="liveClock"></span>
+
+                </div>
+
+                <div class="notification">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                    <span class="badge">
+                        8
+                    </span>
+
+                </div>
+
+                <button id="themeToggle">
+
+                    <i class="fa-solid fa-moon"></i>
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- Page -->
+
+        <section class="content">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ================= Floating Background ================= -->
+
+<div class="floating-shapes">
+
+    <span class="circle c1"></span>
+
+    <span class="circle c2"></span>
+
+    <span class="circle c3"></span>
+
+    <span class="circle c4"></span>
+
+</div>
+
+
+
+<!-- ================= Notification Panel ================= -->
+
+<div class="notification-panel">
+
+    <div class="panel-header">
+
+        <h3>
+
+            Notifications
+
+        </h3>
+
+        <button id="closeNotification">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+    </div>
+
+
+    <div class="notification-list">
+
+        <div class="notify-item">
+
+            <i class="fa-solid fa-user-plus"></i>
+
+            <div>
+
+                <h4>
+
+                    New Seller Registered
+
+                </h4>
+
+                <span>
+
+                    2 minutes ago
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="notify-item">
+
+            <i class="fa-solid fa-box"></i>
+
+            <div>
+
+                <h4>
+
+                    5 Posts Waiting Approval
+
+                </h4>
+
+                <span>
+
+                    Today
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="notify-item">
+
+            <i class="fa-solid fa-wallet"></i>
+
+            <div>
+
+                <h4>
+
+                    Wallet Top-up Request
+
+                </h4>
+
+                <span>
+
+                    Today
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="notify-item">
+
+            <i class="fa-solid fa-cart-shopping"></i>
+
+            <div>
+
+                <h4>
+
+                    New Order Created
+
+                </h4>
+
+                <span>
+
+                    10 minutes ago
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= Loader ================= -->
+
+<div id="loader">
+
+    <div class="loader-circle"></div>
+
+    <h2>
+
+        Trusty Shop
+
+    </h2>
+
+</div>
+
+<script src="{% static 'js/admin.js' %}"></script>
+
+</body>
+
+</html>

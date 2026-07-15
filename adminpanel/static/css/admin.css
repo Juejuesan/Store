@@ -1,0 +1,1454 @@
+/* =======================================================
+   TRUSTY SHOP ADMIN PANEL
+   Modern Corporate Marketplace UI
+   Theme : Blue + White + Glassmorphism
+========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root{
+
+    --primary:#2563eb;
+    --secondary:#3b82f6;
+    --lightBlue:#dbeafe;
+    --dark:#0f172a;
+    --white:#ffffff;
+    --gray:#94a3b8;
+    --border:#e2e8f0;
+    --background:#f8fbff;
+
+    --shadow:
+    0 10px 30px rgba(0,0,0,.08);
+
+    --radius:18px;
+
+}
+
+.dark{
+
+    --background:#0f172a;
+
+    --white:#1e293b;
+
+    --dark:#ffffff;
+
+    --border:#334155;
+
+}
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+
+}
+
+body{
+
+    background:var(--background);
+
+    overflow-x:hidden;
+
+}
+
+a{
+
+    text-decoration:none;
+
+}
+
+li{
+
+    list-style:none;
+
+}
+
+.wrapper{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+/* ================= Sidebar ================= */
+
+.sidebar{
+
+    width:280px;
+
+    background:linear-gradient(
+    180deg,
+    #2563eb,
+    #1e40af);
+
+    color:white;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    padding:30px 20px;
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    bottom:0;
+
+    transition:.4s;
+
+    box-shadow:var(--shadow);
+
+    z-index:999;
+
+}
+
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:50px;
+
+}
+
+.logo-circle{
+
+    width:65px;
+
+    height:65px;
+
+    border-radius:50%;
+
+    background:white;
+
+    color:#2563eb;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:28px;
+
+    animation:spinLogo 8s linear infinite;
+
+}
+
+.logo h2{
+
+    font-size:25px;
+
+}
+
+.logo span{
+
+    font-size:13px;
+
+    opacity:.8;
+
+}
+
+@keyframes spinLogo{
+
+0%{
+
+transform:rotate(0deg);
+
+}
+
+100%{
+
+transform:rotate(360deg);
+
+}
+
+}
+.menu{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+.menu li{
+
+    border-radius:15px;
+
+    transition:.3s;
+
+}
+
+.menu li a{
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:15px 18px;
+
+    font-size:16px;
+
+    font-weight:500;
+
+}
+
+.menu li:hover{
+
+    background:rgba(255,255,255,.18);
+
+    transform:translateX(8px);
+
+}
+
+.menu li.active{
+
+    background:white;
+
+}
+
+.menu li.active a{
+
+    color:#2563eb;
+
+}
+
+.sidebar-footer{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.12);
+
+    backdrop-filter:blur(20px);
+
+}
+
+.profile-img{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:3px solid white;
+
+}
+
+.sidebar-footer h4{
+
+    font-size:16px;
+
+}
+
+.sidebar-footer span{
+
+    font-size:13px;
+
+    opacity:.8;
+
+}
+.main{
+
+    margin-left:280px;
+
+    width:calc(100% - 280px);
+
+    padding:35px;
+
+}
+
+.topbar{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:18px 25px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:var(--shadow);
+
+    margin-bottom:35px;
+
+}
+
+.search-box{
+
+    width:430px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    background:#f1f5f9;
+
+    padding:14px 20px;
+
+    border-radius:50px;
+
+}
+
+.search-box input{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    font-size:15px;
+
+}
+
+.top-icons{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:25px;
+
+}
+
+.notification{
+
+    position:relative;
+
+    cursor:pointer;
+
+}
+
+.notification i{
+
+    font-size:24px;
+
+    color:#2563eb;
+
+}
+
+.badge{
+
+    position:absolute;
+
+    top:-8px;
+
+    right:-8px;
+
+    background:red;
+
+    color:white;
+
+    width:18px;
+
+    height:18px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:10px;
+
+}
+
+/*=========================================================
+                CONTENT AREA
+=========================================================*/
+
+.content{
+    width:100%;
+    min-height:100vh;
+    animation:fadeUp .8s ease;
+}
+
+@keyframes fadeUp{
+
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+
+/*=========================================================
+                    DASHBOARD CARDS
+=========================================================*/
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+    gap:25px;
+
+    margin-bottom:40px;
+
+}
+
+
+.card{
+
+    position:relative;
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:30px;
+
+    overflow:hidden;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+    transition:.35s;
+
+    cursor:pointer;
+
+}
+
+
+.card:hover{
+
+    transform:translateY(-12px);
+
+    box-shadow:0 25px 50px rgba(37,99,235,.18);
+
+}
+
+
+.card h4{
+
+    color:#64748b;
+
+    font-weight:500;
+
+    margin-bottom:15px;
+
+}
+
+
+.card h2{
+
+    font-size:38px;
+
+    color:#2563eb;
+
+}
+
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:160px;
+
+    height:160px;
+
+    background:rgba(37,99,235,.08);
+
+    border-radius:50%;
+
+    top:-70px;
+
+    right:-70px;
+
+}
+
+
+.card i{
+
+    position:absolute;
+
+    right:25px;
+
+    bottom:25px;
+
+    font-size:45px;
+
+    color:#2563eb;
+
+    opacity:.15;
+
+}
+
+
+/*=========================================================
+                RECENT ACTIVITY
+=========================================================*/
+
+.activity{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+}
+
+
+.activity h2{
+
+    margin-bottom:25px;
+
+    color:#0f172a;
+
+}
+
+
+.activity table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+
+.activity table th{
+
+    text-align:left;
+
+    padding:18px;
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+}
+
+
+.activity table td{
+
+    padding:18px;
+
+    border-bottom:1px solid #edf2f7;
+
+}
+
+
+.activity table tr:hover{
+
+    background:#f8fbff;
+
+}
+
+/*=========================================================
+            FLOATING BACKGROUND CIRCLES
+=========================================================*/
+
+.floating-shapes{
+
+    position:fixed;
+
+    inset:0;
+
+    overflow:hidden;
+
+    pointer-events:none;
+
+    z-index:-1;
+
+}
+
+
+.circle{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    background:rgba(37,99,235,.08);
+
+    animation:float 18s linear infinite;
+
+}
+
+
+.c1{
+
+    width:350px;
+
+    height:350px;
+
+    top:-120px;
+
+    left:-120px;
+
+}
+
+
+.c2{
+
+    width:220px;
+
+    height:220px;
+
+    right:120px;
+
+    top:120px;
+
+}
+
+
+.c3{
+
+    width:420px;
+
+    height:420px;
+
+    bottom:-180px;
+
+    left:35%;
+
+}
+
+
+.c4{
+
+    width:260px;
+
+    height:260px;
+
+    right:-80px;
+
+    bottom:-80px;
+
+}
+
+
+@keyframes float{
+
+    0%{
+
+        transform:translateY(0px)
+        rotate(0deg);
+
+    }
+
+    50%{
+
+        transform:translateY(-40px)
+        rotate(180deg);
+
+    }
+
+    100%{
+
+        transform:translateY(0px)
+        rotate(360deg);
+
+    }
+
+}
+
+/*=========================================================
+            NOTIFICATION PANEL
+=========================================================*/
+
+.notification-panel{
+
+    position:fixed;
+
+    top:0;
+
+    right:-420px;
+
+    width:400px;
+
+    height:100vh;
+
+    background:white;
+
+    box-shadow:-15px 0 40px rgba(0,0,0,.12);
+
+    transition:.4s;
+
+    z-index:2000;
+
+}
+
+
+.notification-panel.active{
+
+    right:0;
+
+}
+
+
+.panel-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:25px;
+
+    border-bottom:1px solid #eee;
+
+}
+
+
+.panel-header h3{
+
+    color:#2563eb;
+
+}
+
+
+.panel-header button{
+
+    background:none;
+
+    border:none;
+
+    cursor:pointer;
+
+    font-size:20px;
+
+}
+
+
+.notification-list{
+
+    padding:25px;
+
+}
+
+
+.notify-item{
+
+    display:flex;
+
+    gap:20px;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    margin-bottom:20px;
+
+    transition:.3s;
+
+}
+
+
+.notify-item:hover{
+
+    background:#eff6ff;
+
+}
+
+
+.notify-item i{
+
+    width:55px;
+
+    height:55px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:22px;
+
+}
+
+
+.notify-item h4{
+
+    margin-bottom:6px;
+
+}
+
+
+.notify-item span{
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+/*=========================================================
+                    LOADER
+=========================================================*/
+
+#loader{
+
+    position:fixed;
+
+    inset:0;
+
+    background:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-direction:column;
+
+    z-index:99999;
+
+    transition:1s;
+
+}
+
+
+.loader-circle{
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:50%;
+
+    border:7px solid #dbeafe;
+
+    border-top:7px solid #2563eb;
+
+    animation:spin 1s linear infinite;
+
+}
+
+
+#loader h2{
+
+    margin-top:25px;
+
+    color:#2563eb;
+
+}
+
+
+@keyframes spin{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+/*=========================================================
+                THEME BUTTON
+=========================================================*/
+
+#themeToggle{
+
+    border:none;
+
+    background:#eff6ff;
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    color:#2563eb;
+
+    font-size:18px;
+
+    transition:.3s;
+
+}
+
+
+#themeToggle:hover{
+
+    transform:rotate(180deg);
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+/* ==========================================================
+                    PAGE TITLE
+========================================================== */
+
+.page-title{
+
+    font-size:32px;
+
+    font-weight:700;
+
+    color:#0f172a;
+
+    margin-bottom:30px;
+
+}
+
+
+/* ==========================================================
+                    BEAUTIFUL TABLE
+========================================================== */
+
+.table-container{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:30px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+    overflow:auto;
+
+    margin-top:30px;
+
+}
+
+.table-container table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.table-container thead{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.table-container th{
+
+    padding:18px;
+
+    text-align:left;
+
+    font-size:15px;
+
+}
+
+.table-container td{
+
+    padding:18px;
+
+    border-bottom:1px solid #edf2f7;
+
+    color:#475569;
+
+}
+
+.table-container tr{
+
+    transition:.3s;
+
+}
+
+.table-container tbody tr:hover{
+
+    background:#eff6ff;
+
+}
+
+/* ==========================================================
+                    STATUS
+========================================================== */
+
+.status{
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.pending{
+
+    background:#fff7ed;
+
+    color:#ea580c;
+
+}
+
+.approved{
+
+    background:#ecfdf5;
+
+    color:#059669;
+
+}
+
+.rejected{
+
+    background:#fef2f2;
+
+    color:#dc2626;
+
+}
+
+/* ==========================================================
+                    BUTTONS
+========================================================== */
+
+.btn{
+
+    border:none;
+
+    outline:none;
+
+    cursor:pointer;
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    transition:.3s;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+.btn-view{
+
+    background:#3b82f6;
+
+    color:white;
+
+}
+
+.btn-view:hover{
+
+    background:#2563eb;
+
+}
+
+.btn-approve{
+
+    background:#22c55e;
+
+    color:white;
+
+}
+
+.btn-approve:hover{
+
+    background:#16a34a;
+
+}
+
+.btn-reject{
+
+    background:#ef4444;
+
+    color:white;
+
+}
+
+.btn-reject:hover{
+
+    background:#dc2626;
+
+}
+
+.btn-delete{
+
+    background:#0f172a;
+
+    color:white;
+
+}
+
+.btn-delete:hover{
+
+    background:black;
+
+}
+
+/* ==========================================================
+                PROFILE CARD
+========================================================== */
+
+.profile-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:35px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    text-align:center;
+
+}
+
+.profile-card img{
+
+    width:130px;
+
+    height:130px;
+
+    border-radius:50%;
+
+    border:6px solid #2563eb;
+
+    object-fit:cover;
+
+}
+
+.profile-card h2{
+
+    margin-top:20px;
+
+}
+
+.profile-card p{
+
+    color:#64748b;
+
+}
+
+.profile-card button{
+
+    margin-top:20px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 30px;
+
+    border-radius:30px;
+
+    cursor:pointer;
+
+}
+
+/* ==========================================================
+                    SCROLLBAR
+========================================================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#3b82f6;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#e2e8f0;
+
+}
+
+/* ==========================================================
+                RESPONSIVE
+========================================================== */
+
+@media(max-width:1200px){
+
+    .sidebar{
+
+        width:90px;
+
+    }
+
+    .sidebar h2,
+    .sidebar span{
+
+        display:none;
+
+    }
+
+    .main{
+
+        margin-left:90px;
+
+        width:calc(100% - 90px);
+
+    }
+
+}
+
+@media(max-width:900px){
+
+    .topbar{
+
+        flex-direction:column;
+
+        gap:20px;
+
+    }
+
+    .search-box{
+
+        width:100%;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .sidebar{
+
+        left:-100%;
+
+    }
+
+    .sidebar.active{
+
+        left:0;
+
+    }
+
+    .main{
+
+        width:100%;
+
+        margin-left:0;
+
+    }
+
+    .cards{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:500px){
+
+    .table-container{
+
+        padding:10px;
+
+    }
+
+    .page-title{
+
+        font-size:25px;
+
+    }
+
+}
+
+/* ==========================================================
+                    ANIMATION
+========================================================== */
+
+@keyframes slideUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(50px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.card{
+
+    animation:slideUp .8s ease;
+
+}
+
+.menu li{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.menu li::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:0;
+
+    height:100%;
+
+    left:0;
+
+    top:0;
+
+    background:rgba(255,255,255,.08);
+
+    transition:.5s;
+
+}
+
+.menu li:hover::before{
+
+    width:100%;
+
+}
+
+.glass{
+
+    background:rgba(255,255,255,.55);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.3);
+
+}
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+
+    radial-gradient(circle at top left,#bfdbfe 0%,transparent 30%),
+
+    radial-gradient(circle at bottom right,#dbeafe 0%,transparent 35%);
+
+    z-index:-2;
+
+}
+
+/* Ripple Animation */
+
+.btn{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.ripple{
+
+    position:absolute;
+
+    width:15px;
+
+    height:15px;
+
+    background:rgba(255,255,255,.7);
+
+    border-radius:50%;
+
+    transform:scale(0);
+
+    animation:ripple .6s linear;
+
+}
+
+@keyframes ripple{
+
+    to{
+
+        transform:scale(25);
+
+        opacity:0;
+
+    }
+
+}

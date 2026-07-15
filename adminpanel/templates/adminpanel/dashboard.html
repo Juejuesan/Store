@@ -1,0 +1,152 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% load static %}
+
+{% block title %}
+Dashboard | Trusty Shop Admin
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">
+    Dashboard
+</h1>
+
+<!-- ===================== Statistics ===================== -->
+
+<div class="cards">
+
+    <div class="card">
+
+        <h4>Total Users</h4>
+
+        <h2 class="counter"
+            data-target="{{ total_users|default:'1200' }}">
+            0
+        </h2>
+
+        <i class="fa-solid fa-users"></i>
+
+    </div>
+
+    <div class="card">
+
+        <h4>Total Sellers</h4>
+
+        <h2 class="counter"
+            data-target="{{ total_sellers|default:'420' }}">
+            0
+        </h2>
+
+        <i class="fa-solid fa-store"></i>
+
+    </div>
+
+    <div class="card">
+
+        <h4>Pending Posts</h4>
+
+        <h2 class="counter"
+            data-target="{{ pending_posts|default:'32' }}">
+            0
+        </h2>
+
+        <i class="fa-solid fa-box-open"></i>
+
+    </div>
+
+    <div class="card">
+
+        <h4>Pending Orders</h4>
+
+        <h2 class="counter"
+            data-target="{{ pending_orders|default:'18' }}">
+            0
+        </h2>
+
+        <i class="fa-solid fa-truck-fast"></i>
+
+    </div>
+
+    <div class="card">
+
+        <h4>Total Revenue</h4>
+
+        <h2>
+
+            {{ revenue|default:"12,800,000 MMK" }}
+
+        </h2>
+
+        <i class="fa-solid fa-sack-dollar"></i>
+
+    </div>
+
+</div>
+
+<!-- ===================== Recent Activities ===================== -->
+
+<div class="activity">
+
+    <h2>
+
+        Recent Activities
+
+    </h2>
+
+    <table>
+
+        <thead>
+
+        <tr>
+
+            <th>Activity</th>
+
+            <th>User</th>
+
+            <th>Status</th>
+
+            <th>Time</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+{% for activity in recent_activities %}
+
+<tr>
+
+    <td>{{ activity.activity }}</td>
+
+    <td>{{ activity.user }}</td>
+
+    <td>
+
+        {% if activity.status == "Success" %}
+            <span class="status approved">{{ activity.status }}</span>
+
+        {% elif activity.status == "Pending" %}
+            <span class="status pending">{{ activity.status }}</span>
+
+        {% elif activity.status == "Completed" %}
+            <span class="status approved">{{ activity.status }}</span>
+
+        {% else %}
+            <span class="status rejected">{{ activity.status }}</span>
+        {% endif %}
+
+    </td>
+
+    <td>{{ activity.time }}</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+    </table>
+
+</div>
+
+{% endblock %}

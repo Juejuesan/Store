@@ -1,0 +1,163 @@
+{% extends 'adminpanel/base_admin.html' %}
+{% load static %}
+
+{% block title %}
+Pending Posts | Trusty Shop Admin
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">
+    Pending Posts
+</h1>
+
+<div class="table-container">
+
+    <div style="display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:25px;">
+
+        <h2>
+            Posts Waiting for Approval
+        </h2>
+
+        <button class="btn btn-view">
+            View All Pending Posts
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Photo</th>
+
+                <th>Product</th>
+
+                <th>Seller</th>
+
+                <th>Category</th>
+
+                <th>Price</th>
+
+                <th>Quantity</th>
+
+                <th>Submitted At</th>
+
+                <th>Status</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for post in pending_posts %}
+
+            <tr>
+
+                <td>{{ post.id }}</td>
+
+                <td>
+
+                    <img src="{% static 'images/laptop.jpg' %}"
+                         alt="Product"
+                         style="width:70px;
+                                height:70px;
+                                object-fit:cover;
+                                border-radius:12px;">
+
+                </td>
+
+                <td>{{ post.name }}</td>
+
+                <td>{{ post.seller.name }}</td>
+
+                <td>{{ post.category }}</td>
+
+                <td>{{ post.price }} MMK</td>
+
+                <td>{{ post.quantity }}</td>
+
+                <td>{{ post.created_at }}</td>
+
+                <td>
+
+                    <span class="status pending">
+
+                        Pending
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <button class="btn btn-view">
+
+                        View
+
+                    </button>
+
+                    <button class="btn btn-approve">
+
+                        Approve
+
+                    </button>
+
+                    <button class="btn btn-reject">
+
+                        Reject
+
+                    </button>
+
+                    <button class="btn btn-delete">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="10"
+                    style="text-align:center;
+                           padding:50px;">
+
+                    <img src="{% static 'images/empty.png' %}"
+                         width="120">
+
+                    <h2>No Pending Posts</h2>
+
+                    <p>
+
+                        Every submitted product has already been reviewed.
+
+                    </p>
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
