@@ -1,6 +1,6 @@
 from django import forms
 
-from posts.models import Post
+from posts.models import Post, PostImage
 
 
 class PostForm(forms.ModelForm):
@@ -8,7 +8,6 @@ class PostForm(forms.ModelForm):
             model = Post
             fields = [
                 'price',
-                'photo',
                 'type',
                 'category',
                 'description',
@@ -20,6 +19,12 @@ class PostForm(forms.ModelForm):
                         'min': 1,
                         'placeholder': 'Enter price'
                     }
+                ),
+
+                'quantity': forms.NumberInput(attrs={
+                    'min': 1,
+                    'placeholder': 'Enter quantity'
+                }
                 )
             }
 
@@ -32,4 +37,21 @@ class PostForm(forms.ModelForm):
                     )
 
                 return price
+
+            def validate_quantity(self):
+                quantity = self.cleaned_data.get('quantity')
+
+                if quantity <= 0:
+                    raise forms.ValidationError(
+                        "quantity must be greater than 0."
+                    )
+
+                return quantity
+
+class PostImageForm(forms.ModelForm):
+    class Meta:
+        model = PostImage
+        fields = [
+            'image'
+        ]
 

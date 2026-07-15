@@ -6,8 +6,6 @@ class User(models.Model):
     phNumber = models.CharField(max_length=11,unique=True)
     email = models.EmailField(max_length=30,unique=True)
     password = models.CharField(max_length=20)
-    confirm_password = models.CharField(max_length=20)
-    nrc= models.CharField(max_length=40,unique=True)
     address = models.TextField(max_length=100)
     gender = models.CharField(max_length=10)
     balance = models.IntegerField()

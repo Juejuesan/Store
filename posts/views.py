@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from posts.form import PostForm
+from posts.models import PostImage
+from user.models import User
 
 
 def createPost(request):
@@ -8,10 +10,22 @@ def createPost(request):
         form = PostForm(request.POST, request.FILES)
 
         if form.is_valid():
-            form.save()
+            post=form.save(commit=False)
+            user = User.objects.get(name="Aung Aung")
+            post.user = user
+
+            post.save()
+
+            images = request.FILES.getlist('images')
+
+            for img in images:
+                PostImage.objects.create(
+                    post=post,
+                    image=img
+                )
             return redirect("home")
 
     else:
         form = PostForm()
 
-    return render(request, "createPost.html", {"form": form})
+    return render(request, "posts/createPost.html", {"form": form})

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Post</title>
 
-    <link rel="stylesheet" href="{% static 'createPost.css' %}">
+    <link rel="stylesheet" href="{% static 'css/createPost.css' %}">
 </head>
 
 <body>
@@ -46,13 +46,19 @@
             {{ form.description }}
         </div>
 
-        <div class="form-group">
-            <label>Photo</label>
+       <div class="form-group">
+            <label>Photos</label>
 
-            {{ form.photo }}
+             <input
+                 type="file"
+                 name="images"
+                  id="image-input"
+                     multiple
+                 accept="image/*"
+                 >
 
-            <img id="preview-image" src="#" alt="Preview">
-        </div>
+            <div id="preview-container"></div>
+       </div>
 
         <button type="submit" class="btn-submit">
             Create Post
@@ -64,23 +70,31 @@
 
 <script>
 
-const photoInput = document.getElementById("id_photo");
-const preview = document.getElementById("preview-image");
+const imageInput = document.getElementById("image-input");
+const previewContainer = document.getElementById("preview-container");
 
-photoInput.addEventListener("change", function(){
+imageInput.addEventListener("change", function(){
 
-    const file = this.files[0];
+    previewContainer.innerHTML = "";
 
-    if(file){
+    const files = this.files;
+
+    for(let i = 0; i < files.length; i++){
 
         const reader = new FileReader();
 
         reader.onload = function(e){
-            preview.src = e.target.result;
-            preview.style.display = "block";
+
+            const img = document.createElement("img");
+
+            img.src = e.target.result;
+            img.classList.add("preview-photo");
+
+            previewContainer.appendChild(img);
+
         }
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(files[i]);
     }
 
 });

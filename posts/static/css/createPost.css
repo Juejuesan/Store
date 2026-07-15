@@ -53,10 +53,15 @@
     background:#1565c0;
 }
 
-#preview-image{
-    margin-top:15px;
-    width:250px;
-    display:none;
-    border-radius:8px;
-    border:1px solid #ddd;
+#preview-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.preview-photo {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
 }
