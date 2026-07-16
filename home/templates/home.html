@@ -410,392 +410,406 @@ Perfume
 
 
 
+<!-- ================= Seller Posts ================= -->
 
+<div id="marketParticles"></div>
+<div id="mouseGlow"></div>
 
+<section class="seller-posts py-5">
 
+    <div class="container">
 
-<!-- ==================================================
-     PRODUCT SECTION
-================================================== -->
+        <div class="section-title text-center mb-5">
 
+            <span class="section-badge">
+                <i class="fa-solid fa-store"></i>
+                Trusted Marketplace
+            </span>
 
-<section class="products">
+            <h2 class="mt-3">
+                Latest Seller Products
+            </h2>
 
+            <p>
+                Discover quality products posted by verified sellers.
+            </p>
 
+        </div>
 
+        <div class="row g-4">
 
+            <!-- ================= CARD 1 ================= -->
 
-<!-- PRODUCT BACKGROUND FLOATING ICONS -->
+            <div class="col-lg-4 col-md-6">
 
-<div class="product-bg-icon icon1">
-🛍️
-</div>
+                <div class="seller-card">
 
+                    <!-- TOP -->
 
-<div class="product-bg-icon icon2">
-👟
-</div>
+                    <div class="seller-top">
 
+                        <div class="seller-left">
 
-<div class="product-bg-icon icon3">
-⌚
-</div>
+                            <img src="{% static 'images/mumu.jpg' %}" class="seller-profile">
 
+                            <div>
 
-<div class="product-bg-icon icon4">
-🎧
-</div>
+                                <h5>
+                                    John Store
+                                    <i class="fa-solid fa-circle-check verified"></i>
+                                </h5>
 
+                                <span>
+                                    <i class="fa-regular fa-clock"></i>
+                                    2 hours ago
+                                </span>
 
-<div class="product-bg-icon icon5">
-📱
-</div>
+                            </div>
 
+                        </div>
 
-<div class="product-bg-icon icon6">
-💻
-</div>
+                        <div class="seller-right">
 
+                            <button class="menu-btn" onclick="savePost(this)">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
 
+                            <div class="save-box">
+                                <i class="fa-regular fa-bookmark"></i>
+                                Save Post
+                            </div>
 
+                        </div>
 
+                    </div>
 
-<div class="container">
+                    <!-- IMAGE -->
 
+                    <div class="product-image-box">
 
+                        <img src="{% static 'images/shoe.jpg' %}" class="product-image">
 
-<!-- PRODUCT TITLE -->
+                        <span class="product-tag">
+                            Best Seller
+                        </span>
 
-<h2 class="section-title">
+                    </div>
 
-Featured Products
+                    <!-- BODY -->
 
-</h2>
+                    <div class="product-body">
 
+                        <div class="title-price">
 
+                            <h4>
+                                Premium Sneakers
+                            </h4>
 
+                            <span class="price">
+                                $ 80
+                            </span>
 
-<div class="row g-4">
+                        </div>
 
+                        <p>
 
+                            Comfortable running shoes made with premium breathable
+                            material. Lightweight, stylish and perfect for everyday use.
 
+                        </p>
 
+                        <!-- FEATURES -->
 
-<!-- ==================================================
-     PRODUCT CARD 1
-================================================== -->
+                        <div class="product-features">
 
+                            <span>
+                                <i class="fa-solid fa-truck-fast"></i>
+                                Fast Delivery
+                            </span>
 
-<div class="col-md-6 col-lg-3">
+                            <span>
+                                <i class="fa-solid fa-shield-heart"></i>
+                                Warranty
+                            </span>
 
+                        </div>
 
-<div class="product-card">
+                        <!-- BUTTONS -->
 
+                        <div class="product-buttons">
 
+                            <button class="cart-btn">
 
-<div class="product-image">
+                                <i class="fa-solid fa-cart-shopping"></i>
 
+                                Add to Cart
 
-<span class="discount">
--20%
-</span>
+                            </button>
 
+                            <a href="{% url 'viewdetail' %}" class="detail-btn">
+                                View Details
+                            </a>
 
-<img src="{% static 'images/shoe.jpg' %}"
-alt="Nike Shoes">
+                        </div>
 
+                    </div>
 
-</div>
+                </div>
 
+            </div>
 
+            <!-- ================= CARD 2 ================= -->
 
-<div class="product-info">
+            <div class="col-lg-4 col-md-6">
 
+                <div class="seller-card">
 
-<h4>
-Nike Shoes
-</h4>
+                    <div class="seller-top">
 
+                        <div class="seller-left">
 
+                            <img src="{% static 'images/susu.jpg' %}" class="seller-profile">
 
-<p>
-Comfortable running shoes.
-</p>
+                            <div>
 
+                                <h5>
+                                    Smart Tech
+                                    <i class="fa-solid fa-circle-check verified"></i>
+                                </h5>
 
+                                <span>
 
-<div class="rating">
-★★★★★
-</div>
+                                    <i class="fa-regular fa-clock"></i>
 
+                                    5 hours ago
 
+                                </span>
 
-<h3 class="price">
-$89
-</h3>
+                            </div>
 
+                        </div>
 
+                        <div class="seller-right">
 
-<button class="buy-btn">
+                            <button class="menu-btn" onclick="savePost(this)">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
 
-<i class="fa-solid fa-cart-shopping"></i>
+                            <div class="save-box">
+                                <i class="fa-regular fa-bookmark"></i>
+                                Save Post
+                            </div>
 
-Add To Cart
+                        </div>
 
-</button>
+                    </div>
 
+                    <div class="product-image-box">
 
-</div>
+                        <img src="{% static 'images/headphone.jpg' %}" class="product-image">
 
+                        <span class="product-tag">
+                            New
+                        </span>
 
-</div>
+                    </div>
 
+                    <div class="product-body">
 
-</div>
+                        <div class="title-price">
 
+                            <h4>
+                                Wireless Headphone
+                            </h4>
 
+                            <span class="price">
+                                $80
+                            </span>
 
+                        </div>
 
+                        <p>
 
+                            Premium wireless headphones with crystal clear sound,
+                            active noise cancellation and 40-hour battery life.
 
-<!-- ==================================================
-     PRODUCT CARD 2
-================================================== -->
+                        </p>
 
+                        <div class="product-features">
 
-<div class="col-md-6 col-lg-3">
+                            <span>
 
+                                <i class="fa-solid fa-battery-full"></i>
 
-<div class="product-card">
+                                40 Hours
 
+                            </span>
 
-<div class="product-image">
+                            <span>
 
+                                <i class="fa-solid fa-bluetooth"></i>
 
-<span class="new">
-NEW
-</span>
+                                Bluetooth 5.3
 
+                            </span>
 
+                        </div>
 
-<img src="{% static 'images/watch.jpg' %}"
-alt="Smart Watch">
+                        <div class="product-buttons">
 
+                            <button class="cart-btn">
 
-</div>
+                                <i class="fa-solid fa-cart-shopping"></i>
 
+                                Add to Cart
 
+                            </button>
 
+                            <button class="detail-btn">
 
-<div class="product-info">
+                                View Details
 
+                            </button>
 
-<h4>
-Smart Watch
-</h4>
+                        </div>
 
+                    </div>
 
+                </div>
 
-<p>
-Premium digital watch.
-</p>
+            </div>
 
+            <!-- ================= CARD 3 ================= -->
 
+            <div class="col-lg-4 col-md-6">
 
-<div class="rating">
-★★★★★
-</div>
+                <div class="seller-card">
 
+                    <div class="seller-top">
 
+                        <div class="seller-left">
 
-<h3 class="price">
-$120
-</h3>
+                            <img src="{% static 'images/meme.jpg' %}" class="seller-profile">
 
+                            <div>
 
+                                <h5>
 
-<button class="buy-btn">
+                                    Fashion House
 
+                                    <i class="fa-solid fa-circle-check verified"></i>
 
-<i class="fa-solid fa-cart-shopping"></i>
+                                </h5>
 
-Add To Cart
+                                <span>
 
+                                    <i class="fa-regular fa-clock"></i>
 
-</button>
+                                    1 day ago
 
+                                </span>
 
-</div>
+                            </div>
 
+                        </div>
 
-</div>
+                        <div class="seller-right">
 
+                            <button class="menu-btn" onclick="savePost(this)">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
 
-</div>
+                            <div class="save-box">
+                                <i class="fa-regular fa-bookmark"></i>
+                                Save Post
+                            </div>
 
+                        </div>
 
+                    </div>
 
+                    <div class="product-image-box">
 
+                        <img src="{% static 'images/watch.jpg' %}" class="product-image">
 
+                        <span class="product-tag">
+                            Luxury
+                        </span>
 
-<!-- ==================================================
-     PRODUCT CARD 3
-================================================== -->
+                    </div>
 
+                    <div class="product-body">
 
-<div class="col-md-6 col-lg-3">
+                        <div class="title-price">
 
+                            <h4>
 
-<div class="product-card">
+                                Luxury Watch
 
+                            </h4>
 
-<div class="product-image">
+                            <span class="price">
 
+                                $120
 
-<img src="{% static 'images/headphone.jpg' %}"
-alt="Wireless Headphone">
+                            </span>
 
+                        </div>
 
-</div>
+                        <p>
 
+                            Elegant stainless-steel watch with premium leather strap,
+                            water resistance and timeless modern design.
 
+                        </p>
 
+                        <div class="product-features">
 
-<div class="product-info">
+                            <span>
 
+                                <i class="fa-solid fa-gem"></i>
 
-<h4>
-Wireless Headphone
-</h4>
+                                Premium
 
+                            </span>
 
+                            <span>
 
-<p>
-Clear sound experience.
-</p>
+                                <i class="fa-solid fa-award"></i>
 
+                                Top Rated
 
+                            </span>
 
-<div class="rating">
-★★★★★
-</div>
+                        </div>
 
+                        <div class="product-buttons">
 
+                            <button class="cart-btn">
 
-<h3 class="price">
-$99
-</h3>
+                                <i class="fa-solid fa-cart-shopping"></i>
 
+                                Add to Cart
 
+                            </button>
 
-<button class="buy-btn">
+                            <button class="detail-btn">
 
+                                View Details
 
-<i class="fa-solid fa-cart-shopping"></i>
+                            </button>
 
-Add To Cart
+                        </div>
 
+                    </div>
 
-</button>
+                </div>
 
+            </div>
 
-</div>
+        </div>
 
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-<!-- ==================================================
-     PRODUCT CARD 4
-================================================== -->
-
-
-<div class="col-md-6 col-lg-3">
-
-
-<div class="product-card">
-
-
-<div class="product-image">
-
-
-<span class="discount">
-HOT
-</span>
-
-
-<img src="{% static 'images/laptop.jpg' %}"
-alt="Laptop">
-
-
-</div>
-
-
-
-
-<div class="product-info">
-
-
-<h4>
-Laptop
-</h4>
-
-
-
-<p>
-Powerful laptop for work.
-</p>
-
-
-
-<div class="rating">
-★★★★★
-</div>
-
-
-
-<h3 class="price">
-$799
-</h3>
-
-
-
-<button class="buy-btn">
-
-
-<i class="fa-solid fa-cart-shopping"></i>
-
-Add To Cart
-
-
-</button>
-
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-</div>
-
-
-</div>
-
+    </div>
 
 </section>
 
@@ -958,6 +972,11 @@ Myanmar
 </div>
 
 </footer>
+
+
+<div id="cartToast" class="cart-toast">
+    ✅ Product added to cart
+</div>
 
 <!-- ==================================================
      JAVASCRIPT SECTION

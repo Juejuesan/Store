@@ -2,160 +2,6 @@
 // Trusty Shop JavaScript
 // =======================================================
 
-
-
-// =======================================================
-// 1. PRODUCT SEARCH FUNCTION
-// =======================================================
-
-const searchInput = document.getElementById("searchInput");
-
-
-if(searchInput){
-
-    searchInput.addEventListener("keyup",function(){
-
-        let keyword = this.value.toLowerCase();
-
-
-        const products = document.querySelectorAll(".product-card");
-
-
-        products.forEach(product=>{
-
-
-            let productText = product.innerText.toLowerCase();
-
-
-            if(productText.includes(keyword)){
-
-
-                product.parentElement.style.display="block";
-
-
-            }else{
-
-
-                product.parentElement.style.display="none";
-
-
-            }
-
-
-        });
-
-
-    });
-
-
-}
-
-
-
-
-
-// =======================================================
-// 2. ADD TO CART FUNCTION
-// =======================================================
-
-
-const cartButtons = document.querySelectorAll(".buy-btn");
-
-const cartCount = document.querySelector(".cart-count");
-
-
-let cartNumber = 3;
-
-
-
-cartButtons.forEach(button=>{
-
-
-    button.addEventListener("click",()=>{
-
-
-        cartNumber++;
-
-
-        cartCount.textContent = cartNumber;
-
-
-
-        // Cart counter animation
-
-        cartCount.style.transform="scale(1.5)";
-
-        cartCount.style.background="#00C853";
-
-
-
-        setTimeout(()=>{
-
-
-            cartCount.style.transform="scale(1)";
-
-            cartCount.style.background="#ff4081";
-
-
-        },500);
-
-
-
-
-        // Change button status
-
-        button.innerHTML =
-        '<i class="fa-solid fa-check"></i> Added';
-
-
-
-        button.style.background="#00C853";
-
-
-
-
-        setTimeout(()=>{
-
-
-            button.innerHTML =
-            '<i class="fa-solid fa-cart-shopping"></i> Add To Cart';
-
-
-
-            button.style.background="#1565C0";
-
-
-
-        },1500);
-
-
-
-        // Cart bounce animation
-
-        cartCount.style.animation="none";
-
-
-        setTimeout(()=>{
-
-
-            cartCount.style.animation="bounce 2s infinite";
-
-
-        },10);
-
-
-
-    });
-
-
-
-});
-
-
-
-
-
-
 // =======================================================
 // 3. NAVBAR SCROLL EFFECT
 // =======================================================
@@ -163,7 +9,7 @@ cartButtons.forEach(button=>{
 
 const navbar = document.querySelector(".cute-navbar");
 
-
+const searchInput = document.getElementById("searchInput");
 
 window.addEventListener("scroll",()=>{
 
@@ -259,91 +105,6 @@ suggestionButtons.forEach(button=>{
 
 
 });
-
-
-
-
-
-
-
-// =======================================================
-// 6. PRODUCT REVEAL ANIMATION
-// =======================================================
-
-
-const products =
-document.querySelectorAll(".product-card");
-
-
-
-const productObserver =
-new IntersectionObserver((entries)=>{
-
-
-    entries.forEach((entry,index)=>{
-
-
-        if(entry.isIntersecting){
-
-
-            setTimeout(()=>{
-
-
-                entry.target.style.opacity="1";
-
-
-                entry.target.style.transform=
-                "translateY(0)";
-
-
-
-            },index * 150);
-
-
-
-            productObserver.unobserve(entry.target);
-
-
-
-        }
-
-
-    });
-
-
-
-},{
-
-    threshold:0.2
-
-});
-
-
-
-
-
-products.forEach(product=>{
-
-
-    product.style.opacity="0";
-
-
-    product.style.transform=
-    "translateY(50px)";
-
-
-    product.style.transition=
-    "0.7s ease";
-
-
-
-    productObserver.observe(product);
-
-
-
-});
-
-
 
 
 
@@ -507,82 +268,6 @@ if(logo){
 
 
 
-
-
-
-
-// =======================================================
-// 10. PRODUCT IMAGE LOADING EFFECT
-// =======================================================
-
-
-const images =
-document.querySelectorAll(".product-image img");
-
-
-
-images.forEach(img=>{
-
-
-    img.addEventListener("load",()=>{
-
-
-        img.style.opacity="1";
-
-
-    });
-
-
-});
-
-
-
-
-
-
-
-// =======================================================
-// 11. PRODUCT BACKGROUND FLOATING MOVEMENT
-// =======================================================
-
-
-const productIcons =
-document.querySelectorAll(".product-bg-icon");
-
-
-
-document.addEventListener("mousemove",(e)=>{
-
-
-    let x =
-    (e.clientX / window.innerWidth - 0.5) * 30;
-
-
-
-    let y =
-    (e.clientY / window.innerHeight - 0.5) * 30;
-
-
-
-    productIcons.forEach(icon=>{
-
-
-        icon.style.transform =
-        `translate(${x}px,${y}px)`;
-
-
-    });
-
-
-
-});
-
-
-
-
-
-
-
 // =======================================================
 // 12. CUSTOM CURSOR ANIMATION
 // =======================================================
@@ -640,7 +325,7 @@ if(cursor && follower){
 
     const hoverElements =
     document.querySelectorAll(
-    "a, button, .product-card, .nav-link"
+    "a, button, .modern-product, .category-card, .nav-link"
     );
 
 
@@ -683,3 +368,331 @@ if(cursor && follower){
 
 
 }
+
+/*Posts section js*/
+/*=====================================================
+            TRUSTY SHOP MARKETPLACE
+======================================================*/
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    /*==========================================
+            SAVE POST
+    ==========================================*/
+
+    window.savePost = function(button){
+
+        const box = button.nextElementSibling;
+
+        document.querySelectorAll(".save-box").forEach(item=>{
+
+            if(item!==box){
+                item.classList.remove("active");
+            }
+
+        });
+
+        box.classList.toggle("active");
+
+    }
+
+    document.addEventListener("click",(e)=>{
+
+        if(!e.target.closest(".seller-right")){
+            document.querySelectorAll(".save-box")
+            .forEach(box=>box.classList.remove("active"));
+        }
+
+    });
+
+
+
+
+    /*==========================================
+              CARD HOVER FLOAT
+    ==========================================*/
+
+    document.querySelectorAll(".seller-card").forEach(card=>{
+
+        card.addEventListener("mousemove",(e)=>{
+
+            const rect=card.getBoundingClientRect();
+
+            const x=e.clientX-rect.left;
+            const y=e.clientY-rect.top;
+
+            const rotateY=(x-rect.width/2)/18;
+            const rotateX=(rect.height/2-y)/18;
+
+            card.style.transform=
+            `perspective(900px)
+            rotateX(${rotateX}deg)
+            rotateY(${rotateY}deg)
+            translateY(-10px)`;
+
+        });
+
+        card.addEventListener("mouseleave",()=>{
+
+            card.style.transform="";
+
+        });
+
+    });
+
+
+
+
+    /*==========================================
+            BUTTON RIPPLE
+    ==========================================*/
+
+    document.querySelectorAll(".cart-btn,.detail-btn")
+    .forEach(button=>{
+
+        button.addEventListener("click",function(e){
+
+            const ripple=document.createElement("span");
+
+            ripple.className="ripple";
+
+            const rect=this.getBoundingClientRect();
+
+            ripple.style.left=e.clientX-rect.left+"px";
+            ripple.style.top=e.clientY-rect.top+"px";
+
+            this.appendChild(ripple);
+
+            setTimeout(()=>{
+
+                ripple.remove();
+
+            },700);
+
+        });
+
+    });
+
+
+
+
+    /*==========================================
+          ADD TO CART ANIMATION
+    ==========================================*/
+document.querySelectorAll(".cart-btn")
+.forEach(btn=>{
+
+    btn.addEventListener("click",function(){
+
+        // Change button
+        const original=this.innerHTML;
+
+        this.innerHTML=
+        `<i class="fa-solid fa-check"></i> Added`;
+
+        this.style.background="#43A047";
+
+
+        // -----------------------------
+        // UPDATE CART BADGE
+        // -----------------------------
+
+        const cartCount=document.querySelector(".cart-count");
+        const cartLink=document.querySelector(".cart-link");
+
+        let count=parseInt(cartCount.textContent);
+
+        count++;
+
+        cartCount.textContent=count;
+
+        cartCount.classList.add("cart-pop");
+        cartLink.classList.add("shake");
+
+        setTimeout(()=>{
+
+            cartCount.classList.remove("cart-pop");
+            cartLink.classList.remove("shake");
+
+        },500);
+
+
+        // -----------------------------
+        // SHOW TOAST
+        // -----------------------------
+
+        const toast=document.getElementById("cartToast");
+
+        toast.classList.add("show");
+
+        setTimeout(()=>{
+
+            toast.classList.remove("show");
+
+        },2200);
+
+
+        // -----------------------------
+        // Restore Button
+        // -----------------------------
+
+
+
+            setTimeout(()=>{
+
+                this.innerHTML=original;
+
+                this.style.background="";
+
+            },1800);
+
+        });
+
+    });
+
+
+
+
+    /*==========================================
+            VIEW DETAIL EFFECT
+    ==========================================*/
+
+    document.querySelectorAll(".detail-btn")
+    .forEach(btn=>{
+
+        btn.addEventListener("click",function(){
+
+            const card=this.closest(".seller-card");
+
+            card.animate([
+
+                {transform:"scale(1)"},
+                {transform:"scale(.97)"},
+                {transform:"scale(1)"}
+
+            ],{
+
+                duration:350
+
+            });
+
+        });
+
+    });
+
+
+
+
+    /*==========================================
+            SCROLL REVEAL
+    ==========================================*/
+
+    const observer=new IntersectionObserver(entries=>{
+
+        entries.forEach(entry=>{
+
+            if(entry.isIntersecting){
+
+                entry.target.classList.add("show");
+
+            }
+
+        });
+
+    },{
+
+        threshold:.15
+
+    });
+
+    document.querySelectorAll(".seller-card")
+    .forEach(card=>{
+
+        card.classList.add("hidden");
+
+        observer.observe(card);
+
+    });
+
+
+
+
+    /*==========================================
+          FLOATING BACKGROUND
+    ==========================================*/
+
+    const bg=document.getElementById("marketParticles");
+
+    for(let i=0;i<35;i++){
+
+        const circle=document.createElement("span");
+
+        circle.className="floating-circle";
+
+        circle.style.left=Math.random()*100+"%";
+
+        circle.style.animationDuration=
+        8+Math.random()*8+"s";
+
+        circle.style.animationDelay=
+        Math.random()*5+"s";
+
+        circle.style.width=
+        8+Math.random()*20+"px";
+
+        circle.style.height=
+        circle.style.width;
+
+        bg.appendChild(circle);
+
+    }
+
+
+
+
+    /*==========================================
+            MOUSE GLOW
+    ==========================================*/
+
+    const glow=document.getElementById("mouseGlow");
+
+    document.addEventListener("mousemove",(e)=>{
+
+        glow.style.left=e.clientX+"px";
+
+        glow.style.top=e.clientY+"px";
+
+    });
+
+
+
+
+    /*==========================================
+            FLOATING CARDS
+    ==========================================*/
+
+    document.querySelectorAll(".seller-card")
+    .forEach((card,index)=>{
+
+        setInterval(()=>{
+
+            card.animate([
+
+                {transform:"translateY(0px)"},
+                {transform:"translateY(-6px)"},
+                {transform:"translateY(0px)"}
+
+            ],{
+
+                duration:4000+index*400,
+
+                iterations:1
+
+            });
+
+        },4500+index*600);
+
+    });
+
+});
+/*End*/
