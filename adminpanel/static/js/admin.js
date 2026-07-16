@@ -2,24 +2,41 @@
         TRUSTY SHOP ADMIN PANEL JAVASCRIPT
 ========================================================== */
 
+
 document.addEventListener("DOMContentLoaded", () => {
+
+
 
     /* =====================================
             Loader
     ===================================== */
 
+
     const loader = document.getElementById("loader");
 
-    window.addEventListener("load", () => {
 
-        setTimeout(() => {
+    if(loader){
 
-            loader.style.opacity = "0";
-            loader.style.visibility = "hidden";
+        window.addEventListener("load",()=>{
 
-        }, 1200);
 
-    });
+            setTimeout(()=>{
+
+
+                loader.style.opacity="0";
+
+                loader.style.visibility="hidden";
+
+
+            },1200);
+
+
+        });
+
+    }
+
+
+
 
 
 
@@ -28,27 +45,49 @@ document.addEventListener("DOMContentLoaded", () => {
             Live Clock
     ===================================== */
 
+
     const clock = document.getElementById("liveClock");
+
 
     function updateClock(){
 
-        const now = new Date();
 
-        const options = {
+        if(clock){
 
-            hour:"2-digit",
-            minute:"2-digit",
-            second:"2-digit"
 
-        };
+            const now = new Date();
 
-        clock.innerHTML = now.toLocaleTimeString([], options);
+
+            const options={
+
+                hour:"2-digit",
+
+                minute:"2-digit",
+
+                second:"2-digit"
+
+            };
+
+
+            clock.innerHTML =
+            now.toLocaleTimeString([],options);
+
+
+        }
+
 
     }
 
+
     updateClock();
 
+
     setInterval(updateClock,1000);
+
+
+
+
+
 
 
 
@@ -57,27 +96,50 @@ document.addEventListener("DOMContentLoaded", () => {
             Theme Toggle
     ===================================== */
 
-    const themeBtn = document.getElementById("themeToggle");
 
-    themeBtn.addEventListener("click",()=>{
+    const themeBtn =
+    document.getElementById("themeToggle");
 
-        document.body.classList.toggle("dark");
 
-        if(document.body.classList.contains("dark")){
 
-            themeBtn.innerHTML =
-            '<i class="fa-solid fa-sun"></i>';
+    if(themeBtn){
 
-        }
 
-        else{
+        themeBtn.addEventListener("click",()=>{
 
-            themeBtn.innerHTML =
-            '<i class="fa-solid fa-moon"></i>';
 
-        }
+            document.body.classList.toggle("dark");
 
-    });
+
+
+            if(document.body.classList.contains("dark")){
+
+
+                themeBtn.innerHTML =
+                '<i class="fa-solid fa-sun"></i>';
+
+
+            }
+
+            else{
+
+
+                themeBtn.innerHTML =
+                '<i class="fa-solid fa-moon"></i>';
+
+
+            }
+
+
+
+        });
+
+
+    }
+
+
+
+
 
 
 
@@ -87,17 +149,33 @@ document.addEventListener("DOMContentLoaded", () => {
             Sidebar Toggle
     ===================================== */
 
+
     const sidebar =
     document.querySelector(".sidebar");
+
 
     const toggleBtn =
     document.getElementById("toggle-btn");
 
-    toggleBtn.addEventListener("click",()=>{
 
-        sidebar.classList.toggle("active");
 
-    });
+    if(toggleBtn && sidebar){
+
+
+        toggleBtn.addEventListener("click",()=>{
+
+
+            sidebar.classList.toggle("active");
+
+
+        });
+
+
+    }
+
+
+
+
 
 
 
@@ -107,26 +185,52 @@ document.addEventListener("DOMContentLoaded", () => {
             Notification Panel
     ===================================== */
 
+
     const bell =
     document.querySelector(".notification");
+
 
     const panel =
     document.querySelector(".notification-panel");
 
+
     const close =
     document.getElementById("closeNotification");
 
-    bell.addEventListener("click",()=>{
 
-        panel.classList.add("active");
 
-    });
+    if(bell && panel){
 
-    close.addEventListener("click",()=>{
 
-        panel.classList.remove("active");
+        bell.addEventListener("click",()=>{
 
-    });
+
+            panel.classList.add("active");
+
+
+        });
+
+
+    }
+
+
+
+    if(close && panel){
+
+
+        close.addEventListener("click",()=>{
+
+
+            panel.classList.remove("active");
+
+
+        });
+
+
+    }
+
+
+
 
 
 
@@ -137,24 +241,39 @@ document.addEventListener("DOMContentLoaded", () => {
             Card Hover Animation
     ===================================== */
 
+
     const cards =
     document.querySelectorAll(".card");
 
+
+
     cards.forEach(card=>{
+
 
         card.addEventListener("mouseenter",()=>{
 
-            card.style.transform="translateY(-12px) scale(1.02)";
+
+            card.style.transform =
+            "translateY(-12px) scale(1.02)";
+
 
         });
+
+
 
         card.addEventListener("mouseleave",()=>{
 
-            card.style.transform="translateY(0px) scale(1)";
+
+            card.style.transform =
+            "translateY(0px) scale(1)";
+
 
         });
 
+
     });
+
+
 
 
 
@@ -166,41 +285,71 @@ document.addEventListener("DOMContentLoaded", () => {
             Animated Counter
     ===================================== */
 
+
     const counters =
     document.querySelectorAll(".counter");
 
+
+
     counters.forEach(counter=>{
+
 
         counter.innerText="0";
 
-        const updateCounter=()=>{
 
-            const target=+counter.getAttribute("data-target");
 
-            const c=+counter.innerText;
+        function updateCounter(){
 
-            const increment=target/80;
 
-            if(c<target){
+            const target =
+            +counter.getAttribute("data-target");
 
-                counter.innerText=
-                `${Math.ceil(c+increment)}`;
+
+
+            const current =
+            +counter.innerText;
+
+
+
+            const increment =
+            target / 80;
+
+
+
+            if(current < target){
+
+
+                counter.innerText =
+                Math.ceil(current + increment);
+
+
 
                 setTimeout(updateCounter,25);
 
+
             }
+
 
             else{
 
-                counter.innerText=target;
+
+                counter.innerText = target;
+
 
             }
 
+
         }
+
+
 
         updateCounter();
 
+
+
     });
+
+
 
 
 
@@ -212,27 +361,52 @@ document.addEventListener("DOMContentLoaded", () => {
             Search Filter
     ===================================== */
 
+
     const search =
     document.querySelector(".search-box input");
 
-    search.addEventListener("keyup",()=>{
 
-        const value=
-        search.value.toLowerCase();
 
-        const rows=
-        document.querySelectorAll("tbody tr");
+    if(search){
 
-        rows.forEach(row=>{
 
-            row.style.display=
-            row.innerText.toLowerCase().includes(value)
-            ? ""
-            : "none";
+        search.addEventListener("keyup",()=>{
+
+
+            const value =
+            search.value.toLowerCase();
+
+
+
+            const rows =
+            document.querySelectorAll("tbody tr");
+
+
+
+            rows.forEach(row=>{
+
+
+                row.style.display =
+
+                row.innerText
+                .toLowerCase()
+                .includes(value)
+
+                ? ""
+
+                : "none";
+
+
+            });
+
 
         });
 
-    });
+
+    }
+
+
+
 
 
 
@@ -240,27 +414,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================
-            Active Menu
+            Sidebar Menu
+            Django controls navigation
     ===================================== */
 
-    const menuItems=
-    document.querySelectorAll(".menu li");
 
-    menuItems.forEach(item=>{
+    const menuLinks =
+    document.querySelectorAll(".menu a");
 
-        item.addEventListener("click",()=>{
 
-            menuItems.forEach(i=>{
 
-                i.classList.remove("active");
+    menuLinks.forEach(link=>{
 
-            });
 
-            item.classList.add("active");
+        link.addEventListener("click",(e)=>{
+
+
+            const url =
+            link.getAttribute("href");
+
+
+
+            if(url === "#"){
+
+
+                e.preventDefault();
+
+
+            }
+
 
         });
 
+
     });
+
+
+
 
 
 
@@ -271,25 +461,44 @@ document.addEventListener("DOMContentLoaded", () => {
             Floating Background
     ===================================== */
 
+
     document.addEventListener("mousemove",(e)=>{
 
-        const circles=
+
+        const circles =
         document.querySelectorAll(".circle");
+
+
 
         circles.forEach((circle,index)=>{
 
-            let speed=(index+1)*0.01;
 
-            let x=(window.innerWidth-e.pageX)*speed;
+            let speed =
+            (index+1)*0.01;
 
-            let y=(window.innerHeight-e.pageY)*speed;
 
-            circle.style.transform=
+
+            let x =
+            (window.innerWidth-e.pageX)*speed;
+
+
+
+            let y =
+            (window.innerHeight-e.pageY)*speed;
+
+
+
+            circle.style.transform =
             `translate(${x}px,${y}px)`;
+
 
         });
 
+
     });
+
+
+
 
 
 
@@ -300,38 +509,68 @@ document.addEventListener("DOMContentLoaded", () => {
             Ripple Effect
     ===================================== */
 
+
     const buttons =
     document.querySelectorAll(".btn");
 
+
+
     buttons.forEach(btn=>{
+
 
         btn.addEventListener("click",function(e){
 
-            let ripple=
+
+
+            let ripple =
             document.createElement("span");
+
+
 
             ripple.classList.add("ripple");
 
+
+
             this.appendChild(ripple);
 
-            let x=e.clientX-
-            this.offsetLeft;
 
-            let y=e.clientY-
-            this.offsetTop;
 
-            ripple.style.left=x+"px";
+            let x =
+            e.clientX - this.offsetLeft;
 
-            ripple.style.top=y+"px";
+
+
+            let y =
+            e.clientY - this.offsetTop;
+
+
+
+            ripple.style.left =
+            x+"px";
+
+
+
+            ripple.style.top =
+            y+"px";
+
+
 
             setTimeout(()=>{
 
+
                 ripple.remove();
+
 
             },600);
 
+
+
         });
 
+
+
     });
+
+
 
 });

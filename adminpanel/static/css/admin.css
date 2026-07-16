@@ -72,16 +72,18 @@ li{
     min-height:100vh;
 
 }
-/* ================= Sidebar ================= */
+
+/* ================= Sidebar Styles ================= */
 
 .sidebar{
 
     width:280px;
 
     background:linear-gradient(
-    180deg,
-    #2563eb,
-    #1e40af);
+        180deg,
+        #2563eb,
+        #1e40af
+    );
 
     color:white;
 
@@ -174,60 +176,74 @@ transform:rotate(360deg);
 }
 
 }
-.menu{
 
-    display:flex;
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
 
-    flex-direction:column;
+.menu li {
+    position: relative;
+    overflow: hidden;
+    list-style: none;
+    cursor: pointer;
+    border-radius: 50px; /* Capsule pill shapes */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-    gap:15px;
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 24px;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    transition: color 0.3s ease;
+}
 
+.menu li a i {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+/* --- INACTIVE MENU HOVER STATE --- */
+.menu li:not(.active):hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateX(6px);
+}
+
+.menu li:not(.active):hover a {
+    color: #ffffff;
+}
+
+.menu li:not(.active):hover a i {
+    transform: scale(1.1);
+}
+
+/* --- ACTIVE MENU STATE (Current Page) --- */
+.menu li.active {
+    background: #ffffff !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transform: translateX(0);
+}
+
+.menu li.active a {
+    color: #2563eb !important;
+    font-weight: 600;
+}
+
+.menu a{
+    cursor:pointer;
+    position:relative;
+    z-index:5;
 }
 
 .menu li{
-
-    border-radius:15px;
-
-    transition:.3s;
-
-}
-
-.menu li a{
-
-    color:white;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:15px;
-
-    padding:15px 18px;
-
-    font-size:16px;
-
-    font-weight:500;
-
-}
-
-.menu li:hover{
-
-    background:rgba(255,255,255,.18);
-
-    transform:translateX(8px);
-
-}
-
-.menu li.active{
-
-    background:white;
-
-}
-
-.menu li.active a{
-
-    color:#2563eb;
-
+    cursor:pointer;
 }
 
 .sidebar-footer{
@@ -275,6 +291,9 @@ transform:rotate(360deg);
     opacity:.8;
 
 }
+
+/* ================= Main Window Layout ================= */
+
 .main{
 
     margin-left:280px;
@@ -283,8 +302,15 @@ transform:rotate(360deg);
 
     padding:35px;
 
+    height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
 }
 
+/* STICKY TOP BAR */
 .topbar{
 
     background:white;
@@ -302,6 +328,8 @@ transform:rotate(360deg);
     box-shadow:var(--shadow);
 
     margin-bottom:35px;
+
+    flex-shrink: 0;
 
 }
 
@@ -397,7 +425,10 @@ transform:rotate(360deg);
 
 .content{
     width:100%;
-    min-height:100vh;
+    flex-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     animation:fadeUp .8s ease;
 }
 
@@ -417,21 +448,22 @@ transform:rotate(360deg);
 
 
 /*=========================================================
-                    DASHBOARD CARDS
+                    DASHBOARD CARDS (5 Per Row)
 =========================================================*/
 
 .cards{
 
     display:grid;
 
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    grid-template-columns:repeat(5, 1fr);
 
-    gap:25px;
+    gap:15px;
 
     margin-bottom:40px;
 
-}
+    flex-shrink: 0;
 
+}
 
 .card{
 
@@ -441,7 +473,7 @@ transform:rotate(360deg);
 
     border-radius:20px;
 
-    padding:30px;
+    padding: 20px 15px;
 
     overflow:hidden;
 
@@ -453,7 +485,6 @@ transform:rotate(360deg);
 
 }
 
-
 .card:hover{
 
     transform:translateY(-12px);
@@ -462,26 +493,27 @@ transform:rotate(360deg);
 
 }
 
-
 .card h4{
 
     color:#64748b;
 
     font-weight:500;
 
-    margin-bottom:15px;
+    margin-bottom: 8px;
+
+    font-size: 13px;
 
 }
-
 
 .card h2{
 
-    font-size:38px;
+    font-size: 24px;
 
     color:#2563eb;
 
-}
+    white-space: nowrap;
 
+}
 
 .card::before{
 
@@ -503,16 +535,15 @@ transform:rotate(360deg);
 
 }
 
-
 .card i{
 
     position:absolute;
 
-    right:25px;
+    right: 15px;
 
-    bottom:25px;
+    bottom: 15px;
 
-    font-size:45px;
+    font-size: 32px;
 
     color:#2563eb;
 
@@ -537,7 +568,6 @@ transform:rotate(360deg);
 
 }
 
-
 .activity h2{
 
     margin-bottom:25px;
@@ -546,7 +576,6 @@ transform:rotate(360deg);
 
 }
 
-
 .activity table{
 
     width:100%;
@@ -554,7 +583,6 @@ transform:rotate(360deg);
     border-collapse:collapse;
 
 }
-
 
 .activity table th{
 
@@ -568,7 +596,6 @@ transform:rotate(360deg);
 
 }
 
-
 .activity table td{
 
     padding:18px;
@@ -576,7 +603,6 @@ transform:rotate(360deg);
     border-bottom:1px solid #edf2f7;
 
 }
-
 
 .activity table tr:hover{
 
@@ -602,7 +628,6 @@ transform:rotate(360deg);
 
 }
 
-
 .circle{
 
     position:absolute;
@@ -614,7 +639,6 @@ transform:rotate(360deg);
     animation:float 18s linear infinite;
 
 }
-
 
 .c1{
 
@@ -628,7 +652,6 @@ transform:rotate(360deg);
 
 }
 
-
 .c2{
 
     width:220px;
@@ -640,7 +663,6 @@ transform:rotate(360deg);
     top:120px;
 
 }
-
 
 .c3{
 
@@ -654,7 +676,6 @@ transform:rotate(360deg);
 
 }
 
-
 .c4{
 
     width:260px;
@@ -666,7 +687,6 @@ transform:rotate(360deg);
     bottom:-80px;
 
 }
-
 
 @keyframes float{
 
@@ -719,13 +739,11 @@ transform:rotate(360deg);
 
 }
 
-
 .notification-panel.active{
 
     right:0;
 
 }
-
 
 .panel-header{
 
@@ -741,13 +759,11 @@ transform:rotate(360deg);
 
 }
 
-
 .panel-header h3{
 
     color:#2563eb;
 
 }
-
 
 .panel-header button{
 
@@ -761,13 +777,11 @@ transform:rotate(360deg);
 
 }
 
-
 .notification-list{
 
     padding:25px;
 
 }
-
 
 .notify-item{
 
@@ -785,13 +799,11 @@ transform:rotate(360deg);
 
 }
 
-
 .notify-item:hover{
 
     background:#eff6ff;
 
 }
-
 
 .notify-item i{
 
@@ -815,13 +827,11 @@ transform:rotate(360deg);
 
 }
 
-
 .notify-item h4{
 
     margin-bottom:6px;
 
 }
-
 
 .notify-item span{
 
@@ -857,7 +867,6 @@ transform:rotate(360deg);
 
 }
 
-
 .loader-circle{
 
     width:90px;
@@ -874,7 +883,6 @@ transform:rotate(360deg);
 
 }
 
-
 #loader h2{
 
     margin-top:25px;
@@ -882,7 +890,6 @@ transform:rotate(360deg);
     color:#2563eb;
 
 }
-
 
 @keyframes spin{
 
@@ -926,7 +933,6 @@ transform:rotate(360deg);
 
 }
 
-
 #themeToggle:hover{
 
     transform:rotate(180deg);
@@ -951,195 +957,127 @@ transform:rotate(360deg);
 
     margin-bottom:30px;
 
-}
-
-
-/* ==========================================================
-                    BEAUTIFUL TABLE
-========================================================== */
-
-.table-container{
-
-    background:white;
-
-    border-radius:20px;
-
-    padding:30px;
-
-    box-shadow:0 15px 35px rgba(0,0,0,.08);
-
-    overflow:auto;
-
-    margin-top:30px;
-
-}
-
-.table-container table{
-
-    width:100%;
-
-    border-collapse:collapse;
-
-}
-
-.table-container thead{
-
-    background:#2563eb;
-
-    color:white;
-
-}
-
-.table-container th{
-
-    padding:18px;
-
-    text-align:left;
-
-    font-size:15px;
-
-}
-
-.table-container td{
-
-    padding:18px;
-
-    border-bottom:1px solid #edf2f7;
-
-    color:#475569;
-
-}
-
-.table-container tr{
-
-    transition:.3s;
-
-}
-
-.table-container tbody tr:hover{
-
-    background:#eff6ff;
+    flex-shrink: 0;
 
 }
 
 /* ==========================================================
-                    STATUS
+            BEAUTIFUL DATA TABLE (Layers & Rows Scroll)
 ========================================================== */
 
-.status{
+.table-container {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,.08);
+    margin-top: 30px;
+    width: 100%;
 
-    padding:8px 18px;
-
-    border-radius:30px;
-
-    font-size:13px;
-
-    font-weight:600;
-
+    /* SCROLL WINDOW SETUP: Lock height so rows scroll inside container */
+    max-height: 490px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
 }
 
-.pending{
-
-    background:#fff7ed;
-
-    color:#ea580c;
-
+.table-container table {
+    width: 100%;
+    border-collapse: separate; /* Required for proper rendering with sticky headers */
+    border-spacing: 0;
 }
 
-.approved{
-
-    background:#ecfdf5;
-
-    color:#059669;
-
+/* SOLID STICKY TABLE HEADER WALL */
+.table-container th {
+    position: sticky;
+    top: 0;
+    z-index: 999 !important; /* Forces dynamic rows to scroll UNDERNEATH the head cleanly */
+    background: #2563eb !important; /* solid blue background block shield */
+    color: white;
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 13px;
+    white-space: nowrap;
 }
 
-.rejected{
+.table-container td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #edf2f7;
+    color: #475569;
+    font-size: 13px;
+    white-space: nowrap;
+    vertical-align: middle;
+    background: white; /* Keeps background opaque so overlay text is clean */
+}
 
-    background:#fef2f2;
-
-    color:#dc2626;
-
+/* Target body rows specifically for hover highlighting */
+.table-container tbody tr:hover td {
+    background: #eff6ff;
 }
 
 /* ==========================================================
-                    BUTTONS
+               ACTION COLUMNS VERTICAL CENTERING
 ========================================================== */
 
-.btn{
-
-    border:none;
-
-    outline:none;
-
-    cursor:pointer;
-
-    padding:10px 18px;
-
-    border-radius:10px;
-
-    transition:.3s;
-
-    font-size:14px;
-
-    font-weight:600;
-
+.table-container td.action-cell {
+    vertical-align: middle;
+    text-align: center;
 }
 
-.btn-view{
-
-    background:#3b82f6;
-
-    color:white;
-
+.action-buttons {
+    display: inline-flex;
+    align-items: center;      /* Perfect vertical alignment check */
+    justify-content: center;   /* Horizontal centering inside cell width */
+    gap: 6px;
+    height: 100%;
 }
 
-.btn-view:hover{
+/* ==========================================================
+                    BUTTONS (Icon Layout Setup)
+========================================================== */
 
-    background:#2563eb;
-
+.btn {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    transition: .3s;
+    font-size: 13px;
 }
 
-.btn-approve{
-
-    background:#22c55e;
-
-    color:white;
-
+.btn i {
+    pointer-events: none;
 }
 
-.btn-approve:hover{
-
-    background:#16a34a;
-
+.btn-view {
+    background: #3b82f6;
+    color: white;
 }
 
-.btn-reject{
-
-    background:#ef4444;
-
-    color:white;
-
+.btn-view:hover {
+    background: #2563eb;
 }
 
-.btn-reject:hover{
-
-    background:#dc2626;
-
+.btn-approve {
+    background: #22c55e;
+    color: white;
 }
 
-.btn-delete{
-
-    background:#0f172a;
-
-    color:white;
-
+.btn-approve:hover {
+    background: #16a34a;
 }
 
-.btn-delete:hover{
+.btn-reject {
+    background: #ef4444;
+    color: white;
+}
 
-    background:black;
-
+.btn-reject:hover {
+    background: #dc2626;
 }
 
 /* ==========================================================
@@ -1229,7 +1167,7 @@ transform:rotate(360deg);
 }
 
 /* ==========================================================
-                RESPONSIVE
+                RESPONSIVE BREAKPOINTS
 ========================================================== */
 
 @media(max-width:1200px){
@@ -1297,6 +1235,7 @@ transform:rotate(360deg);
 
     }
 
+    /* Stacks analytics grid nicely on tablets/phones */
     .cards{
 
         grid-template-columns:1fr;
@@ -1351,40 +1290,6 @@ transform:rotate(360deg);
 
 }
 
-.menu li{
-
-    position:relative;
-
-    overflow:hidden;
-
-}
-
-.menu li::before{
-
-    content:"";
-
-    position:absolute;
-
-    width:0;
-
-    height:100%;
-
-    left:0;
-
-    top:0;
-
-    background:rgba(255,255,255,.08);
-
-    transition:.5s;
-
-}
-
-.menu li:hover::before{
-
-    width:100%;
-
-}
-
 .glass{
 
     background:rgba(255,255,255,.55);
@@ -1413,7 +1318,7 @@ body::before{
 
 }
 
-/* Ripple Animation */
+/* Ripple Animation Elements */
 
 .btn{
 
