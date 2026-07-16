@@ -1,7 +1,6 @@
+from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
-
-from user.models import User
 
 
 class Category(models.Model):
