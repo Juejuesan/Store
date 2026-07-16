@@ -1,4 +1,4 @@
-# user/views.py
+import re
 import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
@@ -16,16 +16,36 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            # 1. User Account အကောင့် အရင်ဆောက်မည်
+
+            password = form.cleaned_data.get('password')
+            address = form.cleaned_data.get('address', '')
+
+
+            if len(password) != 8:
+                messages.error(request, "Password must be exactly 8 characters long!")
+                return render(request, 'user/register.html', {'form': form})
+
+
+            special_char_pattern = re.compile(r'[@_!#$%^&*()<>?/\|}{~:]')
+            if not special_char_pattern.search(password):
+                messages.error(request, "Password must contain at least one special character (e.g., @, #, $, %)! ")
+                return render(request, 'user/register.html', {'form': form})
+
+
+            if len(address) > 200:
+                messages.error(request, "Address is too long! (Maximum 200 characters allowed)")
+                return render(request, 'user/register.html', {'form': form})
+
+
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
+            user.set_password(password)
             user.save()
 
-            # 2. ချိတ်ဆက်ထားသော Extra Profile fields ကို ဆက်လက်ဖြည့်စွက်မည်
+
             user.profile.phone_number = form.cleaned_data['phone_number']
-            user.profile.address = form.cleaned_data['address']
+            user.profile.address = address
             user.profile.gender = form.cleaned_data['gender']
-            if form.cleaned_data['profile_pic']:
+            if form.cleaned_data.get('profile_pic'):
                 user.profile.profile_pic = form.cleaned_data['profile_pic']
             user.profile.save()
 
@@ -53,7 +73,11 @@ def login_view(request):
             username_or_email = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
-            # Username သို့မဟုတ် Email ဖြင့် ဝင်ရောက်ခွင့်ပြုခြင်း
+
+            if len(password) != 8:
+                messages.error(request, 'Invalid username/email or password.')
+                return render(request, 'user/login.html', {'form': form})
+
             user = authenticate(request, username=username_or_email, password=password)
             if user is None:
                 try:
@@ -94,7 +118,7 @@ def update_profile_pic(request):
         form = ProfilePicForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
             profile = request.user.profile
-            # ပုံအဟောင်းကို Server မှ တစ်ပါတည်း ဖျက်ထုတ်ခြင်း
+
             if profile.profile_pic and not profile.profile_pic.name.endswith('default.jpg'):
                 old_path = profile.profile_pic.path
                 if os.path.exists(old_path):
