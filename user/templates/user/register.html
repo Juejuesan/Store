@@ -1,0 +1,190 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Register | TrustyShop{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl auth-card p-8 sm:p-10 my-8">
+    <div class="text-center">
+        <div class="brand-icon-wrapper">
+            <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white">Create Account</h2>
+        <p class="text-slate-400 text-sm mt-1">Please fill in details to join TrustyShop</p>
+    </div>
+
+    <form class="mt-8 space-y-4" method="POST" action="{% url 'user:register' %}" enctype="multipart/form-data" id="registerForm">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="form-group">
+                <label class="block text-sm font-medium text-slate-300 mb-1">Username</label>
+                <div class="input-container">
+                    <input type="text" name="username" required class="auth-input" placeholder="johndoe">
+                    <i class="fa-solid fa-at input-icon"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-slate-300 mb-1">Email Address</label>
+                <div class="input-container">
+                    <input type="email" name="email" required class="auth-input" placeholder="john@example.com">
+                    <i class="fa-regular fa-envelope input-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="form-group">
+                <label class="block text-sm font-medium text-slate-300 mb-1">Phone Number</label>
+                <div class="input-container">
+                    <input type="text" name="phone_number" required class="auth-input" placeholder="09xxxxxxxxx">
+                    <i class="fa-solid fa-phone input-icon"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="block text-sm font-medium text-slate-300 mb-1">Gender</label>
+                <div class="input-container">
+                    <select name="gender" required class="auth-input">
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                    <i class="fa-solid fa-venus-mars input-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="flex justify-between items-center mb-1">
+                <label class="block text-sm font-medium text-slate-300">Address</label>
+                <span id="addressCount" class="text-xs text-slate-500">0 / 200</span>
+            </div>
+            <div class="input-container">
+                <input type="text" name="address" id="addressInput" maxlength="200" required class="auth-input" placeholder="No.123, Street, Yangon, Myanmar">
+                <i class="fa-solid fa-location-dot input-icon"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="block text-sm font-medium text-slate-300 mb-1">Profile Photo (Optional)</label>
+            <div class="input-container">
+                <input type="file" name="profile_pic" accept="image/*" class="auth-input pt-2.5">
+                <i class="fa-regular fa-image input-icon"></i>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="form-group">
+                <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
+                <div class="input-container">
+                    <input type="password" name="password" id="passwordInput" maxlength="8" required class="auth-input" placeholder="••••••••">
+                    <i class="fa-solid fa-key input-icon"></i>
+                </div>
+                <div class="mt-2 space-y-1 text-xs">
+                    <p id="lenCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
+                        <i class="fa-solid fa-circle-xmark"></i> At least 8 characters
+                    </p>
+                    <p id="specCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
+                        <i class="fa-solid fa-circle-xmark"></i> Must contain a special character (@, #, $, etc.)
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="block text-sm font-medium text-slate-300 mb-1">Confirm Password</label>
+                <div class="input-container">
+                    <input type="password" name="confirm_password" id="confirmPasswordInput" maxlength="8" required class="auth-input" placeholder="••••••••">
+                    <i class="fa-solid fa-shield-halved input-icon"></i>
+                </div>
+                <div class="mt-2 text-xs">
+                    <p id="matchCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
+                        <i class="fa-solid fa-circle-xmark"></i> Passwords must match
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-primary w-full mt-4 opacity-50 cursor-not-allowed" disabled>
+            <i class="fa-solid fa-user-plus"></i> Create Account
+        </button>
+    </form>
+
+    <div class="text-center mt-6">
+        <p class="text-sm text-slate-400">
+            Already have an account?
+            <a href="{% url 'user:login' %}" class="text-blue-400 font-semibold hover:text-blue-300 hover:underline ml-1">Sign in here</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    const passwordInput = document.getElementById('passwordInput');
+    const confirmInput = document.getElementById('confirmPasswordInput');
+    const addressInput = document.getElementById('addressInput');
+    const submitBtn = document.getElementById('submitBtn');
+
+    const lenCheck = document.getElementById('lenCheck');
+    const specCheck = document.getElementById('specCheck');
+    const matchCheck = document.getElementById('matchCheck');
+    const addressCount = document.getElementById('addressCount');
+
+    // 1. Address Live Character Counter
+    addressInput.addEventListener('input', () => {
+        const length = addressInput.value.length;
+        addressCount.textContent = `${length} / 200`;
+        if (length >= 200) {
+            addressCount.classList.replace('text-slate-500', 'text-rose-400');
+        } else {
+            addressCount.classList.replace('text-rose-400', 'text-slate-500');
+        }
+    });
+
+    // 2. Password & Confirm Password Live Logic
+    function validatePasswords() {
+        const val = passwordInput.value;
+        const confirmVal = confirmInput.value;
+
+        const isLongEnough = val.length >= 8;
+        const hasSpecialChar = /[@_!#$%^&*()<>?/\|}{~:]/.test(val);
+        const passwordsMatch = val === confirmVal && val !== "";
+
+        // Length Icon & Text Color Update
+        if (isLongEnough) {
+            lenCheck.classList.replace('text-rose-400', 'text-emerald-400');
+            lenCheck.querySelector('i').className = 'fa-solid fa-circle-check';
+        } else {
+            lenCheck.classList.replace('text-emerald-400', 'text-rose-400');
+            lenCheck.querySelector('i').className = 'fa-solid fa-circle-xmark';
+        }
+
+        // Special Character Icon & Text Color Update
+        if (hasSpecialChar) {
+            specCheck.classList.replace('text-rose-400', 'text-emerald-400');
+            specCheck.querySelector('i').className = 'fa-solid fa-circle-check';
+        } else {
+            specCheck.classList.replace('text-emerald-400', 'text-rose-400');
+            specCheck.querySelector('i').className = 'fa-solid fa-circle-xmark';
+        }
+
+        // Passwords Match Icon & Text Color Update
+        if (passwordsMatch) {
+            matchCheck.classList.replace('text-rose-400', 'text-emerald-400');
+            matchCheck.querySelector('i').className = 'fa-solid fa-circle-check';
+        } else {
+            matchCheck.classList.replace('text-emerald-400', 'text-rose-400');
+            matchCheck.querySelector('i').className = 'fa-solid fa-circle-xmark';
+        }
+
+        // Enable Submit Button only if all rules are satisfied
+        if (isLongEnough && hasSpecialChar && passwordsMatch) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    passwordInput.addEventListener('input', validatePasswords);
+    confirmInput.addEventListener('input', validatePasswords);
+</script>
+{% endblock %}

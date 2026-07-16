@@ -1,0 +1,55 @@
+{% extends 'user/base.html' %}
+
+{% block title %}Dashboard | TrustyShop{% endblock %}
+
+{% block content %}
+<div class="max-w-md auth-card p-8 sm:p-10 my-8">
+    <div class="text-center">
+        {% if request.user.profile.profile_pic %}
+            <img src="{{ request.user.profile.profile_pic.url }}" alt="Profile" class="avatar-frame">
+        {% else %}
+            <div class="brand-icon-wrapper">
+                <i class="fa-regular fa-user"></i>
+            </div>
+        {% endif %}
+
+        <h2 class="text-2xl font-bold text-white">{{ request.user.first_name }} {{ request.user.last_name }}</h2>
+        <p class="text-blue-400 text-sm font-medium">@{{ request.user.username }}</p>
+
+        <form method="POST" action="{% url 'user:update_profile_pic' %}" enctype="multipart/form-data" class="mt-3">
+            {% csrf_token %}
+            <div class="file-upload-wrapper">
+                <button class="file-upload-btn"><i class="fa-solid fa-camera mr-1"></i> Change Photo</button>
+                <input type="file" name="profile_pic" accept="image/*" onchange="this.form.submit()">
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-8 space-y-4 border-t border-slate-800 pt-6">
+        <div class="flex justify-between items-center text-sm">
+            <span class="text-slate-400 font-medium"><i class="fa-regular fa-envelope mr-2"></i>Email</span>
+            <span class="text-slate-200 font-semibold">{{ request.user.email }}</span>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+            <span class="text-slate-400 font-medium"><i class="fa-solid fa-venus-mars mr-2"></i>Gender</span>
+            <span class="text-slate-200 font-semibold">
+                {% if request.user.profile.gender == 'M' %}Male{% elif request.user.profile.gender == 'F' %}Female{% else %}Not Set{% endif %}
+            </span>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+            <span class="text-slate-400 font-medium"><i class="fa-solid fa-phone mr-2"></i>Phone</span>
+            <span class="text-slate-200 font-semibold">{{ request.user.profile.phone_number|default:"Not Provided" }}</span>
+        </div>
+        <div class="flex justify-between items-start text-sm">
+            <span class="text-slate-400 font-medium"><i class="fa-solid fa-location-dot mr-2"></i>Address</span>
+            <span class="text-slate-200 font-semibold text-right max-w-[200px]">{{ request.user.profile.address|default:"Not Provided" }}</span>
+        </div>
+    </div>
+
+    <div class="mt-8">
+        <a href="{% url 'user:logout' %}" class="btn-primary bg-rose-600 hover:bg-rose-500 shadow-rose-950 w-full border-rose-500/20">
+            <i class="fa-solid fa-right-from-bracket"></i> Log Out
+        </a>
+    </div>
+</div>
+{% endblock %}
