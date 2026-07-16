@@ -1,54 +1,46 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Back | TrustyShop</title>
-    <link class="stylesheet" href="{% static 'user/css/style.css' %}">
-</head>
-<body>
+{% extends 'user/base.html' %}
 
-    <div class="split-container">
-        <div class="form-panel">
-            <div class="brand-logo-mobile">TrustyShop.</div>
+{% block title %}Login | TrustyShop{% endblock %}
 
-            <div class="panel-header">
-                <h2>Welcome back.</h2>
-                <p>Please enter your credentials below to access your account dashboard.</p>
-            </div>
-
-            <form method="POST" class="form-wrapper">
-                {% csrf_token %}
-
-                {% for field in form %}
-                    <div class="input-group">
-                        <label>{{ field.label }}</label>
-                        {{ field }}
-                    </div>
-                {% endfor %}
-
-                <button type="submit" class="btn-primary">Sign In to Portal</button>
-            </form>
-
-            <p class="panel-footer">
-                New to our marketplace?
-                <a href="{% url 'user:register' %}">Register an account</a>
-            </p>
+{% block content %}
+<div class="max-w-md auth-card p-8 sm:p-10 my-8">
+    <div class="text-center">
+        <div class="brand-icon-wrapper">
+            <i class="fa-solid fa-right-to-bracket"></i>
         </div>
-
-        <div class="visual-panel">
-            <div class="glow-bg-1"></div>
-            <div class="glow-bg-2"></div>
-            <div class="grid-mask"></div>
-
-            <div class="glass-card">
-                <span class="badge">Verified Security Gateway</span>
-                <h1>Your storefront, monitored and <span class="gradient-text">fully synchronized.</span></h1>
-                <p>Log in to unlock your personal profile matrix, purchase tracking paths, and direct checkout permissions on your system pipeline.</p>
-            </div>
-        </div>
+        <h2 class="text-2xl font-bold text-white">Sign In</h2>
+        <p class="text-slate-400 text-sm mt-1">Please enter your credentials to login</p>
     </div>
 
-</body>
-</html>
+    <form class="mt-8 space-y-5" method="POST" action="{% url 'user:login' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="block text-sm font-medium text-slate-300 mb-1">Username or Email</label>
+            <div class="input-container">
+                <input type="text" name="username" required class="auth-input" placeholder="your_username_or_email">
+                <i class="fa-regular fa-user input-icon"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
+            <div class="input-container">
+                <input type="password" name="password" required class="auth-input" placeholder="••••••••">
+                <i class="fa-solid fa-key input-icon"></i>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-primary w-full mt-6">
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In
+        </button>
+    </form>
+
+    <div class="text-center mt-6">
+        <p class="text-sm text-slate-400">
+            Don't have an account?
+            <a href="{% url 'user:register' %}" class="text-blue-400 font-semibold hover:text-blue-300 hover:underline ml-1">Register here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

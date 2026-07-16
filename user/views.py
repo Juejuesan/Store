@@ -1,141 +1,111 @@
-from django.shortcuts import render, redirect, get_object_or_404
+# user/views.py
+import os
+from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib import messages
-from .forms import UserRegisterForm, ProfileRegisterForm
-from .models import Post, Order, Profile
-from decimal import Decimal
+from django.contrib.auth.decorators import login_required
+from .forms import RegisterForm, LoginForm, ProfilePicForm
 
 
+# REGISTER VIEW
 def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('user:dashboard')
+
     if request.method == 'POST':
-        user_form = UserRegisterForm(request.POST)
-        profile_form = ProfileRegisterForm(request.POST, request.FILES)
-        if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save(commit=False)
-            user.set_password(user_form.cleaned_data['password'])
+        form = RegisterForm(request.POST, request.FILES)
+        if form.is_valid():
+            # 1. User Account အကောင့် အရင်ဆောက်မည်
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
             user.save()
 
-            profile = profile_form.save(commit=False)
-            profile.user = user
-            profile.save()
+            # 2. ချိတ်ဆက်ထားသော Extra Profile fields ကို ဆက်လက်ဖြည့်စွက်မည်
+            user.profile.phone_number = form.cleaned_data['phone_number']
+            user.profile.address = form.cleaned_data['address']
+            user.profile.gender = form.cleaned_data['gender']
+            if form.cleaned_data['profile_pic']:
+                user.profile.profile_pic = form.cleaned_data['profile_pic']
+            user.profile.save()
 
             login(request, user)
-            messages.success(request, "Registration successful!")
+            messages.success(request, f'Welcome, {user.first_name or user.username}!')
             return redirect('user:dashboard')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
     else:
-        user_form = UserRegisterForm()
-        profile_form = ProfileRegisterForm()
-    return render(request, 'user/register.html', {'user_form': user_form, 'profile_form': profile_form})
+        form = RegisterForm()
+
+    return render(request, 'user/register.html', {'form': form})
 
 
+# LOGIN VIEW
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('user:dashboard')
+
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
+        form = LoginForm(request.POST)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('user:dashboard')
+            username_or_email = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            # Username သို့မဟုတ် Email ဖြင့် ဝင်ရောက်ခွင့်ပြုခြင်း
+            user = authenticate(request, username=username_or_email, password=password)
+            if user is None:
+                try:
+                    user_obj = User.objects.get(email=username_or_email)
+                    user = authenticate(request, username=user_obj.username, password=password)
+                except User.DoesNotExist:
+                    user = None
+
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Welcome back, {user.first_name or user.username}!')
+                return redirect('user:dashboard')
+            else:
+                messages.error(request, 'Invalid username/email or password.')
     else:
-        form = AuthenticationForm()
+        form = LoginForm()
+
     return render(request, 'user/login.html', {'form': form})
 
 
+# LOGOUT VIEW
 def logout_view(request):
-    if request.method == 'POST':
-        logout(request)
-        return redirect('user:login')
+    logout(request)
+    messages.info(request, 'You have been logged out.')
+    return redirect('user:login')
 
 
+# DASHBOARD VIEW
 @login_required
-def dashboard_view(request):
-    posts = Post.objects.exclude(seller=request.user)
-    my_posts = Post.objects.filter(seller=request.user)
-    orders = Order.objects.filter(buyer=request.user)
-    profile = request.user.profile
-
-    # ပထမဆုံးအကြိမ် ဝယ်ယူသူ ဟုတ်/မဟုတ် စစ်ဆေးခြင်း
-    has_previous_orders = Order.objects.filter(buyer=request.user).exists()
-    discount_applicable = not has_previous_orders
-
-    return render(request, 'user/dashboard.html', {
-        'profile': profile,
-        'posts': posts,
-        'my_posts': my_posts,
-        'orders': orders,
-        'discount_applicable': discount_applicable
-    })
+def dashboard(request):
+    return render(request, 'user/dashboard.html')
 
 
+# UPDATE PROFILE PICTURE VIEW
 @login_required
-def top_up(request):
+def update_profile_pic(request):
     if request.method == 'POST':
-        amount = Decimal(request.POST.get('amount', '0'))
-        if amount > 0:
+        form = ProfilePicForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
             profile = request.user.profile
-            profile.balance += amount
-            profile.save()
-            messages.success(request, f"Successfully topped up {amount} Kyats!")
-    return redirect('user:dashboard')
+            # ပုံအဟောင်းကို Server မှ တစ်ပါတည်း ဖျက်ထုတ်ခြင်း
+            if profile.profile_pic and not profile.profile_pic.name.endswith('default.jpg'):
+                old_path = profile.profile_pic.path
+                if os.path.exists(old_path):
+                    try:
+                        os.remove(old_path)
+                    except OSError:
+                        pass
 
-
-@login_required
-def withdraw(request):
-    if request.method == 'POST':
-        amount = Decimal(request.POST.get('amount', '0'))
-        profile = request.user.profile
-        if 0 < amount <= profile.balance:
-            profile.balance -= amount
-            profile.save()
-            messages.success(request, f"Successfully withdrew {amount} Kyats!")
+            form.save()
+            messages.success(request, 'Profile picture updated successfully!')
         else:
-            messages.error(request, "Insufficient balance or invalid amount.")
-    return redirect('user:dashboard')
-
-
-@login_required
-def sell_item(request):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        price = Decimal(request.POST.get('price', '0'))
-        if title and price > 0:
-            Post.objects.create(seller=request.user, title=title, description=description, price=price)
-            messages.success(request, "Item posted for sale successfully!")
-    return redirect('user:dashboard')
-
-
-@login_required
-def buy_item(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    profile = request.user.profile
-    original_price = post.price
-    final_price = original_price
-    discount_applied = False
-
-    has_orders = Order.objects.filter(buyer=request.user).exists()
-    if not has_orders:
-        final_price = original_price * Decimal('0.90')  # 10% Discount applied
-        discount_applied = True
-
-    if profile.balance >= final_price:
-        profile.balance -= final_price
-        profile.save()
-
-        Order.objects.create(buyer=request.user, post=post, final_price=final_price, discount_applied=discount_applied)
-
-        seller_profile = post.seller.profile
-        seller_profile.balance += final_price
-        seller_profile.save()
-
-        post.delete()
-
-        if discount_applied:
-            messages.success(request, f"First-time Purchase! 10% Discount Applied! Paid {final_price} Kyats.")
-        else:
-            messages.success(request, f"Successfully purchased for {final_price} Kyats.")
-    else:
-        messages.error(request, "Insufficient balance. Please Top Up first!")
+            messages.error(request, 'Failed to update. Please select a valid image.')
 
     return redirect('user:dashboard')
