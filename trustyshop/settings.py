@@ -39,11 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'welcome',
+    'widget_tweaks',
     'user',
-    'adminpanel',
 ]
 
-AUTH_USER_MODEL = 'welcome.User'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -123,3 +122,6 @@ STATIC_URL = 'static/'
 
 
 AUTH_USER_MODEL = 'welcome.User'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'

@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard | TrustyShop</title>
+    <link rel="stylesheet" href="{% static 'user/css/style.css' %}">
+</head>
+<body style="display: block;">
+
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="user-meta-box">
+                {% if profile.profile_pic %}
+                    <img src="{{ profile.profile_pic.url }}" class="user-avatar-img" alt="Profile">
+                {% else %}
+                    <div style="width:60px; height:60px; border-radius:50%; background:#2563eb; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                        {{ request.user.username|slice:":2"|upper }}
+                    </div>
+                {% endif %}
+                <div>
+                    <h2>Hello, {{ request.user.username }}</h2>
+                    <p style="color:var(--text-slate-500); font-size:0.875rem;">Phone: {{ profile.phone_number }}</p>
+                </div>
+            </div>
+
+            <form action="{% url 'user:logout' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn-nav">Log Out</button>
+            </form>
+        </header>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div style="background:#dcfce7; border:1px solid #bbf7d0; color:#166534; padding:1rem; border-radius:0.75rem; margin-bottom:1.5rem; font-weight:600;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="grid-2col">
+            <div class="dash-card">
+                <h3>My Wallet Balance</h3>
+                <div class="balance-amount">{{ profile.balance }} MMK</div>
+
+                <form action="{% url 'user:top_up' %}" method="POST" class="action-form-inline">
+                    {% csrf_token %}
+                    <input type="number" name="amount" placeholder="Amount to Top Up" required class="custom-input">
+                    <button type="submit" class="btn-primary" style="margin-top:0; width:auto; white-space:nowrap;">Top Up</button>
+                </form>
+
+                <form action="{% url 'user:withdraw' %}" method="POST" class="action-form-inline" style="margin-top:1.5rem;">
+                    {% csrf_token %}
+                    <input type="number" name="amount" placeholder="Amount to Withdraw" required class="custom-input">
+                    <button type="submit" class="btn-primary" style="margin-top:0; width:auto; white-space:nowrap; background:linear-gradient(to right, #dc2626, #ef4444);">Withdraw</button>
+                </form>
+            </div>
+
+            <div class="dash-card">
+                <h3>Post Item to Sell</h3>
+                <form action="{% url 'user:sell' %}" method="POST" style="margin-top:1rem;">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <label>Item Name</label>
+                        <input type="text" name="title" required class="custom-input">
+                    </div>
+                    <div class="input-group">
+                        <label>Price (MMK)</label>
+                        <input type="number" name="price" required class="custom-input">
+                    </div>
+                    <div class="input-group">
+                        <label>Description</label>
+                        <input type="text" name="description" required class="custom-input">
+                    </div>
+                    <button type="submit" class="btn-primary">List Product Now</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="dash-card" style="margin-top:2rem;">
+            <h3>Available Marketplace Items</h3>
+            {% if discount_applicable %}
+                <p style="color:#2563eb; font-weight:700; font-size:0.875rem; margin-top:0.25rem;">✨ First-time Buyer Promo active: You will get an automatic 10% discount on your purchase!</p>
+            {% endif %}
+
+            <ul class="dash-list">
+                {% for post in posts %}
+                    <li class="dash-list-item">
+                        <div>
+                            <strong>{{ post.title }}</strong> - <span style="color:var(--text-slate-500)">Seller: {{ post.seller.username }}</span>
+                            <p style="font-size:0.875rem; color:#64748b; margin-top:0.25rem;">{{ post.description }}</p>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <span style="font-weight:700;">{{ post.price }} MMK</span>
+                            <a href="{% url 'user:buy_item' post.id %}" class="btn-primary" style="margin:0; padding:0.5rem 1rem; text-decoration:none; text-align:center;">Buy</a>
+                        </div>
+                    </li>
+                {% empty %}
+                    <p style="color:var(--text-slate-500); padding:1rem 0;">No items currently available for sale from other users.</p>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

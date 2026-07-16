@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create an Account | TrustyShop</title>
+    <link rel="stylesheet" href="{% static 'user/css/style.css' %}">
+</head>
+<body>
+
+    <div class="split-container">
+        <div class="form-panel">
+            <div class="brand-logo-mobile">TrustyShop.</div>
+
+            <div class="panel-header">
+                <h2>Get started absolutely free.</h2>
+                <p>Join us today and discover a smarter way to shop online.</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="form-wrapper">
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <label>Username</label>
+                    {{ user_form.username }}
+                </div>
+
+                <div class="input-group">
+                    <label>Email Address</label>
+                    {{ user_form.email }}
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    {{ user_form.password }}
+                </div>
+
+                <div class="input-group">
+                    <label>Profile Picture</label>
+                    {{ profile_form.profile_pic }}
+                </div>
+
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    {{ profile_form.phone_number }}
+                </div>
+
+                <div class="input-group">
+                    <label>Gender Selection</label>
+                    {{ profile_form.gender }}
+                </div>
+
+                <button type="submit" class="btn-primary">Create Account</button>
+            </form>
+
+            <p class="panel-footer">
+                Already have an account?
+                <a href="{% url 'user:login' %}">Log in here</a>
+            </p>
+        </div>
+
+        <div class="visual-panel">
+            <div class="glow-bg-1"></div>
+            <div class="glow-bg-2"></div>
+            <div class="grid-mask"></div>
+
+            <div class="glass-card">
+                <span class="badge">TrustyShop Ecosystem</span>
+                <h1>Experience shopping engineered for <span class="gradient-text">ultimate trust.</span></h1>
+                <p>Secure transactions, verified multi-vendor marketplace architectures, and fluid tracking tools built to upgrade your digital retail habits.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
