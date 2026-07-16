@@ -1,0 +1,1307 @@
+/* =====================================
+   TRUSTY SHOP PREMIUM LANDING PAGE
+   BLUE GLASS DESIGN
+===================================== */
+
+
+/* GOOGLE FONT */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+
+html{
+    scroll-behavior:smooth;
+}
+
+
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    color:#0f172a;
+
+    overflow-x:hidden;
+
+    transition:.4s;
+
+}
+
+/* =====================================================
+   NAVBAR SECTION
+
+   - Glass effect navbar
+   - Scroll color animation
+   - Menu hover effects
+===================================================== */
+
+
+.cute-navbar{
+
+    background:rgba(255,255,255,0.85);
+
+    backdrop-filter:blur(15px);
+
+    padding:15px 0;
+
+    border-radius:0 0 25px 25px;
+
+    box-shadow:
+    0 10px 30px rgba(21,101,192,.15);
+
+    transition:.5s;
+
+}
+
+
+
+.cute-navbar.scrolled{
+
+    background:#1565C0;
+
+}
+
+
+
+
+
+/* Navbar Brand */
+
+.navbar-brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    text-decoration:none;
+
+    font-size:28px;
+
+    font-weight:800;
+
+    color:#1565C0 !important;
+
+}
+
+
+
+.scrolled .navbar-brand{
+
+    color:white !important;
+
+}
+
+
+
+
+
+/* Navbar Links */
+
+.nav-link{
+
+    margin:0 8px;
+
+    padding:10px 18px !important;
+
+    border-radius:30px;
+
+    color:#1565C0 !important;
+
+    font-weight:600;
+
+    transition:.4s;
+
+    position:relative;
+
+}
+
+
+
+
+.scrolled .nav-link{
+
+    color:white !important;
+
+}
+
+
+
+
+
+/* Navbar Hover */
+
+.nav-link:hover{
+
+    background:#e3f2fd;
+
+    transform:translateY(-5px);
+
+    box-shadow:
+    0 8px 20px rgba(21,101,192,.2);
+
+}
+
+
+
+.scrolled .nav-link:hover{
+
+    background:white;
+
+    color:#1565C0 !important;
+
+}
+
+
+
+
+
+/* Active Navbar Item */
+
+.nav-link.active{
+
+    background:#1565C0;
+
+    color:white !important;
+
+}
+
+
+
+.scrolled .nav-link.active{
+
+    background:white;
+
+    color:#1565C0 !important;
+
+}
+
+
+
+
+
+/* Cart Counter */
+
+.cart-link{
+
+    position:relative;
+
+}
+
+
+
+
+.cart-count{
+
+    position:absolute;
+
+    top:-5px;
+
+    right:0;
+
+    background:#ff4081;
+
+    color:white;
+
+    width:22px;
+
+    height:22px;
+
+    border-radius:50%;
+
+    font-size:12px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    animation:bounce 2s infinite;
+
+}
+
+
+
+
+@keyframes bounce{
+
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+
+    50%{
+
+        transform:translateY(-6px);
+
+    }
+
+
+}
+
+
+
+
+
+
+/* =====================================================
+   LOGO SECTION
+
+   - Animated Shop Logo
+===================================================== */
+
+
+.logo-circle{
+
+
+    width:50px;
+
+    height:50px;
+
+
+    border-radius:50%;
+
+
+    display:flex;
+
+
+    justify-content:center;
+
+
+    align-items:center;
+
+
+
+    background:linear-gradient(
+
+        135deg,
+
+        #42A5F5,
+
+        #1565C0
+
+    );
+
+
+
+    color:white;
+
+
+    font-size:24px;
+
+
+
+    box-shadow:
+
+
+    0 8px 20px rgba(21,101,192,.3);
+
+
+
+    animation:logoFloat 3s infinite ease-in-out;
+
+
+}
+
+
+
+
+
+@keyframes logoFloat{
+
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+
+
+    50%{
+
+        transform:translateY(-8px);
+
+    }
+
+
+}
+
+
+
+
+
+.logo-click{
+
+    transform:scale(1.15) rotate(-5deg);
+
+}
+
+
+
+
+
+
+
+/* =====================================================
+   RESPONSIVE NAVBAR
+===================================================== */
+
+
+@media(max-width:576px){
+
+
+    .navbar-brand{
+
+
+        font-size:24px;
+
+    }
+
+
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+.cute-navbar.scrolled{
+    background:#1565C0;
+}
+
+.logo-click{
+    transform:scale(1.15) rotate(-5deg);
+}
+/* =====================================
+   HERO
+===================================== */
+
+
+.hero{
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    padding-top:100px;
+
+    background:
+
+
+    radial-gradient(
+        circle at top left,
+        #dbeafe,
+        transparent 40%
+    ),
+
+
+    linear-gradient(
+        135deg,
+        #eff6ff,
+        #ffffff
+    );
+
+}
+
+
+
+
+.badge{
+
+
+    display:inline-block;
+
+    background:#dbeafe;
+
+    color:#2563eb;
+
+    padding:10px 20px;
+
+    border-radius:30px;
+
+    font-weight:600;
+
+    margin-bottom:20px;
+
+}
+
+
+
+
+.hero h1{
+
+    font-size:70px;
+
+    font-weight:800;
+
+    line-height:1.1;
+
+}
+
+
+
+.hero h1 span{
+
+    background:
+
+    linear-gradient(
+        90deg,
+        #2563eb,
+        #38bdf8
+    );
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+
+}
+
+
+
+.hero p{
+
+    margin-top:25px;
+
+    font-size:19px;
+
+    color:#64748b;
+
+    max-width:550px;
+
+    line-height:1.8;
+
+}
+
+
+
+
+/* BUTTON */
+
+
+.hero-buttons{
+
+    margin-top:35px;
+
+}
+
+
+
+.primary-btn,
+.secondary-btn{
+
+
+    padding:15px 35px;
+
+    border-radius:40px;
+
+    text-decoration:none;
+
+    display:inline-block;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+
+
+.primary-btn{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+
+
+.primary-btn:hover{
+
+    transform:translateY(-5px);
+
+    background:#1d4ed8;
+
+}
+
+
+
+.secondary-btn{
+
+    margin-left:15px;
+
+    border:2px solid #2563eb;
+
+    color:#2563eb;
+
+}
+
+
+
+
+/* =====================================
+   HERO IMAGE
+===================================== */
+
+.hero-circle {
+    width: 500px;
+    height: 500px;
+    margin: auto;
+    border-radius: 50%; /* This creates the circular frame */
+    background: linear-gradient(135deg, #2563eb, #38bdf8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* This is essential for the crop */
+    animation: pulse 4s infinite;
+}
+
+.hero-image {
+    width: 100%; /* Tells image to be as wide as the circle */
+    height: 100%; /* Tells image to be as tall as the circle */
+    object-fit: cover; /* ESSENTIAL: This forces the image to fill the square without distorting it, effectively cropping it [cite: 3] */
+    border-radius: 50%; /* Optional, but adds an extra layer of masking on the image itself [cite: 3] */
+    animation: float 4s infinite ease-in-out;
+}
+
+
+@keyframes float{
+
+
+0%{
+
+transform:translateY(0);
+
+}
+
+
+50%{
+
+transform:translateY(-20px);
+
+}
+
+
+100%{
+
+transform:translateY(0);
+
+}
+
+
+}
+
+
+
+@keyframes pulse{
+
+
+50%{
+
+box-shadow:
+0 0 80px rgba(37,99,235,.5);
+
+}
+
+
+}
+
+
+
+
+/* STATS */
+
+
+.stats{
+
+    display:flex;
+
+    gap:50px;
+
+    margin-top:50px;
+
+}
+
+
+
+.stats h3{
+
+    font-size:40px;
+
+    color:#2563eb;
+
+}
+
+
+
+.stats p{
+
+    margin:0;
+
+}
+
+
+
+
+
+/* =====================================
+   SECTION
+===================================== */
+
+
+.section-padding{
+
+    padding:100px 0;
+
+}
+
+
+
+.section-title{
+
+    text-align:center;
+
+    margin-bottom:60px;
+
+}
+
+
+
+.section-title h2{
+
+    font-size:42px;
+
+    font-weight:800;
+
+}
+
+
+
+.section-title p{
+
+    color:#64748b;
+
+}
+
+
+
+
+
+/* =====================================
+ FEATURES
+===================================== */
+
+
+.feature-box{
+
+
+    background:white;
+
+    padding:40px 25px;
+
+    text-align:center;
+
+    border-radius:25px;
+
+
+    box-shadow:
+
+    0 20px 50px rgba(0,0,0,.08);
+
+
+    height:100%;
+
+
+    transition:.4s;
+
+
+}
+
+
+
+.feature-box:hover{
+
+
+    transform:translateY(-15px);
+
+
+    box-shadow:
+
+    0 30px 60px rgba(37,99,235,.2);
+
+
+}
+
+
+
+.feature-box i{
+
+
+    font-size:55px;
+
+    color:#2563eb;
+
+}
+
+
+
+.feature-box h5{
+
+    margin-top:25px;
+
+    font-weight:700;
+
+}
+
+
+
+.feature-box p{
+
+    color:#64748b;
+
+}
+
+
+
+
+
+/* =====================================
+ PRODUCTS
+===================================== */
+
+
+.products{
+
+    background:#f8fafc;
+
+}
+
+
+
+.product-card{
+
+
+    background:white;
+
+    border-radius:25px;
+
+    overflow:hidden;
+
+    box-shadow:
+
+    0 15px 40px rgba(0,0,0,.08);
+
+
+    transition:.4s;
+
+
+}
+
+
+
+.product-card:hover{
+
+
+    transform:translateY(-15px);
+
+
+}
+
+
+
+.product-card img{
+
+
+    width:100%;
+
+    height:230px;
+
+    object-fit:cover;
+
+
+}
+
+
+
+.product-content{
+
+
+    padding:25px;
+
+}
+
+
+
+.product-content h5{
+
+    font-weight:700;
+
+}
+
+
+
+.product-content h4{
+
+    color:#2563eb;
+
+}
+
+
+
+.product-content button{
+
+
+    width:100%;
+
+    border:none;
+
+    padding:12px;
+
+    border-radius:30px;
+
+    background:#2563eb;
+
+    color:white;
+
+
+}
+
+.More button{
+    width:10%;
+
+    border:none;
+
+    padding:12px;
+
+    border-radius:30px;
+
+    background:black;
+
+    color:white;
+}
+
+
+
+
+
+/* =====================================
+ HOW IT WORKS
+===================================== */
+
+
+.how-section{
+
+
+    padding:100px 0;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #eff6ff,
+        white
+    );
+
+
+}
+
+
+
+.steps{
+
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:30px;
+
+    flex-wrap:wrap;
+
+
+}
+
+
+
+.steps div{
+
+
+    width:140px;
+
+    height:140px;
+
+    border-radius:50%;
+
+    background:white;
+
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+
+
+}
+
+
+
+.steps i{
+
+    font-size:35px;
+
+    color:#2563eb;
+
+}
+
+
+
+
+/* ================= FOOTER DESIGN ================= */
+
+
+footer{
+
+    background:#020617;
+
+    color:white;
+
+    padding:80px 0 30px;
+
+}
+
+
+
+footer h3{
+
+    font-size:30px;
+
+    font-weight:800;
+
+    color:white;
+
+}
+
+
+
+footer h3 i{
+
+    color:#38bdf8;
+
+}
+
+
+
+footer h5{
+
+    font-weight:700;
+
+    margin-bottom:25px;
+
+}
+
+
+
+footer p{
+
+    color:#cbd5e1;
+
+    line-height:1.8;
+
+}
+
+
+
+footer ul{
+
+    list-style:none;
+
+    padding:0;
+
+}
+
+
+
+footer ul li{
+
+    margin-bottom:12px;
+
+    color:#cbd5e1;
+
+    font-size:14px;
+
+}
+
+
+
+footer ul li i{
+
+    color:#38bdf8;
+
+    margin-right:8px;
+
+}
+
+
+
+footer a{
+
+    text-decoration:none;
+
+    color:#cbd5e1;
+
+    transition:.3s;
+
+}
+
+
+
+footer a:hover{
+
+    color:#38bdf8;
+
+    padding-left:5px;
+
+}
+
+
+
+.social-icons a{
+
+    display:inline-flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:50%;
+
+    background:#1e293b;
+
+    margin-right:10px;
+
+    font-size:20px;
+
+}
+
+
+
+.social-icons a:hover{
+
+    background:#2563eb;
+
+}
+
+
+
+.footer-bottom{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+.footer-bottom div a{
+
+    margin-left:20px;
+
+}
+
+
+
+@media(max-width:768px){
+
+.footer-bottom{
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+}
+
+
+
+
+
+
+
+.dark-mode .feature-box,
+.dark-mode .product-card,
+.dark-mode .steps div{
+
+    background:#1e293b;
+
+    color:white;
+
+}
+
+
+
+.dark-mode .products{
+
+    background:#0f172a;
+
+}
+
+
+
+
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media(max-width:992px){
+    .hero h1{
+        font-size:50px;
+    }
+
+    /* Update the hero-circle to stay circular and centered */
+    .hero-circle {
+        width: 450px; /* Adjust size for tablet */
+        height: 450px; /* Keep height same as width for a perfect circle */
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 50px auto 0 auto; /* Center it with top margin */
+        overflow: hidden;
+    }
+
+    .hero-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Crucial to maintain aspect ratio on different screen sizes [cite: 3] */
+    }
+}
+
+
+
+@media(max-width:576px){
+
+
+.hero h1{
+
+    font-size:38px;
+
+}
+
+
+
+.stats{
+
+    gap:20px;
+
+}
+
+
+.stats h3{
+
+    font-size:30px;
+
+}
+
+
+}
+/* =========================================
+   FLOATING BACKGROUND ITEMS
+======================================== */
+
+.floating-item {
+    position: fixed;
+    bottom: -20px;
+    opacity: 0.5; /* cited: 1 ] */
+    animation: itemMove linear infinite; /* cited: 1 ] */
+    z-index: -1; /* cited: 1 ] */
+    pointer-events: none; /* cited: 1 ] */
+    color: #38bdf8; /* cite: 1 ] Default color from original particle */
+}
+
+/* Base style for icons cite: 2 ] */
+.floating-item.icon {
+    font-size: 24px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+}
+
+/* Base style for shapes cite: 2 ] */
+.floating-item.shape {
+    border-radius: 50%; /* cite: 1 ] Original particle style */
+}
+
+/* Specific shape definitions cite: 2 ] */
+.floating-item.shape.circle {
+    width: 8px; /* cite: 1 ] Original particle size */
+    height: 8px; /* cite: 1 ] Original particle size */
+    background: #38bdf8; /* cite: 1 ] Original particle color */
+    border-radius: 50%;
+}
+
+.floating-item.shape.square {
+    width: 10px;
+    height: 10px;
+    background: #38bdf8;
+}
+
+.floating-item.shape.triangle {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 12px solid #38bdf8;
+    background: transparent;
+}
+
+/* Animation definition */
+@keyframes itemMove {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-110vh);
+        opacity: 0;
+    }
+}
