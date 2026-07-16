@@ -22,4 +22,5 @@ urlpatterns = [
     path('',include("welcome.urls")),
     path('home/', include('home.urls')),
     path('posts/',include('posts.urls')),
+    path('adminpanel/', include('adminpanel.urls')),
 ]
