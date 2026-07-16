@@ -12,7 +12,7 @@
         <p class="text-slate-400 text-sm mt-1">Please enter your credentials to login</p>
     </div>
 
-    <form class="mt-8 space-y-5" method="POST" action="{% url 'user:login' %}">
+    <form class="mt-8 space-y-5" method="POST" action="{% url 'user:login' %}" id="loginForm">
         {% csrf_token %}
 
         <div class="form-group">
@@ -26,12 +26,15 @@
         <div class="form-group">
             <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
             <div class="input-container">
-                <input type="password" name="password" required class="auth-input" placeholder="••••••••">
+                <input type="password" name="password" id="loginPassword" maxlength="8" required class="auth-input" placeholder="••••••••">
                 <i class="fa-solid fa-key input-icon"></i>
             </div>
+            <p id="loginPassNoti" class="text-xs text-rose-400 mt-2 hidden flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-exclamation"></i> Password must be at least 8 characters.
+            </p>
         </div>
 
-        <button type="submit" class="btn-primary w-full mt-6">
+        <button type="submit" id="loginSubmitBtn" class="btn-primary w-full mt-6">
             <i class="fa-solid fa-right-to-bracket"></i> Sign In
         </button>
     </form>
@@ -43,4 +46,22 @@
         </p>
     </div>
 </div>
+
+<script>
+    const loginPassword = document.getElementById('loginPassword');
+    const loginPassNoti = document.getElementById('loginPassNoti');
+    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+
+    loginPassword.addEventListener('input', () => {
+        if (loginPassword.value.length < 8 && loginPassword.value.length > 0) {
+            loginPassNoti.classList.remove('hidden');
+            loginSubmitBtn.disabled = true;
+            loginSubmitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+            loginPassNoti.classList.add('hidden');
+            loginSubmitBtn.disabled = false;
+            loginSubmitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    });
+</script>
 {% endblock %}
