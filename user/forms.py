@@ -5,8 +5,8 @@ from .models import Profile
 
 # 1. Register Form
 class RegisterForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=30, required=True)
-    last_name = forms.CharField(max_length=30, required=True)
+    first_name = forms.CharField(max_length=30, required=False)
+    last_name = forms.CharField(max_length=30, required=False)
     phone_number = forms.CharField(max_length=20, required=True)
     address = forms.CharField(widget=forms.TextInput(), required=True)
     gender = forms.ChoiceField(choices=Profile.GENDER_CHOICES, required=True)
@@ -16,7 +16,7 @@ class RegisterForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'password']
+        fields = ['username', 'email', 'password']
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
