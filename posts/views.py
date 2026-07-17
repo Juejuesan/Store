@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from posts.form import PostForm
 from posts.models import PostImage
-from user.models import User
 
 def createPost(request):
 
