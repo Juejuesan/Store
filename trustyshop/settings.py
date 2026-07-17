@@ -39,11 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'welcome',
+    'widget_tweaks',
     'user',
     'posts',
     'adminpanel',
 ]
 
+AUTH_USER_MODEL = 'welcome.User'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -74,7 +76,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'trustyshop.wsgi.application'
 
 
-
+# Database
+# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -117,3 +120,13 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
+
+# settings.py
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+AUTH_USER_MODEL = "welcome.User"

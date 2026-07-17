@@ -1,13 +1,14 @@
-
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
     <title>
 
@@ -17,234 +18,392 @@
 
     </title>
 
+
+    <!-- Admin CSS -->
+
     <link rel="stylesheet"
           href="{% static 'css/admin.css' %}">
+
+
+    <!-- Font Awesome -->
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           rel="stylesheet">
 
+
+    <!-- Google Font -->
+
     <link rel="preconnect"
           href="https://fonts.googleapis.com">
+
 
     <link rel="preconnect"
           href="https://fonts.gstatic.com"
           crossorigin>
 
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet">
 
+
 </head>
+
 
 <body>
 
+
 <div class="wrapper">
 
-    <!-- ================= Sidebar ================= -->
 
-    <aside class="sidebar">
 
-        <div class="logo">
+<!-- ================= SIDEBAR ================= -->
 
-            <div class="logo-circle">
+<aside class="sidebar">
 
-                <i class="fa-solid fa-store"></i>
 
-            </div>
+    <!-- Logo -->
 
-            <div>
+    <div class="logo">
 
-                <h2>Trusty Shop</h2>
 
-                <span>Admin Panel</span>
+        <div class="logo-circle">
 
-            </div>
+            <i class="fa-solid fa-store"></i>
 
         </div>
 
 
-        <ul class="menu">
+        <div>
 
-            <li class="active">
+            <h2>
+                Trusty Shop
+            </h2>
 
-                <a href="{% url 'dashboard' %}">
 
-                    <i class="fa-solid fa-chart-pie"></i>
+            <span>
+                Admin Panel
+            </span>
 
-                    <span>Dashboard</span>
-
-                </a>
-
-            </li>
-
-            <li>
-
-                <a href="{% url 'posts' %}">
-
-                    <i class="fa-solid fa-box-open"></i>
-
-                    <span>Posts</span>
-
-                </a>
-
-            </li>
-
-            <li>
-
-                <a href="#">
-
-                    <i class="fa-solid fa-users"></i>
-
-                    <span>Users</span>
-
-                </a>
-
-            </li>
-
-            <li>
-
-                <a href="#">
-
-                    <i class="fa-solid fa-cart-shopping"></i>
-
-                    <span>Orders</span>
-
-                </a>
-
-            </li>
-
-            <li>
-
-                <a href="#">
-
-                    <i class="fa-solid fa-wallet"></i>
-
-                    <span>Wallet</span>
-
-                </a>
-
-            </li>
-
-            <li>
-
-                <a href="#">
-
-                    <i class="fa-solid fa-chart-column"></i>
-
-                    <span>Reports</span>
-
-                </a>
-
-            </li>
-
-            <li>
-
-                <a href="#">
-
-                    <i class="fa-solid fa-gear"></i>
-
-                    <span>Settings</span>
-
-                </a>
-
-            </li>
-
-        </ul>
-
-        <div class="sidebar-footer">
-
-            <img src="{% static 'images/admin.png' %}"
-                 class="profile-img">
-
-            <div>
-
-                <h4>Administrator</h4>
-
-                <span>Super Admin</span>
-
-            </div>
 
         </div>
 
-    </aside>
+
+    </div>
+
+
+
+
+    <!-- Menu -->
+
+    <ul class="menu">
+
+
+        <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+
+            <a href="{% url 'dashboard' %}">
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+        </li>
 
 
 
 
 
-    <!-- ================= Main ================= -->
+        <li class="{% if request.resolver_match.url_name == 'posts' %}active{% endif %}">
 
-    <main class="main">
+             <a href="/adminpanel/posts/">
 
-        <!-- Header -->
+                <i class="fa-solid fa-box-open"></i>
 
-        <header class="topbar">
+                <span>
+                    Posts
+                </span>
 
-            <button id="toggle-btn">
+            </a>
 
-                <i class="fa-solid fa-bars"></i>
+        </li>
+
+
+
+
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-users"></i>
+
+                <span>
+                    Users
+                </span>
+
+            </a>
+
+        </li>
+
+
+
+
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span>
+                    Orders
+                </span>
+
+            </a>
+
+        </li>
+
+
+
+
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-wallet"></i>
+
+                <span>
+                    Wallet
+                </span>
+
+            </a>
+
+        </li>
+
+
+
+
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <span>
+                    Reports
+                </span>
+
+            </a>
+
+        </li>
+
+
+
+
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-gear"></i>
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+        </li>
+
+
+    </ul>
+
+
+
+
+
+    <!-- Sidebar Footer -->
+
+
+    <div class="sidebar-footer">
+
+
+        <img src="{% static 'images/admin.png' %}"
+             class="profile-img">
+
+
+
+        <div>
+
+
+            <h4>
+                Administrator
+            </h4>
+
+
+            <span>
+                Super Admin
+            </span>
+
+
+        </div>
+
+
+    </div>
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+<!-- ================= MAIN ================= -->
+
+
+<main class="main">
+
+
+
+    <!-- TOP BAR -->
+
+
+    <header class="topbar">
+
+
+        <button id="toggle-btn">
+
+            <i class="fa-solid fa-bars"></i>
+
+        </button>
+
+
+
+
+
+        <div class="search-box">
+
+
+            <i class="fa-solid fa-search"></i>
+
+
+            <input type="text"
+                   placeholder="Search anything...">
+
+
+        </div>
+
+
+
+
+
+
+        <div class="top-icons">
+
+
+
+            <div class="clock">
+
+
+                <i class="fa-regular fa-clock"></i>
+
+
+                <span id="liveClock"></span>
+
+
+            </div>
+
+
+
+
+
+
+            <div class="notification">
+
+
+                <i class="fa-regular fa-bell"></i>
+
+
+                <span class="badge">
+                    8
+                </span>
+
+
+            </div>
+
+
+
+
+
+
+
+            <button id="themeToggle">
+
+
+                <i class="fa-solid fa-moon"></i>
+
 
             </button>
 
-            <div class="search-box">
-
-                <i class="fa-solid fa-search"></i>
-
-                <input type="text"
-                       placeholder="Search anything...">
-
-            </div>
 
 
-            <div class="top-icons">
-
-                <div class="clock">
-
-                    <i class="fa-regular fa-clock"></i>
-
-                    <span id="liveClock"></span>
-
-                </div>
-
-                <div class="notification">
-
-                    <i class="fa-regular fa-bell"></i>
-
-                    <span class="badge">
-                        8
-                    </span>
-
-                </div>
-
-                <button id="themeToggle">
-
-                    <i class="fa-solid fa-moon"></i>
-
-                </button>
-
-            </div>
-
-        </header>
+        </div>
 
 
 
-        <!-- Page -->
+    </header>
 
-        <section class="content">
 
-            {% block content %}
 
-            {% endblock %}
 
-        </section>
 
-    </main>
+
+
+    <!-- PAGE CONTENT -->
+
+
+    <section class="content">
+
+
+        {% block content %}
+
+        {% endblock %}
+
+
+    </section>
+
+
+
+</main>
+
+
+
 
 </div>
 
 
-<!-- ================= Floating Background ================= -->
+
+
+
+
+
+
+
+<!-- FLOATING BACKGROUND -->
+
 
 <div class="floating-shapes">
+
 
     <span class="circle c1"></span>
 
@@ -254,21 +413,31 @@
 
     <span class="circle c4"></span>
 
+
 </div>
 
 
 
-<!-- ================= Notification Panel ================= -->
+
+
+
+
+
+
+<!-- NOTIFICATION PANEL -->
+
 
 <div class="notification-panel">
 
+
     <div class="panel-header">
 
+
         <h3>
-
             Notifications
-
         </h3>
+
+
 
         <button id="closeNotification">
 
@@ -276,126 +445,162 @@
 
         </button>
 
+
     </div>
+
+
+
 
 
     <div class="notification-list">
 
+
+
         <div class="notify-item">
+
 
             <i class="fa-solid fa-user-plus"></i>
 
+
             <div>
 
                 <h4>
-
                     New Seller Registered
-
                 </h4>
 
+
                 <span>
-
                     2 minutes ago
-
                 </span>
 
+
             </div>
+
 
         </div>
 
 
 
+
+
+
         <div class="notify-item">
+
 
             <i class="fa-solid fa-box"></i>
 
+
             <div>
 
                 <h4>
-
                     5 Posts Waiting Approval
-
                 </h4>
 
+
                 <span>
-
                     Today
-
                 </span>
 
+
             </div>
+
 
         </div>
 
 
 
+
+
+
         <div class="notify-item">
+
 
             <i class="fa-solid fa-wallet"></i>
 
+
             <div>
 
                 <h4>
-
                     Wallet Top-up Request
-
                 </h4>
 
+
                 <span>
-
                     Today
-
                 </span>
+
 
             </div>
 
+
         </div>
+
+
+
 
 
 
         <div class="notify-item">
 
+
             <i class="fa-solid fa-cart-shopping"></i>
+
 
             <div>
 
                 <h4>
-
                     New Order Created
-
                 </h4>
 
+
                 <span>
-
                     10 minutes ago
-
                 </span>
+
 
             </div>
 
+
         </div>
+
+
 
     </div>
 
+
 </div>
 
 
 
-<!-- ================= Loader ================= -->
+
+
+
+
+
+<!-- LOADER -->
+
 
 <div id="loader">
 
+
     <div class="loader-circle"></div>
 
+
     <h2>
-
         Trusty Shop
-
     </h2>
+
 
 </div>
 
+
+
+
+
+
 <script src="{% static 'js/admin.js' %}"></script>
+
+
 
 </body>
 

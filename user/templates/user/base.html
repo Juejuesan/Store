@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TrustyShop{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="{% static 'user/style.css' %}">
+</head>
+<body class="auth-bg">
+
+    {% if messages %}
+    <div class="fixed top-4 right-4 z-50 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-xl shadow-2xl border text-sm font-medium flex items-center gap-3 text-white backdrop-blur-md
+            {% if message.tags == 'success' %}
+                bg-emerald-500/20 border-emerald-500/30 text-emerald-300
+            {% elif message.tags == 'error' %}
+                bg-rose-500/20 border-rose-500/30 text-rose-300
+            {% else %}
+                bg-blue-500/20 border-blue-500/30 text-blue-300
+            {% endif %}">
+
+            {% if message.tags == 'success' %}
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+            {% elif message.tags == 'error' %}
+                <i class="fa-solid fa-circle-exclamation text-rose-400"></i>
+            {% else %}
+                <i class="fa-solid fa-circle-info text-blue-400"></i>
+            {% endif %}
+
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Alert box လေးများကို ၄ စက္ကန့်အကြာတွင် အလိုအလျောက် ပျောက်သွားစေရန်
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.fixed > div');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 4000);
+    </script>
+    {% endif %}
+
+    <div class="container mx-auto px-4 flex justify-center items-center min-h-screen">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>
