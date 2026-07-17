@@ -4,7 +4,6 @@ from posts.form import PostForm
 from posts.models import PostImage
 from user.models import User
 
-@login_required
 def createPost(request):
 
     if request.method == "POST":
