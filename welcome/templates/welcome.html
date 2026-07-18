@@ -102,8 +102,7 @@ data-bs-target="#navbar">
 
 <li class="nav-item">
 
-<a class="nav-link active" href="#">
-
+<a class="nav-link active" href="{% url 'user:register' %}">
 <i class="fa-solid fa-house"></i>
 
 Home
@@ -159,8 +158,7 @@ About
 
 <li class="nav-item">
 
-<a class="nav-link cart-link" href="#">
-
+<a class="nav-link" href="{% url 'user:register' %}">
 
 <i class="fa-solid fa-cart-shopping"></i>
 
@@ -187,8 +185,7 @@ Cart
 
 <li class="nav-item">
 
-<a class="nav-link" href="#">
-
+<a class="nav-link" href="{% url 'user:register' %}">
 
 <i class="fa-solid fa-user"></i>
 
@@ -276,7 +273,7 @@ Explore Products
 
 
 
-<a href="#"
+<a href="{% url 'user:register' %}"
 class="secondary-btn">
 
 Become Seller
@@ -553,8 +550,8 @@ View Details
 </div>
 {% endfor %}
     <div class="More">
-        <button >
-See More...
+       <button type="button" onclick="window.location.href='{% url 'user:register' %}'">
+    See More...
 </button>
     </div>
 
@@ -729,8 +726,7 @@ Quick Links
 
 
 <li>
-<a href="#">
-Home
+<a class="nav-link" href="{% url 'user:register' %}">Home
 </a>
 </li>
 

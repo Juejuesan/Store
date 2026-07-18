@@ -51,7 +51,7 @@ def register_view(request):
 
             login(request, user)
             messages.success(request, f'Welcome, {user.first_name or user.username}!')
-            return redirect('user:dashboard')
+            return redirect('user:login')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -65,7 +65,7 @@ def register_view(request):
 # LOGIN VIEW
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('user:dashboard')
+        return redirect('home')
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -102,7 +102,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, 'You have been logged out.')
-    return redirect('user:login')
+    return redirect('/')
 
 
 # DASHBOARD VIEW

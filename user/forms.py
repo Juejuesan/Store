@@ -1,6 +1,6 @@
-# user/forms.py
 from django import forms
 from django.contrib.auth.models import User
+
 from .models import Profile
 
 # 1. Register Form
@@ -11,6 +11,7 @@ class RegisterForm(forms.ModelForm):
     profile_pic = forms.ImageField(required=False)
     password = forms.CharField(widget=forms.PasswordInput(), required=True)
     confirm_password = forms.CharField(widget=forms.PasswordInput(), required=True)
+
 
     class Meta:
         model = User
