@@ -7,4 +7,4 @@ def viewdetail(request):
     return render(request, "viewdetail.html")
 
 def createPost(request):
-    return render(request, "posts/createPost.html")
+    return render(request, "createPost.html")
