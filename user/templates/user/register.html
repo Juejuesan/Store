@@ -3,17 +3,60 @@
 {% block title %}Register | TrustyShop{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl auth-card p-8 sm:p-10 my-8">
+
+
+<form class="mt-8 space-y-4" method="POST" action="{% url 'user:register' %}" enctype="multipart/form-data" id="registerForm">
+        {% csrf_token %}
+
+        <!-- Header -->
     <div class="text-center">
-        <div class="brand-icon-wrapper">
-            <i class="fa-solid fa-user-plus"></i>
+
+        <!-- Profile Photo -->
+        <div class="flex justify-center mb-6">
+
+            <div class="relative">
+
+                <div class="w-28 h-28 rounded-full bg-slate-700 border-4 border-slate-600 overflow-hidden flex items-center justify-center">
+
+                    <img id="previewImage"
+                         class="hidden w-full h-full object-cover">
+
+                    <i id="defaultIcon"
+                       class="fa-solid fa-user text-5xl text-slate-400"></i>
+
+                </div>
+
+                <label for="profileInput"
+                       class="absolute bottom-1 right-1 w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center cursor-pointer">
+
+                    <i class="fa-solid fa-camera text-white"></i>
+
+                </label>
+
+                <!-- IMPORTANT -->
+                <input
+                    type="file"
+                    id="profileInput"
+                    name="profile_pic"
+                    accept="image/*"
+                    hidden>
+
+            </div>
+
         </div>
-        <h2 class="text-2xl font-bold text-white">Create Account</h2>
-        <p class="text-slate-400 text-sm mt-1">Please fill in details to join TrustyShop</p>
+
+        <div id="fileName"
+             class="text-xs text-slate-400 mb-4">
+            No image selected
+        </div>
+
+        <h2 class="text-2xl font-bold text-white">
+            Create Account
+        </h2>
+
     </div>
 
-    <form class="mt-8 space-y-4" method="POST" action="{% url 'user:register' %}" enctype="multipart/form-data" id="registerForm">
-        {% csrf_token %}
+
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="form-group">
@@ -62,13 +105,6 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Profile Photo (Optional)</label>
-            <div class="input-container">
-                <input type="file" name="profile_pic" accept="image/*" class="auth-input pt-2.5">
-                <i class="fa-regular fa-image input-icon"></i>
-            </div>
-        </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="form-group">
@@ -101,11 +137,12 @@
             </div>
         </div>
 
+
         <button type="submit" id="submitBtn" class="btn-primary w-full mt-4 opacity-50 cursor-not-allowed" disabled>
 
             <i class="fa-solid fa-user-plus"></i> Create Account
         </button>
-    </form>
+</form>
 
     <div class="text-center mt-6">
         <p class="text-sm text-slate-400">
@@ -196,5 +233,62 @@ function validatePasswords() {
 
 passwordInput.addEventListener('input', validatePasswords);
 confirmInput.addEventListener('input', validatePasswords);
+
+// =============================
+// Profile Photo Preview
+// =============================
+
+const profileInput = document.getElementById("profileInput");
+const previewImage = document.getElementById("previewImage");
+const defaultIcon = document.getElementById("defaultIcon");
+const fileName = document.getElementById("fileName");
+
+profileInput.addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    // Check image type
+    if (!file.type.startsWith("image/")) {
+
+        alert("Please select an image file.");
+
+        this.value = "";
+
+        return;
+    }
+
+    // Maximum 2MB
+    if (file.size > 2 * 1024 * 1024) {
+
+        alert("Image size must be less than 2 MB.");
+
+        this.value = "";
+
+        return;
+    }
+
+    // Display filename
+    fileName.innerHTML =
+'<span class="text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i>Profile photo selected</span>';
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        previewImage.src = e.target.result;
+
+        previewImage.classList.remove("hidden");
+
+        defaultIcon.classList.add("hidden");
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
 </script>
 {% endblock %}

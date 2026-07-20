@@ -1,0 +1,475 @@
+/* =====================================================
+   TRUSTY SHOP HEADER / NAVBAR DESIGN
+   Blue Glassmorphism Style
+===================================================== */
+
+
+/* Global body space for fixed navbar */
+
+body{
+    padding-top:90px;
+}
+
+
+
+/* ================= NAVBAR ================= */
+
+.cute-navbar{
+
+    background:rgba(255,255,255,0.85);
+
+    backdrop-filter:blur(15px);
+
+    padding:15px 0;
+
+    border-radius:0 0 25px 25px;
+
+    box-shadow:
+    0 10px 30px rgba(21,101,192,.15);
+
+    transition:.5s;
+
+}
+
+
+/* Navbar after scrolling */
+
+.cute-navbar.scrolled{
+
+    background:#1565C0;
+
+}
+
+
+
+/* ================= BRAND LOGO ================= */
+
+
+.navbar-brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    text-decoration:none;
+
+    font-size:28px;
+
+    font-weight:800;
+
+    color:#1565C0 !important;
+
+}
+
+
+
+.scrolled .navbar-brand{
+
+    color:white !important;
+
+}
+
+
+
+/* Logo Circle */
+
+
+.logo-circle{
+
+    width:50px;
+
+    height:50px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:linear-gradient(
+        135deg,
+        #42A5F5,
+        #1565C0
+    );
+
+    color:white;
+
+    font-size:24px;
+
+
+    box-shadow:
+
+    0 8px 20px rgba(21,192,192,.3);
+
+
+    animation:logoFloat 3s infinite ease-in-out;
+
+}
+
+
+
+@keyframes logoFloat{
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-8px);
+
+    }
+
+}
+
+
+
+/* ================= NAV LINKS ================= */
+
+
+.nav-link{
+
+    margin:0 8px;
+
+    padding:10px 18px !important;
+
+    border-radius:30px;
+
+    color:#1565C0 !important;
+
+    font-weight:600;
+
+    transition:.4s;
+
+}
+
+
+
+.scrolled .nav-link{
+
+    color:white !important;
+
+}
+
+
+
+.nav-link:hover{
+
+    background:#e3f2fd;
+
+    transform:translateY(-5px);
+
+    box-shadow:
+
+    0 8px 20px rgba(21,101,192,.2);
+
+}
+
+
+
+.scrolled .nav-link:hover{
+
+    background:white;
+
+    color:#1565C0 !important;
+
+}
+
+
+
+/* Active Link */
+
+.nav-link.active{
+
+    background:#1565C0;
+
+    color:white !important;
+
+}
+
+
+
+.scrolled .nav-link.active{
+
+    background:white;
+
+    color:#1565C0 !important;
+
+}
+
+
+
+/* ================= CART BADGE ================= */
+
+
+.cart-link{
+
+    position:relative;
+
+}
+
+
+
+.cart-count{
+
+    position:absolute;
+
+    top:-5px;
+
+    right:0;
+
+    background:#ff4081;
+
+    color:white;
+
+    width:22px;
+
+    height:22px;
+
+    border-radius:50%;
+
+    font-size:12px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    animation:bounce 2s infinite;
+
+}
+
+
+
+@keyframes bounce{
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-6px);
+
+    }
+
+}
+
+
+
+/* =====================================================
+   FOOTER DESIGN
+===================================================== */
+
+
+footer{
+
+    background:#020617;
+
+    color:white;
+
+    padding:80px 0 30px;
+
+}
+
+
+
+/* Footer Brand */
+
+
+footer h3{
+
+    font-size:30px;
+
+    font-weight:800;
+
+    color:white;
+
+}
+
+
+
+footer h3 i{
+
+    color:#38bdf8;
+
+}
+
+
+
+/* Footer Titles */
+
+
+footer h5{
+
+    font-weight:700;
+
+    margin-bottom:25px;
+
+}
+
+
+
+/* Footer Text */
+
+
+footer p{
+
+    color:#cbd5e1;
+
+    line-height:1.8;
+
+}
+
+
+
+/* Footer Lists */
+
+
+footer ul{
+
+    list-style:none;
+
+    padding:0;
+
+}
+
+
+
+footer ul li{
+
+    margin-bottom:12px;
+
+    color:#cbd5e1;
+
+    font-size:14px;
+
+}
+
+
+
+footer ul li i{
+
+    color:#38bdf8;
+
+    margin-right:8px;
+
+}
+
+
+
+/* Footer Links */
+
+
+footer a{
+
+    text-decoration:none;
+
+    color:#cbd5e1;
+
+    transition:.3s;
+
+}
+
+
+
+footer a:hover{
+
+    color:#38bdf8;
+
+    padding-left:5px;
+
+}
+
+
+
+/* Social Icons */
+
+
+.social-icons a{
+
+    display:inline-flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:50%;
+
+    background:#1e293b;
+
+    margin-right:10px;
+
+    font-size:20px;
+
+}
+
+
+
+.social-icons a:hover{
+
+    background:#2563eb;
+
+}
+
+
+
+/* Footer Bottom */
+
+
+.footer-bottom{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+.footer-bottom div a{
+
+    margin-left:20px;
+
+}
+
+
+
+/* ================= RESPONSIVE ================= */
+
+
+@media(max-width:768px){
+
+    .navbar-brand{
+
+        font-size:24px;
+
+    }
+
+
+    .footer-bottom{
+
+        flex-direction:column;
+
+        gap:20px;
+
+    }
+
+}

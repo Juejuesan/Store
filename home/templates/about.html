@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <!-- ==================================================
+         HEAD SECTION
+    ================================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusty Shop | About</title>
+
+    <!-- ==================================================
+         BOOTSTRAP CSS
+    ================================================== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- ==================================================
+         FONT AWESOME ICONS
+    ================================================== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- ==================================================
+         CUSTOM CSS
+    ================================================== -->
+    <link rel="stylesheet" href="{% static 'css/about.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header-footer.css' %}">
+</head>
+
+<body>
+
+    <!-- ==================================================
+         NAVBAR SECTION (PRESERVED)
+    ================================================== -->
+    <nav class="navbar navbar-expand-md cute-navbar fixed-top">
+        <div class="container">
+            <!-- SHOP LOGO -->
+            <a class="navbar-brand" href="#">
+                <span class="logo-circle">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </span>
+                Trusty Shop
+            </a>
+
+            <!-- MOBILE NAVBAR BUTTON -->
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <!-- NAVBAR MENU -->
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav ms-auto">
+                    <!-- HOME -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'user:register' %}">
+                            <i class="fa-solid fa-house"></i>
+                            Home
+                        </a>
+                    </li>
+                    <!-- ABOUT -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">
+                            <i class="fa-solid fa-circle-info"></i>
+                            About
+                        </a>
+                    </li>
+                    <!-- CART -->
+                    <li class="nav-item">
+                        <a class="nav-link cart-link" href="#">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            Cart
+                            <span class="cart-count">3</span>
+                        </a>
+                    </li>
+                    <!-- PROFILE -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user:dashboard' %}">
+                            <i class="fa-solid fa-user"></i>
+                            Profile
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================================================
+         PREMIUM REDESIGNED SAAS MAIN BODY WRAPPER
+    ================================================== -->
+    <div class="modern-about-wrapper">
+        <!-- 1. Cursor Glow Effect & Reading Progress Bar -->
+        <div class="cursor-glow"></div>
+        <div class="scroll-progress-container">
+            <div class="scroll-progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- 2. Animated Hero Section with Waves & Floating Background Blobs -->
+        <section class="hero-section">
+            <div class="floating-blobs">
+                <div class="blob blob-1"></div>
+                <div class="blob blob-2"></div>
+                <div class="blob blob-3"></div>
+            </div>
+            <div class="container hero-container">
+                <div class="row align-items-center min-vh-75 py-5">
+                    <div class="col-lg-6 hero-text-block text-center text-lg-start">
+                        <span class="badge-tagreveal mb-3">✨ Trusted Marketplace in Myanmar</span>
+                        <h1 class="hero-title">Building Trust Between <br><span class="gradient-text type-effect">Buyers & Sellers</span></h1>
+                        <p class="hero-subtitle my-4">Trusty Shop is a secure online platform empowering peer-to-peer commerce through next-generation escrow systems, decentralized verification layers, and total tracking transparency.</p>
+                        <div class="hero-buttons d-flex gap-3 justify-content-center justify-content-lg-start">
+                            <a href="#how-it-works" class="btn-glow-primary">Get Started</a>
+                            <a href="#mission" class="btn-outline-glow"><i class="fas fa-play me-2"></i>Watch Demo</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- SVG Premium Wave Separator -->
+            <div class="wave-divider">
+                <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V0C26.9,4.75,55.05,8.1,84.13,10.5c57.58,4.74,114.4,2.77,171.65-4.07C283.4,3.58,302.51,18.33,321.39,56.44Z" class="shape-fill"></path>
+                </svg>
+            </div>
+        </section>
+
+
+
+        <!-- 4. Our Mission Section (Redesigned Asymmetric SaaS Grid) -->
+        <section id="mission" class="mission-section py-5 reveal-on-scroll">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <!-- Text Layout with Inline Value Props -->
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <span class="section-subtitle">OUR MISSION</span>
+                        <h2 class="section-title mb-4">Redefining E-Commerce Integrity</h2>
+                        <p class="section-desc mb-4">Traditional marketplaces leave buyers vulnerable to structural scams and sellers wide open to fraudulent chargeback cycles. Trusty Shop bridges that friction entirely.</p>
+
+                        <!-- Mini Value Core Stack -->
+                        <div class="mission-core-stack d-flex flex-column gap-3 mt-4">
+                            <div class="mission-stack-item d-flex gap-3 align-items-start">
+                                <div class="stack-icon-wrapper cyan-glow"><i class="fa-solid fa-fingerprint"></i></div>
+                                <div>
+                                    <h5 class="mb-1 text-white">Identity Verification Layer</h5>
+                                    <p class="section-desc mb-4">Every merchant is explicitly validated against transparent registration protocols.</p>
+                                </div>
+                            </div>
+                            <div class="mission-stack-item d-flex gap-3 align-items-start">
+                                <div class="stack-icon-wrapper purple-glow"><i class="fa-solid fa-vault"></i></div>
+                                <div>
+                                    <h5 class="mb-1 text-white">Smart Escrow Mechanics</h5>
+                                    <p class="section-desc mb-4">Funds are safely held away from malicious execution frameworks until items drop off.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Contextual Mockup with Floating Data Metrics -->
+                    <div class="col-lg-6 position-relative">
+                        <div class="mission-visual-wrapper mx-auto">
+                            <!-- Floating Metric Card 1 -->
+                            <div class="floating-metric-badge badge-top-left glass-card">
+                                <span class="badge-icon text-success"><i class="fa-solid fa-shield-halved"></i></span>
+                                <div>
+                                    <div class="badge-num">100%</div>
+                                    <div class="badge-txt">Secured Escrow</div>
+                                </div>
+                            </div>
+                            <!-- Floating Metric Card 2 -->
+                            <div class="floating-metric-badge badge-bottom-right glass-card">
+                                <span class="badge-icon text-info"><i class="fa-solid fa-user-shield"></i></span>
+                                <div>
+                                    <div class="badge-num">Verified</div>
+                                    <div class="badge-txt">KYC Checked</div>
+                                </div>
+                            </div>
+                            <!-- Primary Showcase Image Element -->
+                            <div class="zoom-hover-container shadow-lg rounded-5 custom-border-glow">
+                                <img src="{% static 'images/mission-illustration.png' %}" alt="Our Core Mission" class="img-fluid dynamic-zoom-img w-100 d-block">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Why Trust Us (Core Values with Glassmorphism Cards) -->
+        <section class="values-section py-5 position-relative">
+            <div class="container">
+                <div class="text-center mb-5 reveal-on-scroll">
+                    <span class="section-subtitle">OUR KEY FOCUS</span>
+                    <h2 class="section-title">Why Trusty Shop?</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3 reveal-on-scroll">
+                        <div class="glass-card tilt-card">
+                            <div class="card-icon icon-heart"><i class="fa-solid fa-shield-halved text-primary"></i></div>
+                            <h3>Escrow Protection</h3>
+                            <p>Payments remain protected safely locked in our system until products arrive successfully.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 reveal-on-scroll">
+                        <div class="glass-card tilt-card">
+                            <div class="card-icon icon-shield"><i class="fa-solid fa-user-check text-purple"></i></div>
+                            <h3>Verified Sellers</h3>
+                            <p>Merchant identities and individual postings undergo extensive platform approval stages.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 reveal-on-scroll">
+                        <div class="glass-card tilt-card">
+                            <div class="card-icon icon-speed"><i class="fa-solid fa-bolt text-cyan"></i></div>
+                            <h3>Lightning Speed</h3>
+                            <p>Real-time transactional routing hooks complete validation loops in seconds.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 reveal-on-scroll">
+                        <div class="glass-card tilt-card">
+                            <div class="card-icon icon-globe"><i class="fa-solid fa-headset text-success"></i></div>
+                            <h3>24/7 Support</h3>
+                            <p>Dedicated administration mediation channels are standing by around the clock to assist you.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. How It Works (Premium Interactive Animated Vertical Timeline) -->
+        <section id="how-it-works" class="timeline-section py-5">
+            <div class="container">
+                <div class="text-center mb-5 reveal-on-scroll">
+                    <span class="section-subtitle">TRANSPARENT WORKFLOW</span>
+                    <h2 class="section-title">How Trusty Shop Works</h2>
+                </div>
+                <div class="timeline-wrapper">
+                    <div class="timeline-progress-line">
+                        <div class="timeline-progress-fill" id="timelineFill"></div>
+                    </div>
+
+                    <div class="timeline-item left reveal-on-scroll">
+                        <div class="timeline-dot">1</div>
+                        <div class="timeline-content glass-card">
+                            <h4>Create Account</h4>
+                            <p>Register effortlessly as a secure profile Buyer or authenticated platform Vendor.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item right reveal-on-scroll">
+                        <div class="timeline-dot">2</div>
+                        <div class="timeline-content glass-card">
+                            <h4>Post & Verify Product</h4>
+                            <p>Sellers upload listings directly into our secure staging database pipeline for validation.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item left reveal-on-scroll">
+                        <div class="timeline-dot">3</div>
+                        <div class="timeline-content glass-card">
+                            <h4>Admin Approval</h4>
+                            <p>System administrations evaluate product parameters to eliminate counterfeit assets instantly.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item right reveal-on-scroll">
+                        <div class="timeline-dot">4</div>
+                        <div class="timeline-content glass-card">
+                            <h4>Secure Transaction</h4>
+                            <p>Buyers deploy funds to an isolated smart-escrow lockbox away from third-party threats.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item left reveal-on-scroll">
+                        <div class="timeline-dot">5</div>
+                        <div class="timeline-content glass-card">
+                            <h4>Tracked Delivery</h4>
+                            <p>Deep milestone configurations synchronize updates until items land at the buyer's dropoff point.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item right reveal-on-scroll">
+                        <div class="timeline-dot">6</div>
+                        <div class="timeline-content glass-card">
+                            <h4>Review & Release</h4>
+                            <p>Inspect physical assets, issue high-satisfaction user reviews, and trigger instant payout distributions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Live Statistics (Animated Counting Modules) -->
+        <section class="stats-section py-5">
+            <div class="container">
+                <div class="row g-4 text-center">
+                    <div class="col-md-3 col-6 reveal-on-scroll">
+                        <div class="stat-box">
+                            <h2 class="counter-number" data-target="5000">0</h2>
+                            <p class="stat-label">Happy Buyers</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 reveal-on-scroll">
+                        <div class="stat-box">
+                            <h2 class="counter-number" data-target="1200">0</h2>
+                            <p class="stat-label">Trusted Sellers</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 reveal-on-scroll">
+                        <div class="stat-box">
+                            <h2 class="counter-number" data-target="15000">0</h2>
+                            <p class="stat-label">Listed Products</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 reveal-on-scroll">
+                        <div class="stat-box">
+                            <h2><span class="counter-number" data-target="98">0</span>%</h2>
+                            <p class="stat-label">Satisfaction Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Meet Our Platform Features (Interactive Workspace Showcase) -->
+        <section class="platform-section py-5 position-relative reveal-on-scroll">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <!-- Left Side: Dynamic Feature Stacking -->
+                    <div class="col-lg-5">
+                        <span class="section-subtitle">THE INFRASTRUCTURE</span>
+                        <h2 class="section-title mb-4">Architected For Total Asset Protection</h2>
+                        <p class="section-desc mb-4">We constructed a resilient, highly optimized transaction engine running premium verification protocols inside beautiful glass environments.</p>
+
+                        <!-- Interactive Stacking Blocks -->
+                        <div class="platform-workspace-stack d-flex flex-column gap-3">
+                            <div class="workspace-feature-card active-card glass-card">
+                                <div class="bento-icon-circle purple-glow"><i class="fa-solid fa-lock-shield"></i></div>
+                                <div>
+                                    <h4 class="text-white h5 mb-2">Automated Escrow Protocol</h4>
+                                    <p class="text-gray small mb-0">Smart system checkpoints isolate transactional currency away from malicious vectors until courier confirmation loops close.</p>
+                                </div>
+                            </div>
+                            <div class="workspace-feature-card glass-card">
+                                <div class="bento-icon-circle purple-glow"><i class="fa-solid fa-wallet"></i></div>
+                                <div>
+                                    <h4 class="text-white h5 mb-2">Integrated Platform Wallet</h4>
+                                    <p class="text-gray small mb-0">Manage operational balances, deposit credits, and track instant payouts directly within secure glass user portals.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Immersive Live Dashboard Monitor Visual -->
+                    <div class="col-lg-7">
+                        <div class="workspace-monitor-frame glass-card p-4 position-relative">
+                            <!-- Top Window Controls Decorator Bar -->
+                            <div class="monitor-window-bar d-flex gap-2 mb-4 align-items-center">
+                                <span class="dot-win opacity-50"><i class="fa-solid fa-circle tiny text-danger"></i></span>
+                                <span class="dot-win opacity-50"><i class="fa-solid fa-circle tiny text-warning"></i></span>
+                                <span class="dot-win opacity-50"><i class="fa-solid fa-circle tiny text-success"></i></span>
+                                <span class="ms-auto font-monospace text-purple small px-3 py-0.5 rounded-pill bg-black-20">security_node_v2.terminal</span>
+                            </div>
+
+                            <!-- Dashboard UI Simulation Matrix -->
+                            <div class="monitor-inner-dashboard p-3 rounded-3 bg-black-20">
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <div class="p-3 border-glass-10 rounded-3">
+                                            <span class="tiny text-purple d-block mb-1 text-uppercase font-weight-700">Protected Balances</span>
+                                            <div class="h4 text-white mb-0 font-monospace">Ks 4,850,000</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="p-3 border-glass-10 rounded-3 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <span class="tiny text-purple d-block mb-1 text-uppercase font-weight-700">Network State</span>
+                                                <span class="text-white small font-weight-600">Active Monitoring</span>
+                                            </div>
+                                            <div class="security-radar-box">
+                                                <div class="radar-line"></div>
+                                                <i class="fa-solid fa-user-shield text-purple"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="p-3 border-glass-10 rounded-3">
+                                            <span class="tiny text-white d-block mb-2 text-uppercase font-weight-700">System Activity Ledger</span>
+                                            <div class="font-monospace tiny text-white-50 d-flex flex-column gap-1">
+                                                <div><span class="text-success">[OK]</span> Verification handshakes validated successfully.</div>
+                                                <div class="text-white-50"><span class="text-purple">[ESCROW]</span> Staging vault assets locked securely.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. Frequently Asked Questions (Premium Smooth Accordion) -->
+        <section class="faq-section py-5 reveal-on-scroll">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="section-subtitle">COMMON QUERIES</span>
+                    <h2 class="section-title">Frequently Asked Questions</h2>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="faq-accordion">
+                            <div class="faq-item glass-card active">
+                                <div class="faq-trigger">
+                                    <h5>Is Trusty Shop safe?</h5>
+                                    <span class="faq-icon"></span>
+                                </div>
+                                <div class="faq-body">
+                                    <p class="mb-0">Yes absolutely. All participating sellers and product listings undergo rigorous administrative validation loops prior to getting published inside live discovery grids.</p>
+                                </div>
+                            </div>
+                            <div class="faq-item glass-card">
+                                <div class="faq-trigger">
+                                    <h5>What exactly is Escrow Protection?</h5>
+                                    <span class="faq-icon"></span>
+                                </div>
+                                <div class="faq-body">
+                                    <p class="mb-0">Escrow functions by capturing payment capital in a secure, neutral staging vault. It completely blocks vendor extraction until shipment verification confirms delivery.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. High-Impact Call to Action (Gradient Overlay Architecture) -->
+        <section class="cta-section py-5 reveal-on-scroll">
+            <div class="container text-center position-relative z-index-2">
+                <div class="gradient-cta-box rounded-5 p-5 shadow-lg position-relative overflow-hidden">
+                    <div class="cta-glow-overlay"></div>
+                    <h2 class="display-6 text-white font-weight-bold mb-3">Join Thousands of Users on Trusty Shop</h2>
+                    <p class="text-white-50 max-w-600 mx-auto mb-4">Buy smarter. Sell faster. Trade safer. Initialize your digital operational profile under 5 minutes.</p>
+                    <a href="#" class="btn-magnetic btn-white-glow">Get Started Today</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 12. Floating Top Control Node -->
+        <button id="backToTop" class="floating-top-btn" title="Back to Top">↑</button>
+    </div>
+
+    <!-- ==================================================
+         FOOTER SECTION (PRESERVED)
+    ================================================== -->
+    <footer>
+        <div class="container">
+            <div class="row g-5">
+                <!-- BRAND -->
+                <div class="col-lg-4">
+                    <h3><i class="bi bi-shield-check"></i> Trusty Shop</h3>
+                    <p>A secure online marketplace where buyers and sellers trade with confidence using wallet payment, escrow protection, and trusted delivery.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-tiktok"></i></a>
+                        <a href="#"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- QUICK LINKS -->
+                <div class="col-lg-2">
+                    <h5>Quick Links</h5>
+                    <ul>
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how">How It Works</a></li>
+                        <li><a href="{% url 'about' %}">About Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- BUYER -->
+                <div class="col-lg-2">
+                    <h5>For Buyers</h5>
+                    <ul>
+                        <li><a href="#">Browse Products</a></li>
+                        <li><a href="#">My Cart</a></li>
+                        <li><a href="#">Order Tracking</a></li>
+                        <li><a href="#">Payment Methods</a></li>
+                        <li><a href="#">Buyer Protection</a></li>
+                    </ul>
+                </div>
+
+                <!-- SELLER -->
+                <div class="col-lg-2">
+                    <h5>For Sellers</h5>
+                    <ul>
+                        <li><a href="#">Become Seller</a></li>
+                        <li><a href="#">Seller Dashboard</a></li>
+                        <li><a href="#">Post Products</a></li>
+                        <li><a href="#">Seller Rules</a></li>
+                        <li><a href="#">Seller Support</a></li>
+                    </ul>
+                </div>
+
+                <!-- CONTACT -->
+                <div class="col-lg-2">
+                    <h5>Contact</h5>
+                    <ul>
+                        <li><i class="bi bi-envelope"></i> support@trustyshop.com</li>
+                        <li><i class="bi bi-geo-alt"></i> Myanmar</li>
+                        <li><i class="bi bi-telephone"></i> +95 9 XXX XXX XXX</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- BOTTOM FOOTER -->
+            <div class="footer-bottom">
+                <p>© 2026 Trusty Shop. All Rights Reserved.</p>
+                <div>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">Help Center</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="cartToast" class="cart-toast">
+        ✅ Product added to cart
+    </div>
+
+    <!-- ==================================================
+         JAVASCRIPT SECTION
+    ================================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/about.js' %}"></script>
+    <script src="{% static 'js/header-footer.js' %}"></script>
+</body>
+
+</html>
