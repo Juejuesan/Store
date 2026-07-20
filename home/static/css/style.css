@@ -233,7 +233,52 @@ body{
 
 }
 
+/* =============================
+   Navbar Profile
+============================= */
 
+.profile-link{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.nav-profile-img{
+    width:40px !important;
+    height:40px !important;
+    min-width:40px;
+    min-height:40px;
+
+    border-radius:50%;
+    object-fit:cover;
+
+    border:2px solid #1565C0;
+    display:block;
+}
+
+.nav-profile-icon{
+
+    font-size:36px;
+
+    color:#1565C0;
+
+}
+
+.profile-name{
+
+    font-weight:600;
+
+}
+
+.profile-link:hover .nav-profile-img{
+
+    transform:scale(1.08);
+
+}
 
 /* =====================================================
    LOGO SECTION
