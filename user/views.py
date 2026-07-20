@@ -11,7 +11,7 @@ from .forms import RegisterForm, LoginForm, ProfilePicForm
 # REGISTER VIEW
 def register_view(request):
     if request.user.is_authenticated:
-        return redirect('user:dashboard')
+        return redirect('home')
 
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
@@ -28,12 +28,18 @@ def register_view(request):
 
             special_char_pattern = re.compile(r'[@_!#$%^&*()<>?/\|}{~:]')
             if not special_char_pattern.search(password):
-                messages.error(request, "Password must contain at least one special character (e.g., @, #, $, %)! ")
+                messages.error(
+                    request,
+                    "Password must contain at least one special character (e.g. @, #, $, %)!"
+                )
                 return render(request, 'user/register.html', {'form': form})
 
 
             if len(address) > 200:
-                messages.error(request, "Address is too long! (Maximum 200 characters allowed)")
+                messages.error(
+                    request,
+                    "Address is too long! (Maximum 200 characters allowed)"
+                )
                 return render(request, 'user/register.html', {'form': form})
 
 
@@ -41,21 +47,33 @@ def register_view(request):
             user.set_password(password)
             user.save()
 
+            # Get uploaded image
+            profile_pic = request.FILES.get("profile_pic")
 
-            user.profile.phone_number = form.cleaned_data['phone_number']
-            user.profile.address = address
-            user.profile.gender = form.cleaned_data['gender']
-            if form.cleaned_data.get('profile_pic'):
-                user.profile.profile_pic = form.cleaned_data['profile_pic']
-            user.profile.save()
+            # Update profile created by signal
+            profile = user.profile
+            profile.phone_number = form.cleaned_data['phone_number']
+            profile.address = address
+            profile.gender = form.cleaned_data['gender']
+
+            if profile_pic:
+                profile.profile_pic = profile_pic
+
+            profile.save()
 
             login(request, user)
-            messages.success(request, f'Welcome, {user.first_name or user.username}!')
-            return redirect('user:login')
+            messages.success(
+                request,
+                f'Welcome, {user.first_name or user.username}!'
+            )
+
+            return redirect('home')
+
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
+                    messages.error(request, f"{field}: {error}")
+
     else:
         form = RegisterForm()
 
@@ -89,7 +107,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome back, {user.first_name or user.username}!')
-                return redirect('user:dashboard')
+                return redirect('home')
             else:
                 messages.error(request, 'Invalid username/email or password.')
     else:

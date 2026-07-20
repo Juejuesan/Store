@@ -146,7 +146,7 @@ Noti
 
 <li class="nav-item">
 
-<a class="nav-link" href="#">
+<a class="nav-link" href="{% url 'about' %}">
 
 <i class="fa-solid fa-circle-info"></i>
 
@@ -187,19 +187,35 @@ Cart
 
 <!-- PROFILE -->
 
+{% if user.is_authenticated %}
 <li class="nav-item">
+    <a href="{% url 'user:dashboard' %}" class="nav-link profile-link">
 
-<a class="nav-link" href="#">
+        {% if user.profile.profile_pic %}
+            <img src="{{ user.profile.profile_pic.url }}"
+                 class="nav-profile-img"
+                 alt="Profile">
+        {% else %}
+            <i class="fa-solid fa-circle-user nav-profile-icon"></i>
+        {% endif %}
 
+        <span class="profile-name">
+            {{ user.username }}
+        </span>
 
-<i class="fa-solid fa-user"></i>
-
-Profile
-
-
-</a>
-
+    </a>
 </li>
+
+{% else %}
+
+<li class="nav-item">
+    <a href="{% url 'user:login' %}" class="nav-link">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        Login
+    </a>
+</li>
+
+{% endif %}
 
 
 
