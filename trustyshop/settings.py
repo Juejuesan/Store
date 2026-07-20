@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'user',
     'posts',
     'adminpanel',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -60,13 +61,14 @@ ROOT_URLCONF = 'trustyshop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'adminpanel.context_processors.admin_notifications',
             ],
         },
     },
@@ -122,6 +124,13 @@ STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+LOGIN_URL = "/user/login/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
 
 
 

@@ -1,3 +1,5 @@
+from .models import Profile
+from django.contrib import messages
 import re
 import os
 from django.shortcuts import render, redirect
@@ -36,13 +38,41 @@ def register_view(request):
                 messages.error(request, "Address is too long! (Maximum 200 characters allowed)")
                 return render(request, 'user/register.html', {'form': form})
 
+            phone_number = form.cleaned_data['phone_number']
+
+            if Profile.objects.filter(phone_number=phone_number).exists():
+                messages.error(
+                    request,
+                    "This phone number is already registered!"
+                )
+
+                return render(
+                    request,
+                    'user/register.html',
+                    {
+                        'form': form
+                    }
+                )
 
             user = form.save(commit=False)
+
             user.set_password(password)
+
             user.save()
 
+            profile, created = Profile.objects.get_or_create(
+                user=user
+            )
 
-            user.profile.phone_number = form.cleaned_data['phone_number']
+            profile.phone_number = form.cleaned_data['phone_number']
+            profile.address = address
+            profile.gender = form.cleaned_data['gender']
+
+            if form.cleaned_data.get('profile_pic'):
+                profile.profile_pic = form.cleaned_data['profile_pic']
+
+            profile.save()
+
             user.profile.address = address
             user.profile.gender = form.cleaned_data['gender']
             if form.cleaned_data.get('profile_pic'):

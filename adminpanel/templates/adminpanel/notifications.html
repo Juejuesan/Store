@@ -1,0 +1,97 @@
+{% extends 'adminpanel/base_admin.html' %}
+
+{% block title %}
+
+Notifications | Admin
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<h1 class="page-title">
+
+    Notifications
+
+</h1>
+
+
+
+<div class="notification-container">
+
+
+{% for notification in admin_notifications %}
+
+
+<div class="notification-card">
+
+
+    <div class="icon">
+
+        <i class="fa-solid fa-box-open"></i>
+
+    </div>
+
+
+
+    <div class="info">
+
+
+        <h4>
+
+            {{ notification.message }}
+
+        </h4>
+
+
+        <p>
+
+            Seller:
+            {{ notification.post.user.username }}
+
+        </p>
+
+
+        <small>
+
+            {{ notification.created_at }}
+
+        </small>
+
+
+    </div>
+
+
+
+    <a href="{% url 'post_detail' notification.post.id %}"
+       class="view-btn">
+
+
+        View
+
+
+    </a>
+
+
+</div>
+
+
+
+{% empty %}
+
+
+<h3>
+
+No New Notifications
+
+</h3>
+
+
+{% endfor %}
+
+
+</div>
+
+
+{% endblock %}

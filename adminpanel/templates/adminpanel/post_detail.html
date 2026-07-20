@@ -1,0 +1,163 @@
+{% extends "adminpanel/base_admin.html" %}
+{% load static %}
+
+{% block title %}
+Review Post
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet"
+href="{% static 'css/post_detail.css' %}">
+
+<div class="review-page">
+
+    <div class="review-header">
+
+        <div>
+
+            <h1>Post Review</h1>
+
+            <p>
+                Review seller's submitted product before publishing.
+            </p>
+
+        </div>
+
+        <a href="{% url 'posts' %}" class="back-btn">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+
+    <div class="review-grid">
+
+        <div class="image-card">
+
+            {% for image in post.images.all %}
+
+                <img src="{{ image.image.url }}" class="main-image">
+
+            {% empty %}
+
+                <img src="{% static 'images/no-image.png' %}"
+                     class="main-image">
+
+            {% endfor %}
+
+        </div>
+
+
+
+        <div class="info-card">
+
+            <div class="badge">
+
+                Pending Review
+
+            </div>
+
+            <h2>
+
+                {{ post.category }}
+
+            </h2>
+
+            <hr>
+
+            <div class="info-row">
+
+                <span>Seller</span>
+
+                <strong>{{ post.user.username }}</strong>
+
+            </div>
+
+            <div class="info-row">
+
+                <span>Price</span>
+
+                <strong>{{ post.price }} MMK</strong>
+
+            </div>
+
+            <div class="info-row">
+
+                <span>Quantity</span>
+
+                <strong>{{ post.quantity }}</strong>
+
+            </div>
+
+            <div class="info-row">
+
+                <span>Type</span>
+
+                <strong>{{ post.type }}</strong>
+
+            </div>
+
+            <div class="info-row">
+
+                <span>Submitted</span>
+
+                <strong>{{ post.created_at }}</strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="description-card">
+
+        <h3>
+
+            Product Description
+
+        </h3>
+
+        <p>
+
+            {{ post.description }}
+
+        </p>
+
+    </div>
+
+
+    <div class="action-area">
+
+        <a href="{% url 'approve_post' post.id %}"
+
+           class="approve-btn">
+
+            <i class="fa-solid fa-check"></i>
+
+            Approve Post
+
+        </a>
+
+        <a href="{% url 'reject_post' post.id %}"
+
+           class="reject-btn">
+
+            <i class="fa-solid fa-xmark"></i>
+
+            Reject Post
+
+        </a>
+
+    </div>
+
+</div>
+
+<script src="{% static 'js/post_detail.js' %}"></script>
+
+{% endblock %}
