@@ -16,11 +16,15 @@ class Post(models.Model):
         ('second', 'Second Hand'),
     ]
 
+
+
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     ]
+
+
 
     user = models.ForeignKey(
         User,on_delete=models.CASCADE,related_name='posts'

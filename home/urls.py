@@ -7,4 +7,5 @@ urlpatterns = [
     # path('', views.home_view, name='home'),
     path('', views.home, name='home'),
     path("viewdetail/", views.viewdetail, name="viewdetail"),
+path("createPost/", views.createPost, name="createPost")
 ]

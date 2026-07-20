@@ -381,6 +381,12 @@ transform:rotate(360deg);
 
     cursor:pointer;
 
+    border:none;
+
+    background:transparent;
+
+    padding:0;
+
 }
 
 .notification i{
@@ -964,20 +970,30 @@ transform:rotate(360deg);
 /* ==========================================================
             BEAUTIFUL DATA TABLE (Layers & Rows Scroll)
 ========================================================== */
-
 .table-container {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,.08);
-    margin-top: 30px;
-    width: 100%;
 
-    /* SCROLL WINDOW SETUP: Lock height so rows scroll inside container */
-    max-height: 490px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: relative;
+    background:rgba(255,255,255,.75);
+
+    backdrop-filter:blur(20px);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+    margin-top:20px;
+
+    width:100%;
+
+    max-height:490px;
+
+    overflow-y:auto;
+
+    overflow-x:auto;
+
+    position:relative;
+
 }
 
 .table-container table {
@@ -1355,5 +1371,156 @@ body::before{
         opacity:0;
 
     }
+
+}
+
+.notification-container{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+
+
+.notification-card{
+
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+
+}
+
+
+
+.notification-card .icon{
+
+
+    width:55px;
+
+    height:55px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:22px;
+
+
+}
+
+
+
+.notification-card .info{
+
+    flex:1;
+
+}
+
+
+
+.view-btn{
+
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:10px 25px;
+
+    border-radius:30px;
+
+    text-decoration:none;
+
+
+}
+
+
+.view-btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* ==========================================================
+PENDING POSTS PAGE HEADER
+========================================================== */
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.page-subtitle{
+
+    margin-top:5px;
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+.product-image{
+
+    width:62px;
+
+    height:62px;
+
+    object-fit:cover;
+
+    border-radius:12px;
+
+    border:2px solid #e2e8f0;
+
+    display:block;
+
+}
+
+.table-container tbody tr{
+
+    transition:.3s ease;
+
+}
+
+.table-container tbody tr:hover td{
+
+    background:#eff6ff;
+
+}
+
+.table-container td{
+
+    height:78px;
 
 }

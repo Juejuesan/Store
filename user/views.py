@@ -1,3 +1,5 @@
+from .models import Profile
+from django.contrib import messages
 import re
 import os
 from django.shortcuts import render, redirect
@@ -11,7 +13,7 @@ from .forms import RegisterForm, LoginForm, ProfilePicForm
 # REGISTER VIEW
 def register_view(request):
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('user:dashboard')
 
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
@@ -28,25 +30,41 @@ def register_view(request):
 
             special_char_pattern = re.compile(r'[@_!#$%^&*()<>?/\|}{~:]')
             if not special_char_pattern.search(password):
-                messages.error(
-                    request,
-                    "Password must contain at least one special character (e.g. @, #, $, %)!"
-                )
+                messages.error(request, "Password must contain at least one special character (e.g., @, #, $, %)! ")
                 return render(request, 'user/register.html', {'form': form})
 
 
             if len(address) > 200:
-                messages.error(
-                    request,
-                    "Address is too long! (Maximum 200 characters allowed)"
-                )
+                messages.error(request, "Address is too long! (Maximum 200 characters allowed)")
                 return render(request, 'user/register.html', {'form': form})
 
+            phone_number = form.cleaned_data['phone_number']
+
+            if Profile.objects.filter(phone_number=phone_number).exists():
+                messages.error(
+                    request,
+                    "This phone number is already registered!"
+                )
+
+                return render(
+                    request,
+                    'user/register.html',
+                    {
+                        'form': form
+                    }
+                )
 
             user = form.save(commit=False)
             user.set_password(password)
             user.save()
 
+            profile, created = Profile.objects.get_or_create(
+                user=user
+            )
+
+            profile.phone_number = form.cleaned_data['phone_number']
+            profile.address = address
+            profile.gender = form.cleaned_data['gender']
             # Get uploaded image
             profile_pic = request.FILES.get("profile_pic")
 
@@ -56,24 +74,28 @@ def register_view(request):
             profile.address = address
             profile.gender = form.cleaned_data['gender']
 
+            if form.cleaned_data.get('profile_pic'):
+                profile.profile_pic = form.cleaned_data['profile_pic']
+
+            profile.save()
+
+            user.profile.address = address
+            user.profile.gender = form.cleaned_data['gender']
+            if form.cleaned_data.get('profile_pic'):
+                user.profile.profile_pic = form.cleaned_data['profile_pic']
+            user.profile.save()
             if profile_pic:
                 profile.profile_pic = profile_pic
 
             profile.save()
 
             login(request, user)
-            messages.success(
-                request,
-                f'Welcome, {user.first_name or user.username}!'
-            )
-
-            return redirect('home')
-
+            messages.success(request, f'Welcome, {user.first_name or user.username}!')
+            return redirect('user:login')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f"{field}: {error}")
-
+                    messages.error(request, f"{field.capitalize()}: {error}")
     else:
         form = RegisterForm()
 

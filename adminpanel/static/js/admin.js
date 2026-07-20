@@ -180,63 +180,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-    /* =====================================
-            Notification Panel
-    ===================================== */
-
-
-    const bell =
-    document.querySelector(".notification");
+/* =====================================
+        Notification Panel
+===================================== */
 
 
-    const panel =
-    document.querySelector(".notification-panel");
+const bell =
+document.getElementById("notificationBell");
 
 
-    const close =
-    document.getElementById("closeNotification");
+const panel =
+document.getElementById("notificationPanel");
 
 
-
-    if(bell && panel){
-
-
-        bell.addEventListener("click",()=>{
+const close =
+document.getElementById("closeNotification");
 
 
-            panel.classList.add("active");
+if (bell && panel) {
+
+    bell.addEventListener("click", () => {
+
+        panel.classList.add("active");
+
+    });
+
+}
 
 
-        });
+if (close && panel) {
 
+    close.addEventListener("click", () => {
 
-    }
+        panel.classList.remove("active");
 
+    });
 
-
-    if(close && panel){
-
-
-        close.addEventListener("click",()=>{
-
-
-            panel.classList.remove("active");
-
-
-        });
-
-
-    }
-
-
-
-
-
-
-
-
-
+}
     /* =====================================
             Card Hover Animation
     ===================================== */
