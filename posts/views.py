@@ -13,7 +13,7 @@ from user.models import Profile
 
 @login_required
 def createPost(request):
-    user = Profile.objects.get(user=request.profile)
+    user = Profile.objects.get(user=request.user)
 
     if user.status == "Banned":
         messages.error(request, "Your account has been banned.")
