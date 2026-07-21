@@ -90,7 +90,7 @@ def approve_post(request, post_id):
     post.save()
 
     Notification.objects.create(
-        user=post.user,
+        user=post.user.user,
         post=post,
         message="Your post has been approved.",
         notification_type="approved",
@@ -106,7 +106,7 @@ def reject_post(request, post_id):
     post.save()
 
     Notification.objects.create(
-        user=post.user,
+        user=post.user.user,
         post=post,
         message="Your post has been rejected.",
         notification_type="rejected",
