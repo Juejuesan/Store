@@ -1,32 +1,35 @@
 {% extends 'user/base.html' %}
+{% load static %}
 
 {% block title %}Register | TrustyShop{% endblock %}
 
 {% block content %}
 <div class="max-w-2xl auth-card p-8 sm:p-10 my-8">
     <div class="text-center">
-        <div class="brand-icon-wrapper">
-            <i class="fa-solid fa-user-plus"></i>
+        <!-- Create Account Icon Zone (Click to Upload & Preview) -->
+        <div class="brand-icon-wrapper overflow-hidden cursor-pointer relative group" onclick="document.getElementById('profilePicInput').click();" title="Click to upload photo">
+            <i id="previewIcon" class="fa-solid fa-user-plus text-2xl text-slate-400 group-hover:text-blue-400 transition-colors"></i>
+            <img id="profilePreview" class="w-full h-full object-cover hidden" alt="Profile Preview">
         </div>
         <h2 class="text-2xl font-bold text-white">Create Account</h2>
         <p class="text-slate-400 text-sm mt-1">Please fill in details to join TrustyShop</p>
     </div>
 
-    <form class="mt-8 space-y-4" method="POST" action="{% url 'user:register' %}" enctype="multipart/form-data" id="registerForm">
+    <form class="mt-8 space-y-4" method="POST" action="{% url 'user:register' %}" enctype="multipart/form-data" id="registerForm" autocomplete="off">
         {% csrf_token %}
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="form-group">
                 <label class="block text-sm font-medium text-slate-300 mb-1">Username</label>
                 <div class="input-container">
-                    <input type="text" name="username" required class="auth-input" placeholder="johndoe">
+                    <input type="text" name="username" required class="auth-input" placeholder="johndoe" autocomplete="off">
                     <i class="fa-solid fa-at input-icon"></i>
                 </div>
             </div>
             <div class="form-group">
                 <label class="block text-sm font-medium text-slate-300 mb-1">Email Address</label>
                 <div class="input-container">
-                    <input type="email" name="email" required class="auth-input" placeholder="john@example.com">
+                    <input type="email" name="email" required class="auth-input" placeholder="john@example.com" autocomplete="off">
                     <i class="fa-regular fa-envelope input-icon"></i>
                 </div>
             </div>
@@ -36,7 +39,7 @@
             <div class="form-group">
                 <label class="block text-sm font-medium text-slate-300 mb-1">Phone Number</label>
                 <div class="input-container">
-                    <input type="text" name="phone_number" required class="auth-input" placeholder="09xxxxxxxxx">
+                    <input type="text" name="phone_number" required class="auth-input" placeholder="09xxxxxxxxx" autocomplete="off">
                     <i class="fa-solid fa-phone input-icon"></i>
                 </div>
             </div>
@@ -56,33 +59,28 @@
         <div class="form-group">
             <label class="block text-sm font-medium text-slate-300 mb-1">Address</label>
             <div class="input-container">
-                <input type="text" name="address" id="addressInput" maxlength="200" required class="auth-input" placeholder="No.123, Street, Yangon, Myanmar">
+                <input type="text" name="address" id="addressInput" maxlength="200" required class="auth-input" placeholder="No.123, Street, Yangon, Myanmar" autocomplete="off">
                 <p id="addressCount" class="text-xs text-slate-500 mt-1">0 / 200</p>
                 <i class="fa-solid fa-location-dot input-icon"></i>
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Profile Photo (Optional)</label>
-            <div class="input-container">
-                <input type="file" name="profile_pic" accept="image/*" class="auth-input pt-2.5">
-                <i class="fa-regular fa-image input-icon"></i>
-            </div>
-        </div>
+        <!-- Hidden Profile Picture File Input (Triggered by Icon Click) -->
+        <input type="file" name="profile_pic" id="profilePicInput" accept="image/*" class="hidden" onchange="previewImage(this)">
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="form-group">
                 <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
                 <div class="input-container">
-                    <input type="password" name="password" id="passwordInput" maxlength="8" required class="auth-input" placeholder="••••••••">
+                    <input type="password" name="password" id="passwordInput" maxlength="20" required class="auth-input" placeholder="••••••••" autocomplete="new-password">
                     <i class="fa-solid fa-key input-icon"></i>
                 </div>
                 <div class="mt-2 space-y-1 text-xs">
                     <p id="lenCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
-                        <i class="fa-solid fa-circle-xmark"></i> At least 8 characters
+                        <i class="fa-solid fa-circle-xmark"></i> password should be at least 8-20 characters
                     </p>
                     <p id="specCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
-                        <i class="fa-solid fa-circle-xmark"></i> Must contain a special character (@, #, $, etc.)
+                        <i class="fa-solid fa-circle-xmark"></i> Must contain at least special character (@, #, $, etc.)
                     </p>
                 </div>
             </div>
@@ -90,7 +88,7 @@
             <div class="form-group">
                 <label class="block text-sm font-medium text-slate-300 mb-1">Confirm Password</label>
                 <div class="input-container">
-                    <input type="password" name="confirm_password" id="confirmPasswordInput" required class="auth-input" placeholder="••••••••">
+                    <input type="password" name="confirm_password" id="confirmPasswordInput" required class="auth-input" placeholder="••••••••" autocomplete="new-password">
                     <i class="fa-solid fa-shield-halved input-icon"></i>
                 </div>
                 <div class="mt-2 text-xs">
@@ -102,7 +100,6 @@
         </div>
 
         <button type="submit" id="submitBtn" class="btn-primary w-full mt-4 opacity-50 cursor-not-allowed" disabled>
-
             <i class="fa-solid fa-user-plus"></i> Create Account
         </button>
     </form>
@@ -115,6 +112,10 @@
     </div>
 </div>
 
+<!-- JJS External JavaScript File (Photo Preview Logic) -->
+<script src="{% static 'user/js/profile_preview.js' %}"></script>
+
+<!-- TNS Validation Script (Page Logic) -->
 <script>
 const passwordInput = document.getElementById('passwordInput');
 const confirmInput = document.getElementById('confirmPasswordInput');
@@ -142,12 +143,12 @@ if (addressInput && addressCount) {
     });
 }
 
-// Password Validation
+// Password Validation Logic
 function validatePasswords() {
     const password = passwordInput.value;
     const confirm = confirmInput.value;
 
-    const isLongEnough = password.length >= 8;
+    const isLongEnough = password.length >= 8 && password.length <= 20;
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
     const passwordsMatch = password === confirm && confirm !== "";
 
@@ -184,7 +185,7 @@ function validatePasswords() {
         matchCheck.querySelector('i').className = "fa-solid fa-circle-xmark";
     }
 
-    // Enable Button
+    // Enable/Disable Submit Button
     if (isLongEnough && hasSpecialChar && passwordsMatch) {
         submitBtn.disabled = false;
         submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');

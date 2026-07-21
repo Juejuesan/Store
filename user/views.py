@@ -20,27 +20,23 @@ def register_view(request):
             password = form.cleaned_data.get('password')
             address = form.cleaned_data.get('address', '')
 
-
-            if len(password) != 8:
-                messages.error(request, "Password must be exactly 8 characters long!")
+            # 🛑 [FIX 1] Password Length ကို ၈ လုံး မှ ၂၀ လုံးအတွင်း စစ်ဆေးရန် ပြင်ဆင်ထားပါသည်
+            if len(password) < 8 or len(password) > 20:
+                messages.error(request, "Password must be between 8 and 20 characters long!")
                 return render(request, 'user/register.html', {'form': form})
-
 
             special_char_pattern = re.compile(r'[@_!#$%^&*()<>?/\|}{~:]')
             if not special_char_pattern.search(password):
                 messages.error(request, "Password must contain at least one special character (e.g., @, #, $, %)! ")
                 return render(request, 'user/register.html', {'form': form})
 
-
             if len(address) > 200:
                 messages.error(request, "Address is too long! (Maximum 200 characters allowed)")
                 return render(request, 'user/register.html', {'form': form})
 
-
             user = form.save(commit=False)
             user.set_password(password)
             user.save()
-
 
             user.profile.phone_number = form.cleaned_data['phone_number']
             user.profile.address = address
@@ -51,7 +47,9 @@ def register_view(request):
 
             login(request, user)
             messages.success(request, f'Welcome, {user.first_name or user.username}!')
-            return redirect('user:login')
+
+            # 🛑 [FIX 2] Login Page/Home သို့ မသွားဘဲ Dashboard/Profile Page သို့ တိုက်ရိုက် ရောက်စေရန် ပြင်ဆင်ထားပါသည်
+            return redirect('user:dashboard')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -65,7 +63,7 @@ def register_view(request):
 # LOGIN VIEW
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('user:dashboard')  # Logged in ဖြစ်ပြီးသားဆိုလျှင်လည်း Dashboard သို့ သွားမည်
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -73,8 +71,8 @@ def login_view(request):
             username_or_email = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
-
-            if len(password) != 8:
+            # 🛑 [FIX 3] Login Password Length validation ကို ပြင်ဆင်ထားပါသည်
+            if len(password) < 8 or len(password) > 20:
                 messages.error(request, 'Invalid username/email or password.')
                 return render(request, 'user/login.html', {'form': form})
 
