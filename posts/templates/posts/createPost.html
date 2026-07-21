@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+
+    <link rel="stylesheet" href="{% static 'css/createPost.css' %}">
+</head>
+
+<body>
+
+{% block content %}
+
+<div class="form-container">
+
+    <h2>Create New Post</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.price.id_for_label }}">Price</label>
+            {{ form.price }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.type.id_for_label }}">Type</label>
+            {{ form.type }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.category.id_for_label }}">Category</label>
+            {{ form.category }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.quantity.id_for_label }}">Quantity</label>
+            {{ form.quantity }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{ form.description }}
+        </div>
+
+       <div class="form-group">
+            <label>Photos</label>
+
+             <input
+                 type="file"
+                 name="images"
+                  id="image-input"
+                     multiple
+                 accept="image/*"
+                 >
+
+            <div id="preview-container"></div>
+       </div>
+
+        <button type="submit" class="btn-submit">
+            Create Post
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+
+const imageInput = document.getElementById("image-input");
+const previewContainer = document.getElementById("preview-container");
+
+imageInput.addEventListener("change", function(){
+
+    previewContainer.innerHTML = "";
+
+    const files = this.files;
+
+    for(let i = 0; i < files.length; i++){
+
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+
+            const img = document.createElement("img");
+
+            img.src = e.target.result;
+            img.classList.add("preview-photo");
+
+            previewContainer.appendChild(img);
+
+        }
+
+        reader.readAsDataURL(files[i]);
+    }
+
+});
+
+</script>
+
+{% endblock %}
+
+</body>
+</html>

@@ -2,8 +2,6 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from user.models import Profile
-
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -29,7 +27,7 @@ class Post(models.Model):
 
 
     user = models.ForeignKey(
-        Profile,on_delete=models.CASCADE,related_name='posts'
+        User,on_delete=models.CASCADE,related_name='posts'
     )
 
     price = models.IntegerField(default=0,validators= [MinValueValidator(1)])

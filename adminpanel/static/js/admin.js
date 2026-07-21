@@ -1,556 +1,1526 @@
-/* ==========================================================
-        TRUSTY SHOP ADMIN PANEL JAVASCRIPT
+/* =======================================================
+   TRUSTY SHOP ADMIN PANEL
+   Modern Corporate Marketplace UI
+   Theme : Blue + White + Glassmorphism
 ========================================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
-document.addEventListener("DOMContentLoaded", () => {
+:root{
 
+    --primary:#2563eb;
+    --secondary:#3b82f6;
+    --lightBlue:#dbeafe;
+    --dark:#0f172a;
+    --white:#ffffff;
+    --gray:#94a3b8;
+    --border:#e2e8f0;
+    --background:#f8fbff;
 
+    --shadow:
+    0 10px 30px rgba(0,0,0,.08);
 
-    /* =====================================
-            Loader
-    ===================================== */
+    --radius:18px;
 
+}
 
-    const loader = document.getElementById("loader");
+.dark{
 
+    --background:#0f172a;
 
-    if(loader){
+    --white:#1e293b;
 
-        window.addEventListener("load",()=>{
+    --dark:#ffffff;
 
+    --border:#334155;
 
-            setTimeout(()=>{
+}
 
+*{
 
-                loader.style.opacity="0";
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
 
-                loader.style.visibility="hidden";
+}
 
+body{
 
-            },1200);
+    background:var(--background);
 
+    overflow-x:hidden;
 
-        });
+}
 
+a{
+
+    text-decoration:none;
+
+}
+
+li{
+
+    list-style:none;
+
+}
+
+.wrapper{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+/* ================= Sidebar Styles ================= */
+
+.sidebar{
+
+    width:280px;
+
+    background:linear-gradient(
+        180deg,
+        #2563eb,
+        #1e40af
+    );
+
+    color:white;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    padding:30px 20px;
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    bottom:0;
+
+    transition:.4s;
+
+    box-shadow:var(--shadow);
+
+    z-index:999;
+
+}
+
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:50px;
+
+}
+
+.logo-circle{
+
+    width:65px;
+
+    height:65px;
+
+    border-radius:50%;
+
+    background:white;
+
+    color:#2563eb;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:28px;
+
+    animation:spinLogo 8s linear infinite;
+
+}
+
+.logo h2{
+
+    font-size:25px;
+
+}
+
+.logo span{
+
+    font-size:13px;
+
+    opacity:.8;
+
+}
+
+@keyframes spinLogo{
+
+0%{
+
+transform:rotate(0deg);
+
+}
+
+100%{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu li {
+    position: relative;
+    overflow: hidden;
+    list-style: none;
+    cursor: pointer;
+    border-radius: 50px; /* Capsule pill shapes */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 24px;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    transition: color 0.3s ease;
+}
+
+.menu li a i {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+/* --- INACTIVE MENU HOVER STATE --- */
+.menu li:not(.active):hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateX(6px);
+}
+
+.menu li:not(.active):hover a {
+    color: #ffffff;
+}
+
+.menu li:not(.active):hover a i {
+    transform: scale(1.1);
+}
+
+/* --- ACTIVE MENU STATE (Current Page) --- */
+.menu li.active {
+    background: #ffffff !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transform: translateX(0);
+}
+
+.menu li.active a {
+    color: #2563eb !important;
+    font-weight: 600;
+}
+
+.menu a{
+    cursor:pointer;
+    position:relative;
+    z-index:5;
+}
+
+.menu li{
+    cursor:pointer;
+}
+
+.sidebar-footer{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.12);
+
+    backdrop-filter:blur(20px);
+
+}
+
+.profile-img{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:3px solid white;
+
+}
+
+.sidebar-footer h4{
+
+    font-size:16px;
+
+}
+
+.sidebar-footer span{
+
+    font-size:13px;
+
+    opacity:.8;
+
+}
+
+/* ================= Main Window Layout ================= */
+
+.main{
+
+    margin-left:280px;
+
+    width:calc(100% - 280px);
+
+    padding:35px;
+
+    height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+/* STICKY TOP BAR */
+.topbar{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:18px 25px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:var(--shadow);
+
+    margin-bottom:35px;
+
+    flex-shrink: 0;
+
+}
+
+.search-box{
+
+    width:430px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    background:#f1f5f9;
+
+    padding:14px 20px;
+
+    border-radius:50px;
+
+}
+
+.search-box input{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    font-size:15px;
+
+}
+
+.top-icons{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:25px;
+
+}
+
+.notification{
+
+    position:relative;
+
+    cursor:pointer;
+
+    border:none;
+
+    background:transparent;
+
+    padding:0;
+
+}
+
+.notification i{
+
+    font-size:24px;
+
+    color:#2563eb;
+
+}
+
+.badge{
+
+    position:absolute;
+
+    top:-8px;
+
+    right:-8px;
+
+    background:red;
+
+    color:white;
+
+    width:18px;
+
+    height:18px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:10px;
+
+}
+
+/*=========================================================
+                CONTENT AREA
+=========================================================*/
+
+.content{
+    width:100%;
+    flex-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation:fadeUp .8s ease;
+}
+
+@keyframes fadeUp{
+
+    from{
+        opacity:0;
+        transform:translateY(30px);
     }
 
-
-
-
-
-
-
-    /* =====================================
-            Live Clock
-    ===================================== */
-
-
-    const clock = document.getElementById("liveClock");
-
-
-    function updateClock(){
-
-
-        if(clock){
-
-
-            const now = new Date();
-
-
-            const options={
-
-                hour:"2-digit",
-
-                minute:"2-digit",
-
-                second:"2-digit"
-
-            };
-
-
-            clock.innerHTML =
-            now.toLocaleTimeString([],options);
-
-
-        }
-
-
+    to{
+        opacity:1;
+        transform:translateY(0);
     }
-
-
-    updateClock();
-
-
-    setInterval(updateClock,1000);
-
-
-
-
-
-
-
-
-
-    /* =====================================
-            Theme Toggle
-    ===================================== */
-
-
-    const themeBtn =
-    document.getElementById("themeToggle");
-
-
-
-    if(themeBtn){
-
-
-        themeBtn.addEventListener("click",()=>{
-
-
-            document.body.classList.toggle("dark");
-
-
-
-            if(document.body.classList.contains("dark")){
-
-
-                themeBtn.innerHTML =
-                '<i class="fa-solid fa-sun"></i>';
-
-
-            }
-
-            else{
-
-
-                themeBtn.innerHTML =
-                '<i class="fa-solid fa-moon"></i>';
-
-
-            }
-
-
-
-        });
-
-
-    }
-
-
-
-
-
-
-
-
-
-    /* =====================================
-            Sidebar Toggle
-    ===================================== */
-
-
-    const sidebar =
-    document.querySelector(".sidebar");
-
-
-    const toggleBtn =
-    document.getElementById("toggle-btn");
-
-
-
-    if(toggleBtn && sidebar){
-
-
-        toggleBtn.addEventListener("click",()=>{
-
-
-            sidebar.classList.toggle("active");
-
-
-        });
-
-
-    }
-
-
-
-
-
-
-
-
-/* =====================================
-        Notification Panel
-===================================== */
-
-
-const bell =
-document.getElementById("notificationBell");
-
-
-const panel =
-document.getElementById("notificationPanel");
-
-
-const close =
-document.getElementById("closeNotification");
-
-
-if (bell && panel) {
-
-    bell.addEventListener("click", () => {
-
-        panel.classList.add("active");
-
-    });
 
 }
 
 
-if (close && panel) {
+/*=========================================================
+                    DASHBOARD CARDS (5 Per Row)
+=========================================================*/
 
-    close.addEventListener("click", () => {
+.cards{
 
-        panel.classList.remove("active");
+    display:grid;
 
-    });
+    grid-template-columns:repeat(5, 1fr);
+
+    gap:15px;
+
+    margin-bottom:40px;
+
+    flex-shrink: 0;
 
 }
-    /* =====================================
-            Card Hover Animation
-    ===================================== */
 
+.card{
 
-    const cards =
-    document.querySelectorAll(".card");
+    position:relative;
 
+    background:white;
 
+    border-radius:20px;
 
-    cards.forEach(card=>{
+    padding: 20px 15px;
 
+    overflow:hidden;
 
-        card.addEventListener("mouseenter",()=>{
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
 
+    transition:.35s;
 
-            card.style.transform =
-            "translateY(-12px) scale(1.02)";
+    cursor:pointer;
 
+}
 
-        });
+.card:hover{
 
+    transform:translateY(-12px);
 
+    box-shadow:0 25px 50px rgba(37,99,235,.18);
 
-        card.addEventListener("mouseleave",()=>{
+}
 
+.card h4{
 
-            card.style.transform =
-            "translateY(0px) scale(1)";
+    color:#64748b;
 
+    font-weight:500;
 
-        });
+    margin-bottom: 8px;
 
+    font-size: 13px;
 
-    });
+}
 
+.card h2{
 
+    font-size: 24px;
 
+    color:#2563eb;
 
+    white-space: nowrap;
 
+}
 
+.card::before{
 
+    content:"";
 
+    position:absolute;
 
-    /* =====================================
-            Animated Counter
-    ===================================== */
+    width:160px;
 
+    height:160px;
 
-    const counters =
-    document.querySelectorAll(".counter");
+    background:rgba(37,99,235,.08);
 
+    border-radius:50%;
 
+    top:-70px;
 
-    counters.forEach(counter=>{
+    right:-70px;
 
+}
 
-        counter.innerText="0";
+.card i{
 
+    position:absolute;
 
+    right: 15px;
 
-        function updateCounter(){
+    bottom: 15px;
 
+    font-size: 32px;
 
-            const target =
-            +counter.getAttribute("data-target");
+    color:#2563eb;
 
+    opacity:.15;
 
+}
 
-            const current =
-            +counter.innerText;
 
+/*=========================================================
+                RECENT ACTIVITY
+=========================================================*/
 
+.activity{
 
-            const increment =
-            target / 80;
+    background:white;
 
+    padding:30px;
 
+    border-radius:20px;
 
-            if(current < target){
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
 
+}
 
-                counter.innerText =
-                Math.ceil(current + increment);
+.activity h2{
 
+    margin-bottom:25px;
 
+    color:#0f172a;
 
-                setTimeout(updateCounter,25);
+}
 
+.activity table{
 
-            }
+    width:100%;
 
+    border-collapse:collapse;
 
-            else{
+}
 
+.activity table th{
 
-                counter.innerText = target;
+    text-align:left;
 
+    padding:18px;
 
-            }
+    background:#eff6ff;
 
+    color:#2563eb;
 
-        }
+}
 
+.activity table td{
 
+    padding:18px;
 
-        updateCounter();
+    border-bottom:1px solid #edf2f7;
 
+}
 
+.activity table tr:hover{
 
-    });
+    background:#f8fbff;
 
+}
 
+/*=========================================================
+            FLOATING BACKGROUND CIRCLES
+=========================================================*/
 
+.floating-shapes{
 
+    position:fixed;
 
+    inset:0;
 
+    overflow:hidden;
 
+    pointer-events:none;
 
+    z-index:-1;
 
-    /* =====================================
-            Search Filter
-    ===================================== */
+}
 
+.circle{
 
-    const search =
-    document.querySelector(".search-box input");
+    position:absolute;
 
+    border-radius:50%;
 
+    background:rgba(37,99,235,.08);
 
-    if(search){
+    animation:float 18s linear infinite;
 
+}
 
-        search.addEventListener("keyup",()=>{
+.c1{
 
+    width:350px;
 
-            const value =
-            search.value.toLowerCase();
+    height:350px;
 
+    top:-120px;
 
+    left:-120px;
 
-            const rows =
-            document.querySelectorAll("tbody tr");
+}
 
+.c2{
 
+    width:220px;
 
-            rows.forEach(row=>{
+    height:220px;
 
+    right:120px;
 
-                row.style.display =
+    top:120px;
 
-                row.innerText
-                .toLowerCase()
-                .includes(value)
+}
 
-                ? ""
+.c3{
 
-                : "none";
+    width:420px;
 
+    height:420px;
 
-            });
+    bottom:-180px;
 
+    left:35%;
 
-        });
+}
 
+.c4{
+
+    width:260px;
+
+    height:260px;
+
+    right:-80px;
+
+    bottom:-80px;
+
+}
+
+@keyframes float{
+
+    0%{
+
+        transform:translateY(0px)
+        rotate(0deg);
 
     }
 
+    50%{
 
+        transform:translateY(-40px)
+        rotate(180deg);
 
+    }
 
+    100%{
 
+        transform:translateY(0px)
+        rotate(360deg);
 
+    }
 
+}
 
+/*=========================================================
+            NOTIFICATION PANEL
+=========================================================*/
 
-    /* =====================================
-            Sidebar Menu
-            Django controls navigation
-    ===================================== */
+.notification-panel{
 
+    position:fixed;
 
-    const menuLinks =
-    document.querySelectorAll(".menu a");
+    top:0;
 
+    right:-420px;
 
+    width:400px;
 
-    menuLinks.forEach(link=>{
+    height:100vh;
 
+    background:white;
 
-        link.addEventListener("click",(e)=>{
+    box-shadow:-15px 0 40px rgba(0,0,0,.12);
 
+    transition:.4s;
 
-            const url =
-            link.getAttribute("href");
+    z-index:2000;
 
+}
 
+.notification-panel.active{
 
-            if(url === "#"){
+    right:0;
 
+}
 
-                e.preventDefault();
+.panel-header{
 
+    display:flex;
 
-            }
+    justify-content:space-between;
 
+    align-items:center;
 
-        });
+    padding:25px;
 
+    border-bottom:1px solid #eee;
 
-    });
+}
 
+.panel-header h3{
 
+    color:#2563eb;
 
+}
 
+.panel-header button{
 
+    background:none;
 
+    border:none;
 
+    cursor:pointer;
 
+    font-size:20px;
 
-    /* =====================================
-            Floating Background
-    ===================================== */
+}
 
+.notification-list{
 
-    document.addEventListener("mousemove",(e)=>{
+    padding:25px;
 
+}
 
-        const circles =
-        document.querySelectorAll(".circle");
+.notify-item{
 
+    display:flex;
 
+    gap:20px;
 
-        circles.forEach((circle,index)=>{
+    padding:20px;
 
+    border-radius:15px;
 
-            let speed =
-            (index+1)*0.01;
+    margin-bottom:20px;
 
+    transition:.3s;
 
+}
 
-            let x =
-            (window.innerWidth-e.pageX)*speed;
+.notify-item:hover{
 
+    background:#eff6ff;
 
+}
 
-            let y =
-            (window.innerHeight-e.pageY)*speed;
+.notify-item i{
 
+    width:55px;
 
+    height:55px;
 
-            circle.style.transform =
-            `translate(${x}px,${y}px)`;
+    background:#2563eb;
 
+    color:white;
 
-        });
+    border-radius:50%;
 
+    display:flex;
 
-    });
+    justify-content:center;
 
+    align-items:center;
 
+    font-size:22px;
 
+}
 
+.notify-item h4{
 
+    margin-bottom:6px;
 
+}
 
+.notify-item span{
 
+    color:#64748b;
 
-    /* =====================================
-            Ripple Effect
-    ===================================== */
+    font-size:14px;
 
+}
 
-    const buttons =
-    document.querySelectorAll(".btn");
+/*=========================================================
+                    LOADER
+=========================================================*/
 
+#loader{
 
+    position:fixed;
 
-    buttons.forEach(btn=>{
+    inset:0;
 
+    background:white;
 
-        btn.addEventListener("click",function(e){
+    display:flex;
 
+    justify-content:center;
 
+    align-items:center;
 
-            let ripple =
-            document.createElement("span");
+    flex-direction:column;
 
+    z-index:99999;
 
+    transition:1s;
 
-            ripple.classList.add("ripple");
+}
 
+.loader-circle{
 
+    width:90px;
 
-            this.appendChild(ripple);
+    height:90px;
 
+    border-radius:50%;
 
+    border:7px solid #dbeafe;
 
-            let x =
-            e.clientX - this.offsetLeft;
+    border-top:7px solid #2563eb;
 
+    animation:spin 1s linear infinite;
 
+}
 
-            let y =
-            e.clientY - this.offsetTop;
+#loader h2{
 
+    margin-top:25px;
 
+    color:#2563eb;
 
-            ripple.style.left =
-            x+"px";
+}
 
+@keyframes spin{
 
+    from{
 
-            ripple.style.top =
-            y+"px";
+        transform:rotate(0deg);
 
+    }
 
+    to{
 
-            setTimeout(()=>{
+        transform:rotate(360deg);
 
+    }
 
-                ripple.remove();
+}
 
+/*=========================================================
+                THEME BUTTON
+=========================================================*/
 
-            },600);
+#themeToggle{
 
+    border:none;
 
+    background:#eff6ff;
 
-        });
+    width:48px;
 
+    height:48px;
 
+    border-radius:50%;
 
-    });
+    cursor:pointer;
 
+    color:#2563eb;
 
+    font-size:18px;
 
-});
+    transition:.3s;
+
+}
+
+#themeToggle:hover{
+
+    transform:rotate(180deg);
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+/* ==========================================================
+                    PAGE TITLE
+========================================================== */
+
+.page-title{
+
+    font-size:32px;
+
+    font-weight:700;
+
+    color:#0f172a;
+
+    margin-bottom:30px;
+
+    flex-shrink: 0;
+
+}
+
+/* ==========================================================
+            BEAUTIFUL DATA TABLE (Layers & Rows Scroll)
+========================================================== */
+.table-container {
+
+    background:rgba(255,255,255,.75);
+
+    backdrop-filter:blur(20px);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+    margin-top:20px;
+
+    width:100%;
+
+    max-height:490px;
+
+    overflow-y:auto;
+
+    overflow-x:auto;
+
+    position:relative;
+
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: separate; /* Required for proper rendering with sticky headers */
+    border-spacing: 0;
+}
+
+/* SOLID STICKY TABLE HEADER WALL */
+.table-container th {
+    position: sticky;
+    top: 0;
+    z-index: 999 !important; /* Forces dynamic rows to scroll UNDERNEATH the head cleanly */
+    background: #2563eb !important; /* solid blue background block shield */
+    color: white;
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.table-container td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #edf2f7;
+    color: #475569;
+    font-size: 13px;
+    white-space: nowrap;
+    vertical-align: middle;
+    background: white; /* Keeps background opaque so overlay text is clean */
+}
+
+/* Target body rows specifically for hover highlighting */
+.table-container tbody tr:hover td {
+    background: #eff6ff;
+}
+
+/* ==========================================================
+               ACTION COLUMNS VERTICAL CENTERING
+========================================================== */
+
+.table-container td.action-cell {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.action-buttons {
+    display: inline-flex;
+    align-items: center;      /* Perfect vertical alignment check */
+    justify-content: center;   /* Horizontal centering inside cell width */
+    gap: 6px;
+    height: 100%;
+}
+
+/* ==========================================================
+                    BUTTONS (Icon Layout Setup)
+========================================================== */
+
+.btn {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    transition: .3s;
+    font-size: 13px;
+}
+
+.btn i {
+    pointer-events: none;
+}
+
+.btn-view {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-view:hover {
+    background: #2563eb;
+}
+
+.btn-approve {
+    background: #22c55e;
+    color: white;
+}
+
+.btn-approve:hover {
+    background: #16a34a;
+}
+
+.btn-reject {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-reject:hover {
+    background: #dc2626;
+}
+
+/* ==========================================================
+                PROFILE CARD
+========================================================== */
+
+.profile-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:35px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    text-align:center;
+
+}
+
+.profile-card img{
+
+    width:130px;
+
+    height:130px;
+
+    border-radius:50%;
+
+    border:6px solid #2563eb;
+
+    object-fit:cover;
+
+}
+
+.profile-card h2{
+
+    margin-top:20px;
+
+}
+
+.profile-card p{
+
+    color:#64748b;
+
+}
+
+.profile-card button{
+
+    margin-top:20px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 30px;
+
+    border-radius:30px;
+
+    cursor:pointer;
+
+}
+
+/* ==========================================================
+                    SCROLLBAR
+========================================================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#3b82f6;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#e2e8f0;
+
+}
+
+/* ==========================================================
+                RESPONSIVE BREAKPOINTS
+========================================================== */
+
+@media(max-width:1200px){
+
+    .sidebar{
+
+        width:90px;
+
+    }
+
+    .sidebar h2,
+    .sidebar span{
+
+        display:none;
+
+    }
+
+    .main{
+
+        margin-left:90px;
+
+        width:calc(100% - 90px);
+
+    }
+
+}
+
+@media(max-width:900px){
+
+    .topbar{
+
+        flex-direction:column;
+
+        gap:20px;
+
+    }
+
+    .search-box{
+
+        width:100%;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .sidebar{
+
+        left:-100%;
+
+    }
+
+    .sidebar.active{
+
+        left:0;
+
+    }
+
+    .main{
+
+        width:100%;
+
+        margin-left:0;
+
+    }
+
+    /* Stacks analytics grid nicely on tablets/phones */
+    .cards{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:500px){
+
+    .table-container{
+
+        padding:10px;
+
+    }
+
+    .page-title{
+
+        font-size:25px;
+
+    }
+
+}
+
+/* ==========================================================
+                    ANIMATION
+========================================================== */
+
+@keyframes slideUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(50px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.card{
+
+    animation:slideUp .8s ease;
+
+}
+
+.glass{
+
+    background:rgba(255,255,255,.55);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.3);
+
+}
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+
+    radial-gradient(circle at top left,#bfdbfe 0%,transparent 30%),
+
+    radial-gradient(circle at bottom right,#dbeafe 0%,transparent 35%);
+
+    z-index:-2;
+
+}
+
+/* Ripple Animation Elements */
+
+.btn{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.ripple{
+
+    position:absolute;
+
+    width:15px;
+
+    height:15px;
+
+    background:rgba(255,255,255,.7);
+
+    border-radius:50%;
+
+    transform:scale(0);
+
+    animation:ripple .6s linear;
+
+}
+
+@keyframes ripple{
+
+    to{
+
+        transform:scale(25);
+
+        opacity:0;
+
+    }
+
+}
+
+.notification-container{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+
+
+.notification-card{
+
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+
+}
+
+
+
+.notification-card .icon{
+
+
+    width:55px;
+
+    height:55px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:22px;
+
+
+}
+
+
+
+.notification-card .info{
+
+    flex:1;
+
+}
+
+
+
+.view-btn{
+
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:10px 25px;
+
+    border-radius:30px;
+
+    text-decoration:none;
+
+
+}
+
+
+.view-btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* ==========================================================
+PENDING POSTS PAGE HEADER
+========================================================== */
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.page-subtitle{
+
+    margin-top:5px;
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+.product-image{
+
+    width:62px;
+
+    height:62px;
+
+    object-fit:cover;
+
+    border-radius:12px;
+
+    border:2px solid #e2e8f0;
+
+    display:block;
+
+}
+
+.table-container tbody tr{
+
+    transition:.3s ease;
+
+}
+
+.table-container tbody tr:hover td{
+
+    background:#eff6ff;
+
+}
+
+.table-container td{
+
+    height:78px;
+
+}

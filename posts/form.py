@@ -48,20 +48,9 @@ class PostForm(forms.ModelForm):
 
                 return quantity
 
-            def clean_description(self):
-                description = self.cleaned_data["description"]
-
-                if len(description) < 200:
-                    raise forms.ValidationError(
-                        "Description must be at least 200 characters."
-                    )
-
-                return description
-
 class PostImageForm(forms.ModelForm):
     class Meta:
         model = PostImage
         fields = [
             'image'
         ]
-

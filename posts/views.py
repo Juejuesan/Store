@@ -1,69 +1,73 @@
-import profile
-
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.shortcuts import redirect, render
-
-from notifications.models import Notification
+from django.shortcuts import render, redirect
 from posts.form import PostForm
 from posts.models import PostImage
-from user.models import Profile
-
+from notifications.models import Notification
+from django.contrib.auth.models import User
 
 @login_required
 def createPost(request):
-    user = Profile.objects.get(user=request.user)
-
-    if user.status == "Banned":
-        messages.error(request, "Your account has been banned.")
-        return render(request, "home.html", {
-        "profile": profile,
-
-    })
-
-    else:
-        request.method == "POST"
+    if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
 
         if form.is_valid():
-            post = form.save(commit=False)
-            post.user = user
+            post=form.save(commit=False)
+            post.user = request.user
+
             post.save()
 
-            # Notifications
-            admins = User.objects.filter(is_staff=True)
+            # notify admin
+
+            # notify admin
+
+            admins = User.objects.filter(
+                is_staff=True
+            )
 
             for admin in admins:
                 Notification.objects.create(
+
                     user=admin,
+
                     post=post,
-                    message=f"{request.user.username} created a new post waiting approval",
-                    notification_type="post_request"
+
+                    message="New post waiting for approval",
+
+                    notification_type="pending"
+
                 )
+            # ==============================
+            # SEND NOTIFICATION TO ADMIN
+            # ==============================
 
-            images = request.FILES.getlist("images")
+            admins = User.objects.filter(
+                is_staff=True
+            )
 
-            if len(images) == 0:
-                post.delete()
-                messages.error(request, "Please upload at least one photo.")
-                return render(request, "createPost.html", {"form": form})
+            for admin in admins:
+                Notification.objects.create(
 
-            if len(images) > 5:
-                post.delete()
-                messages.error(request, "You can upload a maximum of 5 photos.")
-                return render(request, "createPost.html", {"form": form})
+                    user=admin,
+
+                    post=post,
+
+                    message=f"{request.user.username} created a new post waiting approval",
+
+                    notification_type="post_request"
+
+                )
+                # end
+
+            images = request.FILES.getlist('images')
 
             for img in images:
                 PostImage.objects.create(
                     post=post,
                     image=img
                 )
-
-            messages.success(request, "Post created successfully.")
             return redirect("home")
 
-        else:
-         form = PostForm()
+    else:
+        form = PostForm()
 
-    return render(request, "createPost.html", {"form": form})
+    return render(request, "posts/createPost.html", {"form": form})
