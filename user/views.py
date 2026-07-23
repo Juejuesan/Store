@@ -22,9 +22,8 @@ def register_view(request):
             password = form.cleaned_data.get('password')
             address = form.cleaned_data.get('address', '')
 
-
-            if len(password) != 8:
-                messages.error(request, "Password must be exactly 8 characters long!")
+            if len(password) < 8 or len(password) > 20:
+                messages.error(request, "Password must be long more than 8 characters long!")
                 return render(request, 'user/register.html', {'form': form})
 
 
