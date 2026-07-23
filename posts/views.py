@@ -69,5 +69,5 @@ def createPost(request):
     return render(request, "createPost.html", {"form": form})
 
 def showPost(request):
-    post = Post.objects.all()
-    return render(request, "showPost.html", {"post": post})
+    posts = Post.objects.filter(status="approved")
+    return render(request, "showPost.html", {"posts": posts})

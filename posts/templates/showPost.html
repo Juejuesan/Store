@@ -1,139 +1,141 @@
-<!--<!DOCTYPE html>-->
-<!--{% load static %}-->
+<!DOCTYPE html>
+{% load static %}
 
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Sell Posts</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--{% for post in posts %}-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sell Posts</title>
+</head>
+<body>
+<link rel="stylesheet" href="{% static 'css/sellposts.css' %}">
 
-<!--<div class="col-lg-4 col-md-6">-->
+{% for post in posts %}
 
-<!--    <div class="seller-card">-->
 
-<!--        &lt;!&ndash; TOP &ndash;&gt;-->
-<!--        <div class="seller-top">-->
+<div class="col-lg-4 col-md-6">
 
-<!--            <div class="seller-left">-->
+    <div class="seller-card">
 
-<!--                <img src="{% static 'images/mumu.jpg' %}" class="seller-profile">-->
+        <!-- TOP -->
+        <div class="seller-top">
 
-<!--                <div>-->
+            <div class="seller-left">
 
-<!--                    <h5>-->
-<!--                        {{ post.user.user.username }}-->
-<!--                        <i class="fa-solid fa-circle-check verified"></i>-->
-<!--                    </h5>-->
+                <img src={{post.user.profile_pic }} class="seller-profile">
 
-<!--                    <span>-->
-<!--                        <i class="fa-regular fa-clock"></i>-->
-<!--                        {{ post.created_at|timesince }} ago-->
-<!--                    </span>-->
+                <div>
 
-<!--                </div>-->
+                    <h5>
+                        {{ post.user.user.username }}
+                        <i class="fa-solid fa-circle-check verified"></i>
+                    </h5>
 
-<!--            </div>-->
+                    <span>
+                        <i class="fa-regular fa-clock"></i>
+                        {{ post.created_at|timesince }} ago
+                    </span>
 
-<!--            <div class="seller-right">-->
+                </div>
 
-<!--                <button class="menu-btn" onclick="savePost(this)">-->
-<!--                    <i class="fa-solid fa-ellipsis"></i>-->
-<!--                </button>-->
+            </div>
 
-<!--                <div class="save-box">-->
-<!--                    <i class="fa-regular fa-bookmark"></i>-->
-<!--                    Save Post-->
-<!--                </div>-->
+            <div class="seller-right">
 
-<!--            </div>-->
+                <button class="menu-btn" onclick="savePost(this)">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
 
-<!--        </div>-->
+                <div class="save-box">
+                    <i class="fa-regular fa-bookmark"></i>
+                    Save Post
+                </div>
 
-<!--        &lt;!&ndash; IMAGE &ndash;&gt;-->
+            </div>
 
-<!--        <div class="product-image-box">-->
+        </div>
 
-<!--            {% if post.photo %}-->
-<!--                <img src="{{ post.photo.url }}" class="product-image">-->
-<!--            {% else %}-->
-<!--                <img src="{% static 'images/no-image.png' %}" class="product-image">-->
-<!--            {% endif %}-->
+        <!-- IMAGE -->
 
-<!--            <span class="product-tag">-->
-<!--                {{ post.type }}-->
-<!--            </span>-->
+      <div class="product-image-box">
 
-<!--        </div>-->
+    {% with image=post.images.first %}
+        {% if image %}
+            <img src="{{ image.image.url }}" class="product-image">
+        {% else %}
+            <img src="{% static 'images/no-image.png' %}" class="product-image">
+        {% endif %}
+    {% endwith %}
 
-<!--        &lt;!&ndash; BODY &ndash;&gt;-->
+    <span class="product-tag">
+        {{ post.type }}
+    </span>
 
-<!--        <div class="product-body">-->
+</div>
+        </div>
 
-<!--            <div class="title-price">-->
+        <!-- BODY -->
 
-<!--                <h4>-->
-<!--                    {{ post.category.name }}-->
-<!--                </h4>-->
+        <div class="product-body">
 
-<!--                <span class="price">-->
-<!--                    {{ post.price }} MMK-->
-<!--                </span>-->
+            <div class="title-price">
 
-<!--            </div>-->
+                <h4>
+                    {{ post.category.name }}
+                </h4>
 
-<!--            <p>-->
-<!--                {{ post.description|truncatewords:20 }}-->
-<!--            </p>-->
+                <span class="price">
+                    {{ post.price }} MMK
+                </span>
 
-<!--            &lt;!&ndash; FEATURES &ndash;&gt;-->
+            </div>
 
-<!--            <div class="product-features">-->
+            <p>
+                {{ post.description|truncatewords:20 }}
+            </p>
 
-<!--                <span>-->
-<!--                    <i class="fa-solid fa-box"></i>-->
-<!--                    Qty : {{ post.quantity }}-->
-<!--                </span>-->
+            <!-- FEATURES -->
 
-<!--                <span>-->
-<!--                    <i class="fa-solid fa-tag"></i>-->
-<!--                    {{ post.category.name }}-->
-<!--                </span>-->
+            <div class="product-features">
 
-<!--            </div>-->
+                <span>
+                    <i class="fa-solid fa-box"></i>
+                    Qty : {{ post.quantity }}
+                </span>
 
-<!--            &lt;!&ndash; BUTTONS &ndash;&gt;-->
 
-<!--            <div class="product-buttons">-->
+            </div>
 
-<!--                <form action="{% url 'add_to_cart' %}" method="POST">-->
-<!--                    {% csrf_token %}-->
-<!--                    <input type="hidden" name="post_id" value="{{ post.id }}">-->
+            <!-- BUTTONS -->
 
-<!--                    <button type="submit" class="cart-btn">-->
-<!--                        <i class="fa-solid fa-cart-shopping"></i>-->
-<!--                        Add to Cart-->
-<!--                    </button>-->
-<!--                </form>-->
+            <div class="product-buttons">
 
-<!--                <a href="{% url 'viewdetail' post.id %}" class="detail-btn">-->
-<!--                    View Details-->
-<!--                </a>-->
+                            <button class="cart-btn">
 
-<!--            </div>-->
+                                <i class="fa-solid fa-cart-shopping"></i>
 
-<!--        </div>-->
+                                Add to Cart
 
-<!--    </div>-->
+                            </button>
 
-<!--</div>-->
+                            <button class="detail-btn">
 
-<!--{% empty %}-->
+                                View Details
 
-<!--<h3>No approved posts available.</h3>-->
+                            </button>
+            </div>
+            </div>
 
-<!--{% endfor %}-->
+        </div>
 
-<!--</body>-->
-<!--</html>-->
+    </div>
+
+</div>
+
+{% empty %}
+
+<h3>No approved posts available.</h3>
+
+{% endfor %}
+
+</body>
+</html>
