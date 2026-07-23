@@ -1,0 +1,732 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Wallet Dashboard
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/wallet.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="wallet-dashboard">
+
+    <!-- Background Effects -->
+    <div class="wallet-bg-circle bg1"></div>
+    <div class="wallet-bg-circle bg2"></div>
+    <div class="wallet-bg-circle bg3"></div>
+
+    <div class="container py-5">
+
+        <!-- ==========================
+             PAGE HEADER
+        =========================== -->
+
+        <div class="wallet-header">
+
+            <div>
+
+                <span class="wallet-small-title">
+
+                    TRUSTY WALLET
+
+                </span>
+
+                <h1>
+
+                    Welcome,
+                    {{ request.user.first_name|default:request.user.username }}
+                    👋
+
+                </h1>
+
+                <p>
+
+                    Manage your deposits, withdrawals and wallet securely.
+
+                </p>
+
+            </div>
+
+            <div class="wallet-avatar">
+
+                {% if request.user.profile.profile_pic %}
+
+                    <img src="{{ request.user.profile.profile_pic.url }}"
+                         alt="Profile">
+
+                {% else %}
+
+                    <img src="{% static 'images/default-user.png' %}"
+                         alt="Profile">
+
+                {% endif %}
+
+            </div>
+
+        </div>
+                <!-- ==========================================
+                WALLET BALANCE CARD
+        =========================================== -->
+
+        <div class="wallet-card glass-card mt-4">
+
+            <div class="wallet-card-left">
+
+                <span>
+
+                    Available Balance
+
+                </span>
+
+                <h2>
+
+                    MMK
+
+                    <span
+                        id="balanceCounter"
+                        data-balance="{{ wallet.balance }}">
+
+                        {{ wallet.balance }}
+
+                    </span>
+
+                </h2>
+
+                <p>
+
+                    Your wallet is protected by the
+                    Trusty Escrow System.
+
+                </p>
+
+            </div>
+
+            <div class="wallet-card-right">
+
+                <div class="wallet-chip"></div>
+
+                <div class="wallet-logo">
+
+                    <i class="fa-solid fa-wallet"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+                QUICK ACTIONS
+        =========================================== -->
+
+        <div class="row mt-5 g-4">
+
+            <div class="col-lg-4">
+
+                <a href="{% url 'wallet:deposit' %}"
+                   class="action-card deposit-card">
+
+                    <div class="action-icon">
+
+                        <i class="fa-solid fa-circle-plus"></i>
+
+                    </div>
+
+                    <h4>
+
+                        Deposit
+
+                    </h4>
+
+                    <p>
+
+                        Add money to your wallet using
+                        KBZ Pay, Wave Pay or other
+                        supported payment methods.
+
+                    </p>
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-4">
+
+                <a href="{% url 'wallet:withdraw' %}"
+                   class="action-card withdraw-card">
+
+                    <div class="action-icon">
+
+                        <i class="fa-solid fa-money-bill-transfer"></i>
+
+                    </div>
+
+                    <h4>
+
+                        Withdraw
+
+                    </h4>
+
+                    <p>
+
+                        Transfer money safely from your
+                        wallet to your bank or mobile
+                        payment account.
+
+                    </p>
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-4">
+
+                <a href="{% url 'wallet:history' %}"
+                   class="action-card history-card">
+
+                    <div class="action-icon">
+
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    </div>
+
+                    <h4>
+
+                        History
+
+                    </h4>
+
+                    <p>
+
+                        View all deposits,
+                        withdrawals and wallet
+                        transaction records.
+
+                    </p>
+
+                </a>
+
+            </div>
+
+        </div>
+                <!-- ==========================================
+                WALLET OVERVIEW
+        =========================================== -->
+
+        <div class="row mt-5 g-4">
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="overview-card">
+
+                    <div class="overview-icon blue">
+
+                        <i class="fa-solid fa-wallet"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Total Balance</span>
+
+                        <h3>
+
+                            MMK {{ wallet.balance }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="overview-card">
+
+                    <div class="overview-icon green">
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Deposits</span>
+
+                        <h3>
+
+                            {{ deposits|length }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="overview-card">
+
+                    <div class="overview-icon orange">
+
+                        <i class="fa-solid fa-arrow-up"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Withdrawals</span>
+
+                        <h3>
+
+                            {{ withdrawals|length }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="overview-card">
+
+                    <div class="overview-icon purple">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>Account Status</span>
+
+                        <h3>
+
+                            Secure
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+                TRUST BANNER
+        =========================================== -->
+
+        <div class="trust-banner mt-5">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-8">
+
+                    <h3>
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        Your Money is Protected
+
+                    </h3>
+
+                    <p>
+
+                        Every deposit and withdrawal is verified
+                        by Trusty Shop administrators before it is
+                        approved. Your wallet balance is always
+                        protected by our escrow system.
+
+                    </p>
+
+                </div>
+
+                <div class="col-lg-4 text-center">
+
+                    <div class="trust-badge">
+
+                        <i class="fa-solid fa-shield-heart"></i>
+
+                        <span>
+
+                            Escrow Protected
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+                <!-- ==========================================
+                RECENT ACTIVITY
+        =========================================== -->
+
+        <div class="section-header mt-5">
+
+            <h2>
+
+                Recent Activity
+
+            </h2>
+
+            <a href="{% url 'wallet:history' %}">
+
+                View All
+
+            </a>
+
+        </div>
+
+        <div class="activity-box">
+
+            {% for deposit in deposits %}
+
+            <div class="activity-item">
+
+                <div class="activity-left">
+
+                    <div class="activity-icon success">
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h5>
+
+                            Deposit
+
+                        </h5>
+
+                        <small>
+
+                            {{ deposit.created_at|date:"M d, Y H:i" }}
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="activity-right">
+
+                    <span class="amount plus">
+
+                        + MMK {{ deposit.amount }}
+
+                    </span>
+
+                    <small>
+
+                        {{ deposit.status }}
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-state">
+
+                <i class="fa-solid fa-wallet"></i>
+
+                <h5>
+
+                    No Deposits Yet
+
+                </h5>
+
+            </div>
+
+            {% endfor %}
+
+
+            {% for withdraw in withdrawals %}
+
+            <div class="activity-item">
+
+                <div class="activity-left">
+
+                    <div class="activity-icon danger">
+
+                        <i class="fa-solid fa-arrow-up"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h5>
+
+                            Withdrawal
+
+                        </h5>
+
+                        <small>
+
+                            {{ withdraw.created_at|date:"M d, Y H:i" }}
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="activity-right">
+
+                    <span class="amount minus">
+
+                        - MMK {{ withdraw.amount }}
+
+                    </span>
+
+                    <small>
+
+                        {{ withdraw.status }}
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- ==========================================
+                RECENT TRANSACTIONS
+        =========================================== -->
+
+        <div class="transaction-card mt-5">
+
+            <div class="card-header-custom">
+
+                <h3>
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    Recent Transactions
+
+                </h3>
+
+            </div>
+
+            <table class="table align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+
+                        <th>Type</th>
+
+                        <th>Amount</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for t in transactions %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ t.created_at|date:"d M Y H:i" }}
+
+                        </td>
+
+                        <td>
+
+                            {% if t.transaction_type == "Deposit" %}
+
+                                <span class="badge bg-success">
+
+                                    Deposit
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    Withdraw
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            MMK {{ t.amount }}
+
+                        </td>
+
+                        <td>
+
+                            {% if t.status == "Pending" %}
+
+                                <span class="badge bg-warning">
+
+                                    Pending
+
+                                </span>
+
+                            {% elif t.status == "Approved" %}
+
+                                <span class="badge bg-success">
+
+                                    Approved
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    Rejected
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center">
+
+                            No transactions yet.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+                <!-- ==========================================
+                SMART WALLET TIPS
+        =========================================== -->
+
+        <div class="wallet-tips mt-5">
+
+            <div class="tips-header">
+
+                <i class="fa-solid fa-lightbulb"></i>
+
+                Smart Wallet Tips
+
+            </div>
+
+            <div class="tips-grid">
+
+                <div class="tip-card">
+
+                    <i class="fa-solid fa-credit-card"></i>
+
+                    <h5>
+
+                        Deposit Faster
+
+                    </h5>
+
+                    <p>
+
+                        Upload a clear payment screenshot
+                        for faster verification.
+
+                    </p>
+
+                </div>
+
+                <div class="tip-card">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                    <h5>
+
+                        Keep Your Profile Updated
+
+                    </h5>
+
+                    <p>
+
+                        Make sure your phone number and
+                        personal information are always
+                        up to date.
+
+                    </p>
+
+                </div>
+
+                <div class="tip-card">
+
+                    <i class="fa-solid fa-shield-heart"></i>
+
+                    <h5>
+
+                        Stay Secure
+
+                    </h5>
+
+                    <p>
+
+                        Never share your account password,
+                        OTP or wallet information with anyone.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'js/wallet.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,504 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Wallet History{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/history.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="history-page">
+
+    <!-- Background -->
+
+    <div class="history-bg-circle bg1"></div>
+    <div class="history-bg-circle bg2"></div>
+    <div class="history-bg-circle bg3"></div>
+
+    <div class="container">
+
+        <!-- ======================================
+                PAGE HEADER
+        ======================================= -->
+
+        <div class="history-header">
+
+            <div>
+
+                <span class="history-small-title">
+
+                    Wallet History
+
+                </span>
+
+                <h1>
+
+                    Transaction History
+
+                </h1>
+
+                <p>
+
+                    View all wallet activities including deposits,
+                    withdrawals, payments and refunds in one place.
+
+                </p>
+
+            </div>
+
+            <div class="history-avatar">
+
+                {% if user.profile.profile_pic %}
+
+                    <img src="{{ user.profile.profile_pic.url }}" alt="">
+
+                {% else %}
+
+                    <img src="{% static 'images/default-profile.png' %}" alt="">
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <!-- ======================================
+                BALANCE CARD
+        ======================================= -->
+
+        <div class="wallet-balance-card">
+
+            <div class="wallet-left">
+
+                <span>
+
+                    Current Wallet Balance
+
+                </span>
+
+                <h2>
+
+                    {{ wallet.balance }}
+
+                    <strong>MMK</strong>
+
+                </h2>
+
+                <p>
+
+                    Your available wallet balance after all approved
+                    transactions.
+
+                </p>
+
+            </div>
+
+            <div class="wallet-icon">
+
+                <i class="fa-solid fa-wallet"></i>
+
+            </div>
+
+        </div>
+
+        <!-- ======================================
+                SUMMARY CARDS
+        ======================================= -->
+
+        <div class="row mt-5">
+
+            <div class="col-lg-3 col-md-6 mb-4">
+
+                <div class="summary-card">
+
+                    <i class="fa-solid fa-arrow-down-long"></i>
+
+                    <h3>
+
+                        {{ deposits|length }}
+
+                    </h3>
+
+                    <p>
+
+                        Deposits
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+
+                <div class="summary-card">
+
+                    <i class="fa-solid fa-arrow-up-long"></i>
+
+                    <h3>
+
+                        {{ withdrawals|length }}
+
+                    </h3>
+
+                    <p>
+
+                        Withdrawals
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+
+                <div class="summary-card">
+
+                    <i class="fa-solid fa-list"></i>
+
+                    <h3>
+
+                        {{ transactions.count }}
+
+                    </h3>
+
+                    <p>
+
+                        Transactions
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+
+                <div class="summary-card">
+
+                    <i class="fa-solid fa-coins"></i>
+
+                    <h3>
+
+                        {{ wallet.balance }}
+
+                    </h3>
+
+                    <p>
+
+                        Balance
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+                <!-- ======================================
+                FILTER & SEARCH
+        ======================================= -->
+
+        <div class="glass-card mb-5">
+
+            <div class="row align-items-center">
+
+                <!-- FILTER BUTTONS -->
+
+                <div class="col-lg-8">
+
+                    <div class="history-filter">
+
+                        <button
+                            class="filter-btn active"
+                            data-filter="all">
+
+                            <i class="fa-solid fa-layer-group"></i>
+
+                            All
+
+                        </button>
+
+                        <button
+                            class="filter-btn"
+                            data-filter="Deposit">
+
+                            <i class="fa-solid fa-arrow-down"></i>
+
+                            Deposit
+
+                        </button>
+
+                        <button
+                            class="filter-btn"
+                            data-filter="Withdraw">
+
+                            <i class="fa-solid fa-arrow-up"></i>
+
+                            Withdraw
+
+                        </button>
+
+                        <button
+                            class="filter-btn"
+                            data-filter="Payment">
+
+                            <i class="fa-solid fa-cart-shopping"></i>
+
+                            Payment
+
+                        </button>
+
+                        <button
+                            class="filter-btn"
+                            data-filter="Refund">
+
+                            <i class="fa-solid fa-rotate-left"></i>
+
+                            Refund
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- SEARCH -->
+
+                <div class="col-lg-4">
+
+                    <div class="history-search">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        <input
+                            type="text"
+                            id="historySearch"
+                            placeholder="Search transaction...">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+                <!-- ======================================
+                TRANSACTION HISTORY TABLE
+        ======================================= -->
+
+        <div class="glass-card">
+
+            <div class="section-title">
+
+                <h3>
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    Wallet Transactions
+
+                </h3>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table history-table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Type</th>
+
+                            <th>Amount</th>
+
+                            <th>Status</th>
+
+                            <th>Description</th>
+
+                            <th>Reference</th>
+
+                            <th>Date</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for transaction in transactions %}
+
+                        <tr
+                            class="history-row"
+                            data-type="{{ transaction.transaction_type }}">
+
+                            <!-- Transaction Type -->
+
+                            <td>
+
+                                {% if transaction.transaction_type == "Deposit" %}
+
+                                    <span class="type-badge deposit">
+
+                                        <i class="fa-solid fa-arrow-down"></i>
+
+                                        Deposit
+
+                                    </span>
+
+                                {% elif transaction.transaction_type == "Withdraw" %}
+
+                                    <span class="type-badge withdraw">
+
+                                        <i class="fa-solid fa-arrow-up"></i>
+
+                                        Withdraw
+
+                                    </span>
+
+                                {% elif transaction.transaction_type == "Payment" %}
+
+                                    <span class="type-badge payment">
+
+                                        <i class="fa-solid fa-cart-shopping"></i>
+
+                                        Payment
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="type-badge refund">
+
+                                        <i class="fa-solid fa-rotate-left"></i>
+
+                                        Refund
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <!-- Amount -->
+
+                            <td>
+
+                                <strong>
+
+                                    {{ transaction.amount }}
+
+                                    MMK
+
+                                </strong>
+
+                            </td>
+
+                            <!-- Status -->
+
+                            <td>
+
+                                {% if transaction.status == "Approved" %}
+
+                                    <span class="badge bg-success">
+
+                                        Approved
+
+                                    </span>
+
+                                {% elif transaction.status == "Rejected" %}
+
+                                    <span class="badge bg-danger">
+
+                                        Rejected
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Pending
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <!-- Description -->
+
+                            <td>
+
+                                {{ transaction.description|default:"-" }}
+
+                            </td>
+
+                            <!-- Reference -->
+
+                            <td>
+
+                                {{ transaction.reference_id|default:"-" }}
+
+                            </td>
+
+                            <!-- Date -->
+
+                            <td>
+
+                                {{ transaction.created_at|date:"d M Y H:i" }}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="6" class="text-center py-5">
+
+                                <i class="fa-solid fa-wallet fa-4x text-secondary mb-3"></i>
+
+                                <h4>
+
+                                    No Transactions Found
+
+                                </h4>
+
+                                <p class="text-muted">
+
+                                    Your wallet activities will appear here once
+                                    you start using your wallet.
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'js/history.js' %}"></script>
+
+{% endblock %}

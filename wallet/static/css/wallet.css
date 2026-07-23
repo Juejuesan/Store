@@ -1,0 +1,3209 @@
+/*=========================================================
+                    GOOGLE FONT
+=========================================================*/
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+/*=========================================================
+                    ROOT COLORS
+=========================================================*/
+
+:root{
+
+    --primary:#1565C0;
+    --primary-light:#42A5F5;
+    --secondary:#0D47A1;
+
+    --success:#2ECC71;
+    --warning:#F39C12;
+    --danger:#E74C3C;
+
+    --dark:#172B4D;
+    --gray:#7F8C8D;
+
+    --glass:rgba(255,255,255,.15);
+
+    --shadow:
+    0 15px 40px rgba(0,0,0,.12);
+
+    --radius:24px;
+
+}
+
+
+/*=========================================================
+                    BODY
+=========================================================*/
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #eef6ff,
+    #f9fbff,
+    #ffffff);
+
+    overflow-x:hidden;
+
+}
+
+
+
+/*=========================================================
+                    SECTION
+=========================================================*/
+
+.wallet-dashboard{
+
+    position:relative;
+
+    padding-top:140px;
+
+    padding-bottom:100px;
+
+    min-height:100vh;
+
+}
+
+
+
+/*=========================================================
+                FLOATING BACKGROUND
+=========================================================*/
+
+.wallet-bg-circle{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(100px);
+
+    opacity:.35;
+
+    animation:floatCircle 12s infinite ease-in-out;
+
+}
+
+
+.bg1{
+
+    width:350px;
+    height:350px;
+
+    background:#4FC3F7;
+
+    top:-80px;
+    left:-120px;
+
+}
+
+
+.bg2{
+
+    width:280px;
+    height:280px;
+
+    background:#81D4FA;
+
+    right:-70px;
+    top:180px;
+
+}
+
+
+.bg3{
+
+    width:420px;
+    height:420px;
+
+    background:#BBDEFB;
+
+    bottom:-180px;
+    left:40%;
+
+}
+
+
+
+@keyframes floatCircle{
+
+0%{
+
+transform:
+translateY(0)
+scale(1);
+
+}
+
+50%{
+
+transform:
+translateY(-30px)
+scale(1.08);
+
+}
+
+100%{
+
+transform:
+translateY(0)
+scale(1);
+
+}
+
+}
+
+
+
+/*=========================================================
+                    HEADER
+=========================================================*/
+
+.wallet-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:50px;
+
+flex-wrap:wrap;
+
+gap:30px;
+
+}
+
+
+
+.wallet-small-title{
+
+display:inline-block;
+
+padding:8px 20px;
+
+border-radius:50px;
+
+background:#E3F2FD;
+
+color:var(--primary);
+
+font-weight:600;
+
+letter-spacing:1px;
+
+margin-bottom:15px;
+
+}
+
+
+
+.wallet-header h1{
+
+font-size:45px;
+
+font-weight:800;
+
+color:var(--dark);
+
+margin-bottom:15px;
+
+}
+
+
+
+.wallet-header p{
+
+font-size:17px;
+
+color:#5E6C84;
+
+max-width:550px;
+
+line-height:1.8;
+
+}
+
+
+
+/*=========================================================
+                    AVATAR
+=========================================================*/
+
+.wallet-avatar{
+
+width:95px;
+
+height:95px;
+
+border-radius:50%;
+
+overflow:hidden;
+
+border:5px solid white;
+
+box-shadow:var(--shadow);
+
+transition:.4s;
+
+cursor:pointer;
+
+}
+
+
+
+.wallet-avatar:hover{
+
+transform:scale(1.08) rotate(4deg);
+
+}
+
+
+
+.wallet-avatar img{
+
+width:100%;
+
+height:100%;
+
+object-fit:cover;
+
+}
+
+/*=========================================================
+                    GLASS CARD
+=========================================================*/
+
+.glass-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:32px;
+
+    background:rgba(255,255,255,.20);
+
+    backdrop-filter:blur(25px);
+
+    -webkit-backdrop-filter:blur(25px);
+
+    border:1px solid rgba(255,255,255,.35);
+
+    box-shadow:
+
+    0 25px 60px rgba(0,0,0,.10);
+
+}
+
+
+/*=========================================================
+                    WALLET CARD
+=========================================================*/
+
+.wallet-card{
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:45px;
+
+    min-height:260px;
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #1565C0,
+    #1976D2,
+    #42A5F5);
+
+    color:white;
+
+    overflow:hidden;
+
+    transition:.45s;
+
+}
+
+
+.wallet-card:hover{
+
+    transform:
+
+    translateY(-8px)
+
+    scale(1.01);
+
+    box-shadow:
+
+    0 35px 70px rgba(21,101,192,.35);
+
+}
+
+
+/*=========================================================
+                SHINING EFFECT
+=========================================================*/
+
+.wallet-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:160px;
+
+    height:500px;
+
+    background:
+
+    rgba(255,255,255,.15);
+
+    transform:
+
+    rotate(30deg);
+
+    left:-220px;
+
+    top:-120px;
+
+    transition:1s;
+
+}
+
+
+.wallet-card:hover::before{
+
+    left:120%;
+
+}
+
+
+
+/*=========================================================
+                CIRCLE DECORATION
+=========================================================*/
+
+.wallet-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:340px;
+
+    height:340px;
+
+    border-radius:50%;
+
+    background:
+
+    rgba(255,255,255,.08);
+
+    right:-120px;
+
+    top:-80px;
+
+}
+
+
+
+/*=========================================================
+                LEFT CONTENT
+=========================================================*/
+
+.wallet-card-left{
+
+    position:relative;
+
+    z-index:5;
+
+}
+
+
+.wallet-card-left span{
+
+    font-size:16px;
+
+    opacity:.9;
+
+    letter-spacing:1px;
+
+}
+
+
+.wallet-card-left h2{
+
+    font-size:52px;
+
+    font-weight:800;
+
+    margin-top:18px;
+
+    margin-bottom:18px;
+
+}
+
+
+.wallet-card-left p{
+
+    font-size:16px;
+
+    opacity:.85;
+
+    max-width:420px;
+
+    line-height:1.8;
+
+}
+
+
+
+/*=========================================================
+                RIGHT SIDE
+=========================================================*/
+
+.wallet-card-right{
+
+    position:relative;
+
+    z-index:5;
+
+}
+
+
+
+/*=========================================================
+                    CHIP
+=========================================================*/
+
+.wallet-chip{
+
+    width:85px;
+
+    height:60px;
+
+    border-radius:14px;
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #FFE082,
+
+    #FFD54F,
+
+    #FFCA28);
+
+    margin-bottom:35px;
+
+    position:relative;
+
+    box-shadow:
+
+    0 10px 25px rgba(255,193,7,.35);
+
+}
+
+
+.wallet-chip::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:18px;
+
+    top:0;
+
+    width:2px;
+
+    height:100%;
+
+    background:rgba(255,255,255,.45);
+
+}
+
+
+.wallet-chip::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:18px;
+
+    left:0;
+
+    width:100%;
+
+    height:2px;
+
+    background:rgba(255,255,255,.35);
+
+}
+
+
+
+/*=========================================================
+                WALLET ICON
+=========================================================*/
+
+.wallet-logo{
+
+    width:95px;
+
+    height:95px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+
+    rgba(255,255,255,.18);
+
+    backdrop-filter:blur(12px);
+
+    border:
+
+    1px solid rgba(255,255,255,.25);
+
+    animation:walletPulse 3s infinite;
+
+}
+
+
+.wallet-logo i{
+
+    font-size:42px;
+
+    color:white;
+
+}
+
+
+
+/*=========================================================
+                    PULSE
+=========================================================*/
+
+@keyframes walletPulse{
+
+0%{
+
+transform:scale(1);
+
+box-shadow:0 0 0 rgba(255,255,255,0);
+
+}
+
+50%{
+
+transform:scale(1.08);
+
+box-shadow:
+
+0 0 30px rgba(255,255,255,.35);
+
+}
+
+100%{
+
+transform:scale(1);
+
+box-shadow:0 0 0 rgba(255,255,255,0);
+
+}
+
+}
+
+
+
+/*=========================================================
+                BALANCE NUMBER
+=========================================================*/
+
+#balanceCounter{
+
+    display:inline-block;
+
+    transition:.4s;
+
+}
+
+
+.wallet-card:hover #balanceCounter{
+
+    transform:scale(1.05);
+
+}
+
+
+
+/*=========================================================
+                RESPONSIVE
+=========================================================*/
+
+@media(max-width:991px){
+
+.wallet-card{
+
+flex-direction:column;
+
+text-align:center;
+
+gap:40px;
+
+padding:35px;
+
+}
+
+.wallet-card-left h2{
+
+font-size:40px;
+
+}
+
+}
+
+/*=========================================================
+                    ACTION CARDS
+=========================================================*/
+
+.action-card{
+
+    position:relative;
+
+    display:block;
+
+    padding:40px 30px;
+
+    border-radius:28px;
+
+    background:#ffffff;
+
+    overflow:hidden;
+
+    text-decoration:none;
+
+    transition:.45s;
+
+    box-shadow:
+
+    0 15px 40px rgba(0,0,0,.08);
+
+    border:1px solid rgba(0,0,0,.05);
+
+}
+
+
+.action-card:hover{
+
+    transform:
+
+    translateY(-12px);
+
+    text-decoration:none;
+
+}
+
+
+
+/*=========================================================
+                TOP GLOW BAR
+=========================================================*/
+
+.action-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:100%;
+
+    height:7px;
+
+    transition:.4s;
+
+}
+
+
+
+/*=========================================================
+                    ICON
+=========================================================*/
+
+.action-card div{
+
+    width:80px;
+
+    height:80px;
+
+    border-radius:24px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    margin-bottom:28px;
+
+    transition:.4s;
+
+}
+
+
+
+.action-card i{
+
+    font-size:34px;
+
+    color:white;
+
+}
+
+
+
+.action-card:hover div{
+
+    transform:
+
+    rotate(10deg)
+
+    scale(1.12);
+
+}
+
+
+
+/*=========================================================
+                    TITLE
+=========================================================*/
+
+.action-card h4{
+
+    color:#17375E;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+
+
+/*=========================================================
+                    TEXT
+=========================================================*/
+
+.action-card p{
+
+    color:#6B7280;
+
+    line-height:1.8;
+
+    margin:0;
+
+}
+
+
+
+/*=========================================================
+                    DEPOSIT
+=========================================================*/
+
+.deposit-card::before{
+
+    background:#2ECC71;
+
+}
+
+
+
+.deposit-card div{
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #27AE60,
+
+    #2ECC71);
+
+}
+
+
+
+/*=========================================================
+                    WITHDRAW
+=========================================================*/
+
+.withdraw-card::before{
+
+    background:#F39C12;
+
+}
+
+
+
+.withdraw-card div{
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #F39C12,
+
+    #F7B733);
+
+}
+
+
+
+/*=========================================================
+                    HISTORY
+=========================================================*/
+
+.history-card::before{
+
+    background:#1565C0;
+
+}
+
+
+
+.history-card div{
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #1565C0,
+
+    #42A5F5);
+
+}
+
+
+
+/*=========================================================
+                    HOVER COLORS
+=========================================================*/
+
+.deposit-card:hover{
+
+    box-shadow:
+
+    0 25px 45px rgba(46,204,113,.28);
+
+}
+
+
+
+.withdraw-card:hover{
+
+    box-shadow:
+
+    0 25px 45px rgba(243,156,18,.30);
+
+}
+
+
+
+.history-card:hover{
+
+    box-shadow:
+
+    0 25px 45px rgba(21,101,192,.28);
+
+}
+
+
+
+/*=========================================================
+                FLOATING SHINE
+=========================================================*/
+
+.action-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:140px;
+
+    height:340px;
+
+    background:
+
+    rgba(255,255,255,.20);
+
+    transform:rotate(25deg);
+
+    left:-180px;
+
+    top:-80px;
+
+    transition:1s;
+
+}
+
+
+
+.action-card:hover::after{
+
+    left:130%;
+
+}
+
+
+
+/*=========================================================
+                RESPONSIVE
+=========================================================*/
+
+@media(max-width:768px){
+
+.action-card{
+
+margin-bottom:25px;
+
+}
+
+}
+
+/*=========================================================
+                    SECTION HEADER
+=========================================================*/
+
+.section-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:60px;
+
+    margin-bottom:30px;
+
+}
+
+.section-header h2{
+
+    font-size:32px;
+
+    font-weight:700;
+
+    color:#17375E;
+
+}
+
+.section-header a{
+
+    color:#1565C0;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+}
+
+.section-header a:hover{
+
+    color:#0D47A1;
+
+}
+
+
+
+
+/*=========================================================
+                    OVERVIEW CARD
+=========================================================*/
+
+.overview-card{
+
+    background:#fff;
+
+    border-radius:24px;
+
+    padding:28px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    transition:.4s;
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:
+
+    0 12px 35px rgba(0,0,0,.08);
+
+}
+
+
+
+.overview-card:hover{
+
+    transform:
+
+    translateY(-10px);
+
+    box-shadow:
+
+    0 25px 55px rgba(0,0,0,.12);
+
+}
+
+
+
+/* Glow */
+
+.overview-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+
+    height:220px;
+
+    border-radius:50%;
+
+    right:-90px;
+
+    top:-90px;
+
+    opacity:.08;
+
+}
+
+
+
+/*=========================================================
+                    ICON
+=========================================================*/
+
+.overview-icon{
+
+    width:72px;
+
+    height:72px;
+
+    border-radius:22px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-shrink:0;
+
+    transition:.4s;
+
+}
+
+
+
+.overview-card:hover .overview-icon{
+
+    transform:
+
+    rotate(10deg)
+
+    scale(1.12);
+
+}
+
+
+
+.overview-icon i{
+
+    color:white;
+
+    font-size:30px;
+
+}
+
+
+
+/*=========================================================
+                COLORS
+=========================================================*/
+
+.overview-icon.blue{
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #1565C0,
+
+    #42A5F5);
+
+}
+
+.overview-card:has(.blue)::before{
+
+    background:#42A5F5;
+
+}
+
+
+
+.overview-icon.green{
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #27AE60,
+
+    #2ECC71);
+
+}
+
+.overview-card:has(.green)::before{
+
+    background:#2ECC71;
+
+}
+
+
+
+.overview-icon.orange{
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #F39C12,
+
+    #F7B733);
+
+}
+
+.overview-card:has(.orange)::before{
+
+    background:#F39C12;
+
+}
+
+
+
+.overview-icon.purple{
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #8E44AD,
+
+    #BB6BD9);
+
+}
+
+.overview-card:has(.purple)::before{
+
+    background:#8E44AD;
+
+}
+
+
+
+/*=========================================================
+                TEXT
+=========================================================*/
+
+.overview-card span{
+
+    color:#6B7280;
+
+    font-size:15px;
+
+}
+
+
+
+.overview-card h3{
+
+    font-size:28px;
+
+    font-weight:700;
+
+    color:#17375E;
+
+    margin-top:5px;
+
+}
+
+
+
+
+/*=========================================================
+                    TRUST BANNER
+=========================================================*/
+
+.trust-banner{
+
+    margin-top:70px;
+
+    padding:40px;
+
+    border-radius:30px;
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #1565C0,
+
+    #1976D2,
+
+    #42A5F5);
+
+    color:white;
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:
+
+    0 25px 60px rgba(21,101,192,.30);
+
+}
+
+
+
+/* Decoration */
+
+.trust-banner::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:350px;
+
+    height:350px;
+
+    border-radius:50%;
+
+    background:
+
+    rgba(255,255,255,.08);
+
+    right:-120px;
+
+    top:-100px;
+
+}
+
+
+
+.trust-banner::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:180px;
+
+    height:180px;
+
+    border-radius:50%;
+
+    background:
+
+    rgba(255,255,255,.08);
+
+    left:-80px;
+
+    bottom:-60px;
+
+}
+
+
+
+.trust-banner h3{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.trust-banner p{
+
+    font-size:17px;
+
+    opacity:.95;
+
+    line-height:1.9;
+
+}
+
+
+
+/*=========================================================
+                TRUST BADGE
+=========================================================*/
+
+.trust-badge{
+
+    width:180px;
+
+    height:180px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+
+    rgba(255,255,255,.15);
+
+    backdrop-filter:blur(15px);
+
+    border:
+
+    1px solid rgba(255,255,255,.25);
+
+    animation:
+
+    badgeFloat 4s infinite ease-in-out;
+
+}
+
+
+
+.trust-badge i{
+
+    font-size:55px;
+
+    margin-bottom:12px;
+
+}
+
+
+
+.trust-badge span{
+
+    font-size:18px;
+
+    font-weight:600;
+
+}
+
+
+
+/*=========================================================
+                    FLOAT
+=========================================================*/
+
+@keyframes badgeFloat{
+
+0%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(-12px);
+
+}
+
+100%{
+
+transform:translateY(0);
+
+}
+
+}
+
+
+
+/*=========================================================
+                RESPONSIVE
+=========================================================*/
+
+@media(max-width:991px){
+
+.trust-banner{
+
+text-align:center;
+
+padding:35px;
+
+}
+
+.trust-badge{
+
+margin-top:30px;
+
+}
+
+}
+
+/*=========================================================
+                    ACTIVITY BOX
+=========================================================*/
+
+.activity-box{
+
+    margin-top:30px;
+
+    background:#ffffff;
+
+    border-radius:30px;
+
+    padding:15px;
+
+    box-shadow:
+    0 20px 50px rgba(0,0,0,.08);
+
+}
+
+
+
+/*=========================================================
+                    TRANSACTION ITEM
+=========================================================*/
+
+.activity-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:22px 25px;
+
+    border-radius:22px;
+
+    transition:.35s;
+
+    margin-bottom:12px;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+
+.activity-item:hover{
+
+    background:#F8FBFF;
+
+    transform:translateX(10px);
+
+}
+
+
+
+/*=========================================================
+                    LEFT SIDE
+=========================================================*/
+
+.activity-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+
+
+/*=========================================================
+                    ICON
+=========================================================*/
+
+.activity-icon{
+
+    width:65px;
+
+    height:65px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:white;
+
+    font-size:24px;
+
+    transition:.35s;
+
+}
+
+
+.activity-item:hover .activity-icon{
+
+    transform:
+
+    scale(1.15)
+
+    rotate(8deg);
+
+}
+
+
+
+/*=========================================================
+                SUCCESS ICON
+=========================================================*/
+
+.activity-icon.success{
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #27AE60,
+
+    #2ECC71);
+
+}
+
+
+
+/*=========================================================
+                DANGER ICON
+=========================================================*/
+
+.activity-icon.danger{
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #E74C3C,
+
+    #FF6B6B);
+
+}
+
+
+
+/*=========================================================
+                    TITLE
+=========================================================*/
+
+.activity-left h5{
+
+    margin:0;
+
+    font-weight:700;
+
+    color:#17375E;
+
+}
+
+
+.activity-left small{
+
+    color:#7B8794;
+
+    font-size:14px;
+
+}
+
+
+
+/*=========================================================
+                    RIGHT
+=========================================================*/
+
+.activity-right{
+
+    text-align:right;
+
+}
+
+
+
+/*=========================================================
+                    AMOUNT
+=========================================================*/
+
+.amount{
+
+    display:block;
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+
+.plus{
+
+    color:#27AE60;
+
+}
+
+
+.minus{
+
+    color:#E74C3C;
+
+}
+
+
+
+/*=========================================================
+                    STATUS
+=========================================================*/
+
+.activity-right small{
+
+    display:inline-block;
+
+    margin-top:6px;
+
+    padding:5px 16px;
+
+    border-radius:50px;
+
+    font-weight:600;
+
+    font-size:13px;
+
+}
+
+
+
+/*=========================================================
+                APPROVED
+=========================================================*/
+
+.activity-right small{
+
+    background:#E8FFF1;
+
+    color:#27AE60;
+
+}
+
+/*=========================================================
+                    STATUS COLORS
+=========================================================*/
+
+.status{
+
+    padding:6px 16px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+
+.status.approved{
+
+    background:#EAFBF2;
+
+    color:#2ECC71;
+
+}
+
+
+.status.pending{
+
+    background:#FFF7E5;
+
+    color:#F39C12;
+
+}
+
+
+.status.rejected{
+
+    background:#FFECEC;
+
+    color:#E74C3C;
+
+}
+
+/*=========================================================
+                    EMPTY STATE
+=========================================================*/
+
+.empty-state{
+
+    padding:80px 30px;
+
+    text-align:center;
+
+}
+
+
+.empty-state i{
+
+    font-size:80px;
+
+    color:#42A5F5;
+
+    margin-bottom:25px;
+
+    opacity:.7;
+
+}
+
+
+.empty-state h5{
+
+    font-size:30px;
+
+    color:#17375E;
+
+    margin-bottom:12px;
+
+}
+
+
+.empty-state p{
+
+    color:#7B8794;
+
+    max-width:500px;
+
+    margin:auto;
+
+}
+
+.activity-item:not(:last-child){
+
+    border-bottom:
+
+    1px solid #EEF3F8;
+
+}
+
+.activity-box{
+
+    max-height:600px;
+
+    overflow-y:auto;
+
+}
+
+
+
+.activity-box::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+
+
+.activity-box::-webkit-scrollbar-thumb{
+
+    background:#42A5F5;
+
+    border-radius:30px;
+
+}
+
+
+
+.activity-box::-webkit-scrollbar-track{
+
+    background:#EEF4FF;
+
+}
+
+
+@media(max-width:768px){
+
+.activity-item{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:20px;
+
+}
+
+.activity-right{
+
+width:100%;
+
+text-align:left;
+
+}
+
+}
+
+/*=========================================================
+                    WALLET TIPS
+=========================================================*/
+
+.wallet-tip{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:linear-gradient(135deg,#ffffff,#F7FBFF);
+
+    border-radius:28px;
+
+    padding:35px;
+
+    margin-top:45px;
+
+    box-shadow:
+    0 18px 45px rgba(0,0,0,.08);
+
+    transition:.4s;
+
+}
+
+
+.wallet-tip:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+.wallet-tip::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+
+    height:260px;
+
+    border-radius:50%;
+
+    background:rgba(66,165,245,.08);
+
+    right:-120px;
+
+    top:-120px;
+
+}
+
+
+.wallet-tip h4{
+
+    color:#17375E;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+
+}
+
+
+.wallet-tip p{
+
+    color:#6B7280;
+
+    line-height:1.9;
+
+}
+
+
+.wallet-tip ul{
+
+    margin-top:25px;
+
+    padding-left:0;
+
+}
+
+
+.wallet-tip ul li{
+
+    list-style:none;
+
+    margin-bottom:15px;
+
+    color:#17375E;
+
+    font-weight:500;
+
+}
+
+
+.wallet-tip ul li i{
+
+    color:#2ECC71;
+
+    margin-right:12px;
+
+}
+
+
+/*=========================================================
+                SECURITY BADGE
+=========================================================*/
+
+.security-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:14px 28px;
+
+    border-radius:60px;
+
+    background:#EAF5FF;
+
+    color:#1565C0;
+
+    font-weight:600;
+
+    margin-top:20px;
+
+}
+
+
+.security-badge i{
+
+    font-size:24px;
+
+    animation:shieldGlow 2s infinite;
+
+}
+
+
+@keyframes shieldGlow{
+
+0%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.2);
+
+color:#42A5F5;
+
+}
+
+100%{
+
+transform:scale(1);
+
+}
+
+}
+
+
+/*=========================================================
+                PREMIUM BUTTON
+=========================================================*/
+
+.wallet-btn{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border:none;
+
+    border-radius:60px;
+
+    padding:15px 35px;
+
+    font-weight:700;
+
+    color:white;
+
+    background:
+
+    linear-gradient(
+
+    135deg,
+
+    #1565C0,
+
+    #42A5F5);
+
+    transition:.4s;
+
+}
+
+
+.wallet-btn:hover{
+
+    transform:
+
+    translateY(-4px);
+
+    box-shadow:
+
+    0 18px 40px rgba(21,101,192,.35);
+
+}
+
+
+.wallet-btn::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:120px;
+
+    height:250px;
+
+    background:
+
+    rgba(255,255,255,.25);
+
+    left:-160px;
+
+    top:-40px;
+
+    transform:rotate(25deg);
+
+    transition:.8s;
+
+}
+
+
+.wallet-btn:hover::before{
+
+    left:140%;
+
+}
+
+
+/*=========================================================
+                FLOATING ICONS
+=========================================================*/
+
+.float-wallet{
+
+    position:absolute;
+
+    font-size:42px;
+
+    opacity:.12;
+
+    animation:floatIcon 10s infinite ease-in-out;
+
+}
+
+.float1{
+
+top:120px;
+
+left:8%;
+
+}
+
+.float2{
+
+top:400px;
+
+right:10%;
+
+animation-delay:2s;
+
+}
+
+.float3{
+
+bottom:120px;
+
+left:35%;
+
+animation-delay:5s;
+
+}
+
+
+@keyframes floatIcon{
+
+0%{
+
+transform:
+
+translateY(0)
+
+rotate(0);
+
+}
+
+50%{
+
+transform:
+
+translateY(-35px)
+
+rotate(12deg);
+
+}
+
+100%{
+
+transform:
+
+translateY(0)
+
+rotate(0);
+
+}
+
+}
+
+
+/*=========================================================
+                GLASS PANEL
+=========================================================*/
+
+.glass-panel{
+
+    background:rgba(255,255,255,.22);
+
+    backdrop-filter:blur(20px);
+
+    border-radius:25px;
+
+    border:1px solid rgba(255,255,255,.4);
+
+    box-shadow:
+
+    0 20px 45px rgba(0,0,0,.08);
+
+}
+
+
+/*=========================================================
+                LOADING
+=========================================================*/
+
+.loading{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:#EDF3F8;
+
+}
+
+
+.loading::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+left:-150px;
+
+width:150px;
+
+height:100%;
+
+background:
+
+linear-gradient(
+
+90deg,
+
+transparent,
+
+rgba(255,255,255,.8),
+
+transparent);
+
+animation:skeleton 1.4s infinite;
+
+}
+
+
+@keyframes skeleton{
+
+100%{
+
+left:120%;
+
+}
+
+}
+
+
+/*=========================================================
+                NOTIFICATION
+=========================================================*/
+
+.notification-dot{
+
+width:12px;
+
+height:12px;
+
+border-radius:50%;
+
+background:#E74C3C;
+
+position:absolute;
+
+right:-2px;
+
+top:-2px;
+
+animation:ping 2s infinite;
+
+}
+
+
+@keyframes ping{
+
+0%{
+
+transform:scale(1);
+
+opacity:1;
+
+}
+
+100%{
+
+transform:scale(2);
+
+opacity:0;
+
+}
+
+}
+
+
+/*=========================================================
+                SUCCESS
+=========================================================*/
+
+.success-animation{
+
+animation:successBounce .8s;
+
+}
+
+
+@keyframes successBounce{
+
+0%{
+
+transform:scale(.6);
+
+opacity:0;
+
+}
+
+70%{
+
+transform:scale(1.1);
+
+}
+
+100%{
+
+transform:scale(1);
+
+opacity:1;
+
+}
+
+}
+
+
+/*=========================================================
+                HOVER GLOW
+=========================================================*/
+
+.hover-glow{
+
+transition:.35s;
+
+}
+
+
+.hover-glow:hover{
+
+box-shadow:
+
+0 20px 50px rgba(66,165,245,.30);
+
+}
+
+
+/*=========================================================
+                MOBILE
+=========================================================*/
+
+@media(max-width:768px){
+
+.wallet-header h1{
+
+font-size:34px;
+
+}
+
+.wallet-card-left h2{
+
+font-size:34px;
+
+}
+
+.wallet-tip{
+
+padding:25px;
+
+}
+
+.section-header{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:15px;
+
+}
+
+}
+
+
+/*=========================================================
+                SECTION LABEL
+=========================================================*/
+
+.section-label{
+
+    display:inline-block;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    color:var(--primary);
+
+    text-transform:uppercase;
+
+    margin-bottom:8px;
+
+}
+
+.view-all-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    text-decoration:none;
+
+    color:var(--primary);
+
+    font-weight:600;
+
+    transition:.35s;
+
+}
+
+.view-all-btn:hover{
+
+    gap:16px;
+
+    color:var(--secondary);
+
+}
+
+
+
+/*=========================================================
+                PERFORMANCE CARD
+=========================================================*/
+
+.performance-card{
+
+    margin-top:50px;
+
+    padding:45px;
+
+    border-radius:30px;
+
+    background:linear-gradient(135deg,#0D47A1,#1565C0,#42A5F5);
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    position:relative;
+
+}
+
+.performance-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:320px;
+
+    height:320px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.08);
+
+    right:-120px;
+
+    top:-120px;
+
+}
+
+.performance-left{
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+.performance-left h3{
+
+    font-size:34px;
+
+    font-weight:700;
+
+}
+
+.performance-left p{
+
+    margin-top:15px;
+
+    max-width:550px;
+
+    opacity:.9;
+
+    line-height:1.8;
+
+}
+
+.performance-circle{
+
+    width:170px;
+
+    height:170px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.15);
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border:2px solid rgba(255,255,255,.2);
+
+    backdrop-filter:blur(12px);
+
+}
+
+.performance-circle span{
+
+    font-size:48px;
+
+    font-weight:800;
+
+}
+
+.performance-circle small{
+
+    font-size:16px;
+
+}
+
+
+
+/*=========================================================
+                TRANSACTION TABLE
+=========================================================*/
+
+.transaction-card{
+
+    background:#fff;
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    box-shadow:0 18px 45px rgba(0,0,0,.08);
+
+}
+
+.transaction-table{
+
+    margin-bottom:0;
+
+}
+
+.transaction-table thead{
+
+    background:#1565C0;
+
+    color:#fff;
+
+}
+
+.transaction-table th{
+
+    padding:22px;
+
+    border:none;
+
+}
+
+.transaction-table td{
+
+    padding:22px;
+
+    vertical-align:middle;
+
+    border-color:#EEF3F8;
+
+}
+
+.transaction-table tbody tr{
+
+    transition:.35s;
+
+}
+
+.transaction-table tbody tr:hover{
+
+    background:#F7FBFF;
+
+}
+
+.transaction-info{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+.transaction-icon{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#fff;
+
+}
+
+.transaction-icon.deposit{
+
+    background:linear-gradient(135deg,#27AE60,#2ECC71);
+
+}
+
+.transaction-icon.withdraw{
+
+    background:linear-gradient(135deg,#E74C3C,#FF7675);
+
+}
+
+.transaction-info h6{
+
+    margin:0;
+
+    font-weight:700;
+
+}
+
+.transaction-info small{
+
+    color:#888;
+
+}
+
+
+
+/*=========================================================
+                EMPTY TABLE
+=========================================================*/
+
+.empty-table{
+
+    text-align:center;
+
+    padding:70px 20px;
+
+}
+
+.empty-table i{
+
+    font-size:70px;
+
+    color:#42A5F5;
+
+    margin-bottom:20px;
+
+}
+
+.empty-table h4{
+
+    margin-bottom:10px;
+
+}
+
+
+
+/*=========================================================
+                TRUST STATS
+=========================================================*/
+
+.trust-stat-card{
+
+    background:#fff;
+
+    padding:35px;
+
+    text-align:center;
+
+    border-radius:25px;
+
+    transition:.35s;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+}
+
+.trust-stat-card:hover{
+
+    transform:translateY(-10px);
+
+}
+
+.trust-stat-card i{
+
+    font-size:48px;
+
+    color:#1565C0;
+
+    margin-bottom:20px;
+
+}
+
+.trust-stat-card h3{
+
+    font-weight:800;
+
+    color:#17375E;
+
+}
+
+.trust-stat-card p{
+
+    color:#777;
+
+}
+
+
+
+/*=========================================================
+                TIPS GRID
+=========================================================*/
+
+.tips-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:30px;
+
+}
+
+.tip-card{
+
+    background:#fff;
+
+    border-radius:24px;
+
+    padding:35px;
+
+    text-align:center;
+
+    transition:.35s;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+}
+
+.tip-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.tip-icon{
+
+    width:75px;
+
+    height:75px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#EAF4FF;
+
+    margin-bottom:20px;
+
+}
+
+.tip-icon i{
+
+    font-size:30px;
+
+    color:#1565C0;
+
+}
+
+
+
+/*=========================================================
+                HELP CARD
+=========================================================*/
+
+.help-card{
+
+    padding:45px;
+
+    border-radius:30px;
+
+    background:linear-gradient(135deg,#1565C0,#42A5F5);
+
+    color:#fff;
+
+}
+
+.help-small{
+
+    letter-spacing:2px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+.support-btn{
+
+    display:inline-block;
+
+    padding:16px 35px;
+
+    border-radius:60px;
+
+    background:#fff;
+
+    color:#1565C0;
+
+    text-decoration:none;
+
+    font-weight:700;
+
+    transition:.35s;
+
+}
+
+.support-btn:hover{
+
+    background:#EAF4FF;
+
+    color:#0D47A1;
+
+}
+
+
+
+/*=========================================================
+                SECURITY REMINDER
+=========================================================*/
+
+.security-reminder{
+
+    display:flex;
+
+    gap:25px;
+
+    align-items:center;
+
+    background:#FFF9E8;
+
+    border-left:8px solid #F39C12;
+
+    padding:35px;
+
+    border-radius:24px;
+
+}
+
+.security-icon{
+
+    width:80px;
+
+    height:80px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#FFE9B3;
+
+}
+
+.security-icon i{
+
+    font-size:36px;
+
+    color:#F39C12;
+
+}
+
+
+
+/*=========================================================
+                FOOTER
+=========================================================*/
+
+.wallet-footer{
+
+    margin-top:70px;
+
+    text-align:center;
+
+    padding:50px 20px;
+
+}
+
+.footer-logo{
+
+    width:90px;
+
+    height:90px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:linear-gradient(135deg,#1565C0,#42A5F5);
+
+    color:#fff;
+
+    font-size:40px;
+
+}
+
+.wallet-footer h3{
+
+    margin-top:25px;
+
+    font-weight:700;
+
+}
+
+.footer-line{
+
+    width:180px;
+
+    height:3px;
+
+    margin:25px auto;
+
+    background:#42A5F5;
+
+}
+
+
+
+/*=========================================================
+                RESPONSIVE
+=========================================================*/
+
+@media(max-width:992px){
+
+.tips-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.performance-card{
+
+flex-direction:column;
+
+text-align:center;
+
+gap:40px;
+
+}
+
+.security-reminder{
+
+flex-direction:column;
+
+text-align:center;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.transaction-table th,
+
+.transaction-table td{
+
+padding:14px;
+
+font-size:14px;
+
+}
+
+.transaction-info{
+
+flex-direction:column;
+
+text-align:center;
+
+}
+
+.help-card{
+
+text-align:center;
+
+}
+
+}
+
+
+
+/*=========================================================
+                JAVASCRIPT ANIMATION CLASSES
+=========================================================*/
+
+/* Hidden before animation */
+.hidden{
+
+    opacity:0;
+
+    transform:translateY(40px);
+
+    transition:all .8s ease;
+
+}
+
+/* Visible after animation */
+.show{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+/* Ripple Effect */
+
+.ripple{
+
+    position:absolute;
+
+    width:20px;
+
+    height:20px;
+
+    background:rgba(255,255,255,.45);
+
+    border-radius:50%;
+
+    transform:translate(-50%,-50%) scale(0);
+
+    animation:ripple-animation .6s linear;
+
+    pointer-events:none;
+
+}
+
+/* Ripple Keyframes */
+
+@keyframes ripple-animation{
+
+    to{
+
+        transform:translate(-50%,-50%) scale(15);
+
+        opacity:0;
+
+    }
+
+}
+
+/* Navbar Shadow */
+
+.nav-shadow{
+
+    box-shadow:0 10px 35px rgba(0,0,0,.12);
+
+    transition:.3s;
+
+}
+
+
+.action-card,
+.deposit-btn,
+.withdraw-btn{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
