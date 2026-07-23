@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 
 from notifications.models import Notification
 from posts.form import PostForm
-from posts.models import PostImage
+from posts.models import PostImage, Post
 from user.models import Profile
 
 
@@ -67,3 +67,7 @@ def createPost(request):
          form = PostForm()
 
     return render(request, "createPost.html", {"form": form})
+
+def showPost(request):
+    post = Post.objects.all()
+    return render(request, "showPost.html", {"post": post})
