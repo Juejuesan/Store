@@ -27,6 +27,7 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('posts/', include('posts.urls')),
     path('adminpanel/', include('adminpanel.urls')),
+    path("wallet/", include("wallet.urls")),
 ]
 
 if settings.DEBUG:
