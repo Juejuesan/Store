@@ -1,14 +1,14 @@
-<!DOCTYPE html>
 {% load static %}
 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>
 
@@ -19,32 +19,35 @@
     </title>
 
 
-    <!-- Admin CSS -->
+    <!-- ================= ADMIN CSS ================= -->
 
     <link rel="stylesheet"
           href="{% static 'css/admin.css' %}">
 
 
-    <!-- Font Awesome -->
+    <!-- ================= FONT AWESOME ================= -->
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 
-    <!-- Google Font -->
+    <!-- ================= GOOGLE FONT ================= -->
 
     <link rel="preconnect"
           href="https://fonts.googleapis.com">
-
 
     <link rel="preconnect"
           href="https://fonts.gstatic.com"
           crossorigin>
 
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet">
 
+
+    <!-- ================= PAGE EXTRA CSS ================= -->
+
+    {% block extra_css %}
+    {% endblock %}
 
 </head>
 
@@ -52,331 +55,318 @@
 <body>
 
 
+<!-- =====================================================
+     MAIN WRAPPER
+===================================================== -->
+
 <div class="wrapper">
 
 
+    <!-- =================================================
+         SIDEBAR
+    ================================================== -->
 
-<!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
 
-<aside class="sidebar">
 
+        <!-- LOGO -->
 
-    <!-- Logo -->
+        <div class="logo">
 
-    <div class="logo">
+            <div class="logo-circle">
 
-
-        <div class="logo-circle">
-
-            <i class="fa-solid fa-store"></i>
-
-        </div>
-
-
-        <div>
-
-            <h2>
-                Trusty Shop
-            </h2>
-
-
-            <span>
-                Admin Panel
-            </span>
-
-
-        </div>
-
-
-    </div>
-
-
-
-
-    <!-- Menu -->
-
-    <ul class="menu">
-
-
-        <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-
-            <a href="{% url 'dashboard' %}">
-
-                <i class="fa-solid fa-chart-pie"></i>
-
-                <span>
-                    Dashboard
-                </span>
-
-            </a>
-
-        </li>
-
-
-
-
-
-        <li class="{% if request.resolver_match.url_name == 'posts' %}active{% endif %}">
-
-             <a href="/adminpanel/posts/">
-
-                <i class="fa-solid fa-box-open"></i>
-
-                <span>
-                    Posts
-                </span>
-
-            </a>
-
-        </li>
-
-
-
-
-
-        <li>
-
-            <a href="#">
-
-                <i class="fa-solid fa-users"></i>
-
-                <span>
-                    Users
-                </span>
-
-            </a>
-
-        </li>
-
-
-
-
-
-        <li>
-
-            <a href="#">
-
-                <i class="fa-solid fa-cart-shopping"></i>
-
-                <span>
-                    Orders
-                </span>
-
-            </a>
-
-        </li>
-
-
-
-
-
-        <li>
-
-            <a href="#">
-
-                <i class="fa-solid fa-wallet"></i>
-
-                <span>
-                    Wallet
-                </span>
-
-            </a>
-
-        </li>
-
-
-
-
-
-        <li>
-
-            <a href="#">
-
-                <i class="fa-solid fa-chart-column"></i>
-
-                <span>
-                    Reports
-                </span>
-
-            </a>
-
-        </li>
-
-
-
-
-
-        <li>
-
-            <a href="#">
-
-                <i class="fa-solid fa-gear"></i>
-
-                <span>
-                    Settings
-                </span>
-
-            </a>
-
-        </li>
-
-
-    </ul>
-
-
-
-
-
-    <!-- Sidebar Footer -->
-
-
-    <div class="sidebar-footer">
-
-
-        <img src="{% static 'images/admin.png' %}"
-             class="profile-img">
-
-
-
-        <div>
-
-
-            <h4>
-                Administrator
-            </h4>
-
-
-            <span>
-                Super Admin
-            </span>
-
-
-        </div>
-
-
-    </div>
-
-
-
-</aside>
-
-
-
-
-
-
-
-
-
-<!-- ================= MAIN ================= -->
-
-
-<main class="main">
-
-
-
-    <!-- TOP BAR -->
-
-
-    <header class="topbar">
-
-
-        <button id="toggle-btn">
-
-            <i class="fa-solid fa-bars"></i>
-
-        </button>
-
-
-
-
-
-        <div class="search-box">
-
-
-            <i class="fa-solid fa-search"></i>
-
-
-            <input type="text"
-                   placeholder="Search anything...">
-
-
-        </div>
-
-
-
-
-
-
-        <div class="top-icons">
-
-
-
-            <div class="clock">
-
-
-                <i class="fa-regular fa-clock"></i>
-
-
-                <span id="liveClock"></span>
-
+                <i class="fa-solid fa-store"></i>
 
             </div>
 
-            <button type="button"
-        class="notification"
-        id="notificationBell">
 
-    <i class="fa-regular fa-bell"></i>
+            <div>
 
-    {% if notification_count > 0 %}
+                <h2>
+                    Trusty Shop
+                </h2>
 
-        <span class="badge">
-            {{ notification_count }}
-        </span>
+                <span>
+                    Admin Panel
+                </span>
 
-    {% endif %}
+            </div>
 
-</button>
-
-            <button id="themeToggle">
+        </div>
 
 
-                <i class="fa-solid fa-moon"></i>
+        <!-- NAVIGATION -->
 
+        <ul class="menu">
+
+
+            <!-- DASHBOARD -->
+
+            <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+
+                <a href="{% url 'dashboard' %}">
+
+                    <i class="fa-solid fa-chart-pie"></i>
+
+                    <span>
+                        Dashboard
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <!-- POSTS -->
+
+            <li class="{% if request.resolver_match.url_name == 'posts' or request.resolver_match.url_name == 'post_detail' %}active{% endif %}">
+
+                <a href="{% url 'posts' %}">
+
+                    <i class="fa-solid fa-box-open"></i>
+
+                    <span>
+                        Posts
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <!-- USERS -->
+
+            <li>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-users"></i>
+
+                    <span>
+                        Users
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <!-- ORDERS -->
+
+            <li>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    <span>
+                        Orders
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <!-- WALLET -->
+
+            <li>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-wallet"></i>
+
+                    <span>
+                        Wallet
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <!-- REPORTS -->
+
+            <li>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    <span>
+                        Reports
+                    </span>
+
+                </a>
+
+            </li>
+
+
+            <!-- SETTINGS -->
+
+            <li>
+
+                <a href="#">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    <span>
+                        Settings
+                    </span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+
+
+            <img src="{% static 'images/admin.png' %}"
+                 class="profile-img">
+
+
+            <div>
+
+                <h4>
+                    Administrator
+                </h4>
+
+                <span>
+                    Super Admin
+                </span>
+
+            </div>
+
+        </div>
+
+
+    </aside>
+
+
+    <!-- =================================================
+         MAIN AREA
+    ================================================== -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+
+            <!-- MOBILE MENU -->
+
+            <button id="toggle-btn"
+                    type="button">
+
+                <i class="fa-solid fa-bars"></i>
 
             </button>
 
 
+            <!-- SEARCH -->
 
-        </div>
+            <div class="search-box">
 
+                <i class="fa-solid fa-search"></i>
 
+                <input type="text"
+                       placeholder="Search anything...">
 
-    </header>
-
-
-
-
-
-
-
-   <!-- PAGE CONTENT -->
-
-<section class="content">
-
-    {% block content %}
-    {% endblock %}
-
-</section>
+            </div>
 
 
-<!-- NOTIFICATION PANEL -->
+            <!-- TOP ICONS -->
+
+            <div class="top-icons">
+
+
+                <!-- CLOCK -->
+
+                <div class="clock">
+
+                    <i class="fa-regular fa-clock"></i>
+
+                    <span id="liveClock"></span>
+
+                </div>
+
+
+                <!-- NOTIFICATION -->
+
+                <button type="button"
+                        class="notification"
+                        id="notificationBell">
+
+                    <i class="fa-regular fa-bell"></i>
+
+
+                    {% if notification_count > 0 %}
+
+                        <span class="badge">
+
+                            {{ notification_count }}
+
+                        </span>
+
+                    {% endif %}
+
+                </button>
+
+
+                <!-- THEME -->
+
+                <button id="themeToggle"
+                        type="button">
+
+                    <i class="fa-solid fa-moon"></i>
+
+                </button>
+
+
+            </div>
+
+
+        </header>
+
+
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
+
+        <section class="content">
+
+
+            {% block content %}
+
+            {% endblock %}
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+<!-- =====================================================
+     NOTIFICATION PANEL
+===================================================== -->
 
 <div class="notification-panel"
      id="notificationPanel">
 
+
     <div class="panel-header">
+
 
         <h3>
             Notifications
@@ -390,6 +380,7 @@
 
         </button>
 
+
     </div>
 
 
@@ -398,23 +389,32 @@
 
         {% for notification in admin_notifications %}
 
+
             <div class="notify-item">
+
 
                 <i class="fa-solid fa-box-open"></i>
 
 
                 <div>
 
+
                     <h4>
+
                         {{ notification.message }}
+
                     </h4>
 
 
                     <span>
+
                         {{ notification.created_at }}
+
                     </span>
 
+
                 </div>
+
 
             </div>
 
@@ -424,10 +424,12 @@
 
             <div class="notify-item">
 
+
                 <i class="fa-solid fa-check"></i>
 
 
                 <div>
+
 
                     <h4>
                         No New Notifications
@@ -438,7 +440,9 @@
                         You are all caught up.
                     </span>
 
+
                 </div>
+
 
             </div>
 
@@ -448,25 +452,13 @@
 
     </div>
 
-</div>
-
-</main>
-
-
-
 
 </div>
 
 
-
-
-
-
-
-
-
-<!-- FLOATING BACKGROUND -->
-
+<!-- =====================================================
+     FLOATING BACKGROUND
+===================================================== -->
 
 <div class="floating-shapes">
 
@@ -483,165 +475,15 @@
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-    <div class="notification-list">
-
-
-
-        <div class="notify-item">
-
-
-            <i class="fa-solid fa-user-plus"></i>
-
-
-            <div>
-
-                <h4>
-                    New Seller Registered
-                </h4>
-
-
-                <span>
-                    2 minutes ago
-                </span>
-
-
-            </div>
-
-
-        </div>
-
-
-
-
-
-
-        <div class="notify-item">
-
-
-            <i class="fa-solid fa-box"></i>
-
-
-            <div>
-
-                <h4>
-                    5 Posts Waiting Approval
-                </h4>
-
-
-                <span>
-                    Today
-                </span>
-
-
-            </div>
-
-
-        </div>
-
-
-
-
-
-
-        <div class="notify-item">
-
-
-            <i class="fa-solid fa-wallet"></i>
-
-
-            <div>
-
-                <h4>
-                    Wallet Top-up Request
-                </h4>
-
-
-                <span>
-                    Today
-                </span>
-
-
-            </div>
-
-
-        </div>
-
-
-
-
-
-
-        <div class="notify-item">
-
-
-            <i class="fa-solid fa-cart-shopping"></i>
-
-
-            <div>
-
-                <h4>
-                    New Order Created
-                </h4>
-
-
-                <span>
-                    10 minutes ago
-                </span>
-
-
-            </div>
-
-
-        </div>
-
-
-
-    </div>
-
-
-</div>
-
-
-
-
-
-
-
-
-<!-- LOADER -->
-
-
-<div id="loader">
-
-
-    <div class="loader-circle"></div>
-
-
-    <h2>
-        Trusty Shop
-    </h2>
-
-
-</div>
-
-
-
-
-
+<!-- =====================================================
+     GLOBAL JAVASCRIPT
+===================================================== -->
 
 <script src="{% static 'js/admin.js' %}"></script>
 
+
+{% block extra_js %}
+{% endblock %}
 
 
 </body>

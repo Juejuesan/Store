@@ -10,13 +10,13 @@ from notifications.models import Notification
 # ==========================
 def dashboard(request):
     context = {
-        "total_users": User.objects.count(),
+        "total_users": User.objects.filter(is_active=True).count(),
         "total_sellers": User.objects.count(),
         "pending_posts": Post.objects.filter(
             status="pending"
         ).count(),
         "pending_orders": 15,
-        "revenue": "15,800,000 MMK",
+        "total_revenue": "15,800,000",
         "recent_activities": [
             {
                 "activity": "New Seller Registered",
