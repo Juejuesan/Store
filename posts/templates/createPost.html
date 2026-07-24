@@ -3,258 +3,585 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
     <title>Create Product | Trusty Shop</title>
 
-    <link rel="stylesheet" href="{% static 'css/createPost.css' %}">
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="{% static 'css/createPost.css' %}">
 
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
 
 <body>
 
-<!-- Mouse Glow -->
 <div id="mouseGlow"></div>
 
-<div class="background-circle circle1"></div>
-<div class="background-circle circle2"></div>
-<div class="background-circle circle3"></div>
+<div class="bg-circle bg1"></div>
+<div class="bg-circle bg2"></div>
+<div class="bg-circle bg3"></div>
 
-<div class="page-container">
+<section class="create-page">
 
-    <!-- ===========================
-            HEADER
-    ============================ -->
+<div class="container">
 
-    <div class="page-header">
+<!-- =========================================
+                HERO
+========================================= -->
 
-        <div class="header-icon">
-            <i class="fa-solid fa-store"></i>
-        </div>
+<div class="create-header">
 
-        <h1>Create Sell Post</h1>
+    <div class="header-left">
+
+        <span class="small-title">
+
+            Trusty Shop Marketplace
+
+        </span>
+
+        <h1>
+
+            Create Your Product Listing
+
+        </h1>
 
         <p>
-            Sell safely on Trusty Shop Marketplace.
-            Upload beautiful photos and provide clear information
-            about your product.
+
+            Publish beautiful products with stunning photos,
+            detailed descriptions and competitive prices.
+            Reach thousands of buyers safely.
+
         </p>
+
+        <div class="feature-list">
+
+            <div class="feature">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                Secure Selling
+
+            </div>
+
+            <div class="feature">
+
+                <i class="fa-solid fa-bolt"></i>
+
+                Instant Publish
+
+            </div>
+
+            <div class="feature">
+
+                <i class="fa-solid fa-eye"></i>
+
+                More Buyers
+
+            </div>
+
+        </div>
 
     </div>
 
-    <!-- ===========================
-            FORM CARD
-    ============================ -->
+    <div class="header-right">
 
-    <div class="form-card">
+        <div class="hero-card">
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert-box">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+            <i class="fa-solid fa-store"></i>
 
-        <form method="POST"
-              enctype="multipart/form-data"
-              id="createPostForm">
-
-            {% csrf_token %}
-
-            <!-- ======================
-                    IMAGE UPLOAD
-            ======================= -->
-
-            <div class="section-title">
-                <i class="fa-regular fa-images"></i>
-                Product Photos
-            </div>
-
-            <p class="section-description">
-                Upload up to 5 photos.
-                The first photo becomes the cover photo.
-            </p>
-
-            <input
-                type="file"
-                id="image-input"
-                name="images"
-                multiple
-                accept="image/*"
-                hidden>
-
-            <div class="image-grid">
-
-                <!-- Add Button -->
-
-                <label
-                    for="image-input"
-                    class="upload-box"
-                    id="upload-box">
-
-                    <i class="fa-solid fa-plus"></i>
-
-                    <span>Add Photos</span>
-
-                    <small>Maximum 5 Images</small>
-
-                </label>
-
-                <!-- Preview Images -->
-
-                <div id="preview-container"></div>
-
-            </div>
-
-            <!-- ======================
-                    PRODUCT INFO
-            ======================= -->
-
-            <div class="form-grid">
-
-                <!-- PRICE -->
-
-                <div class="form-group">
-
-                    <label>
-
-
-                        Price (MMK)
-
-                    </label>
-
-                    {{ form.price }}
-
-                </div>
-
-                <!-- CATEGORY -->
-
-                <div class="form-group">
-
-                    <label>
-
-                        <i class="fa-solid fa-layer-group"></i>
-
-                        Category
-
-                    </label>
-
-                    {{ form.category }}
-
-                </div>
-
-                <!-- TYPE -->
-
-                <div class="form-group">
-
-                    <label>
-
-                        <i class="fa-solid fa-tag"></i>
-
-                        Condition
-
-                    </label>
-
-                    {{ form.type }}
-
-                </div>
-
-                <!-- QUANTITY -->
-
-                <div class="form-group">
-
-                    <label>
-
-                        <i class="fa-solid fa-box"></i>
-
-                        Quantity
-
-                    </label>
-
-                    <div class="quantity-box">
-
-                        <button
-                            type="button"
-                            id="minusBtn"
-                            class="qty-btn">
-
-                            <i class="fa-solid fa-minus"></i>
-
-                        </button>
-
-                        {{ form.quantity }}
-
-                        <button
-                            type="button"
-                            id="plusBtn"
-                            class="qty-btn">
-
-                            <i class="fa-solid fa-plus"></i>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- ======================
-                    DESCRIPTION
-            ======================= -->
-
-            <div class="form-group description-group">
-
-                <label>
-
-                    <i class="fa-solid fa-align-left"></i>
-
-                    Product Description
-
-                </label>
-
-                {{ form.description }}
-
-                <small>
-                    Describe the product, condition, brand,
-                    color, warranty, delivery or anything buyers
-                    should know.
-                </small>
-
-            </div>
-
-            <!-- ======================
-                    SUBMIT
-            ======================= -->
-
-            <div class="submit-area">
-
-                <button
-                    type="submit"
-                    class="publish-btn">
-
-                    <i class="fa-solid fa-paper-plane"></i>
-
-                    Publish Product
-
-                </button>
-
-            </div>
-
-        </form>
+        </div>
 
     </div>
 
 </div>
 
-<script src="{% static 'js/createPost.js' %}"></script>
+<!-- =========================================
+            FORM CARD
+========================================= -->
 
+<div class="glass-card">
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="custom-alert">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            {{ message }}
+
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+<form
+    method="POST"
+    enctype="multipart/form-data"
+    id="createPostForm">
+
+{% csrf_token %}
+
+<!-- =========================================
+            IMAGE SECTION
+========================================= -->
+
+<div class="section-title">
+
+    <i class="fa-regular fa-images"></i>
+
+    <div>
+
+        <h2>
+
+            Product Images
+
+        </h2>
+
+        <p>
+
+            Upload up to five high quality images.
+
+        </p>
+
+    </div>
+
+</div>
+
+<input
+
+    type="file"
+
+    id="image-input"
+
+    name="images"
+
+    multiple
+
+    accept="image/*"
+
+    hidden>
+
+<label
+
+    for="image-input"
+
+    id="upload-box"
+
+    class="upload-area">
+
+    <div class="upload-icon">
+
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+
+    </div>
+
+    <h3>
+
+        Drag & Drop Images
+
+    </h3>
+
+    <p>
+
+        or click to browse your computer
+
+    </p>
+
+    <span>
+
+        Maximum 5 Images
+
+    </span>
+
+</label>
+
+<div
+
+    id="preview-container"
+
+    class="preview-grid">
+
+</div>
+
+<div class="photo-tips">
+
+    <div class="tip">
+
+        <i class="fa-solid fa-camera"></i>
+
+        <h5>Clear Photos</h5>
+
+        <p>Use bright lighting.</p>
+
+    </div>
+
+    <div class="tip">
+
+        <i class="fa-solid fa-image"></i>
+
+        <h5>Multiple Angles</h5>
+
+        <p>Front, side and back photos.</p>
+
+    </div>
+
+    <div class="tip">
+
+        <i class="fa-solid fa-circle-check"></i>
+
+        <h5>Better Sales</h5>
+
+        <p>Listings with more images sell faster.</p>
+
+    </div>
+
+</div>
+    <!-- =========================================
+            PRODUCT INFORMATION
+========================================= -->
+
+<div class="section-title mt-5">
+
+    <i class="fa-solid fa-box-open"></i>
+
+    <div>
+
+        <h2>
+
+            Product Information
+
+        </h2>
+
+        <p>
+
+            Complete your product details.
+
+        </p>
+
+    </div>
+
+</div>
+
+<div class="product-grid">
+
+    <!-- PRICE -->
+
+    <div class="input-card">
+
+        <label>
+
+            <i class="fa-solid fa-money-bill-wave"></i>
+
+            Price (MMK)
+
+        </label>
+
+        {{ form.price }}
+
+    </div>
+
+    <!-- CATEGORY -->
+
+    <div class="input-card">
+
+        <label>
+
+            <i class="fa-solid fa-layer-group"></i>
+
+            Category
+
+        </label>
+
+        {{ form.category }}
+
+    </div>
+
+    <!-- CONDITION -->
+
+    <div class="input-card">
+
+        <label>
+
+            <i class="fa-solid fa-tag"></i>
+
+            Product Condition
+
+        </label>
+
+        {{ form.type }}
+
+    </div>
+
+    <!-- QUANTITY -->
+
+    <div class="input-card">
+
+        <label>
+
+            <i class="fa-solid fa-boxes-stacked"></i>
+
+            Quantity
+
+        </label>
+
+        <div class="quantity-wrapper">
+
+            <button
+                type="button"
+                id="minusBtn"
+                class="qty-btn">
+
+                <i class="fa-solid fa-minus"></i>
+
+            </button>
+
+            {{ form.quantity }}
+
+            <button
+                type="button"
+                id="plusBtn"
+                class="qty-btn">
+
+                <i class="fa-solid fa-plus"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+            DESCRIPTION
+========================================= -->
+
+<div class="section-title mt-5">
+
+    <i class="fa-solid fa-align-left"></i>
+
+    <div>
+
+        <h2>
+
+            Product Description
+
+        </h2>
+
+        <p>
+
+            Describe your product honestly.
+
+        </p>
+
+    </div>
+
+</div>
+
+<div class="description-card">
+
+    {{ form.description }}
+
+    <small>
+
+        Include brand, colour, size, warranty,
+        defects, delivery and anything buyers
+        should know.
+
+    </small>
+
+</div>
+
+<!-- =========================================
+            SELLER TIPS
+========================================= -->
+
+<div class="seller-card">
+
+    <div class="seller-title">
+
+        <i class="fa-solid fa-lightbulb"></i>
+
+        Selling Tips
+
+    </div>
+
+    <ul>
+
+        <li>
+
+            Use original product photos.
+
+        </li>
+
+        <li>
+
+            Write an honest description.
+
+        </li>
+
+        <li>
+
+            Choose the correct category.
+
+        </li>
+
+        <li>
+
+            Set a reasonable price.
+
+        </li>
+
+        <li>
+
+            Reply to buyers quickly.
+
+        </li>
+
+    </ul>
+
+</div>
+    <!-- =========================================
+            PRODUCT PREVIEW
+========================================= -->
+
+<div class="preview-card">
+
+    <div class="preview-title">
+
+        <i class="fa-solid fa-eye"></i>
+
+        Before You Publish
+
+    </div>
+
+    <div class="preview-content">
+
+        <div class="preview-item">
+
+            <i class="fa-solid fa-camera"></i>
+
+            <span>
+
+                Make sure your photos are clear.
+
+            </span>
+
+        </div>
+
+        <div class="preview-item">
+
+            <i class="fa-solid fa-file-lines"></i>
+
+            <span>
+
+                Double-check your product description.
+
+            </span>
+
+        </div>
+
+        <div class="preview-item">
+
+            <i class="fa-solid fa-money-bill-wave"></i>
+
+            <span>
+
+                Verify the selling price.
+
+            </span>
+
+        </div>
+
+        <div class="preview-item">
+
+            <i class="fa-solid fa-box"></i>
+
+            <span>
+
+                Ensure quantity is correct.
+
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+            SAFETY NOTICE
+========================================= -->
+
+<div class="notice-card">
+
+    <div class="notice-icon">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+    </div>
+
+    <div>
+
+        <h4>
+
+            Safe Selling Reminder
+
+        </h4>
+
+        <p>
+
+            Trusty Shop does not allow prohibited,
+            counterfeit or illegal products.
+            Your listing may be reviewed before becoming
+            visible to buyers.
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- =========================================
+            SUBMIT BUTTON
+========================================= -->
+
+<div class="submit-area">
+
+    <button
+        type="submit"
+        id="publishBtn"
+        class="publish-btn">
+
+        <i class="fa-solid fa-paper-plane"></i>
+
+        Publish Product
+
+    </button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</section>
+
+<script src="{% static 'js/createPost.js' %}"></script>
 
 </body>
 

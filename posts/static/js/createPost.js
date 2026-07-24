@@ -1,162 +1,414 @@
-/**
- * Trusty Shop Marketplace - Product Creation Interactive Systems
- * Handles: Facebook-style Multi-Image Previews, File Tracking, & Quantity Stepper
- */
-document.addEventListener('DOMContentLoaded', () => {
-    // Elements Selector
-    const imageInput = document.getElementById('image-input');
-    const previewContainer = document.getElementById('preview-container');
-    const uploadBox = document.getElementById('upload-box');
+/*==================================================
+                CREATE POST
+==================================================*/
 
-    // Django form fields usually fallback to either 'id_quantity' or input[name="quantity"]
-    const qtyInput = document.querySelector('input[name="quantity"]') || document.getElementById('id_quantity');
-    const minusBtn = document.getElementById('minusBtn');
-    const plusBtn = document.getElementById('plusBtn');
+document.addEventListener("DOMContentLoaded", () => {
 
-    // Array to hold current file objects (Facebook-style data management)
-    let selectedFiles = [];
+    initMouseGlow();
 
-    /* ==========================================================================
-       1. FACEBOOK-STYLE IMAGE UPLOADER & PREVIEW
-       ========================================================================== */
-    if (imageInput && previewContainer) {
-        imageInput.addEventListener('change', (e) => {
-            const files = Array.from(e.target.files);
+    initImagePreview();
 
-            // Check for strict 5 images maximum limit across additions
-            if (selectedFiles.length + files.length > 5) {
-                alert("You can only upload a maximum of 5 photos.");
-                // Reset native value so the user can re-trigger selection if needed
-                imageInput.value = "";
-                return;
-            }
+    initQuantityButtons();
 
-            files.forEach(file => {
-                // Ensure only images are processed
-                if (!file.type.startsWith('image/')) return;
+    initDragDrop();
 
-                selectedFiles.push(file);
+    initSubmitButton();
 
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const previewWrapper = document.createElement('div');
-                    previewWrapper.classList.add('preview-img-box');
-
-                    // Generate UI card elements
-                    previewWrapper.innerHTML = `
-                        <img src="${event.target.result}" alt="Product Preview Image">
-                        <button type="button" class="remove-img-btn" title="Remove image">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    `;
-
-                    // Remove Image Logic
-                    previewWrapper.querySelector('.remove-img-btn').addEventListener('click', () => {
-                        const index = selectedFiles.indexOf(file);
-                        if (index > -1) {
-                            selectedFiles.splice(index, 1);
-                        }
-                        previewWrapper.remove();
-
-                        // Recalculate badge locations & synchronize backend data transfer
-                        updateCoverBadge();
-                        syncFilesToHiddenInput();
-                        toggleUploadBoxState();
-                    });
-
-                    previewContainer.appendChild(previewWrapper);
-                    updateCoverBadge();
-                    toggleUploadBoxState();
-                };
-                reader.readAsDataURL(file);
-            });
-
-            // Sync structural arrays with DOM input elements
-            syncFilesToHiddenInput();
-        });
-    }
-
-    /**
-     * Re-allocates the primary "Cover" badge status to the first item in queue
-     */
-    function updateCoverBadge() {
-        const structuralBoxes = previewContainer.querySelectorAll('.preview-img-box');
-        structuralBoxes.forEach((box, idx) => {
-            // Clear current designations
-            box.classList.remove('cover-photo');
-            const existingBadge = box.querySelector('.cover-badge');
-            if (existingBadge) existingBadge.remove();
-
-            // First card becomes the main cover image
-            if (idx === 0) {
-                box.classList.add('cover-photo');
-                box.insertAdjacentHTML('beforeend', '<span class="cover-badge">Cover</span>');
-            }
-        });
-    }
-
-    /**
-     * Synergizes JavaScript file arrays back into standard HTML file components
-     * Ensures Django views can capture items sequentially via `request.FILES.getlist('images')`
-     */
-    function syncFilesToHiddenInput() {
-        const dataTransferObj = new DataTransfer();
-        selectedFiles.forEach(file => dataTransferObj.items.add(file));
-        imageInput.files = dataTransferObj.files;
-    }
-
-    /**
-     * Visual adjustment hiding the add button if the 5 image ceiling is hit
-     */
-    function toggleUploadBoxState() {
-        if (selectedFiles.length >= 5) {
-            uploadBox.style.display = 'none';
-        } else {
-            uploadBox.style.display = 'flex';
-        }
-    }
-
-    /* ==========================================================================
-       2. QUANTITY STEPPER CONTROLS
-       ========================================================================== */
-    if (qtyInput && minusBtn && plusBtn) {
-        // Enforce basic fallback value if initial injection is missing/blank
-        if (!qtyInput.value || isNaN(parseInt(qtyInput.value))) {
-            qtyInput.value = 1;
-        }
-
-        // Increment Quantity
-        plusBtn.addEventListener('click', () => {
-            let currentVal = parseInt(qtyInput.value) || 1;
-            qtyInput.value = currentVal + 1;
-        });
-
-        // Decrement Quantity (Clamped to a floor minimum of 1 item)
-        minusBtn.addEventListener('click', () => {
-            let currentVal = parseInt(qtyInput.value) || 1;
-            if (currentVal > 1) {
-                qtyInput.value = currentVal - 1;
-            }
-        });
-
-        // Sanitize direct field manual entries
-        qtyInput.addEventListener('change', () => {
-            let enteredVal = parseInt(qtyInput.value);
-            if (isNaN(enteredVal) || enteredVal < 1) {
-                qtyInput.value = 1;
-            }
-        });
-    }
-
-    /* ==========================================================================
-       3. INTERACTIVE MOUSE GLOW BACKGROUND EFFECT
-       ========================================================================== */
-    const mouseGlow = document.getElementById('mouseGlow');
-    if (mouseGlow) {
-        document.addEventListener('mousemove', (e) => {
-            // Center glow asset to coordinates of current viewport pointer position
-            mouseGlow.style.left = `${e.clientX}px`;
-            mouseGlow.style.top = `${e.clientY}px`;
-        });
-    }
 });
+
+
+/*==================================================
+                MOUSE GLOW
+==================================================*/
+
+function initMouseGlow(){
+
+    const glow = document.getElementById("mouseGlow");
+
+    if(!glow) return;
+
+    document.addEventListener("mousemove",(e)=>{
+
+        glow.style.left = e.clientX + "px";
+
+        glow.style.top = e.clientY + "px";
+
+    });
+
+}
+
+
+/*==================================================
+                IMAGE PREVIEW
+==================================================*/
+
+function initImagePreview(){
+
+    const input = document.getElementById("image-input");
+
+    const preview = document.getElementById("preview-container");
+
+    if(!input || !preview) return;
+
+    input.addEventListener("change",()=>{
+
+        preview.innerHTML = "";
+
+        const files = [...input.files];
+
+        files.slice(0,5).forEach((file,index)=>{
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const card = document.createElement("div");
+
+        card.className = "preview-card";
+
+        card.innerHTML = `
+
+            ${
+                index === 0
+                ?
+                `<span class="cover-tag">
+                    Cover
+                </span>`
+                :
+                ""
+            }
+
+            <img src="${e.target.result}">
+
+            <button
+                type="button"
+                class="remove-image">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        `;
+
+                preview.appendChild(card);
+
+                card.querySelector(".remove-image")
+                .addEventListener("click",()=>{
+
+                    card.remove();
+
+                });
+
+            }
+
+            reader.readAsDataURL(file);
+
+        });
+
+    });
+
+}
+
+
+/*==================================================
+                QUANTITY BUTTONS
+==================================================*/
+
+function initQuantityButtons(){
+
+    const input = document.querySelector(
+        'input[name="quantity"]'
+    );
+
+    const plus = document.getElementById("plusBtn");
+
+    const minus = document.getElementById("minusBtn");
+
+    if(!input || !plus || !minus) return;
+
+    plus.addEventListener("click",()=>{
+
+        let value = parseInt(input.value) || 1;
+
+        input.value = value + 1;
+
+    });
+
+    minus.addEventListener("click",()=>{
+
+        let value = parseInt(input.value) || 1;
+
+        if(value > 1){
+
+            input.value = value - 1;
+
+        }
+
+    });
+
+}
+
+
+/*==================================================
+                DRAG & DROP
+==================================================*/
+
+function initDragDrop(){
+
+    const uploadBox = document.getElementById("upload-box");
+
+    const input = document.getElementById("image-input");
+
+    if(!uploadBox || !input) return;
+
+    ["dragenter","dragover"].forEach(event=>{
+
+        uploadBox.addEventListener(event,(e)=>{
+
+            e.preventDefault();
+
+            uploadBox.classList.add("dragover");
+
+        });
+
+    });
+
+    ["dragleave","drop"].forEach(event=>{
+
+        uploadBox.addEventListener(event,(e)=>{
+
+            e.preventDefault();
+
+            uploadBox.classList.remove("dragover");
+
+        });
+
+    });
+
+    uploadBox.addEventListener("drop",(e)=>{
+
+        input.files = e.dataTransfer.files;
+
+        input.dispatchEvent(new Event("change"));
+
+    });
+
+}
+
+
+/*==================================================
+                HOVER EFFECT
+==================================================*/
+
+const uploadBox = document.getElementById("upload-box");
+
+if(uploadBox){
+
+    uploadBox.addEventListener("mouseenter",()=>{
+
+        uploadBox.style.transform="translateY(-8px)";
+
+    });
+
+    uploadBox.addEventListener("mouseleave",()=>{
+
+        uploadBox.style.transform="translateY(0)";
+
+    });
+
+}
+
+/*==================================================
+                SUBMIT LOADING
+==================================================*/
+
+
+/*==================================================
+                FORM VALIDATION
+==================================================*/
+
+const form = document.getElementById("createPostForm");
+
+if(form){
+
+    form.addEventListener("submit",function(e){
+
+        const price = document.querySelector(
+            'input[name="price"]'
+        );
+
+        const quantity = document.querySelector(
+            'input[name="quantity"]'
+        );
+
+        const description = document.querySelector(
+            'textarea[name="description"]'
+        );
+
+        if(price){
+
+            if(price.value === "" || Number(price.value) <= 0){
+
+                alert("Please enter a valid price.");
+
+                price.focus();
+
+                e.preventDefault();
+
+                return;
+
+            }
+
+        }
+
+        if(quantity){
+
+            if(quantity.value === "" || Number(quantity.value) <= 0){
+
+                alert("Quantity must be at least 1.");
+
+                quantity.focus();
+
+                e.preventDefault();
+
+                return;
+
+            }
+
+        }
+
+        if(description){
+
+            if(description.value.trim().length < 20){
+
+                alert("Description should contain at least 20 characters.");
+
+                description.focus();
+
+                e.preventDefault();
+
+                return;
+
+            }
+
+        }
+
+    });
+
+}
+
+
+/*==================================================
+                AUTO HIDE ALERT
+==================================================*/
+
+const alerts = document.querySelectorAll(".custom-alert");
+
+alerts.forEach(alert=>{
+
+    setTimeout(()=>{
+
+        alert.style.transition="all .5s ease";
+
+        alert.style.opacity="0";
+
+        alert.style.transform="translateY(-10px)";
+
+        setTimeout(()=>{
+
+            alert.remove();
+
+        },500);
+
+    },4000);
+
+});
+
+
+/*==================================================
+                CARD ANIMATION
+==================================================*/
+
+const cards = document.querySelectorAll(
+
+    ".input-card,.tip,.preview-card"
+
+);
+
+const observer = new IntersectionObserver(entries=>{
+
+    entries.forEach(entry=>{
+
+        if(entry.isIntersecting){
+
+            entry.target.style.opacity="1";
+
+            entry.target.style.transform="translateY(0)";
+
+        }
+
+    });
+
+},{
+    threshold:.15
+});
+
+cards.forEach(card=>{
+
+    card.style.opacity="0";
+
+    card.style.transform="translateY(35px)";
+
+    card.style.transition="all .6s ease";
+
+    observer.observe(card);
+
+});
+
+
+/*==================================================
+                RIPPLE BUTTON
+==================================================*/
+
+const publishBtn = document.querySelector(".publish-btn");
+
+if(publishBtn){
+
+    publishBtn.addEventListener("click",function(e){
+
+        const ripple = document.createElement("span");
+
+        ripple.className = "ripple";
+
+        const rect = this.getBoundingClientRect();
+
+        ripple.style.left =
+
+            (e.clientX - rect.left) + "px";
+
+        ripple.style.top =
+
+            (e.clientY - rect.top) + "px";
+
+        this.appendChild(ripple);
+
+        setTimeout(()=>{
+
+            ripple.remove();
+
+        },600);
+
+    });
+
+}
+
+
+/*==================================================
+                PAGE READY
+==================================================*/
+
+console.log(
+
+    "Create Product Page Loaded Successfully."
+
+);
