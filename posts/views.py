@@ -60,7 +60,7 @@ def createPost(request):
                     image=img
                 )
 
-            messages.success(request, "Post created successfully.")
+            messages.success(request, "Your Post is pending to approve by admin.")
             return redirect("home")
 
         else:
