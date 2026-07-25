@@ -56,54 +56,51 @@ function initImagePreview(){
 
         const files = [...input.files];
 
-        files.slice(0,5).forEach((file,index)=>{
+        files.slice(0, 5).forEach((file, index) => {
 
     const reader = new FileReader();
 
+    // CREATE CARD
+    const card = document.createElement("div");
+    card.className = "preview-card";
+
     reader.onload = function(e){
 
-        const card = document.createElement("div");
-
-        card.className = "preview-card";
-
         card.innerHTML = `
+            <div class="image-frame">
 
-            ${
-                index === 0
-                ?
-                `<span class="cover-tag">
-                    Cover
-                </span>`
-                :
-                ""
-            }
+                ${
+                    index === 0
+                    ? `
+                    <span class="cover-tag">
+                        <i class="fa-solid fa-star"></i>
+                        Cover
+                    </span>
+                    `
+                    : ""
+                }
 
-            <img src="${e.target.result}">
+                <img src="${e.target.result}" alt="Preview">
 
-            <button
-                type="button"
-                class="remove-image">
+                <button
+                    type="button"
+                    class="remove-image">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
 
-                <i class="fa-solid fa-xmark"></i>
-
-            </button>
-
+            </div>
         `;
 
-                preview.appendChild(card);
+        preview.appendChild(card);
 
-                card.querySelector(".remove-image")
-                .addEventListener("click",()=>{
-
-                    card.remove();
-
-                });
-
-            }
-
-            reader.readAsDataURL(file);
-
+        card.querySelector(".remove-image").addEventListener("click", () => {
+            card.remove();
         });
+    };
+
+    reader.readAsDataURL(file);
+
+});
 
     });
 
@@ -279,9 +276,9 @@ if(form){
 
         if(description){
 
-            if(description.value.trim().length < 20){
+             if(description.value.trim() === ""){
 
-                alert("Description should contain at least 20 characters.");
+                alert("Please enter a product description.");
 
                 description.focus();
 
@@ -289,9 +286,9 @@ if(form){
 
                 return;
 
-            }
+    }
 
-        }
+}
 
     });
 
