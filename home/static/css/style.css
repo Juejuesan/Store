@@ -1068,8 +1068,7 @@ position:relative;
 ====================================*/
 
 .seller-card{
-
-    background:#fff;
+  background:#fff;
 
     border-radius:25px;
 
@@ -1928,4 +1927,24 @@ footer a:hover{
 
     }
 
+}
+
+/* ================================
+   SHOW POST CENTER LAYOUT
+================================ */
+
+.seller-posts .container{
+    max-width:1200px;
+    margin:auto;
+}
+
+
+.seller-posts .seller-card{
+    width:100%;
+    max-width:380px;
+}
+
+
+.seller-posts .row{
+    justify-content:center;
 }
