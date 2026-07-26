@@ -963,6 +963,11 @@ body{
 
 .description-card textarea{
 
+    resize: none !important;
+    overflow-y: hidden !important;
+    min-height: 120px;
+    max-height: 400px;
+
     width:100%;
 
     border:2px solid #dbeafe;
