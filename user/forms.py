@@ -5,6 +5,7 @@ from .models import Profile
 
 # 1. Register Form
 class RegisterForm(forms.ModelForm):
+    fullName = forms.CharField(max_length=30,required=True)
     phone_number = forms.CharField(max_length=20, required=True)
     address = forms.CharField(widget=forms.TextInput(), required=True)
     gender = forms.ChoiceField(choices=Profile.GENDER_CHOICES, required=True)
@@ -40,7 +41,7 @@ class RegisterForm(forms.ModelForm):
 
 # 2. Login Form
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=150, required=True)
+    username_or_email = forms.CharField(label="Username or Email")
     password = forms.CharField(widget=forms.PasswordInput(), required=True)
 
 # 3. Profile Pic Update Form

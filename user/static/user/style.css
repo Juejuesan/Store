@@ -158,3 +158,35 @@
     transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
 }
+
+/* Ensure the toggle button stays within input */
+.input-container.relative {
+    position: relative;
+}
+
+.input-container .auth-input.pr-10 {
+    padding-right: 2.5rem; /* Make room for the icon */
+}
+
+.input-container .auth-input.pr-12 {
+    padding-right: 3rem; /* More room if icon is inside */
+}
+
+/* Smooth transition for toggle button */
+.input-container button[type="button"] {
+    transition: all 0.2s ease;
+}
+
+.input-container button[type="button"]:hover {
+    color: #93c5fd; /* Lighter blue on hover */
+}
+
+/* Prevent form submission when clicking toggle */
+.input-container button[type="button"]:focus {
+    outline: none;
+}
+
+/* Icon rotation animation */
+.input-container button[type="button"] i {
+    transition: transform 0.3s ease;
+}

@@ -17,6 +17,7 @@ def create_test_users(apps, schema_editor):
     )
 
     approved_profile = Profile(
+        fullName="Test Approve",
         user=approved_user,
         phone_number="09111111111",
         address="Yangon",
@@ -35,6 +36,7 @@ def create_test_users(apps, schema_editor):
     )
 
     banned_profile = Profile(
+        fullName="Test Ban",
         user=banned_user,
         phone_number="09222222222",
         address="Yangon",

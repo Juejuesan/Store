@@ -61,6 +61,7 @@ def register_view(request):
                 user=user
             )
 
+            profile.fullName = form.cleaned_data['fullName']
             profile.phone_number = form.cleaned_data['phone_number']
             profile.address = address
             profile.gender = form.cleaned_data['gender']
@@ -102,39 +103,41 @@ def register_view(request):
 
 
 # LOGIN VIEW
+# user/views.py
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+
 def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username_or_email = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+        username_or_email = request.POST.get('username')
+        password = request.POST.get('password')
 
+        user = None
 
-            if len(password) != 8:
-                messages.error(request, 'Invalid username/email or password.')
-                return render(request, 'user/login.html', {'form': form})
+        # First try to authenticate with username
+        user = authenticate(request, username=username_or_email, password=password)
 
-            user = authenticate(request, username=username_or_email, password=password)
-            if user is None:
-                try:
-                    user_obj = User.objects.get(email=username_or_email)
-                    user = authenticate(request, username=user_obj.username, password=password)
-                except User.DoesNotExist:
-                    user = None
+        # If authentication fails, try to find user by email
+        if user is None:
+            try:
+                # Find user by email
+                user_obj = User.objects.get(email=username_or_email)
+                # Authenticate with the found username
+                user = authenticate(request, username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                user = None
 
-            if user is not None:
-                login(request, user)
-                messages.success(request, f'Welcome back, {user.first_name or user.username}!')
-                return redirect('home')
-            else:
-                messages.error(request, 'Invalid username/email or password.')
-    else:
-        form = LoginForm()
+        if user is not None:
+            login(request, user)
+            messages.success(request, f'Welcome back, {user.username}!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid username/email or password.')
 
-    return render(request, 'user/login.html', {'form': form})
+    return render(request, 'user/login.html')
 
 
 # LOGOUT VIEW
