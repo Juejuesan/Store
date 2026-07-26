@@ -21,7 +21,7 @@ class Profile(models.Model):
         blank=True,
         null=True
     )
-    fullName=models.CharField( max_length=30)
+    fullName=models.CharField( max_length=30,null=True,blank=True)
     address = models.TextField()
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     profile_pic = models.ImageField(upload_to='profile_pics/', default='profile_pics/default.jpg', blank=True, null=True)
