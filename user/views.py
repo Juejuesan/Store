@@ -26,12 +26,10 @@ def register_view(request):
                 messages.error(request, "Password must be long more than 8 characters long!")
                 return render(request, 'user/register.html', {'form': form})
 
-
             special_char_pattern = re.compile(r'[@_!#$%^&*()<>?/\|}{~:]')
             if not special_char_pattern.search(password):
                 messages.error(request, "Password must contain at least one special character (e.g., @, #, $, %)! ")
                 return render(request, 'user/register.html', {'form': form})
-
 
             if len(address) > 200:
                 messages.error(request, "Address is too long! (Maximum 200 characters allowed)")
@@ -40,56 +38,30 @@ def register_view(request):
             phone_number = form.cleaned_data['phone_number']
 
             if Profile.objects.filter(phone_number=phone_number).exists():
-                messages.error(
-                    request,
-                    "This phone number is already registered!"
-                )
+                messages.error(request, "This phone number is already registered!")
+                return render(request, 'user/register.html', {'form': form})
 
-                return render(
-                    request,
-                    'user/register.html',
-                    {
-                        'form': form
-                    }
-                )
+            if not phone_number.isdigit():
+                messages.error(request, "Phone number must contain only numbers!")
+                return render(request, 'user/register.html', {'form': form})
 
             user = form.save(commit=False)
             user.set_password(password)
             user.save()
 
-            profile, created = Profile.objects.get_or_create(
-                user=user
-            )
-
+            profile = user.profile
             profile.fullName = form.cleaned_data['fullName']
             profile.phone_number = form.cleaned_data['phone_number']
             profile.address = address
             profile.gender = form.cleaned_data['gender']
-            # Get uploaded image
-            profile_pic = request.FILES.get("profile_pic")
-
-            # Update profile created by signal
-            profile = user.profile
-            profile.phone_number = form.cleaned_data['phone_number']
-            profile.address = address
-            profile.gender = form.cleaned_data['gender']
-
             if form.cleaned_data.get('profile_pic'):
                 profile.profile_pic = form.cleaned_data['profile_pic']
-
             profile.save()
 
-            user.profile.address = address
-            user.profile.gender = form.cleaned_data['gender']
-            if form.cleaned_data.get('profile_pic'):
-                user.profile.profile_pic = form.cleaned_data['profile_pic']
-            user.profile.save()
-            if profile_pic:
-                profile.profile_pic = profile_pic
-
-            profile.save()
-
+            # ➡️ ADD THIS LINE - THE MAIN FIX
+            user.backend = 'user.backends.EmailOrUsernameModelBackend'
             login(request, user)
+
             messages.success(request, f'Welcome, {user.first_name or user.username}!')
             return redirect('user:login')
         else:
@@ -100,14 +72,6 @@ def register_view(request):
         form = RegisterForm()
 
     return render(request, 'user/register.html', {'form': form})
-
-
-# LOGIN VIEW
-# user/views.py
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
-from django.contrib import messages
 
 
 def login_view(request):
@@ -140,7 +104,6 @@ def login_view(request):
     return render(request, 'user/login.html')
 
 
-# LOGOUT VIEW
 def logout_view(request):
     logout(request)
     messages.info(request, 'You have been logged out.')

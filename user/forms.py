@@ -6,7 +6,11 @@ from .models import Profile
 # 1. Register Form
 class RegisterForm(forms.ModelForm):
     fullName = forms.CharField(max_length=30,required=True)
-    phone_number = forms.CharField(max_length=20, required=True)
+    phone_number = forms.CharField(max_length=11, required=True,
+             widget=forms.TextInput(attrs={
+            'inputmode': 'numeric',  # Shows number keyboard on mobile
+            'pattern': '[0-9]+',  # HTML5 validation
+        }))
     address = forms.CharField(widget=forms.TextInput(), required=True)
     gender = forms.ChoiceField(choices=Profile.GENDER_CHOICES, required=True)
     profile_pic = forms.ImageField(required=False)
@@ -38,6 +42,20 @@ class RegisterForm(forms.ModelForm):
         if password and confirm_password and password != confirm_password:
             raise forms.ValidationError("Passwords do not match.")
         return cleaned_data
+
+    def clean_phone_number(self):
+        phone = self.cleaned_data['phone_number']
+
+        # Remove any non-digits (spaces, dashes, etc.)
+        phone = ''.join(filter(str.isdigit, phone))
+
+        if not phone:
+            raise forms.ValidationError("Phone number must contain only digits.")
+
+        if len(phone) < 11:
+            raise forms.ValidationError("Phone number is not valid.")
+
+        return phone
 
 # 2. Login Form
 class LoginForm(forms.Form):

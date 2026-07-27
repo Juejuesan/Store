@@ -16,10 +16,10 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     phone_number = models.CharField(
-        max_length=15,
+        max_length=11,
         unique=True,
+        null=True,
         blank=True,
-        null=True
     )
     fullName=models.CharField( max_length=30,null=True,blank=True)
     address = models.TextField()
