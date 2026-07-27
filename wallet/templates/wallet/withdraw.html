@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Withdraw Wallet{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/withdraw.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="withdraw-page">
+
+    <!-- Background -->
+    <div class="withdraw-bg-circle bg1"></div>
+    <div class="withdraw-bg-circle bg2"></div>
+    <div class="withdraw-bg-circle bg3"></div>
+
+    <div class="container">
+
+        <!-- ==========================
+             PAGE HEADER
+        =========================== -->
+
+        <div class="withdraw-header">
+
+            <div>
+
+                <span class="withdraw-small-title">
+                    Withdraw Money
+                </span>
+
+                <h1>
+                    Request a Wallet Withdrawal
+                </h1>
+
+                <p>
+                    Withdraw money securely from your Trusty Shop wallet.
+                    Your request will be reviewed by the administrator before
+                    the payment is transferred to your selected payment account.
+                </p>
+
+            </div>
+
+            <div class="withdraw-avatar">
+
+                {% if user.profile.profile_pic %}
+                    <img src="{{ user.profile.profile_pic.url }}" alt="">
+                {% else %}
+                    <img src="{% static 'images/default-profile.png' %}" alt="">
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <!-- ==========================
+             WALLET BALANCE
+        =========================== -->
+
+        <div class="wallet-balance-card">
+
+            <div class="wallet-left">
+
+                <span>
+                    Available Balance
+                </span>
+
+                <h2>
+
+                    {{ wallet.balance }}
+
+                    <strong>MMK</strong>
+
+                </h2>
+
+                <p>
+
+                    Only the available wallet balance can be withdrawn.
+                    Withdrawal requests require administrator approval.
+
+                </p>
+
+            </div>
+
+            <div class="wallet-icon">
+
+                <i class="fa-solid fa-wallet"></i>
+
+            </div>
+
+        </div>
+                <!-- ==========================
+             WITHDRAW FORM
+        =========================== -->
+
+        <div class="row mt-5">
+
+            <!-- LEFT COLUMN -->
+
+            <div class="col-lg-8">
+
+                <div class="glass-card">
+
+                    <div class="section-title">
+
+                        <h3>
+
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+
+                            Withdrawal Form
+
+                        </h3>
+
+                    </div>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <!-- Payment Method -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Payment Method
+
+                            </label>
+
+                            {{ form.payment_method }}
+
+                            {{ form.payment_method.errors }}
+
+                        </div>
+
+                        <!-- Receiver Name -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Receiver Name
+
+                            </label>
+
+                            {{ form.receiver_name }}
+
+                            {{ form.receiver_name.errors }}
+
+                        </div>
+
+                        <!-- Receiver Phone -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Receiver Phone
+
+                            </label>
+
+                            {{ form.receiver_phone }}
+
+                            {{ form.receiver_phone.errors }}
+
+                        </div>
+
+                        <!-- Amount -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Withdraw Amount
+
+                            </label>
+
+                            {{ form.amount }}
+
+                            {{ form.amount.errors }}
+
+                        </div>
+
+                        <!-- Note -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+
+                                Note (Optional)
+
+                            </label>
+
+                            {{ form.note }}
+
+                            {{ form.note.errors }}
+
+                        </div>
+
+                        <!-- Submit -->
+
+                        <button
+                            type="submit"
+                            class="withdraw-btn">
+
+                            <i class="fa-solid fa-paper-plane"></i>
+
+                            Submit Withdrawal Request
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+                        <!-- RIGHT COLUMN -->
+
+            <div class="col-lg-4">
+
+                <!-- ==========================
+                     PAYMENT METHODS
+                =========================== -->
+
+                <div class="glass-card info-card mb-4">
+
+                    <h4>
+
+                        <i class="fa-solid fa-building-columns"></i>
+
+                        Supported Payment Methods
+
+                    </h4>
+
+                    <ul class="payment-list">
+
+                        <li>
+
+                            <strong>KBZ Pay</strong>
+
+                            <span>Available</span>
+
+                        </li>
+
+                        <li>
+
+                            <strong>Wave Pay</strong>
+
+                            <span>Available</span>
+
+                        </li>
+
+                        <li>
+
+                            <strong>AYA Pay</strong>
+
+                            <span>Available</span>
+
+                        </li>
+
+                        <li>
+
+                            <strong>CB Pay</strong>
+
+                            <span>Available</span>
+
+                        </li>
+
+                        <li>
+
+                            <strong>Bank Transfer</strong>
+
+                            <span>Available</span>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <!-- ==========================
+                     WITHDRAW RULES
+                =========================== -->
+
+                <div class="glass-card info-card mb-4">
+
+                    <h4>
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        Withdrawal Rules
+
+                    </h4>
+
+                    <ul class="rule-list">
+
+                        <li>
+                            Withdraw only from your available wallet balance.
+                        </li>
+
+                        <li>
+                            Requests are reviewed manually by the administrator.
+                        </li>
+
+                        <li>
+                            Incorrect receiver information may delay payment.
+                        </li>
+
+                        <li>
+                            Approved withdrawals cannot be cancelled.
+                        </li>
+
+                        <li>
+                            Processing usually takes 5–30 minutes.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <!-- ==========================
+                     SECURITY TIPS
+                =========================== -->
+
+                <div class="glass-card security-card">
+
+                    <h4>
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        Security Tips
+
+                    </h4>
+
+                    <p>
+
+                        Double-check the receiver name and phone number before
+                        submitting your withdrawal request.
+
+                    </p>
+
+                    <p>
+
+                        Never share your account credentials or verification
+                        codes with anyone.
+
+                    </p>
+
+                    <p>
+
+                        Trusty Shop administrators will never ask for your
+                        password.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+                <!-- ==========================================
+             RECENT WITHDRAWAL REQUESTS
+        =========================================== -->
+
+        <div class="glass-card mt-5">
+
+            <div class="section-title">
+
+                <h3>
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    Recent Withdrawal Requests
+
+                </h3>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table withdraw-table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Amount</th>
+
+                            <th>Method</th>
+
+                            <th>Status</th>
+
+                            <th>Date</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for withdraw in request.user.withdraws.all %}
+
+                        <tr>
+
+                            <td>
+
+                                #{{ withdraw.id }}
+
+                            </td>
+
+                            <td>
+
+                                {{ withdraw.amount }} MMK
+
+                            </td>
+
+                            <td>
+
+                                {{ withdraw.payment_method }}
+
+                            </td>
+
+                            <td>
+
+                                {% if withdraw.status == "Approved" %}
+
+                                    <span class="badge bg-success">
+
+                                        Approved
+
+                                    </span>
+
+                                {% elif withdraw.status == "Rejected" %}
+
+                                    <span class="badge bg-danger">
+
+                                        Rejected
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Pending
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {{ withdraw.created_at|date:"d M Y H:i" }}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="5" class="text-center py-5">
+
+                                <i class="fa-solid fa-wallet fa-3x mb-3 text-secondary"></i>
+
+                                <h5>
+
+                                    No Withdrawal Requests Yet
+
+                                </h5>
+
+                                <p>
+
+                                    Your withdrawal history will appear here after you submit your first request.
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'js/withdraw.js' %}"></script>
+
+{% endblock %}
