@@ -71,7 +71,7 @@ class DepositRequest(models.Model):
     )
 
     sender_phone = models.CharField(
-        max_length=20
+        max_length=11
     )
 
     transaction_id = models.CharField(
@@ -182,7 +182,7 @@ class WithdrawRequest(models.Model):
     )
 
     receiver_phone = models.CharField(
-        max_length=20
+        max_length=11
     )
 
     amount = models.DecimalField(
