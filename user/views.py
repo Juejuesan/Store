@@ -89,7 +89,11 @@ def register_view(request):
 
             profile.save()
 
-            login(request, user)
+            login(
+                request,
+                user,
+                backend='django.contrib.auth.backends.ModelBackend'
+            )
             messages.success(request, f'Welcome, {user.first_name or user.username}!')
             return redirect('user:login')
         else:
@@ -131,7 +135,11 @@ def login_view(request):
                 user = None
 
         if user is not None:
-            login(request, user)
+            login(
+                request,
+                user,
+                backend='user.backends.EmailOrUsernameModelBackend'
+            )
             messages.success(request, f'Welcome back, {user.username}!')
             return redirect('home')
         else:
