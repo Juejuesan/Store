@@ -11,6 +11,14 @@ from .forms import RegisterForm, LoginForm, ProfilePicForm
 
 
 # REGISTER VIEW
+import re
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import login
+from .forms import RegisterForm
+from .models import Profile
+
+
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('user:dashboard')
@@ -18,56 +26,59 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
-
+            # Get cleaned data
             password = form.cleaned_data.get('password')
             address = form.cleaned_data.get('address', '')
+            phone_number = form.cleaned_data.get('phone_number')
 
-            if len(password) < 8 or len(password) > 20:
-                messages.error(request, "Password must be long more than 8 characters long!")
+            # Password length check
+            if len(password) < 8:
+                messages.error(request, "Password must be at least 8 characters long!")
                 return render(request, 'user/register.html', {'form': form})
 
+            # Password special character check
             special_char_pattern = re.compile(r'[@_!#$%^&*()<>?/\|}{~:]')
             if not special_char_pattern.search(password):
-                messages.error(request, "Password must contain at least one special character (e.g., @, #, $, %)! ")
+                messages.error(request, "Password must contain at least one special character (e.g., @, #, $, %)!")
                 return render(request, 'user/register.html', {'form': form})
 
+            # Address length check
             if len(address) > 200:
                 messages.error(request, "Address is too long! (Maximum 200 characters allowed)")
                 return render(request, 'user/register.html', {'form': form})
 
-            phone_number = form.cleaned_data['phone_number']
-
+            # Check if phone number already exists
             if Profile.objects.filter(phone_number=phone_number).exists():
                 messages.error(request, "This phone number is already registered!")
                 return render(request, 'user/register.html', {'form': form})
 
-            if not phone_number.isdigit():
-                messages.error(request, "Phone number must contain only numbers!")
-                return render(request, 'user/register.html', {'form': form})
-
+            # Save user
             user = form.save(commit=False)
             user.set_password(password)
             user.save()
 
+            # Save profile
             profile = user.profile
             profile.fullName = form.cleaned_data['fullName']
-            profile.phone_number = form.cleaned_data['phone_number']
+            profile.phone_number = phone_number
             profile.address = address
             profile.gender = form.cleaned_data['gender']
             if form.cleaned_data.get('profile_pic'):
                 profile.profile_pic = form.cleaned_data['profile_pic']
             profile.save()
 
-            # ➡️ ADD THIS LINE - THE MAIN FIX
+            # Auto login after registration
             user.backend = 'user.backends.EmailOrUsernameModelBackend'
             login(request, user)
 
-            messages.success(request, f'Welcome, {user.first_name or user.username}!')
-            return redirect('user:login')
+            messages.success(request, f'Welcome, {profile.fullName or user.username}! Your account has been created.')
+            return redirect('user:dashboard')  # or 'user:login' if you want them to login manually
+
         else:
+            # Form has errors
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
+                    messages.error(request, f"{error}")
     else:
         form = RegisterForm()
 

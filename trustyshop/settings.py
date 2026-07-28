@@ -136,6 +136,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = "/user/login/"
 
+ABSTRACT_API_KEY ='867d312f8b184d068fd974717522cd61'
+
 
 
 
