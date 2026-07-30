@@ -43,7 +43,7 @@ def welcome_view(request):
 
     return render(
         request,
-        "welcome.html",
+        "welcome/welcome.html",
         context
     )
 

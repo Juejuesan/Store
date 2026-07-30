@@ -8,7 +8,7 @@
     ================================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trusty Shop | About</title>
+    <title>Trusty Shop | about</title>
 
     <!-- ==================================================
          BOOTSTRAP CSS
@@ -51,35 +51,125 @@
             <!-- NAVBAR MENU -->
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav ms-auto">
-                    <!-- HOME -->
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'user:register' %}">
-                            <i class="fa-solid fa-house"></i>
-                            Home
-                        </a>
-                    </li>
-                    <!-- ABOUT -->
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">
-                            <i class="fa-solid fa-circle-info"></i>
-                            About
-                        </a>
-                    </li>
-                    <!-- CART -->
-                    <li class="nav-item">
-                        <a class="nav-link cart-link" href="#">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            Cart
-                            <span class="cart-count">3</span>
-                        </a>
-                    </li>
-                    <!-- PROFILE -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user:dashboard' %}">
-                            <i class="fa-solid fa-user"></i>
-                            Profile
-                        </a>
-                    </li>
+
+
+
+
+<!-- HOME -->
+<!-- HOME -->
+<li class="nav-item">
+
+{% if request.user.is_authenticated %}
+
+    <a class="nav-link {% if request.path == '/home/' %}active{% endif %}"
+       href="{% url 'home' %}">
+        <i class="fa-solid fa-house"></i>
+        Home
+    </a>
+
+{% else %}
+
+    <a class="nav-link"
+       href="{% url 'user:register' %}">
+        <i class="fa-solid fa-house"></i>
+        Home
+    </a>
+
+{% endif %}
+
+</li>
+ <!-- Noti -->
+<li class="nav-item">
+
+{% if request.user.is_authenticated %}
+
+    <a class="nav-link {% if request.path == '/notifications/' %}active{% endif %}"
+       href="{% url 'notifications' %}">
+        <i class="fa-solid fa-bell"></i>
+        Noti
+    </a>
+
+{% else %}
+
+    <a class="nav-link"
+       href="{% url 'user:register' %}">
+        <i class="fa-solid fa-bell"></i>
+        Noti
+    </a>
+
+{% endif %}
+
+</li>
+<!-- ABOUT -->
+
+<li class="nav-item">
+    <a class="nav-link {% if request.path == '/about/' %}active{% endif %}"
+       href="{% url 'about' %}">
+        <i class="fa-solid fa-circle-info"></i>
+        About
+    </a>
+</li>
+
+<li class="nav-item">
+
+{% if request.user.is_authenticated %}
+
+    <a class="nav-link cart-link {% if request.path == '#' %}active{% endif %}"
+       href="#">
+        <i class="fa-solid fa-cart-shopping"></i>
+        Cart
+
+        <span class="cart-count">3</span>
+    </a>
+
+{% else %}
+
+    <a class="nav-link cart-link"
+       href="{% url 'user:register' %}">
+        <i class="fa-solid fa-cart-shopping"></i>
+        Cart
+
+        <span class="cart-count">3</span>
+    </a>
+
+{% endif %}
+
+</li>
+
+<!-- PROFILE -->
+
+<li class="nav-item">
+
+{% if request.user.is_authenticated %}
+
+<a class="nav-link profile-link {% if request.path == '/user/dashboard/' %}active{% endif %}"
+   href="{% url 'user:dashboard' %}">
+
+    {% if request.user.profile.profile_pic %}
+        <img src="{{ request.user.profile.profile_pic.url }}"
+             style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #1565C0;">
+    {% else %}
+        <i class="fa-solid fa-circle-user nav-profile-icon"></i>
+    {% endif %}
+
+    <span class="profile-name">
+        {{ request.user.username }}
+    </span>
+
+</a>
+
+{% else %}
+
+<a class="nav-link"
+   href="{% url 'user:register' %}">
+    <i class="fa-solid fa-user"></i>
+    Profile
+</a>
+
+{% endif %}
+
+</li>
+
                 </ul>
             </div>
         </div>
@@ -520,9 +610,9 @@
         </div>
     </footer>
 
-    <div id="cartToast" class="cart-toast">
-        ✅ Product added to cart
-    </div>
+    
+    
+    
 
     <!-- ==================================================
          JAVASCRIPT SECTION

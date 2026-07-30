@@ -89,9 +89,19 @@ def register_view(request):
 
             profile.save()
 
-            login(request, user)
-            messages.success(request, f'Welcome, {user.first_name or user.username}!')
-            return redirect('user:login')
+            authenticated_user = authenticate(
+                request,
+                username=user.username,
+                password=password,
+            )
+
+            if authenticated_user is not None:
+                login(request, authenticated_user)
+                messages.success(request, f'Welcome, {authenticated_user.username}!')
+                return redirect('home')
+            else:
+                messages.error(request, "Registration successful, but automatic login failed.")
+                return redirect('user:login')
         else:
             for field, errors in form.errors.items():
                 for error in errors:

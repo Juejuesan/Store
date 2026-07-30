@@ -473,3 +473,16 @@ footer a:hover{
     }
 
 }
+
+
+
+.footer-home-link{
+    color:#cbd5e1;
+    text-decoration:none;
+}
+
+.footer-home-link:hover{
+    color:#cbd5e1;
+    padding-left:0;
+}
+
