@@ -1,10 +1,13 @@
 from django.shortcuts import render
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'home/home.html')
 
 def viewdetail(request):
-    return render(request, "viewdetail.html")
+    return render(request, "home/viewdetail.html")
 
 def createPost(request):
-    return render(request, "createPost.html")
+    return render(request, "posts/createPost.html")
+
+def welcome(request):
+    return render(request, "welcome/welcome.html")

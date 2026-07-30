@@ -17,7 +17,7 @@ def createPost(request):
 
     if user.status == "Banned":
         messages.error(request, "Your account has been banned.")
-        return render(request, "home.html", {
+        return render(request, "home/home.html", {
         "profile": profile,
 
     })
@@ -47,12 +47,12 @@ def createPost(request):
             if len(images) == 0:
                 post.delete()
                 messages.error(request, "Please upload at least one photo.")
-                return render(request, "createPost.html", {"form": form})
+                return render(request, "posts/createPost.html", {"form": form})
 
             if len(images) > 5:
                 post.delete()
                 messages.error(request, "You can upload a maximum of 5 photos.")
-                return render(request, "createPost.html", {"form": form})
+                return render(request, "posts/createPost.html", {"form": form})
 
             for img in images:
                 PostImage.objects.create(
@@ -66,8 +66,8 @@ def createPost(request):
         else:
          form = PostForm()
 
-    return render(request, "createPost.html", {"form": form})
+    return render(request, "posts/createPost.html", {"form": form})
 
 def showPost(request):
     posts = Post.objects.filter(status="approved")
-    return render(request, "showPost.html", {"posts": posts})
+    return render(request, "posts/showPost.html", {"posts": posts})

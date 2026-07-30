@@ -26,33 +26,31 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            # Get cleaned data
+
             password = form.cleaned_data.get('password')
             address = form.cleaned_data.get('address', '')
             phone_number = form.cleaned_data.get('phone_number')
 
-            # Password length check
-            if len(password) < 8:
+            if len(password) < 8 or len(password) > 20:
                 messages.error(request, "Password must be at least 8 characters long!")
                 return render(request, 'user/register.html', {'form': form})
 
-            # Password special character check
+
             special_char_pattern = re.compile(r'[@_!#$%^&*()<>?/\|}{~:]')
             if not special_char_pattern.search(password):
-                messages.error(request, "Password must contain at least one special character (e.g., @, #, $, %)!")
+                messages.error(request, "Password must contain at least one special character (e.g., @, #, $, %)! ")
                 return render(request, 'user/register.html', {'form': form})
 
-            # Address length check
+
             if len(address) > 200:
                 messages.error(request, "Address is too long! (Maximum 200 characters allowed)")
                 return render(request, 'user/register.html', {'form': form})
 
-            # Check if phone number already exists
+
             if Profile.objects.filter(phone_number=phone_number).exists():
                 messages.error(request, "This phone number is already registered!")
                 return render(request, 'user/register.html', {'form': form})
 
-            # Save user
             user = form.save(commit=False)
             user.set_password(password)
             user.save()
@@ -75,7 +73,6 @@ def register_view(request):
             return redirect('user:dashboard')  # or 'user:login' if you want them to login manually
 
         else:
-            # Form has errors
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{error}")

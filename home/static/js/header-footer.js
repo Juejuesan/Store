@@ -37,44 +37,6 @@ if(navbar){
 
 
 /* =======================================================
-   NAVBAR ACTIVE LINK ANIMATION
-======================================================= */
-
-
-const navLinks = document.querySelectorAll(".nav-link");
-
-
-if(navLinks.length > 0){
-
-
-    navLinks.forEach(link=>{
-
-
-        link.addEventListener("click",()=>{
-
-
-            navLinks.forEach(item=>{
-
-                item.classList.remove("active");
-
-            });
-
-
-            link.classList.add("active");
-
-
-        });
-
-
-    });
-
-
-}
-
-
-
-
-/* =======================================================
    LOGO CLICK ANIMATION
 ======================================================= */
 
