@@ -6,6 +6,6 @@ urlpatterns = [
     # you can link it here. For now, this empty path satisfies Django.
     # path('', views.home_view, name='home'),
     path('', views.home, name='home'),
-    path("viewdetail/", views.viewdetail, name="viewdetail"),
+    path('viewdetail/<int:post_id>/', views.viewdetail, name='viewdetail'),
     path("createPost/", views.createPost, name="createPost")
 ]

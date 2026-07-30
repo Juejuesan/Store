@@ -8,7 +8,7 @@
     ================================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trusty Shop | about</title>
+    <title>Trusty Shop | Home</title>
 
     <!-- ==================================================
          BOOTSTRAP CSS
@@ -31,7 +31,7 @@
 <body>
 
     <!-- ==================================================
-         NAVBAR SECTION (PRESERVED)
+         NAVBAR SECTION
     ================================================== -->
     <nav class="navbar navbar-expand-md cute-navbar fixed-top">
         <div class="container">
@@ -52,766 +52,279 @@
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav ms-auto">
 
+                    <!-- HOME -->
+                    <li class="nav-item">
+                        {% if request.user.is_authenticated %}
+                            <a class="nav-link {% if request.path == '/home/' %}active{% endif %}" href="{% url 'home' %}">
+                                <i class="fa-solid fa-house"></i>
+                                Home
+                            </a>
+                        {% else %}
+                            <a class="nav-link {% if request.resolver_match.url_name == 'welcome' %}active{% endif %}" href="{% url 'welcome' %}">
+                                <i class="fa-solid fa-house"></i>
+                                Home
+                            </a>
+                        {% endif %}
+                    </li>
 
+                    <!-- NOTI -->
+                    <li class="nav-item">
+                        {% if request.user.is_authenticated %}
+                            <a class="nav-link {% if request.path == '/notifications/' %}active{% endif %}" href="{% url 'notifications' %}">
+                                <i class="fa-solid fa-bell"></i>
+                                Noti
+                            </a>
+                        {% else %}
+                            <a class="nav-link" href="{% url 'user:register' %}">
+                                <i class="fa-solid fa-bell"></i>
+                                Noti
+                            </a>
+                        {% endif %}
+                    </li>
 
+                    <!-- ABOUT -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">
+                            <i class="fa-solid fa-circle-info"></i>
+                            About
+                        </a>
+                    </li>
 
-<!-- HOME -->
-<!-- HOME -->
-<li class="nav-item">
+                    <!-- CART -->
+                    <li class="nav-item">
+                        {% if request.user.is_authenticated %}
+                            <a class="nav-link cart-link {% if request.path == '#' %}active{% endif %}" href="#">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Cart
+                                <span class="cart-count">3</span>
+                            </a>
+                        {% else %}
+                            <a class="nav-link cart-link" href="{% url 'user:register' %}">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Cart
+                                <span class="cart-count">3</span>
+                            </a>
+                        {% endif %}
+                    </li>
 
-{% if request.user.is_authenticated %}
-
-<a class="nav-link {% if request.path == '/home/' %}active{% endif %}"
-   href="{% url 'home' %}">
-    <i class="fa-solid fa-house"></i>
-    Home
-</a>
-
-{% else %}
-
-<a class="nav-link {% if request.resolver_match.url_name == 'welcome' %}active{% endif %}"
-   href="{% url 'welcome' %}">
-    <i class="fa-solid fa-house"></i>
-    Home
-</a>
-
-{% endif %}
-
-</li>
- <!-- Noti -->
-<li class="nav-item">
-
-{% if request.user.is_authenticated %}
-
-    <a class="nav-link {% if request.path == '/notifications/' %}active{% endif %}"
-       href="{% url 'notifications' %}">
-        <i class="fa-solid fa-bell"></i>
-        Noti
-    </a>
-
-{% else %}
-
-    <a class="nav-link"
-       href="{% url 'user:register' %}">
-        <i class="fa-solid fa-bell"></i>
-        Noti
-    </a>
-
-{% endif %}
-
-</li>
-<!-- ABOUT -->
-
-<li class="nav-item">
-    <a class="nav-link {% if request.path == '/about/' %}active{% endif %}"
-       href="{% url 'about' %}">
-        <i class="fa-solid fa-circle-info"></i>
-        About
-    </a>
-</li>
-
-<li class="nav-item">
-
-{% if request.user.is_authenticated %}
-
-    <a class="nav-link cart-link {% if request.path == '#' %}active{% endif %}"
-       href="#">
-        <i class="fa-solid fa-cart-shopping"></i>
-        Cart
-
-        <span class="cart-count">3</span>
-    </a>
-
-{% else %}
-
-    <a class="nav-link cart-link"
-       href="{% url 'user:register' %}">
-        <i class="fa-solid fa-cart-shopping"></i>
-        Cart
-
-        <span class="cart-count">3</span>
-    </a>
-
-{% endif %}
-
-</li>
-
-<!-- PROFILE -->
-
-<li class="nav-item">
-
-{% if request.user.is_authenticated %}
-
-<a class="nav-link profile-link {% if request.path == '/user/dashboard/' %}active{% endif %}"
-   href="{% url 'user:dashboard' %}">
-
-    {% if request.user.profile.profile_pic %}
-        <img src="{{ request.user.profile.profile_pic.url }}"
-             style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #1565C0;">
-    {% else %}
-        <i class="fa-solid fa-circle-user nav-profile-icon"></i>
-    {% endif %}
-
-    <span class="profile-name">
-        {{ request.user.username }}
-    </span>
-
-</a>
-
-{% else %}
-
-<a class="nav-link"
-   href="{% url 'user:register' %}">
-    <i class="fa-solid fa-user"></i>
-    Profile
-</a>
-
-{% endif %}
-
-</li>
+                    <!-- PROFILE -->
+                    <li class="nav-item">
+                        {% if request.user.is_authenticated %}
+                            <a class="nav-link profile-link {% if request.path == '/user/dashboard/' %}active{% endif %}" href="{% url 'user:dashboard' %}">
+                                {% if request.user.profile.profile_pic %}
+                                    <img src="{{ request.user.profile.profile_pic.url }}"
+                                         style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #1565C0;">
+                                {% else %}
+                                    <i class="fa-solid fa-circle-user nav-profile-icon"></i>
+                                {% endif %}
+                                <span class="profile-name">
+                                    {{ request.user.username }}
+                                </span>
+                            </a>
+                        {% else %}
+                            <a class="nav-link" href="{% url 'user:register' %}">
+                                <i class="fa-solid fa-user"></i>
+                                Profile
+                            </a>
+                        {% endif %}
+                    </li>
 
                 </ul>
             </div>
         </div>
     </nav>
 
-
-
-
-
-<!-- ==================================================
-     HERO SECTION
-================================================== -->
-
-
-<section class="hero">
-
-
-
-<!-- FLOATING BACKGROUND -->
-
-<div class="floating-background">
-
-
-<div class="bubble"></div>
-
-<div class="bubble"></div>
-
-<div class="bubble"></div>
-
-
-
-
-<!-- FLOATING SHOP ICONS -->
-
-<div class="floating-item">
-🛍️
-</div>
-
-
-<div class="floating-item">
-👟
-</div>
-
-
-<div class="floating-item">
-⌚
-</div>
-
-
-<div class="floating-item">
-🎧
-</div>
-
-
-<div class="floating-item">
-📱
-</div>
-
-
-</div>
-
-
-
-
-
-<!-- HERO CONTENT -->
-
-<div class="container hero-content">
-
-
-<div class="row align-items-center">
-
-
-<div class="col-lg-6">
-
-
-
-<!-- HERO TITLE -->
-
-<h1>
-
-Shop Smart with
-
-<span>
-
-Trusty Shop
-
-</span>
-
-</h1>
-
-
-
-
-<!-- HERO DESCRIPTION -->
-
-<p>
-
-Discover amazing products with trusted quality,
-beautiful designs, and affordable prices.
-
-</p>
-
-
-
-
-
-<!-- SEARCH BAR -->
-
-<div class="modern-search">
-
-
-<div class="search-icon">
-
-<i class="fa-solid fa-magnifying-glass"></i>
-
-</div>
-
-
-
-<input type="text"
-placeholder="Search products..."
-id="searchInput">
-
-
-
-<button>
-
-Search
-
-</button>
-
-
-</div>
-
-
-
-
-
-<!-- TRENDING SEARCH -->
-
-<div class="search-suggestions">
-
-
-<span>
-
-🔥 Trending:
-
-</span>
-
-
-
-<button>
-
-Shoes
-
-</button>
-
-
-<button>
-
-Watch
-
-</button>
-
-
-
-<button>
-
-Laptop
-
-</button>
-
-
-<button>
-
-Perfume
-
-</button>
-
-
-</div>
-
-
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-</section>
-
-
-
-<!-- ================= Seller Posts ================= -->
-
-<div id="marketParticles"></div>
-<div id="mouseGlow"></div>
-
-<section class="seller-posts py-5">
-
-    <div class="container">
-
-        <div class="container">
-
-
-    <!-- SECTION TITLE -->
-
-    <div class="section-title mb-5">
-
-
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-
-            <div>
-
-                <span class="section-badge">
-                    <i class="fa-solid fa-store"></i>
-                    Trusted Marketplace
-                </span>
-
-
-                <h2 class="mt-3 mb-2">
-                    Latest Seller Products
-                </h2>
-
-
-                <p class="mb-0">
-                    Discover quality products posted by verified sellers.
-                </p>
-
-
-            </div>
-
-
-
-            <div>
-
-                <a href="{% url 'createPost' %}" class="create-post-btn">
-
-                    <i class="fa-solid fa-plus"></i>
-
-                    Create Post
-
-                </a>
-
-            </div>
-
-
+    <!-- ==================================================
+         HERO SECTION
+    ================================================== -->
+    <section class="hero">
+        <!-- FLOATING BACKGROUND -->
+        <div class="floating-background">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+
+            <!-- FLOATING SHOP ICONS -->
+            <div class="floating-item">🛍️</div>
+            <div class="floating-item">👟</div>
+            <div class="floating-item">⌚</div>
+            <div class="floating-item">🎧</div>
+            <div class="floating-item">📱</div>
         </div>
 
+        <!-- HERO CONTENT -->
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <!-- HERO TITLE -->
+                    <h1>
+                        Shop Smart with
+                        <span>Trusty Shop</span>
+                    </h1>
 
-    </div>  <!-- CLOSE SECTION TITLE HERE -->
+                    <!-- HERO DESCRIPTION -->
+                    <p>
+                        Discover amazing products with trusted quality,
+                        beautiful designs, and affordable prices.
+                    </p>
 
-
-    <!-- PRODUCT CARDS -->
-
-    <div class="row g-4">
-
-            <!-- ================= CARD 1 ================= -->
-
-            <div class="col-lg-4 col-md-6">
-
-                <div class="seller-card">
-
-                    <!-- TOP -->
-
-                    <div class="seller-top">
-
-                        <div class="seller-left">
-
-                            <img src="{% static 'images/mumu.jpg' %}" class="seller-profile">
-
-                            <div>
-
-                                <h5>
-                                    John Store
-                                    <i class="fa-solid fa-circle-check verified"></i>
-                                </h5>
-
-                                <span>
-                                    <i class="fa-regular fa-clock"></i>
-                                    2 hours ago
-                                </span>
-
-                            </div>
-
+                    <!-- SEARCH BAR -->
+                    <div class="modern-search">
+                        <div class="search-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
                         </div>
-
-                        <div class="seller-right">
-
-                            <button class="menu-btn" onclick="savePost(this)">
-                                <i class="fa-solid fa-ellipsis"></i>
-                            </button>
-
-                            <div class="save-box">
-                                <i class="fa-regular fa-bookmark"></i>
-                                Save Post
-                            </div>
-
-                        </div>
-
+                        <input type="text" placeholder="Search products..." id="searchInput">
+                        <button>Search</button>
                     </div>
 
-                    <!-- IMAGE -->
-
-                    <div class="product-image-box">
-
-                        <img src="{% static 'images/shoe1.jpg' %}" class="product-image">
-
-                        <span class="product-tag">
-                            Best Seller
-                        </span>
-
+                    <!-- TRENDING SEARCH -->
+                    <div class="search-suggestions">
+                        <span>🔥 Trending:</span>
+                        <button>Shoes</button>
+                        <button>Watch</button>
+                        <button>Laptop</button>
+                        <button>Perfume</button>
                     </div>
-
-                    <!-- BODY -->
-
-                    <div class="product-body">
-
-                        <div class="title-price">
-
-                            <h4>
-                                Premium Sneakers
-                            </h4>
-
-                            <span class="price">
-                                $ 80
-                            </span>
-
-                        </div>
-
-                        <p>
-
-                            Comfortable running shoes made with premium breathable
-                            material. Lightweight, stylish and perfect for everyday use.
-
-                        </p>
-
-                        <!-- FEATURES -->
-
-                        <div class="product-features">
-
-                            <span>
-                                <i class="fa-solid fa-truck-fast"></i>
-                                Fast Delivery
-                            </span>
-
-                            <span>
-                                <i class="fa-solid fa-shield-heart"></i>
-                                Warranty
-                            </span>
-
-                        </div>
-
-                        <!-- BUTTONS -->
-
-                        <div class="product-buttons">
-
-                            <button class="cart-btn">
-
-                                <i class="fa-solid fa-cart-shopping"></i>
-
-                                Add to Cart
-
-                            </button>
-
-                            <a href="{% url 'viewdetail' %}" class="detail-btn">
-                                View Details
-                            </a>
-
-                        </div>
-
-                    </div>
-
                 </div>
-
             </div>
-
-            <!-- ================= CARD 2 ================= -->
-
-            <div class="col-lg-4 col-md-6">
-
-                <div class="seller-card">
-
-                    <div class="seller-top">
-
-                        <div class="seller-left">
-
-                            <img src="{% static 'images/susu.jpg' %}" class="seller-profile">
-
-                            <div>
-
-                                <h5>
-                                    Smart Tech
-                                    <i class="fa-solid fa-circle-check verified"></i>
-                                </h5>
-
-                                <span>
-
-                                    <i class="fa-regular fa-clock"></i>
-
-                                    5 hours ago
-
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="seller-right">
-
-                            <button class="menu-btn" onclick="savePost(this)">
-                                <i class="fa-solid fa-ellipsis"></i>
-                            </button>
-
-                            <div class="save-box">
-                                <i class="fa-regular fa-bookmark"></i>
-                                Save Post
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="product-image-box">
-
-                        <img src="{% static 'images/headphone.jpg' %}" class="product-image">
-
-                        <span class="product-tag">
-                            New
-                        </span>
-
-                    </div>
-
-                    <div class="product-body">
-
-                        <div class="title-price">
-
-                            <h4>
-                                Wireless Headphone
-                            </h4>
-
-                            <span class="price">
-                                $80
-                            </span>
-
-                        </div>
-
-                        <p>
-
-                            Premium wireless headphones with crystal clear sound,
-                            active noise cancellation and 40-hour battery life.
-
-                        </p>
-
-                        <div class="product-features">
-
-                            <span>
-
-                                <i class="fa-solid fa-battery-full"></i>
-
-                                40 Hours
-
-                            </span>
-
-                            <span>
-
-                                <i class="fa-solid fa-bluetooth"></i>
-
-                                Bluetooth 5.3
-
-                            </span>
-
-                        </div>
-
-                        <div class="product-buttons">
-
-                            <button class="cart-btn">
-
-                                <i class="fa-solid fa-cart-shopping"></i>
-
-                                Add to Cart
-
-                            </button>
-
-                            <button class="detail-btn">
-
-                                View Details
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- ================= CARD 3 ================= -->
-
-            <div class="col-lg-4 col-md-6">
-
-                <div class="seller-card">
-
-                    <div class="seller-top">
-
-                        <div class="seller-left">
-
-                            <img src="{% static 'images/meme.jpg' %}" class="seller-profile">
-
-                            <div>
-
-                                <h5>
-
-                                    Fashion House
-
-                                    <i class="fa-solid fa-circle-check verified"></i>
-
-                                </h5>
-
-                                <span>
-
-                                    <i class="fa-regular fa-clock"></i>
-
-                                    1 day ago
-
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        <div class="seller-right">
-
-                            <button class="menu-btn" onclick="savePost(this)">
-                                <i class="fa-solid fa-ellipsis"></i>
-                            </button>
-
-                            <div class="save-box">
-                                <i class="fa-regular fa-bookmark"></i>
-                                Save Post
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="product-image-box">
-
-                        <img src="{% static 'images/watch.jpg' %}" class="product-image">
-
-                        <span class="product-tag">
-                            Luxury
-                        </span>
-
-                    </div>
-
-                    <div class="product-body">
-
-                        <div class="title-price">
-
-                            <h4>
-
-                                Luxury Watch
-
-                            </h4>
-
-                            <span class="price">
-
-                                $120
-
-                            </span>
-
-                        </div>
-
-                        <p>
-
-                            Elegant stainless-steel watch with premium leather strap,
-                            water resistance and timeless modern design.
-
-                        </p>
-
-                        <div class="product-features">
-
-                            <span>
-
-                                <i class="fa-solid fa-gem"></i>
-
-                                Premium
-
-                            </span>
-
-                            <span>
-
-                                <i class="fa-solid fa-award"></i>
-
-                                Top Rated
-
-                            </span>
-
-                        </div>
-
-                        <div class="product-buttons">
-
-                            <button class="cart-btn">
-
-                                <i class="fa-solid fa-cart-shopping"></i>
-
-                                Add to Cart
-
-                            </button>
-
-                            <button class="detail-btn">
-
-                                View Details
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
         </div>
-
-    </div>
-    </div>
-
-</section>
+    </section>
 
     <!-- ==================================================
-         FOOTER SECTION (PRESERVED)
+         SELLER POSTS SECTION
+    ================================================== -->
+    <div id="marketParticles"></div>
+    <div id="mouseGlow"></div>
+
+    <section class="seller-posts py-5">
+        <div class="container">
+            <!-- SECTION TITLE -->
+            <div class="section-title mb-5">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <span class="section-badge">
+                            <i class="fa-solid fa-store"></i>
+                            Trusted Marketplace
+                        </span>
+                        <h2 class="mt-3 mb-2">
+                            Latest Seller Products
+                        </h2>
+                        <p class="mb-0">
+                            Discover quality products posted by verified sellers.
+                        </p>
+                    </div>
+                    <div>
+                        <a href="{% url 'createPost' %}" class="create-post-btn">
+                            <i class="fa-solid fa-plus"></i>
+                            Create Post
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCT CARDS - DYNAMIC LOOP -->
+            <div class="row g-4">
+                {% for post in posts %}
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div class="seller-card">
+
+                        <!-- TOP SECTION -->
+                        <div class="seller-top">
+                            <div class="seller-left">
+                                {% if post.user.profile.profile_pic %}
+                                    <img src="{{ post.user.profile.profile_pic.url }}" class="seller-profile">
+                                {% else %}
+                                    <img src="{% static 'images/default-profile.png' %}" class="seller-profile">
+                                {% endif %}
+                                <div>
+                                    <h5>
+                                        {{ post.user.user.username }}
+                                        <i class="fa-solid fa-circle-check verified"></i>
+                                    </h5>
+                                    <span>
+                                        <i class="fa-regular fa-clock"></i>
+                                        {{ post.created_at|timesince }} ago
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="seller-right">
+                                <button class="menu-btn" onclick="savePost(this)">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </button>
+                                <div class="save-box">
+                                    <i class="fa-regular fa-bookmark"></i>
+                                    Save Post
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- IMAGE SECTION -->
+                        <div class="product-image-box">
+                            {% with image=post.images.first %}
+                                {% if image %}
+                                    <img src="{{ image.image.url }}" class="product-image">
+                                {% else %}
+                                    <img src="{% static 'images/no-image.png' %}" class="product-image">
+                                {% endif %}
+                            {% endwith %}
+                            <span class="product-tag">{{ post.type|default:"New" }}</span>
+                        </div>
+
+                        <!-- BODY SECTION -->
+                        <div class="product-body">
+                            <div class="title-price">
+                                <h4>{{ post.category.name|default:"Product" }}</h4>
+                                <span class="price">{{ post.price }} MMK</span>
+                            </div>
+                            <p>{{ post.description|truncatewords:20 }}</p>
+
+                            <!-- FEATURES -->
+                            <div class="product-features">
+                                <span>
+                                    <i class="fa-solid fa-box"></i>
+                                    Qty: {{ post.quantity }}
+                                </span>
+                                {% if post.condition %}
+                                <span>
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    {{ post.condition }}
+                                </span>
+                                {% endif %}
+                                {% if post.location %}
+                                <span>
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    {{ post.location }}
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <!-- BUTTONS -->
+                            <div class="product-buttons">
+                                <button class="cart-btn">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                    Add to Cart
+                                </button>
+                                <a href="{% url 'viewdetail' post.id %}" class="detail-btn">
+                                    View Details
+                                </a>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <h3>No approved posts available.</h3>
+                    <p>Be the first to <a href="{% url 'createPost' %}">create a post</a>!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================================================
+         FOOTER SECTION
     ================================================== -->
     <footer>
         <div class="container">
