@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,18 +17,15 @@
 
     </title>
 
-
-    <!-- ================= ADMIN CSS ================= -->
+    <!-- ================= CSS ================= -->
 
     <link rel="stylesheet"
           href="{% static 'css/admin.css' %}">
-
 
     <!-- ================= FONT AWESOME ================= -->
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
 
     <!-- ================= GOOGLE FONT ================= -->
 
@@ -43,234 +39,210 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet">
 
-
-    <!-- ================= PAGE EXTRA CSS ================= -->
-
     {% block extra_css %}
     {% endblock %}
 
 </head>
 
-
 <body>
-
-
-<!-- =====================================================
-     MAIN WRAPPER
-===================================================== -->
 
 <div class="wrapper">
 
-
-    <!-- =================================================
-         SIDEBAR
-    ================================================== -->
+    <!-- ==========================================
+                    Sidebar
+    =========================================== -->
 
     <aside class="sidebar">
 
-
-        <!-- LOGO -->
+        <!-- Logo -->
 
         <div class="logo">
 
-            <div class="logo-circle">
+            <div class="logo-icon">
 
                 <i class="fa-solid fa-store"></i>
 
             </div>
 
-
             <div>
 
                 <h2>
+
                     Trusty Shop
+
                 </h2>
 
                 <span>
-                    Admin Panel
+
+                    Admin Dashboard
+
                 </span>
 
             </div>
 
         </div>
 
+        <!-- Navigation -->
 
-        <!-- NAVIGATION -->
+        <nav class="sidebar-menu">
 
-        <ul class="menu">
+            <ul>
 
+                <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
 
-            <!-- DASHBOARD -->
+                    <a href="{% url 'dashboard' %}">
 
-            <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="fa-solid fa-chart-line"></i>
 
-                <a href="{% url 'dashboard' %}">
+                        <span>
 
-                    <i class="fa-solid fa-chart-pie"></i>
+                            Dashboard
 
-                    <span>
-                        Dashboard
-                    </span>
+                        </span>
 
-                </a>
+                    </a>
 
-            </li>
+                </li>
 
+                <li class="{% if request.resolver_match.url_name == 'posts' or request.resolver_match.url_name == 'post_detail' %}active{% endif %}">
 
-            <!-- POSTS -->
+                    <a href="{% url 'posts' %}">
 
-            <li class="{% if request.resolver_match.url_name == 'posts' or request.resolver_match.url_name == 'post_detail' %}active{% endif %}">
+                        <i class="fa-solid fa-box-open"></i>
 
-                <a href="{% url 'posts' %}">
+                        <span>
 
-                    <i class="fa-solid fa-box-open"></i>
+                            Pending Posts
 
-                    <span>
-                        Posts
-                    </span>
+                        </span>
 
-                </a>
+                    </a>
 
-            </li>
+                </li>
 
+                <li>
 
-            <!-- USERS -->
+                    <a href="#">
 
-            <li>
+                        <i class="fa-solid fa-layer-group"></i>
 
-                <a href="#">
+                        <span>
 
-                    <i class="fa-solid fa-users"></i>
+                            Categories
 
-                    <span>
-                        Users
-                    </span>
+                        </span>
 
-                </a>
+                    </a>
 
-            </li>
+                </li>
 
+                <li>
 
-            <!-- ORDERS -->
+                    <a href="#">
 
-            <li>
+                        <i class="fa-solid fa-users"></i>
 
-                <a href="#">
+                        <span>
 
-                    <i class="fa-solid fa-cart-shopping"></i>
+                            Users
 
-                    <span>
-                        Orders
-                    </span>
+                        </span>
 
-                </a>
+                    </a>
 
-            </li>
+                </li>
 
+                <li>
 
-            <!-- WALLET -->
+                    <a href="#">
 
-            <li>
+                        <i class="fa-solid fa-cart-shopping"></i>
 
-                <a href="#">
+                        <span>
 
-                    <i class="fa-solid fa-wallet"></i>
+                            Orders
 
-                    <span>
-                        Wallet
-                    </span>
+                        </span>
 
-                </a>
+                    </a>
 
-            </li>
+                </li>
 
+                <li>
 
-            <!-- REPORTS -->
+                    <a href="#">
 
-            <li>
+                        <i class="fa-solid fa-wallet"></i>
 
-                <a href="#">
+                        <span>
 
-                    <i class="fa-solid fa-chart-column"></i>
+                            Wallet
 
-                    <span>
-                        Reports
-                    </span>
+                        </span>
 
-                </a>
+                    </a>
 
-            </li>
+                </li>
 
+                <li>
 
-            <!-- SETTINGS -->
+                    <a href="#">
 
-            <li>
+                        <i class="fa-solid fa-chart-column"></i>
 
-                <a href="#">
+                        <span>
 
-                    <i class="fa-solid fa-gear"></i>
+                            Reports
 
-                    <span>
-                        Settings
-                    </span>
+                        </span>
 
-                </a>
+                    </a>
 
-            </li>
+                </li>
 
-        </ul>
+                <li>
 
+                    <a href="#">
 
-        <!-- SIDEBAR FOOTER -->
+                        <i class="fa-solid fa-gear"></i>
 
-        <div class="sidebar-footer">
+                        <span>
 
+                            Settings
 
-            <img src="{% static 'images/admin.png' %}"
-                 class="profile-img">
+                        </span>
 
+                    </a>
 
-            <div>
+                </li>
 
-                <h4>
-                    Administrator
-                </h4>
+            </ul>
 
-                <span>
-                    Super Admin
-                </span>
-
-            </div>
-
-        </div>
-
+        </nav>
 
     </aside>
 
+    <!-- ==========================================
+                Main Container
+========================================== -->
 
-    <!-- =================================================
-         MAIN AREA
-    ================================================== -->
+<div class="main-container">
 
-    <main class="main">
+    <!-- =======================
+            Topbar
+    ======================== -->
 
+    <header class="topbar">
 
-        <!-- TOP BAR -->
-
-        <header class="topbar">
-
-
-            <!-- MOBILE MENU -->
+        <div class="topbar-left">
 
             <button id="toggle-btn"
+                    class="menu-toggle"
                     type="button">
 
                 <i class="fa-solid fa-bars"></i>
 
             </button>
-
-
-            <!-- SEARCH -->
 
             <div class="search-box">
 
@@ -281,211 +253,183 @@
 
             </div>
 
+        </div>
 
-            <!-- TOP ICONS -->
+        <div class="topbar-right">
 
-            <div class="top-icons">
+            <!-- Clock -->
 
+            <div class="clock">
 
-                <!-- CLOCK -->
+                <i class="fa-regular fa-clock"></i>
 
-                <div class="clock">
-
-                    <i class="fa-regular fa-clock"></i>
-
-                    <span id="liveClock"></span>
-
-                </div>
-
-
-                <!-- NOTIFICATION -->
-
-                <button type="button"
-                        class="notification"
-                        id="notificationBell">
-
-                    <i class="fa-regular fa-bell"></i>
-
-
-                    {% if notification_count > 0 %}
-
-                        <span class="badge">
-
-                            {{ notification_count }}
-
-                        </span>
-
-                    {% endif %}
-
-                </button>
-
-
-                <!-- THEME -->
-
-                <button id="themeToggle"
-                        type="button">
-
-                    <i class="fa-solid fa-moon"></i>
-
-                </button>
-
+                <span id="liveClock"></span>
 
             </div>
 
+            <!-- Notification -->
 
-        </header>
+            <button class="notification-btn"
+                    id="notificationBell"
+                    type="button">
 
+                <i class="fa-regular fa-bell"></i>
 
-        <!-- =================================================
-             PAGE CONTENT
-        ================================================== -->
+                {% if notification_count > 0 %}
 
-        <section class="content">
+                <span class="notify-count">
 
+                    {{ notification_count }}
 
-            {% block content %}
+                </span>
 
-            {% endblock %}
+                {% endif %}
 
+            </button>
 
-        </section>
+            <!-- Theme -->
 
+            <button id="themeToggle"
+                    class="theme-btn"
+                    type="button">
+
+                <i class="fa-solid fa-moon"></i>
+
+            </button>
+
+        </div>
+
+    </header>
+
+    <!-- =======================
+            Page Content
+    ======================== -->
+
+    <main class="page-content">
+
+        {% block content %}
+        {% endblock %}
 
     </main>
 
-
 </div>
 
-
-<!-- =====================================================
-     NOTIFICATION PANEL
-===================================================== -->
+    <!-- ==========================================
+        Notification Drawer
+========================================== -->
 
 <div class="notification-panel"
      id="notificationPanel">
 
-
-    <div class="panel-header">
-
+    <div class="notification-header">
 
         <h3>
+
             Notifications
+
         </h3>
 
-
-        <button type="button"
-                id="closeNotification">
+        <button id="closeNotification"
+                type="button">
 
             <i class="fa-solid fa-xmark"></i>
 
         </button>
 
-
     </div>
 
-
-    <div class="notification-list">
-
+    <div class="notification-body">
 
         {% for notification in admin_notifications %}
 
+        <a href="{% url 'read_notification' notification.id %}"
+   class="notification-item">
 
-            <div class="notify-item">
+            <div class="notification-icon">
 
+                {% if notification.notification_type == "approved" %}
 
-                <i class="fa-solid fa-box-open"></i>
+                    <i class="fa-solid fa-circle-check"></i>
 
+                {% elif notification.notification_type == "rejected" %}
 
-                <div>
+                    <i class="fa-solid fa-circle-xmark"></i>
 
+                {% else %}
 
-                    <h4>
+                    <i class="fa-solid fa-box-open"></i>
 
-                        {{ notification.message }}
-
-                    </h4>
-
-
-                    <span>
-
-                        {{ notification.created_at }}
-
-                    </span>
-
-
-                </div>
-
+                {% endif %}
 
             </div>
 
+            <div class="notification-content">
+
+                <h4>
+
+                    {{ notification.message }}
+
+                </h4>
+
+                <p>
+
+                    {{ notification.created_at|timesince }} ago
+
+                </p>
+
+            </div>
+
+        </a>
 
         {% empty %}
 
+        <div class="notification-empty">
 
-            <div class="notify-item">
+            <i class="fa-regular fa-bell-slash"></i>
 
+            <h4>
 
-                <i class="fa-solid fa-check"></i>
+                No New Notifications
 
+            </h4>
 
-                <div>
+            <p>
 
+                Everything is up to date.
 
-                    <h4>
-                        No New Notifications
-                    </h4>
+            </p>
 
-
-                    <span>
-                        You are all caught up.
-                    </span>
-
-
-                </div>
-
-
-            </div>
-
+        </div>
 
         {% endfor %}
 
-
     </div>
-
 
 </div>
 
-
-<!-- =====================================================
-     FLOATING BACKGROUND
-===================================================== -->
+<!-- ==========================================
+        Floating Background
+========================================== -->
 
 <div class="floating-shapes">
 
-
     <span class="circle c1"></span>
-
     <span class="circle c2"></span>
-
     <span class="circle c3"></span>
-
     <span class="circle c4"></span>
-
 
 </div>
 
-
-<!-- =====================================================
-     GLOBAL JAVASCRIPT
-===================================================== -->
+<!-- ==========================================
+        Global Javascript
+========================================== -->
 
 <script src="{% static 'js/admin.js' %}"></script>
-
 
 {% block extra_js %}
 {% endblock %}
 
+</div>
 
 </body>
-
 </html>
