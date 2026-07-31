@@ -342,7 +342,8 @@
 
         {% for notification in admin_notifications %}
 
-        <div class="notification-item">
+        <a href="{% url 'read_notification' notification.id %}"
+   class="notification-item">
 
             <div class="notification-icon">
 
@@ -378,7 +379,7 @@
 
             </div>
 
-        </div>
+        </a>
 
         {% empty %}
 

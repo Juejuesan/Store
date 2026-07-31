@@ -113,3 +113,22 @@ def reject_post(request, post_id):
     )
 
     return redirect("posts")
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def read_notification(request, noti_id):
+
+    notification = get_object_or_404(
+        Notification,
+        id=noti_id,
+        user=request.user
+    )
+
+    notification.is_read = True
+    notification.save()
+
+    if notification.notification_type == "new_post":
+        return redirect("posts")
+
+    return redirect("dashboard")

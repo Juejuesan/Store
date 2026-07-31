@@ -32,16 +32,18 @@ def createPost(request):
             post.save()
 
             # Notifications
+
+            # Create notification for every admin
+
             admins = User.objects.filter(is_staff=True)
 
             for admin in admins:
                 Notification.objects.create(
                     user=admin,
                     post=post,
-                    message=f"{request.user.username} created a new post waiting approval",
-                    notification_type="post_request"
+                    message=f"{request.user.username} created a new {post.category.name} post waiting for approval.",
+                    notification_type="new_post"
                 )
-
             images = request.FILES.getlist("images")
 
             if len(images) == 0:
