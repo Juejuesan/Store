@@ -3,7 +3,16 @@ from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
+from django.core.validators import RegexValidator
 
+
+
+
+
+phone_validator = RegexValidator(
+    regex=r'^09\d{9}$',
+    message="Enter a valid Myanmar phone number (e.g. 09123456789)."
+)
 
 # ==========================================================
 # WALLET
@@ -71,7 +80,8 @@ class DepositRequest(models.Model):
     )
 
     sender_phone = models.CharField(
-        max_length=20
+        max_length=11,
+        validators = [phone_validator]
     )
 
     transaction_id = models.CharField(
