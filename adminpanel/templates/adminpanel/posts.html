@@ -34,6 +34,7 @@
         <thead>
     <tr>
         <th style="width:90px;">Photo</th>
+        <th style="width:90px;">Seller</th>
         <th>Product Details</th>
         <th style="width:150px;">Category</th>
         <th style="width:150px;">Quantity</th>
@@ -67,6 +68,11 @@
     </td>
 
 
+    <td>
+        {{ post.user.user.username }}
+    </td>
+
+
     <!-- Product Details -->
     <td>
 
@@ -90,11 +96,6 @@
 
     </td>
 
-    <td>
-
-       {{ post.user.name }}
-
-    </td>
 
 
     <td>
