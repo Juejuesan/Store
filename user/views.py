@@ -21,7 +21,7 @@ from .models import Profile
 
 def register_view(request):
     if request.user.is_authenticated:
-        return redirect('user:dashboard')
+        return redirect('home')
 
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
@@ -70,7 +70,7 @@ def register_view(request):
             login(request, user)
 
             messages.success(request, f'Welcome, {profile.fullName or user.username}! Your account has been created.')
-            return redirect('user:dashboard')  # or 'user:login' if you want them to login manually
+            return redirect('home')  # or 'user:login' if you want them to login manually
 
         else:
             for field, errors in form.errors.items():
