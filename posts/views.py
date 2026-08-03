@@ -72,4 +72,4 @@ def createPost(request):
 
 def showPost(request):
     posts = Post.objects.filter(status="approved")
-    return render(request, "posts/showPost.html", {"posts": posts})
+    return render(request, "home/home.html", {"posts": posts})
