@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'posts',
     'adminpanel',
     'notifications',
+    "wallet.apps.WalletConfig",
 ]
 
 MIDDLEWARE = [
@@ -128,6 +129,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
+LOGIN_URL = 'user:login'
 
 
 LOGIN_REDIRECT_URL = 'home'

@@ -1,0 +1,678 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Deposit Wallet
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/deposit.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="deposit-page">
+
+    <div class="deposit-bg-circle bg1"></div>
+    <div class="deposit-bg-circle bg2"></div>
+    <div class="deposit-bg-circle bg3"></div>
+
+    <div class="container">
+
+        <!-- =========================
+            PAGE HEADER
+        ========================== -->
+
+        <div class="deposit-header">
+
+            <div>
+
+                <span class="deposit-small-title">
+
+                    TRUSTY WALLET
+
+                </span>
+
+                <h1>
+
+                    Deposit Money
+
+                </h1>
+
+                <p>
+
+                    Top up your wallet securely using KBZ Pay, Wave Pay,
+                    AYA Pay or CB Pay.
+
+                </p>
+
+            </div>
+
+            <div class="deposit-avatar">
+
+                {% if request.user.profile.profile_pic %}
+
+                    <img src="{{ request.user.profile.profile_pic.url }}">
+
+                {% else %}
+
+                    <img src="{% static 'images/default-user.png' %}">
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <!-- =========================
+            WALLET CARD
+        ========================== -->
+
+        <div class="wallet-balance-card">
+
+            <div class="wallet-left">
+
+                <span>
+
+                    Current Wallet Balance
+
+                </span>
+
+                <h2>
+
+                    MMK
+
+                    <strong>
+
+                        {{ wallet.balance }}
+
+                    </strong>
+
+                </h2>
+
+                <p>
+
+                    Your deposit will be reviewed by an administrator
+                    before it is added to your wallet.
+
+                </p>
+
+            </div>
+
+            <div class="wallet-right">
+
+                <div class="wallet-icon">
+
+                    <i class="fa-solid fa-wallet"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- =========================
+            CONTENT
+        ========================== -->
+
+        <div class="row mt-5 g-4">
+
+            <!-- LEFT COLUMN -->
+
+            <div class="col-lg-8">
+
+                <div class="glass-card">
+
+                    <div class="section-title">
+
+                        <h3>
+
+                            <i class="fa-solid fa-money-bill-wave"></i>
+
+                            Deposit Request
+
+                        </h3>
+
+                    </div>
+
+                    <form
+                        method="POST"
+                        enctype="multipart/form-data"
+                        id="depositForm">
+
+                        {% csrf_token %}
+                                                <div class="row g-4">
+
+                            <!-- Payment Method -->
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+
+                                    Payment Method
+
+                                </label>
+
+                                {{ form.payment_method }}
+
+                                {% if form.payment_method.errors %}
+
+                                    <div class="text-danger mt-2">
+
+                                        {{ form.payment_method.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                            <!-- Sender Name -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                     Sender Name
+                                </label>
+
+                                {{ form.sender_name }}
+
+                                {% if form.sender_name.errors %}
+                                <div class="text-danger">
+                                     {{ form.sender_name.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Sender Phone -->
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+
+                                    Sender Phone
+
+                                </label>
+
+                                {{ form.sender_phone }}
+
+                                {% if form.sender_phone.errors %}
+
+                                    <div class="text-danger mt-2">
+
+                                        {{ form.sender_phone.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                            <!-- Amount -->
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+
+                                    Deposit Amount
+
+                                </label>
+
+                                {{ form.amount }}
+
+                                {% if form.amount.errors %}
+
+                                    <div class="text-danger mt-2">
+
+                                        {{ form.amount.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                            <!-- Transaction ID -->
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+
+                                    Transaction ID
+
+                                </label>
+
+                                {{ form.transaction_id }}
+
+                                {% if form.transaction_id.errors %}
+
+                                    <div class="text-danger mt-2">
+
+                                        {{ form.transaction_id.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                            <!-- Screenshot -->
+
+                            <div class="col-12">
+
+                                <label class="form-label">
+
+                                    Payment Screenshot
+
+                                </label>
+
+                                <div class="upload-box">
+
+                                    {{ form.screenshot }}
+
+                                    <div class="upload-text">
+
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                                        <h5>
+
+                                            Upload Payment Screenshot
+
+                                        </h5>
+
+                                        <p>
+
+                                            JPG, PNG or WEBP (Maximum 5 MB)
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                                {% if form.screenshot.errors %}
+
+                                    <div class="text-danger mt-2">
+
+                                        {{ form.screenshot.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                            <!-- Image Preview -->
+
+                            <div class="col-12">
+
+                                <img
+                                    id="previewImage"
+                                    class="preview-image d-none">
+
+                            </div>
+
+                            <!-- Note -->
+
+                            <div class="col-12">
+
+                                <label class="form-label">
+
+                                    Note (Optional)
+
+                                </label>
+
+                                {{ form.note }}
+
+                            </div>
+
+                            <!-- Submit -->
+
+                            <div class="col-12">
+
+                                <button
+                                    type="submit"
+                                    class="deposit-btn"
+                                    id="submitBtn">
+
+                                    <i class="fa-solid fa-paper-plane"></i>
+
+                                    Submit Deposit Request
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+                        <!-- RIGHT COLUMN -->
+
+            <div class="col-lg-4">
+
+                <!-- PAYMENT INFO -->
+
+                <div class="glass-card info-card mb-4">
+
+                    <h4>
+
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+
+                        Payment Numbers
+
+                    </h4>
+
+                    <ul class="payment-list">
+
+                        <li>
+
+                            <strong>KBZ Pay</strong>
+
+                            <span>09-123-456-789</span>
+
+                        </li>
+
+                        <li>
+
+                            <strong>Wave Pay</strong>
+
+                            <span>09-987-654-321</span>
+
+                        </li>
+
+                        <li>
+
+                            <strong>AYA Pay</strong>
+
+                            <span>09-111-222-333</span>
+
+                        </li>
+
+                        <li>
+
+                            <strong>CB Pay</strong>
+
+                            <span>09-444-555-666</span>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <!-- DEPOSIT RULES -->
+
+                <div class="glass-card info-card mb-4">
+
+                    <h4>
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        Deposit Rules
+
+                    </h4>
+
+                    <ul class="rule-list">
+
+                        <li>
+
+                            Minimum deposit is
+                            <strong>MMK 1,000</strong>
+
+                        </li>
+
+                        <li>
+
+                            Transaction ID must be unique.
+
+                        </li>
+
+                        <li>
+
+                            Upload a clear payment screenshot.
+
+                        </li>
+
+                        <li>
+
+                            Requests are reviewed by admin.
+
+                        </li>
+
+                        <li>
+
+                            Fake transactions will be rejected.
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <!-- PROCESS -->
+
+                <div class="glass-card info-card mb-4">
+
+                    <h4>
+
+                        <i class="fa-solid fa-clock"></i>
+
+                        Processing Time
+
+                    </h4>
+
+                    <div class="process-item">
+
+                        <i class="fa-solid fa-hourglass-start"></i>
+
+                        Pending Review
+
+                    </div>
+
+                    <div class="process-item">
+
+                        <i class="fa-solid fa-user-check"></i>
+
+                        Admin Verification
+
+                    </div>
+
+                    <div class="process-item">
+
+                        <i class="fa-solid fa-wallet"></i>
+
+                        Wallet Balance Updated
+
+                    </div>
+
+                </div>
+
+                <!-- SECURITY -->
+
+                <div class="glass-card security-card">
+
+                    <h4>
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        Security Tips
+
+                    </h4>
+
+                    <p>
+
+                        ✔ Always transfer to the official Trusty Shop payment account.
+
+                    </p>
+
+                    <p>
+
+                        ✔ Never edit or crop your payment screenshot.
+
+                    </p>
+
+                    <p>
+
+                        ✔ Keep your transaction ID for future reference.
+
+                    </p>
+
+                    <p>
+
+                        ✔ Deposits are manually verified for your protection.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+                <!-- ==========================================
+            RECENT DEPOSIT REQUESTS
+        =========================================== -->
+
+        <div class="glass-card mt-5">
+
+            <div class="section-title">
+
+                <h3>
+
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    Recent Deposit Requests
+
+                </h3>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table deposit-table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Date</th>
+
+                            <th>Transaction ID</th>
+
+                            <th>Method</th>
+
+                            <th>Amount</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for deposit in deposits %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ deposit.created_at|date:"d M Y H:i" }}
+
+                            </td>
+
+                            <td>
+
+                                {{ deposit.transaction_id }}
+
+                            </td>
+
+                            <td>
+
+                                {{ deposit.payment_method }}
+
+                            </td>
+
+                            <td>
+
+                                MMK {{ deposit.amount }}
+
+                            </td>
+
+                            <td>
+
+                                {% if deposit.status == "Pending" %}
+
+                                    <span class="badge bg-warning">
+
+                                        Pending
+
+                                    </span>
+
+                                {% elif deposit.status == "Approved" %}
+
+                                    <span class="badge bg-success">
+
+                                        Approved
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+
+                                        Rejected
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="5" class="text-center py-5">
+
+                                <i class="fa-solid fa-wallet fa-3x mb-3 text-secondary"></i>
+
+                                <h5>
+
+                                    No Deposit Requests Yet
+
+                                </h5>
+
+                                <p>
+
+                                    Your submitted deposits will appear here.
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'js/deposit.js' %}"></script>
+
+{% endblock %}

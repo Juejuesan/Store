@@ -28,6 +28,7 @@ urlpatterns = [
     path('posts/', include('posts.urls')),
     path('adminpanel/', include('adminpanel.urls')),
     path("notifications/",include("notifications.urls")),
+    path("wallet/", include("wallet.urls")),
 ]
 
 if settings.DEBUG:
