@@ -32,163 +32,155 @@
     <table>
 
         <thead>
-
-            <tr>
-
-                <th>ID</th>
-                <th>Photo</th>
-                <th>Product</th>
-                <th>Seller</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Submitted At</th>
-                <th>Status</th>
-                <th>Action</th>
-
-            </tr>
-
-        </thead>
+    <tr>
+        <th style="width:90px;">Photo</th>
+        <th style="width:90px;">Seller</th>
+        <th>Product Details</th>
+        <th style="width:150px;">Category</th>
+        <th style="width:150px;">Quantity</th>
+        <th style="width:120px;">Price</th>
+        <th style="width:120px;">Status</th>
+        <th style="width:150px;">Action</th>
+    </tr>
+</thead>
 
 
         <tbody>
 
+{% for post in pending_posts %}
 
-        {% for post in pending_posts %}
+<tr>
 
-            <tr>
+    <!-- Product Image -->
+    <td>
 
-                <td>
-                    {{ post.id }}
-                </td>
+        {% for image in post.images.all|slice:":1" %}
 
-
-                <td>
-
-                    {% for image in post.images.all|slice:":1" %}
-
-                        <img src="{{ image.image.url }}"
-                             alt="Product Image"
-                             class="table-product-image">
-
-                    {% empty %}
-
-                        <span>
-                            No Image
-                        </span>
-
-                    {% endfor %}
-
-                </td>
-
-
-                <td>
-                    {{ post.description|truncatewords:5 }}
-                </td>
-
-
-                <td>
-                    {{ post.user.username }}
-                </td>
-
-
-                <td>
-                    {{ post.category.name }}
-                </td>
-
-
-                <td>
-                    {{ post.price }} MMK
-                </td>
-
-
-                <td>
-                    {{ post.quantity }}
-                </td>
-
-
-                <td>
-                    {{ post.created_at|date:"d M Y H:i" }}
-                </td>
-
-
-                <td>
-
-                    <span class="status pending">
-                        {{ post.status|title }}
-                    </span>
-
-                </td>
-
-
-                <td class="action-cell">
-
-                    <div class="action-buttons">
-
-                        <a href="{% url 'post_detail' post.id %}"
-                           class="btn btn-view"
-                           title="View">
-
-                            <i class="fa-solid fa-eye"></i>
-
-                        </a>
-
-
-                        <a href="{% url 'approve_post' post.id %}"
-                           class="btn btn-approve"
-                           title="Approve">
-
-                            <i class="fa-solid fa-check"></i>
-
-                        </a>
-
-
-                        <a href="{% url 'reject_post' post.id %}"
-                           class="btn btn-reject"
-                           title="Reject">
-
-                            <i class="fa-solid fa-xmark"></i>
-
-                        </a>
-
-                    </div>
-
-                </td>
-
-            </tr>
-
+            <img src="{{ image.image.url }}"
+                 class="table-product-image">
 
         {% empty %}
 
-
-            <tr>
-
-                <td colspan="10"
-                    class="empty-state">
-
-                    <img src="{% static 'images/empty.png' %}"
-                         width="120"
-                         alt="Empty">
-
-
-                    <h2>
-                        No Pending Posts
-                    </h2>
-
-
-                    <p>
-                        Every submitted product already been reviewed.
-                    </p>
-
-                </td>
-
-            </tr>
-
+            No Image
 
         {% endfor %}
 
+    </td>
 
-        </tbody>
+
+    <td>
+        {{ post.user.user.username }}
+    </td>
+
+
+    <!-- Product Details -->
+    <td>
+
+        <div class="product-info">
+
+            <h4>
+
+                {{ post.description|truncatechars:35 }}
+
+            </h4>
+        </div>
+
+    </td>
+
+
+    <!-- Category -->
+
+    <td>
+
+       {{ post.category.name }}
+
+    </td>
+
+
+
+    <td>
+        {{ post.quantity }}
+    </td>
+
+
+    <!-- Price -->
+
+    <td>
+
+        <strong>
+
+            {{ post.price }} MMK
+
+        </strong>
+
+    </td>
+
+
+    <!-- Status -->
+
+    <td>
+
+        <span class="status pending">
+
+            {{ post.status|title }}
+
+        </span>
+
+    </td>
+
+
+    <!-- Action -->
+
+    <td>
+
+        <div class="action-buttons">
+
+            <a href="{% url 'post_detail' post.id %}"
+               class="btn btn-view">
+
+                <i class="fa-solid fa-eye"></i>
+
+            </a>
+
+            <a href="{% url 'approve_post' post.id %}"
+               class="btn btn-approve">
+
+                <i class="fa-solid fa-check"></i>
+
+            </a>
+
+            <a href="{% url 'reject_post' post.id %}"
+               class="btn btn-reject">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </a>
+
+        </div>
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+    <td colspan="6" class="empty-state">
+
+        <img src="{% static 'images/empty.png' %}" width="120">
+
+        <h2>No Pending Posts</h2>
+
+        <p>Every submitted product has already been reviewed.</p>
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
 
     </table>
 

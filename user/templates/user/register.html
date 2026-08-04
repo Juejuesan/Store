@@ -107,7 +107,7 @@
             <label class="block text-sm font-medium text-slate-300 mb-1">Phone Number</label>
             <div class="input-container">
                 <!-- FIXED: Added value attribute -->
-                <input type="text" name="phone_number" required class="auth-input" placeholder="09xxxxxxxxx"
+                <input type="text" name="phone_number" required class="auth-input" placeholder="09xxxxxxxxx" maxlength="11"  inputmode="numeric"
                        value="{{ request.POST.phone_number|default:'' }}">
                 <i class="fa-solid fa-phone input-icon"></i>
             </div>

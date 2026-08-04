@@ -6,46 +6,44 @@ from posts.models import Post
 class Notification(models.Model):
 
     NOTIFICATION_TYPES = [
-        ('approved','Approved'),
-        ('rejected','Rejected'),
-        ('pending','Pending'),
+        ("new_post", "New Post"),
+        ("approved", "Approved"),
+        ("rejected", "Rejected"),
     ]
-
 
     user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="notifications"
     )
-
 
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
         null=True,
-        blank=True
+        blank=True,
+        related_name="notifications"
     )
-
 
     message = models.CharField(
         max_length=255
     )
-
 
     notification_type = models.CharField(
         max_length=20,
         choices=NOTIFICATION_TYPES
     )
 
-
     is_read = models.BooleanField(
         default=False
     )
-
 
     created_at = models.DateTimeField(
         auto_now_add=True
     )
 
+    class Meta:
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.message

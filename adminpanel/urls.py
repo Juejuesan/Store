@@ -25,4 +25,10 @@ urlpatterns = [
         name="reject_post"
     ),
 
+path(
+    "notifications/read/<int:noti_id>/",
+    views.read_notification,
+    name="read_notification",
+),
+
 ]

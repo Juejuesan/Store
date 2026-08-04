@@ -10,6 +10,7 @@ Review Post
 <link rel="stylesheet"
 href="{% static 'css/post_detail.css' %}">
 
+
 <div class="review-page">
 
     <div class="review-header">
@@ -74,7 +75,7 @@ href="{% static 'css/post_detail.css' %}">
 
                 <span>Seller</span>
 
-                <strong>{{ post.user.username }}</strong>
+                <strong>{{ post.user.user.username }}</strong>
 
             </div>
 

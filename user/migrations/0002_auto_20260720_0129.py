@@ -1,6 +1,5 @@
 from django.contrib.auth.hashers import make_password
 from django.db import migrations
-from django.db.models import Model
 
 
 def create_test_users(apps, schema_editor):

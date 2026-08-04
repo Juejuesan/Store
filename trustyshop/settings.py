@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'posts',
     'adminpanel',
     'notifications',
+    "wallet.apps.WalletConfig",
 ]
 
 MIDDLEWARE = [
@@ -128,6 +129,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
+LOGIN_URL = 'user:login'
 
 
 LOGIN_REDIRECT_URL = 'home'
@@ -135,6 +137,8 @@ LOGOUT_REDIRECT_URL = 'login'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = "/user/login/"
+
+ABSTRACT_API_KEY ='867d312f8b184d068fd974717522cd61'
 
 
 

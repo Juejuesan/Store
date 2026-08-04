@@ -11,9 +11,17 @@ from .forms import RegisterForm, LoginForm, ProfilePicForm
 
 
 # REGISTER VIEW
+import re
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import login
+from .forms import RegisterForm
+from .models import Profile
+
+
 def register_view(request):
     if request.user.is_authenticated:
-        return redirect('user:dashboard')
+        return redirect('home')
 
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
@@ -21,9 +29,10 @@ def register_view(request):
 
             password = form.cleaned_data.get('password')
             address = form.cleaned_data.get('address', '')
+            phone_number = form.cleaned_data.get('phone_number')
 
             if len(password) < 8 or len(password) > 20:
-                messages.error(request, "Password must be long more than 8 characters long!")
+                messages.error(request, "Password must be at least 8 characters long!")
                 return render(request, 'user/register.html', {'form': form})
 
 
@@ -37,77 +46,40 @@ def register_view(request):
                 messages.error(request, "Address is too long! (Maximum 200 characters allowed)")
                 return render(request, 'user/register.html', {'form': form})
 
-            phone_number = form.cleaned_data['phone_number']
 
             if Profile.objects.filter(phone_number=phone_number).exists():
-                messages.error(
-                    request,
-                    "This phone number is already registered!"
-                )
-
-                return render(
-                    request,
-                    'user/register.html',
-                    {
-                        'form': form
-                    }
-                )
+                messages.error(request, "This phone number is already registered!")
+                return render(request, 'user/register.html', {'form': form})
 
             user = form.save(commit=False)
             user.set_password(password)
             user.save()
 
-            profile, created = Profile.objects.get_or_create(
-                user=user
-            )
-
-            profile.fullName = form.cleaned_data['fullName']
-            profile.phone_number = form.cleaned_data['phone_number']
-            profile.address = address
-            profile.gender = form.cleaned_data['gender']
-            # Get uploaded image
-            profile_pic = request.FILES.get("profile_pic")
-
-            # Update profile created by signal
+            # Save profile
             profile = user.profile
-            profile.phone_number = form.cleaned_data['phone_number']
+            profile.fullName = form.cleaned_data['fullName']
+            profile.phone_number = phone_number
             profile.address = address
             profile.gender = form.cleaned_data['gender']
-
             if form.cleaned_data.get('profile_pic'):
                 profile.profile_pic = form.cleaned_data['profile_pic']
-
             profile.save()
 
-            user.profile.address = address
-            user.profile.gender = form.cleaned_data['gender']
-            if form.cleaned_data.get('profile_pic'):
-                user.profile.profile_pic = form.cleaned_data['profile_pic']
-            user.profile.save()
-            if profile_pic:
-                profile.profile_pic = profile_pic
-
-            profile.save()
-
+            # Auto login after registration
+            user.backend = 'user.backends.EmailOrUsernameModelBackend'
             login(request, user)
-            messages.success(request, f'Welcome, {user.first_name or user.username}!')
-            return redirect('user:login')
+
+            messages.success(request, f'Welcome, {profile.fullName or user.username}! Your account has been created.')
+            return redirect('home')  # or 'user:login' if you want them to login manually
+
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
+                    messages.error(request, f"{error}")
     else:
         form = RegisterForm()
 
     return render(request, 'user/register.html', {'form': form})
-
-
-# LOGIN VIEW
-# user/views.py
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
-from django.contrib import messages
 
 
 def login_view(request):
@@ -140,7 +112,6 @@ def login_view(request):
     return render(request, 'user/login.html')
 
 
-# LOGOUT VIEW
 def logout_view(request):
     logout(request)
     messages.info(request, 'You have been logged out.')
