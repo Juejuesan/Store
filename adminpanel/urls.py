@@ -25,11 +25,45 @@ urlpatterns = [
         name="reject_post"
     ),
 
-path(
-    "notifications/read/<int:noti_id>/",
-    views.read_notification,
-    name="read_notification",
-),
+
+
+
+    # ==========================
+    # Wallet Requests
+    # ==========================
+
+    path(
+        'wallet/',
+        views.wallet_requests,
+        name="wallet_requests"
+    ),
+
+
+    path(
+        'wallet/approve/<int:deposit_id>/',
+        views.approve_deposit,
+        name="approve_deposit"
+    ),
+
+
+    path(
+        'wallet/reject/<int:deposit_id>/',
+        views.reject_deposit,
+        name="reject_deposit"
+    ),
+
+
+
+
+    # ==========================
+    # Notifications
+    # ==========================
+
+    path(
+        "notifications/read/<int:noti_id>/",
+        views.read_notification,
+        name="read_notification"
+    ),
 
 
 

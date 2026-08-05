@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth.models import User
+from notifications.models import Notification
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -71,6 +73,27 @@ def deposit_request(request):
             deposit = form.save(commit=False)
             deposit.user = request.user
             deposit.save()
+
+            # ==========================
+            # Send Notification To Admin
+            # ==========================
+
+            admins = User.objects.filter(
+                is_staff=True
+            )
+
+            for admin in admins:
+                Notification.objects.create(
+                    user=admin,
+                    message=(
+                        f"{request.user.username} "
+                        f"requested wallet top up "
+                        f"of {deposit.amount} MMK "
+                        f"waiting for approval."
+                    ),
+                    notification_type="deposit_request"
+                )
+
 
             messages.success(
                 request,

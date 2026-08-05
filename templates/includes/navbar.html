@@ -1,0 +1,155 @@
+    <nav class="navbar navbar-expand-md cute-navbar fixed-top">
+        <div class="container">
+            <!-- SHOP LOGO -->
+            <a class="navbar-brand" href="#">
+                <span class="logo-circle">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </span>
+                Trusty Shop
+            </a>
+
+            <!-- MOBILE NAVBAR BUTTON -->
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <!-- NAVBAR MENU -->
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav ms-auto">
+
+                    <!-- HOME -->
+                    <li class="nav-item">
+                        {% if request.user.is_authenticated %}
+                            <a class="nav-link {% if request.path == '/home/' %}active{% endif %}" href="{% url 'home' %}">
+                                <i class="fa-solid fa-house"></i>
+                                Home
+                            </a>
+                        {% else %}
+                            <a class="nav-link {% if request.resolver_match.url_name == 'welcome' %}active{% endif %}" href="{% url 'welcome' %}">
+                                <i class="fa-solid fa-house"></i>
+                                Home
+                            </a>
+                        {% endif %}
+                    </li>
+
+<!-- NOTIFICATION -->
+
+<li class="nav-item">
+
+    {% if request.user.is_authenticated %}
+
+    <a class="nav-link position-relative"
+       href="{% url 'notifications' %}">
+
+        <i class="fa-solid fa-bell"></i>
+
+        Noti
+
+        {% if user_notification_count > 0 %}
+
+        <span
+            id="notificationBadge"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+            {{ user_notification_count }}
+
+        </span>
+
+        {% endif %}
+
+    </a>
+
+    {% else %}
+
+    <a class="nav-link"
+       href="{% url 'user:register' %}">
+
+        <i class="fa-solid fa-bell"></i>
+
+        Noti
+
+    </a>
+
+    {% endif %}
+
+</li>
+                    <!-- CART -->
+                    <li class="nav-item">
+                        {% if request.user.is_authenticated %}
+                            <a class="nav-link cart-link {% if request.path == '#' %}active{% endif %}" href="#">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Cart
+                                <span class="cart-count">3</span>
+                            </a>
+                        {% else %}
+                            <a class="nav-link cart-link" href="{% url 'user:register' %}">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Cart
+                                <span class="cart-count">3</span>
+                            </a>
+                        {% endif %}
+                    </li>
+
+                    <!-- PROFILE -->
+                    <li class="nav-item">
+                        {% if request.user.is_authenticated %}
+                            <a class="nav-link profile-link {% if request.path == '/user/dashboard/' %}active{% endif %}" href="{% url 'user:dashboard' %}">
+                                {% if request.user.profile.profile_pic %}
+                                    <img src="{{ request.user.profile.profile_pic.url }}"
+                                         style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #1565C0;">
+                                {% else %}
+                                    <i class="fa-solid fa-circle-user nav-profile-icon"></i>
+                                {% endif %}
+                                <span class="profile-name">
+                                    {{ request.user.username }}
+                                </span>
+                            </a>
+                        {% else %}
+                            <a class="nav-link" href="{% url 'user:register' %}">
+                                <i class="fa-solid fa-user"></i>
+                                Profile
+                            </a>
+                        {% endif %}
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+<script>
+
+function loadNotificationCount(){
+
+    fetch("/notifications/count/")
+
+    .then(response=>response.json())
+
+    .then(data=>{
+
+        const badge=document.getElementById("notificationBadge");
+
+        if(data.count>0){
+
+            if(badge){
+
+                badge.innerHTML=data.count;
+
+            }
+
+        }else{
+
+            if(badge){
+
+                badge.style.display="none";
+
+            }
+
+        }
+
+    });
+
+}
+
+setInterval(loadNotificationCount,5000);
+
+</script>
