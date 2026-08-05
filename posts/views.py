@@ -1,75 +1,78 @@
-import profile
-
-from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.shortcuts import redirect, render
-
-from notifications.models import Notification
-from posts.form import PostForm
-from posts.models import PostImage, Post
-from user.models import Profile
+from django.contrib import messages
+from django.http import JsonResponse
+from .form import PostForm
+from .models import Category, Post, Item, SizeVariant, ItemImage
 
 
 @login_required
-def createPost(request):
-    user = Profile.objects.get(user=request.user)
+def create_post(request):
+    categories = Category.objects.all()
+    print(f"=== CREATE POST VIEW CALLED ===")
+    print(f"Categories count: {categories.count()}")
+    print(f"User: {request.user}")
 
-    if user.status == "Banned":
-        messages.error(request, "Your account has been banned.")
-        return render(request, "home/home.html", {
-        "profile": profile,
+    if request.method == 'POST':
+        post_form = PostForm(request.POST)
 
-    })
-
-    else:
-        request.method == "POST"
-        form = PostForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.user = user
+        if post_form.is_valid():
+            post = post_form.save(commit=False)
+            post.user = request.user.profile
             post.save()
 
-            # Notifications
+            # Process items
+            item_count = int(request.POST.get('item_count', 0))
 
-            # Create notification for every admin
+            for i in range(item_count):
+                item_name = request.POST.get(f'item_name_{i}')
+                item_description = request.POST.get(f'item_description_{i}')
+                item_price = request.POST.get(f'item_price_{i}')
 
-            admins = User.objects.filter(is_staff=True)
+                if item_name and item_price:
+                    item = Item.objects.create(
+                        post=post,
+                        name=item_name,
+                        description=item_description,
+                        price=item_price,
+                    )
 
-            for admin in admins:
-                Notification.objects.create(
-                    user=admin,
-                    post=post,
-                    message=f"{request.user.username} created a new {post.category.name} post waiting for approval.",
-                    notification_type="new_post"
-                )
-            images = request.FILES.getlist("images")
+                    # Process sizes for this item
+                    size_count = int(request.POST.get(f'size_count_{i}', 0))
 
-            if len(images) == 0:
-                post.delete()
-                messages.error(request, "Please upload at least one photo.")
-                return render(request, "posts/createPost.html", {"form": form})
+                    for j in range(size_count):
+                        size = request.POST.get(f'size_{i}_{j}')
+                        quantity = request.POST.get(f'quantity_{i}_{j}')
 
-            if len(images) > 5:
-                post.delete()
-                messages.error(request, "You can upload a maximum of 5 photos.")
-                return render(request, "posts/createPost.html", {"form": form})
+                        if size and quantity:
+                            SizeVariant.objects.create(
+                                item=item,
+                                size=size,
+                                quantity=quantity
+                            )
 
-            for img in images:
-                PostImage.objects.create(
-                    post=post,
-                    image=img
-                )
+                    # Process images
+                    images = request.FILES.getlist(f'images_{i}')
+                    for image in images:
+                        ItemImage.objects.create(item=item, image=image)
 
-            messages.success(request, "Your Post is pending to approve by admin.")
-            return redirect("home")
+            messages.success(request, 'Post created successfully!')
+            return redirect('home')
+    else:
+        post_form = PostForm()
 
-        else:
-         form = PostForm()
 
-    return render(request, "posts/createPost.html", {"form": form})
+    return render(request, 'createPost.html', {
+        'post_form': post_form,
+        'categories': categories,
+    })
 
-def showPost(request):
-    posts = Post.objects.filter(status="approved")
-    return render(request, "home/home.html", {"posts": posts})
+
+@login_required
+def get_category_sizes(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    return JsonResponse({
+        'sizes': category.get_sizes(),
+        'size_label': category.size_label or 'Size',
+        'size_type': category.size_type,
+    })

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Product | Trusty Shop</title>
+    <link rel="stylesheet" href="{% static 'css/createPost.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<div id="mouseGlow"></div>
+<div class="bg-circle bg1"></div>
+<div class="bg-circle bg2"></div>
+<div class="bg-circle bg3"></div>
+
+<section class="create-page">
+<div class="container">
+
+<div class="create-header">
+    <div class="header-left">
+        <span class="small-title">Trusty Shop Marketplace</span>
+        <h1>Create Your Product Listing</h1>
+        <p>Publish beautiful products with stunning photos, detailed descriptions and competitive prices.</p>
+        <div class="feature-list">
+            <div class="feature"><i class="fa-solid fa-shield-halved"></i> Secure Selling</div>
+            <div class="feature"><i class="fa-solid fa-bolt"></i> Instant Publish</div>
+            <div class="feature"><i class="fa-solid fa-eye"></i> More Buyers</div>
+        </div>
+    </div>
+    <div class="header-right">
+        <div class="hero-card"><i class="fa-solid fa-store"></i></div>
+    </div>
+</div>
+
+<div class="glass-card">
+{% if messages %}
+    {% for message in messages %}
+        <div class="custom-alert"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<form method="POST" enctype="multipart/form-data" id="createPostForm">
+{% csrf_token %}
+
+<div class="section-title">
+    <i class="fa-solid fa-layer-group"></i>
+    <div><h2>Category & Condition</h2><p>Select the right category for your items</p></div>
+</div>
+
+<div class="product-grid">
+    <div class="input-card">
+        <label><i class="fa-solid fa-layer-group"></i> Category</label>
+        <select name="category" id="categorySelect" required onchange="loadSizes()">
+            <option value="">Choose category...</option>
+            {% for category in categories %}
+            <option value="{{ category.id }}" data-size-type="{{ category.size_type }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="input-card">
+        <label><i class="fa-solid fa-tag"></i> Product Condition</label>
+        <select name="condition" id="conditionSelect" required onchange="checkSizeVisibility()">
+            <option value="new">Brand New</option>
+            <option value="used">Second Hand</option>
+        </select>
+    </div>
+</div>
+
+<div class="description-card">
+    <label><i class="fa-solid fa-align-left"></i> Post Description</label>
+    <textarea name="description" placeholder="Describe your post..."></textarea>
+    <small>Provide a general description for all items in this post</small>
+</div>
+
+<div class="section-title">
+    <i class="fa-solid fa-boxes-stacked"></i>
+    <div><h2>Items</h2><p>Add all items you want to include in this post</p></div>
+</div>
+
+<div id="itemsContainer"></div>
+
+<button type="button" class="add-item-btn" onclick="addItem()">
+    <i class="fa-solid fa-plus"></i> Add Another Item
+</button>
+
+<div class="seller-card">
+    <div class="seller-title"><i class="fa-solid fa-lightbulb"></i> Selling Tips</div>
+    <ul>
+        <li>Use original product photos.</li>
+        <li>Write an honest description.</li>
+        <li>Choose the correct category.</li>
+        <li>Set a reasonable price.</li>
+        <li>Reply to buyers quickly.</li>
+    </ul>
+</div>
+
+<div class="preview-section">
+    <div class="preview-title"><i class="fa-solid fa-eye"></i> Before You Publish</div>
+    <div class="preview-content">
+        <div class="preview-item"><i class="fa-solid fa-camera"></i><span>Make sure your photos are clear.</span></div>
+        <div class="preview-item"><i class="fa-solid fa-file-lines"></i><span>Double-check your product description.</span></div>
+        <div class="preview-item"><i class="fa-solid fa-money-bill-wave"></i><span>Verify the selling price.</span></div>
+        <div class="preview-item"><i class="fa-solid fa-box"></i><span>Ensure quantity is correct.</span></div>
+    </div>
+</div>
+
+<div class="notice-card">
+    <div class="notice-icon"><i class="fa-solid fa-shield-halved"></i></div>
+    <div><h4>Safe Selling Reminder</h4><p>Trusty Shop does not allow prohibited, counterfeit or illegal products.</p></div>
+</div>
+
+<div class="submit-area">
+    <button type="submit" id="publishBtn" class="publish-btn">
+        <i class="fa-solid fa-paper-plane"></i> Publish Product
+    </button>
+</div>
+
+</form>
+</div>
+</div>
+</section>
+
+<script>
+// ============================================
+// ITEMS & SIZES SYSTEM
+// ============================================
+let itemIndex = 0;
+let sizeOptions = [];
+
+function loadSizes() {
+    const categorySelect = document.getElementById('categorySelect');
+    const categoryId = categorySelect.value;
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    const sizeType = selectedOption.getAttribute('data-size-type');
+
+    if (categoryId && sizeType !== 'none') {
+        fetch('/posts/get-category-sizes/' + categoryId + '/')
+            .then(response => response.json())
+            .then(data => {
+                sizeOptions = data.sizes;
+                updateAllSizeCharts();
+            })
+            .catch(error => console.error('Error:', error));
+    } else {
+        sizeOptions = [];
+        updateAllSizeCharts();
+    }
+}
+
+function checkSizeVisibility() {
+    const condition = document.getElementById('conditionSelect').value;
+    const categorySelect = document.getElementById('categorySelect');
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    const sizeType = selectedOption.getAttribute('data-size-type');
+
+    if (condition === 'new' && sizeType && sizeType !== 'none') {
+        loadSizes();
+    } else {
+        sizeOptions = [];
+        updateAllSizeCharts();
+    }
+}
+
+function addItem() {
+    const container = document.getElementById('itemsContainer');
+    const currentIndex = itemIndex;
+
+    const itemHTML =
+        '<div class="glass-card item-section" id="item' + currentIndex + '">' +
+            '<div class="item-header">' +
+                '<h3><i class="fa-solid fa-box"></i> Item ' + (currentIndex + 1) + '</h3>' +
+                '<button type="button" class="remove-item-btn" onclick="removeItem(' + currentIndex + ')">' +
+                    '<i class="fa-solid fa-trash"></i> Remove Item' +
+                '</button>' +
+            '</div>' +
+            '<div class="product-grid">' +
+                '<div class="input-card">' +
+                    '<label><i class="fa-solid fa-tag"></i> Item Name *</label>' +
+                    '<input type="text" name="item_name_' + currentIndex + '" placeholder="e.g., Blue Cotton T-Shirt" required>' +
+                '</div>' +
+                '<div class="input-card">' +
+                    '<label><i class="fa-solid fa-money-bill-wave"></i> Price (MMK) *</label>' +
+                    '<input type="number" name="item_price_' + currentIndex + '" placeholder="Enter price" required min="1">' +
+                '</div>' +
+            '</div>' +
+            '<div class="description-card">' +
+                '<label><i class="fa-solid fa-align-left"></i> Item Description</label>' +
+                '<textarea name="item_description_' + currentIndex + '" placeholder="Describe this item..."></textarea>' +
+            '</div>' +
+            '<label class="item-upload-area" for="fileInput' + currentIndex + '">' +
+                '<div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>' +
+                '<h3>Upload Photos</h3>' +
+                '<p>Click to browse</p>' +
+                '<span>Choose Files</span>' +
+                '<input type="file" id="fileInput' + currentIndex + '" name="images_' + currentIndex + '" multiple accept="image/*" style="display:none" onchange="handleFileSelect(this, ' + currentIndex + ')">' +
+            '</label>' +
+            '<div class="preview-grid" id="previewGrid' + currentIndex + '"></div>' +
+            '<div id="sizeChart' + currentIndex + '" class="size-chart" style="display:none">' +
+                '<label><i class="fa-solid fa-ruler"></i> Select Sizes</label>' +
+                '<div class="size-buttons" id="sizeButtons' + currentIndex + '"></div>' +
+            '</div>' +
+            '<div id="selectedSizes' + currentIndex + '" class="selected-sizes" style="display:none">' +
+                '<input type="hidden" name="size_count_' + currentIndex + '" id="sizeCount' + currentIndex + '" value="0">' +
+            '</div>' +
+            '<button type="button" class="add-sizes-btn" id="addMoreSizes' + currentIndex + '" style="display:none" onclick="toggleSizeChart(' + currentIndex + ')">' +
+                '<i class="fa-solid fa-plus"></i> Add Sizes' +
+            '</button>' +
+        '</div>';
+
+    container.insertAdjacentHTML('beforeend', itemHTML);
+    itemIndex++;
+    updateAllSizeCharts();
+}
+
+function removeItem(index) {
+    const item = document.getElementById('item' + index);
+    if (item) item.remove();
+}
+
+function handleFileSelect(input, itemIdx) {
+    const files = input.files;
+    const previewGrid = document.getElementById('previewGrid' + itemIdx);
+    previewGrid.innerHTML = '';
+
+    for (let i = 0; i < files.length; i++) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const html = '<div class="preview-card"><div class="image-frame">' +
+                '<img src="' + e.target.result + '" alt="Preview">' +
+                (i === 0 ? '<div class="cover-tag"><i class="fa-solid fa-star"></i> Cover</div>' : '') +
+                '</div></div>';
+            previewGrid.insertAdjacentHTML('beforeend', html);
+        };
+        reader.readAsDataURL(files[i]);
+    }
+}
+
+function updateAllSizeCharts() {
+    for (let i = 0; i < itemIndex; i++) {
+        const sizeChart = document.getElementById('sizeChart' + i);
+        const addMoreBtn = document.getElementById('addMoreSizes' + i);
+        if (sizeChart && addMoreBtn) {
+            if (sizeOptions.length > 0) {
+                sizeChart.style.display = 'block';
+                addMoreBtn.style.display = 'inline-flex';
+                populateSizeButtons(i);
+            } else {
+                sizeChart.style.display = 'none';
+                addMoreBtn.style.display = 'none';
+                document.getElementById('selectedSizes' + i).style.display = 'none';
+            }
+        }
+    }
+}
+
+function populateSizeButtons(itemIdx) {
+    const sizeButtons = document.getElementById('sizeButtons' + itemIdx);
+    if (!sizeButtons) return;
+    sizeButtons.innerHTML = '';
+
+    sizeOptions.forEach(function(size) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'size-btn';
+        button.textContent = size;
+        button.onclick = function() { toggleSize(itemIdx, size, button); };
+        sizeButtons.appendChild(button);
+    });
+}
+
+let selectedSizes = {};
+
+function toggleSize(itemIdx, size, button) {
+    if (!selectedSizes[itemIdx]) selectedSizes[itemIdx] = [];
+    const index = selectedSizes[itemIdx].findIndex(function(s) { return s.size === size; });
+
+    if (index === -1) {
+        selectedSizes[itemIdx].push({size: size, quantity: 0});
+        button.classList.add('active');
+    } else {
+        selectedSizes[itemIdx].splice(index, 1);
+        button.classList.remove('active');
+    }
+    updateSelectedSizesDisplay(itemIdx);
+}
+
+function updateSelectedSizesDisplay(itemIdx) {
+    const div = document.getElementById('selectedSizes' + itemIdx);
+    if (!div) return;
+
+    if (!selectedSizes[itemIdx] || selectedSizes[itemIdx].length === 0) {
+        div.innerHTML = '<input type="hidden" name="size_count_' + itemIdx + '" value="0">';
+        div.style.display = 'none';
+        return;
+    }
+
+    div.style.display = 'block';
+    let html = '<h4><i class="fa-solid fa-circle-check"></i> Selected Sizes</h4>';
+    html += '<input type="hidden" name="size_count_' + itemIdx + '" value="' + selectedSizes[itemIdx].length + '">';
+
+    selectedSizes[itemIdx].forEach(function(sizeObj, j) {
+        html += '<div class="size-row">' +
+            '<span class="size-label">' + sizeObj.size + '</span>' +
+            '<input type="number" class="quantity-input" name="quantity_' + itemIdx + '_' + j + '" placeholder="Qty" min="0" required>' +
+            '<input type="hidden" name="size_' + itemIdx + '_' + j + '" value="' + sizeObj.size + '">' +
+            '<button type="button" class="remove-size-btn" onclick="removeSize(' + itemIdx + ', ' + j + ', \'' + sizeObj.size + '\')">' +
+            '<i class="fa-solid fa-times"></i></button>' +
+            '</div>';
+    });
+    div.innerHTML = html;
+}
+
+function removeSize(itemIdx, sizeIndex, size) {
+    selectedSizes[itemIdx].splice(sizeIndex, 1);
+    const sizeButtons = document.getElementById('sizeButtons' + itemIdx);
+    if (sizeButtons) {
+        const buttons = sizeButtons.getElementsByClassName('size-btn');
+        for (let btn of buttons) {
+            if (btn.textContent === size) { btn.classList.remove('active'); break; }
+        }
+    }
+    updateSelectedSizesDisplay(itemIdx);
+}
+
+function toggleSizeChart(itemIdx) {
+    const chart = document.getElementById('sizeChart' + itemIdx);
+    chart.style.display = chart.style.display === 'none' ? 'block' : 'none';
+}
+
+// Mouse glow
+document.addEventListener('mousemove', function(e) {
+    const glow = document.getElementById('mouseGlow');
+    if (glow) { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; }
+});
+
+// Add first item on load
+addItem();
+</script>
+</body>
+</html>

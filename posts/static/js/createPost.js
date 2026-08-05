@@ -1,327 +1,263 @@
 /*==================================================
-                CREATE POST
+                ITEMS & SIZES (NEW)
 ==================================================*/
 
-document.addEventListener("DOMContentLoaded", () => {
-    initMouseGlow();
-    initImagePreview();
-    initQuantityButtons();
-    initDragDrop();
-    initSubmitButton();
-});
+let itemIndex = 0;
+let sizeOptions = [];
 
+function loadSizes() {
+    const categorySelect = document.getElementById('categorySelect');
+    const categoryId = categorySelect.value;
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    const sizeType = selectedOption.dataset.sizeType;
 
-/*==================================================
-                MOUSE GLOW
-==================================================*/
-
-function initMouseGlow() {
-    const glow = document.getElementById("mouseGlow");
-    if (!glow) return;
-
-    document.addEventListener("mousemove", (e) => {
-        glow.style.left = e.clientX + "px";
-        glow.style.top = e.clientY + "px";
-    });
+    if (categoryId && sizeType !== 'none') {
+        fetch(`/posts/get-category-sizes/${categoryId}/`)
+            .then(response => response.json())
+            .then(data => {
+                sizeOptions = data.sizes;
+                updateAllSizeCharts();
+            });
+    } else {
+        sizeOptions = [];
+        updateAllSizeCharts();
+    }
 }
 
+function checkSizeVisibility() {
+    const condition = document.getElementById('conditionSelect').value;
+    const categorySelect = document.getElementById('categorySelect');
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    const sizeType = selectedOption.dataset.sizeType;
 
-/*==================================================
-                IMAGE PREVIEW (FACEBOOK-STYLE)
-==================================================*/
+    if (condition === 'new' && sizeType !== 'none') {
+        loadSizes();
+    } else {
+        sizeOptions = [];
+        updateAllSizeCharts();
+    }
+}
 
-let selectedFiles = []; // Track files globally
+function addItem() {
+    const container = document.getElementById('itemsContainer');
+    const currentIndex = itemIndex;
 
-function initImagePreview() {
-    const input = document.getElementById("image-input");
-    const preview = document.getElementById("preview-container");
-    const uploadBox = document.getElementById("upload-box");
+    const itemHTML = `
+        <div class="glass-card item-section" id="item${currentIndex}">
+            <div class="item-header">
+                <h3><i class="fa-solid fa-box"></i> Item ${currentIndex + 1}</h3>
+                <button type="button" class="remove-item-btn" onclick="removeItem(${currentIndex})">
+                    <i class="fa-solid fa-trash"></i> Remove Item
+                </button>
+            </div>
 
-    if (!input || !preview) return;
+            <input type="hidden" name="item_count" value="${currentIndex + 1}">
 
-    input.addEventListener("change", () => {
-        const files = Array.from(input.files);
+            <div class="product-grid">
+                <div class="input-card">
+                    <label><i class="fa-solid fa-tag"></i> Item Name *</label>
+                    <input type="text" name="item_name_${currentIndex}" placeholder="e.g., Blue Cotton T-Shirt" required>
+                </div>
 
-        // Check if adding new files would exceed limit
-        if (selectedFiles.length + files.length > 5) {
-            alert("You can only upload a maximum of 5 photos.");
-            input.value = "";
-            return;
-        }
+                <div class="input-card">
+                    <label><i class="fa-solid fa-money-bill-wave"></i> Price (MMK) *</label>
+                    <input type="number" name="item_price_${currentIndex}" placeholder="Enter price" required min="1">
+                </div>
+            </div>
 
-        files.forEach((file) => {
-            // Ensure only images are processed
-            if (!file.type.startsWith("image/")) return;
+            <div class="description-card">
+                <label><i class="fa-solid fa-align-left"></i> Item Description</label>
+                <textarea name="item_description_${currentIndex}" placeholder="Describe this item..."></textarea>
+                <small>Include brand, colour, size, material and any other details</small>
+            </div>
 
-            selectedFiles.push(file);
+            <div class="section-title">
+                <i class="fa-regular fa-images"></i>
+                <div>
+                    <h2>Item Images</h2>
+                    <p>Upload photos for this item</p>
+                </div>
+            </div>
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const card = document.createElement("div");
-                card.className = "preview-card";
+            <label for="fileInput${currentIndex}" class="item-upload-area">
+                <div class="upload-icon">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <h3>Upload Photos</h3>
+                <p>Click to browse your computer</p>
+                <span>Maximum 5 Images</span>
+                <input type="file" id="fileInput${currentIndex}" name="images_${currentIndex}" multiple accept="image/*" style="display:none" onchange="handleFileSelect(this, ${currentIndex})">
+            </label>
 
-                card.innerHTML = `
+            <div class="preview-grid" id="previewGrid${currentIndex}"></div>
+
+            <div id="sizeChart${currentIndex}" class="size-chart hidden">
+                <label><i class="fa-solid fa-ruler"></i> Select Sizes</label>
+                <div class="size-buttons" id="sizeButtons${currentIndex}"></div>
+            </div>
+
+            <div id="selectedSizes${currentIndex}" class="selected-sizes hidden">
+                <input type="hidden" name="size_count_${currentIndex}" id="sizeCount${currentIndex}" value="0">
+            </div>
+
+            <button type="button" class="add-sizes-btn hidden" id="addMoreSizes${currentIndex}" onclick="toggleSizeChart(${currentIndex})">
+                <i class="fa-solid fa-plus"></i> Add Sizes
+            </button>
+        </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', itemHTML);
+    itemIndex++;
+    updateAllSizeCharts();
+}
+
+function removeItem(index) {
+    const item = document.getElementById(`item${index}`);
+    if (item) {
+        item.remove();
+    }
+}
+
+function handleFileSelect(input, itemIndex) {
+    const files = input.files;
+    const previewGrid = document.getElementById(`previewGrid${itemIndex}`);
+    previewGrid.innerHTML = '';
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const previewHTML = `
+                <div class="preview-card">
                     <div class="image-frame">
                         <img src="${e.target.result}" alt="Preview">
-                        <button type="button" class="remove-image">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
+                        ${i === 0 ? '<div class="cover-tag"><i class="fa-solid fa-star"></i> Cover</div>' : ''}
                     </div>
-                `;
+                </div>
+            `;
+            previewGrid.insertAdjacentHTML('beforeend', previewHTML);
+        };
 
-                preview.appendChild(card);
-
-                // Remove image logic
-                card.querySelector(".remove-image").addEventListener("click", () => {
-                    const index = selectedFiles.indexOf(file);
-                    if (index > -1) {
-                        selectedFiles.splice(index, 1);
-                    }
-                    card.remove();
-                    updateCoverBadge();
-                    syncFilesToInput();
-                    toggleUploadBox();
-                });
-
-                // Update cover badge and upload box visibility
-                updateCoverBadge();
-                toggleUploadBox();
-            };
-
-            reader.readAsDataURL(file);
-        });
-
-        // Sync files back to input
-        syncFilesToInput();
-    });
+        reader.readAsDataURL(file);
+    }
 }
 
-/**
- * Updates the "Cover" badge on the first image only
- */
-function updateCoverBadge() {
-    const cards = document.querySelectorAll(".preview-card");
+function updateAllSizeCharts() {
+    for (let i = 0; i < itemIndex; i++) {
+        const sizeChart = document.getElementById(`sizeChart${i}`);
+        const addMoreBtn = document.getElementById(`addMoreSizes${i}`);
 
-    cards.forEach((card, index) => {
-        // Remove existing cover tag
-        const existingBadge = card.querySelector(".cover-tag");
-        if (existingBadge) existingBadge.remove();
-
-        // Add cover tag only to first card
-        if (index === 0) {
-            const imageFrame = card.querySelector(".image-frame");
-            const coverTag = document.createElement("span");
-            coverTag.className = "cover-tag";
-            coverTag.innerHTML = '<i class="fa-solid fa-star"></i> Cover';
-            imageFrame.insertBefore(coverTag, imageFrame.firstChild);
-        }
-    });
-}
-
-/**
- * Syncs JavaScript file array back to the input element
- */
-function syncFilesToInput() {
-    const input = document.getElementById("image-input");
-    const dataTransfer = new DataTransfer();
-    selectedFiles.forEach((file) => dataTransfer.items.add(file));
-    input.files = dataTransfer.files;
-}
-
-/**
- * Shows/hides upload box based on file count
- */
-function toggleUploadBox() {
-    const uploadBox = document.getElementById("upload-box");
-    if (uploadBox) {
-        if (selectedFiles.length >= 5) {
-            uploadBox.style.display = "none";
-        } else {
-            uploadBox.style.display = "flex";
+        if (sizeChart && addMoreBtn) {
+            if (sizeOptions.length > 0) {
+                sizeChart.classList.remove('hidden');
+                addMoreBtn.classList.remove('hidden');
+                populateSizeButtons(i);
+            } else {
+                sizeChart.classList.add('hidden');
+                addMoreBtn.classList.add('hidden');
+            }
         }
     }
 }
 
+function populateSizeButtons(itemIndex) {
+    const sizeButtons = document.getElementById(`sizeButtons${itemIndex}`);
+    if (!sizeButtons) return;
+    sizeButtons.innerHTML = '';
 
-/*==================================================
-                QUANTITY BUTTONS
-==================================================*/
-
-function initQuantityButtons() {
-    const input = document.querySelector('input[name="quantity"]');
-    const plus = document.getElementById("plusBtn");
-    const minus = document.getElementById("minusBtn");
-
-    if (!input || !plus || !minus) return;
-
-    plus.addEventListener("click", () => {
-        let value = parseInt(input.value) || 1;
-        input.value = value + 1;
-    });
-
-    minus.addEventListener("click", () => {
-        let value = parseInt(input.value) || 1;
-        if (value > 1) {
-            input.value = value - 1;
-        }
+    sizeOptions.forEach(size => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'size-btn';
+        button.textContent = size;
+        button.onclick = function() {
+            toggleSize(itemIndex, size, button);
+        };
+        sizeButtons.appendChild(button);
     });
 }
 
+let selectedSizes = {};
 
-/*==================================================
-                DRAG & DROP
-==================================================*/
-
-function initDragDrop() {
-    const uploadBox = document.getElementById("upload-box");
-    const input = document.getElementById("image-input");
-
-    if (!uploadBox || !input) return;
-
-    ["dragenter", "dragover"].forEach((event) => {
-        uploadBox.addEventListener(event, (e) => {
-            e.preventDefault();
-            uploadBox.classList.add("dragover");
-        });
-    });
-
-    ["dragleave", "drop"].forEach((event) => {
-        uploadBox.addEventListener(event, (e) => {
-            e.preventDefault();
-            uploadBox.classList.remove("dragover");
-        });
-    });
-
-    uploadBox.addEventListener("drop", (e) => {
-        input.files = e.dataTransfer.files;
-        input.dispatchEvent(new Event("change"));
-    });
-}
-
-
-/*==================================================
-                HOVER EFFECT
-==================================================*/
-
-const uploadBox = document.getElementById("upload-box");
-if (uploadBox) {
-    uploadBox.addEventListener("mouseenter", () => {
-        uploadBox.style.transform = "translateY(-8px)";
-    });
-
-    uploadBox.addEventListener("mouseleave", () => {
-        uploadBox.style.transform = "translateY(0)";
-    });
-}
-
-
-/*==================================================
-                FORM VALIDATION
-==================================================*/
-
-const form = document.getElementById("createPostForm");
-if (form) {
-    form.addEventListener("submit", function (e) {
-        const price = document.querySelector('input[name="price"]');
-        const quantity = document.querySelector('input[name="quantity"]');
-        const description = document.querySelector('textarea[name="description"]');
-
-        if (price) {
-            if (price.value === "" || Number(price.value) <= 0) {
-                alert("Please enter a valid price.");
-                price.focus();
-                e.preventDefault();
-                return;
-            }
-        }
-
-        if (quantity) {
-            if (quantity.value === "" || Number(quantity.value) <= 0) {
-                alert("Quantity must be at least 1.");
-                quantity.focus();
-                e.preventDefault();
-                return;
-            }
-        }
-
-        if (description) {
-            if (description.value.trim() === "") {
-                alert("Please enter a product description.");
-                description.focus();
-                e.preventDefault();
-                return;
-            }
-        }
-    });
-}
-
-
-/*==================================================
-                AUTO HIDE ALERT
-==================================================*/
-
-const alerts = document.querySelectorAll(".custom-alert");
-alerts.forEach((alert) => {
-    setTimeout(() => {
-        alert.style.transition = "all .5s ease";
-        alert.style.opacity = "0";
-        alert.style.transform = "translateY(-10px)";
-        setTimeout(() => {
-            alert.remove();
-        }, 500);
-    }, 4000);
-});
-
-
-/*==================================================
-                CARD ANIMATION
-==================================================*/
-
-const cards = document.querySelectorAll(".input-card,.tip,.preview-card");
-const observer = new IntersectionObserver(
-    (entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = "1";
-                entry.target.style.transform = "translateY(0)";
-            }
-        });
-    },
-    {
-        threshold: 0.15,
+function toggleSize(itemIndex, size, button) {
+    if (!selectedSizes[itemIndex]) {
+        selectedSizes[itemIndex] = [];
     }
-);
 
-cards.forEach((card) => {
-    card.style.opacity = "0";
-    card.style.transform = "translateY(35px)";
-    card.style.transition = "all .6s ease";
-    observer.observe(card);
-});
+    const index = selectedSizes[itemIndex].findIndex(s => s.size === size);
 
+    if (index === -1) {
+        selectedSizes[itemIndex].push({size: size, quantity: 0});
+        button.classList.add('active');
+    } else {
+        selectedSizes[itemIndex].splice(index, 1);
+        button.classList.remove('active');
+    }
 
-/*==================================================
-                RIPPLE BUTTON
-==================================================*/
-
-const publishBtn = document.querySelector(".publish-btn");
-if (publishBtn) {
-    publishBtn.addEventListener("click", function (e) {
-        const ripple = document.createElement("span");
-        ripple.className = "ripple";
-        const rect = this.getBoundingClientRect();
-        ripple.style.left = e.clientX - rect.left + "px";
-        ripple.style.top = e.clientY - rect.top + "px";
-        this.appendChild(ripple);
-        setTimeout(() => {
-            ripple.remove();
-        }, 600);
-    });
+    updateSelectedSizesDisplay(itemIndex);
 }
 
+function updateSelectedSizesDisplay(itemIndex) {
+    const selectedSizesDiv = document.getElementById(`selectedSizes${itemIndex}`);
+    if (!selectedSizesDiv) return;
 
-/*==================================================
-                PAGE READY
-==================================================*/
+    if (!selectedSizes[itemIndex] || selectedSizes[itemIndex].length === 0) {
+        selectedSizesDiv.innerHTML = `<input type="hidden" name="size_count_${itemIndex}" id="sizeCount${itemIndex}" value="0">`;
+        selectedSizesDiv.classList.add('hidden');
+        return;
+    }
 
-console.log("Create Product Page Loaded Successfully.");
+    selectedSizesDiv.classList.remove('hidden');
+
+    let html = `<h4><i class="fa-solid fa-circle-check"></i> Selected Sizes</h4>`;
+    html += `<input type="hidden" name="size_count_${itemIndex}" id="sizeCount${itemIndex}" value="${selectedSizes[itemIndex].length}">`;
+
+    selectedSizes[itemIndex].forEach((sizeObj, j) => {
+        html += `
+            <div class="size-row">
+                <span class="size-label">${sizeObj.size}</span>
+                <div class="quantity-wrapper">
+                    <input type="number" class="quantity-input" name="quantity_${itemIndex}_${j}" placeholder="Qty" value="${sizeObj.quantity || ''}" min="0" required>
+                </div>
+                <input type="hidden" name="size_${itemIndex}_${j}" value="${sizeObj.size}">
+                <button type="button" class="remove-size-btn" onclick="removeSize(${itemIndex}, ${j}, '${sizeObj.size}')">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+        `;
+    });
+
+    selectedSizesDiv.innerHTML = html;
+}
+
+function removeSize(itemIndex, sizeIndex, size) {
+    selectedSizes[itemIndex].splice(sizeIndex, 1);
+
+    const sizeButtons = document.getElementById(`sizeButtons${itemIndex}`);
+    if (sizeButtons) {
+        const buttons = sizeButtons.getElementsByClassName('size-btn');
+        for (let button of buttons) {
+            if (button.textContent === size) {
+                button.classList.remove('active');
+                break;
+            }
+        }
+    }
+
+    updateSelectedSizesDisplay(itemIndex);
+}
+
+function toggleSizeChart(itemIndex) {
+    const sizeChart = document.getElementById(`sizeChart${itemIndex}`);
+    if (sizeChart) {
+        sizeChart.classList.toggle('hidden');
+    }
+}
+
+// Add first item automatically when page loads
+document.addEventListener("DOMContentLoaded", () => {
+    addItem();
+});
+
+console.log("Items & Sizes System Loaded Successfully.");
