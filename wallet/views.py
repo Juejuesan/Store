@@ -13,7 +13,6 @@ from .models import (
     WithdrawRequest,
 )
 
-
 # ======================================================
 # WALLET DASHBOARD
 # ======================================================
@@ -75,10 +74,22 @@ def deposit_request(request):
 
             messages.success(
                 request,
-                "Deposit request submitted successfully. Please wait for admin approval."
+                "Your deposit request has been submitted successfully and is waiting for admin approval."
             )
 
             return redirect("wallet:deposit")
+
+        else:
+
+            # Show every validation error as a popup message
+            for errors in form.errors.values():
+
+                for error in errors:
+
+                    messages.error(
+                        request,
+                        error
+                    )
 
     else:
 
@@ -99,11 +110,6 @@ def deposit_request(request):
         "wallet/deposit.html",
         context,
     )
-
-# ======================================================
-# WITHDRAW REQUEST
-# ======================================================
-
 @login_required
 def withdraw_request(request):
 
@@ -122,24 +128,53 @@ def withdraw_request(request):
 
             amount = form.cleaned_data["amount"]
 
+            # Check wallet balance
             if amount > wallet.balance:
 
                 messages.error(
                     request,
-                    "Insufficient wallet balance."
+                    f"Insufficient wallet balance. Your current balance is MMK {wallet.balance:,.0f}, but you requested MMK {amount:,.0f}."
                 )
 
-            else:
+                context = {
+                    "wallet": wallet,
+                    "form": form,
+                }
 
-                withdraw.user = request.user
-                withdraw.save()
-
-                messages.success(
+                return render(
                     request,
-                    "Withdrawal request submitted successfully."
+                    "wallet/withdraw.html",
+                    context,
                 )
 
-                return redirect("wallet:history")
+            # Save withdrawal request
+            withdraw.user = request.user
+            withdraw.save()
+
+            messages.success(
+                request,
+                "Your withdrawal request has been submitted successfully and is waiting for admin approval."
+            )
+
+            return redirect("wallet:withdraw")
+
+        else:
+
+            # Add each form error to Django messages
+            for field in form.errors:
+                for error in form.errors[field]:
+                    messages.error(request, error)
+
+            context = {
+                "wallet": wallet,
+                "form": form,
+            }
+
+            return render(
+                request,
+                "wallet/withdraw.html",
+                context,
+            )
 
     else:
 
@@ -155,7 +190,6 @@ def withdraw_request(request):
         "wallet/withdraw.html",
         context,
     )
-
 
 # ======================================================
 # TRANSACTION HISTORY
@@ -191,3 +225,4 @@ def transaction_history(request):
         "wallet/history.html",
         context,
     )
+

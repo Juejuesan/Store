@@ -4,22 +4,20 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const form = document.querySelector("form");
+    const form = document.getElementById("withdrawForm");
 
     const submitBtn = document.querySelector(".withdraw-btn");
 
-    const amountInput = document.querySelector("#id_amount");
+    const amountInput = document.getElementById("id_amount");
 
-    const phoneInput = document.querySelector("#id_receiver_phone");
+    const phoneInput = document.getElementById("id_receiver_phone");
 
     /*==========================================
         AUTO FOCUS
     ==========================================*/
 
     if (amountInput) {
-
         amountInput.focus();
-
     }
 
     /*==========================================
@@ -30,6 +28,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
         phoneInput.addEventListener("input", function () {
 
+            this.value = this.value
+                .trim()
+                .replace(/[^0-9]/g, "");
+
+        });
+
+    }
+
+    /*==========================================
+        AMOUNT INPUT
+    ==========================================*/
+
+    if (amountInput) {
+
+        amountInput.addEventListener("input", function () {
+
             this.value = this.value.replace(/[^0-9]/g, "");
 
         });
@@ -37,33 +51,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     /*==========================================
-        FORM SUBMIT
+        SUBMIT BUTTON LOADING
     ==========================================*/
 
-    if (form) {
+    if (form && submitBtn) {
 
-        form.addEventListener("submit", function (e) {
+        form.addEventListener("submit", function () {
 
-            const amount = parseFloat(amountInput.value);
-
-            if (isNaN(amount) || amount <= 0) {
-
-                e.preventDefault();
-
-                alert("Please enter a valid withdrawal amount.");
-
-                amountInput.focus();
-
+            // Prevent double clicking
+            if (submitBtn.disabled) {
                 return;
-
             }
-
-            submitBtn.classList.add("loading");
 
             submitBtn.disabled = true;
 
+            submitBtn.classList.add("loading");
+
             submitBtn.innerHTML = `
-                <i class="fa-solid fa-spinner"></i>
+                <i class="fa-solid fa-spinner fa-spin"></i>
                 Processing...
             `;
 
@@ -71,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
+    console.log("Withdraw page loaded successfully.");
+
 });
-
-
-

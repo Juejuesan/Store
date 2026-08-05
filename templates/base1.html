@@ -51,6 +51,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <link rel="stylesheet" href="{% static 'css/header-footer.css' %}">
+<link rel="stylesheet" href="{% static 'css/alert.css' %}">
+
 
 {% block extra_css %}
 {% endblock %}
@@ -60,6 +62,46 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 
 <body>
+
+{% if messages %}
+<div id="messageOverlay">
+
+    {% for message in messages %}
+
+    <div class="message-box {{ message.tags }}">
+
+        <div class="message-icon">
+
+            {% if message.tags == "success" %}
+                <i class="fa-solid fa-circle-check"></i>
+
+            {% elif message.tags == "error" %}
+                <i class="fa-solid fa-circle-xmark"></i>
+
+            {% elif message.tags == "warning" %}
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+            {% else %}
+                <i class="fa-solid fa-circle-info"></i>
+
+            {% endif %}
+
+        </div>
+
+        <h3>{{ message.tags|title }}</h3>
+
+        <p>{{ message }}</p>
+
+        <button id="closeMessage">
+            OK
+        </button>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+{% endif %}
 
 
 
@@ -140,33 +182,46 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                         {% endif %}
                     </li>
 
-                    <!-- PROFILE -->
-                    <li class="nav-item">
-                        {% if request.user.is_authenticated %}
-                            <a class="nav-link profile-link {% if request.path == '/user/dashboard/' %}active{% endif %}" href="{% url 'user:dashboard' %}">
-                                {% if request.user.profile.profile_pic %}
-                                    <img src="{{ request.user.profile.profile_pic.url }}"
-                                         style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #1565C0;">
-                                {% else %}
-                                    <i class="fa-solid fa-circle-user nav-profile-icon"></i>
-                                {% endif %}
-                                <span class="profile-name">
-                                    {{ request.user.username }}
-                                </span>
-                            </a>
-                        {% else %}
-                            <a class="nav-link" href="{% url 'user:register' %}">
-                                <i class="fa-solid fa-user"></i>
-                                Profile
-                            </a>
-                        {% endif %}
-                    </li>
+                   <li class="nav-item">
+
+{% if request.user.is_authenticated %}
+
+<a class="nav-link profile-link" href="{% url 'user:dashboard' %}">
+
+{% if request.user.profile.profile_pic %}
+
+<img src="{{ request.user.profile.profile_pic.url }}"
+class="nav-profile-image">
+
+{% else %}
+
+<i class="fa-solid fa-circle-user nav-profile-icon"></i>
+
+{% endif %}
+
+
+<span class="profile-name">
+{{ request.user.username }}
+</span>
+
+
+</a>
+
+{% else %}
+
+<a class="nav-link" href="{% url 'user:register' %}">
+<i class="fa-solid fa-user"></i>
+Profile
+</a>
+
+{% endif %}
+
+</li>
 
                 </ul>
             </div>
         </div>
     </nav>
-
 
 <!-- ==================================================
      HERO SECTION
@@ -274,6 +329,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <script src="{% static 'js/script.js' %}"></script>
 <script src="{% static 'js/header-footer.js' %}"></script>
+<script src="{% static 'js/alert.js' %}"></script>
 
 
 {% block extra_js %}

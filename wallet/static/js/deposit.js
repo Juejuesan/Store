@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     initDragAndDrop();
 
-    initFormValidation();
+    // initFormValidation();
 
     initSubmitLoading();
 
@@ -109,114 +109,6 @@ function initDragAndDrop() {
 
 }
 
-/*==================================================
-    FORM VALIDATION
-==================================================*/
-
-function initFormValidation() {
-
-    const form = document.getElementById(
-        "depositForm"
-    );
-
-    if (!form)
-        return;
-
-    const phone = form.querySelector(
-        'input[name="sender_phone"]'
-    );
-
-    const amount = form.querySelector(
-        'input[name="amount"]'
-    );
-
-    const transaction = form.querySelector(
-        'input[name="transaction_id"]'
-    );
-
-    form.addEventListener("submit", function (e) {
-
-        if (phone) {
-
-            const value = phone.value.trim();
-
-            if (!value.startsWith("09")) {
-
-                alert(
-                    "Phone number must start with 09."
-                );
-
-                phone.focus();
-
-                e.preventDefault();
-
-                return;
-
-            }
-
-            if (
-                value.length < 9 ||
-                value.length > 11
-            ) {
-
-                alert(
-                    "Please enter a valid Myanmar phone number."
-                );
-
-                phone.focus();
-
-                e.preventDefault();
-
-                return;
-
-            }
-
-        }
-
-        if (amount) {
-
-            const money = Number(amount.value);
-
-            if (money < 1000) {
-
-                alert(
-                    "Minimum deposit amount is MMK 1,000."
-                );
-
-                amount.focus();
-
-                e.preventDefault();
-
-                return;
-
-            }
-
-        }
-
-        if (transaction) {
-
-            const tx = transaction.value.trim();
-
-            if (tx.length < 4) {
-
-                alert(
-                    "Transaction ID is too short."
-                );
-
-                transaction.focus();
-
-                e.preventDefault();
-
-                return;
-
-            }
-
-        }
-
-    });
-
-}
-
 
 /*==================================================
     AMOUNT FORMAT
@@ -260,45 +152,34 @@ if (txInput) {
     });
 
 }
-
 /*==================================================
     SUBMIT LOADING
 ==================================================*/
 
 function initSubmitLoading() {
 
-    const form = document.getElementById(
-        "depositForm"
-    );
+    const form = document.getElementById("depositForm");
+    const button = document.getElementById("submitBtn");
 
-    const button = document.getElementById(
-        "submitBtn"
-    );
-
-    if (!form || !button)
-        return;
+    if (!form || !button) return;
 
     form.addEventListener("submit", function () {
 
-        button.classList.add(
-            "loading"
-        );
-
+        // Disable button
         button.disabled = true;
 
+        // Add loading style
+        button.classList.add("loading");
+
+        // Change button text
         button.innerHTML = `
-
-            <i class="fa-solid fa-spinner"></i>
-
+            <i class="fa-solid fa-spinner fa-spin"></i>
             Submitting...
-
         `;
 
     });
 
 }
-
-
 /*==================================================
     RIPPLE EFFECT
 ==================================================*/

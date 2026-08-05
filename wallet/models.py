@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
@@ -92,7 +93,11 @@ class DepositRequest(models.Model):
     amount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
-        validators=[MinValueValidator(1)]
+        validators=[
+            MinValueValidator(
+                Decimal("1000.00"),
+            )
+        ]
     )
 
     screenshot = models.ImageField(
@@ -192,13 +197,18 @@ class WithdrawRequest(models.Model):
     )
 
     receiver_phone = models.CharField(
-        max_length=20
+        max_length=11,
+        validators=[phone_validator]
     )
 
     amount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
-        validators=[MinValueValidator(1)]
+        validators=[
+            MinValueValidator(
+                Decimal("1000.00"),
+            )
+        ]
     )
 
     note = models.TextField(
@@ -243,6 +253,7 @@ class WithdrawRequest(models.Model):
             models.Index(fields=["created_at"]),
 
         ]
+
 
     def __str__(self):
 

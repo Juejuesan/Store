@@ -369,38 +369,37 @@
     FORM INPUTS
 ==================================================*/
 
-.modern-input{
+/*==================================================
+    FORM CONTROLS
+==================================================*/
+
+.form-control,
+.form-select{
 
     border-radius:14px;
 
     border:1px solid #dbeafe;
 
+    min-height:52px;
+
     padding:14px 18px;
 
     font-size:15px;
 
-    transition:.35s;
+    transition:.3s;
 
     background:#fff;
 
 }
 
-.modern-input:focus{
+.form-control:focus,
+.form-select:focus{
 
     border-color:#2563eb;
 
     box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
 
 }
-
-.form-select{
-
-    border-radius:14px;
-
-    min-height:52px;
-
-}
-
 
 /*==================================================
     WITHDRAW BUTTON
@@ -680,6 +679,84 @@
     to{
 
         transform:rotate(360deg);
+
+    }
+
+}
+
+
+
+
+
+.errorlist{
+
+    list-style:none;
+
+    padding:0;
+
+    margin-top:8px;
+    margin-bottom:0;
+
+}
+
+.errorlist li{
+
+    color:#dc2626;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+
+
+.withdraw-btn:disabled{
+
+    cursor:not-allowed;
+
+    opacity:.7;
+
+}
+
+.withdraw-btn.loading i{
+    animation:spin .8s linear infinite;
+}
+
+
+/*==================================================
+    RESPONSIVE
+==================================================*/
+
+@media (max-width:768px){
+
+    .withdraw-header{
+
+        flex-direction:column;
+
+        text-align:center;
+
+    }
+
+    .withdraw-header h1{
+
+        font-size:34px;
+
+    }
+
+    .wallet-balance-card{
+
+        flex-direction:column;
+
+        text-align:center;
+
+        gap:20px;
+
+    }
+
+    .glass-card{
+
+        padding:25px;
 
     }
 

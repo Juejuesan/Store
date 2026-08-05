@@ -24,7 +24,7 @@ class Profile(models.Model):
     fullName=models.CharField( max_length=30,null=True,blank=True)
     address = models.TextField()
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    profile_pic = models.ImageField(upload_to='profile_pics/', default='profile_pics/default.jpg', blank=True, null=True)
+    profile_pic = models.ImageField(upload_to='profile_pics/',  blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS,default='Approved')
 
     def __str__(self):
