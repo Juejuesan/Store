@@ -268,22 +268,23 @@
             <!-- Notification -->
 
             <button class="notification-btn"
-                    id="notificationBell"
-                    type="button">
+        id="notificationBell"
+        type="button">
 
-                <i class="fa-regular fa-bell"></i>
+    <i class="fa-regular fa-bell"></i>
 
-                {% if notification_count > 0 %}
+    {% if admin_notification_count > 0 %}
 
-                <span class="notify-count">
+    <span class="notify-count"
+          id="adminNotificationBadge">
 
-                    {{ notification_count }}
+        {{ admin_notification_count }}
 
-                </span>
+    </span>
 
-                {% endif %}
+    {% endif %}
 
-            </button>
+</button>
 
             <!-- Theme -->
 

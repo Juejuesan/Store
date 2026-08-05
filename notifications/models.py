@@ -13,6 +13,12 @@ class Notification(models.Model):
         ("deposit_rejected", "Deposit Rejected"),
     ]
 
+    target_url = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -42,6 +48,12 @@ class Notification(models.Model):
 
     created_at = models.DateTimeField(
         auto_now_add=True
+    )
+
+    target_url = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
     )
 
     class Meta:

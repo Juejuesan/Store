@@ -11,44 +11,56 @@ from wallet.models import (
     Wallet,
     WalletTransaction,
 )
-# ==========================
+
+
+# =====================================================
 # Dashboard
-# ==========================
+# =====================================================
+
+@login_required
 def dashboard(request):
+
     context = {
-        "total_users": User.objects.filter(is_active=True).count(),
+
+        "total_users": User.objects.filter(
+            is_active=True
+        ).count(),
+
         "total_sellers": User.objects.count(),
+
         "pending_posts": Post.objects.filter(
             status="pending"
         ).count(),
+
         "pending_orders": 15,
+
         "total_revenue": "15,800,000",
+
         "recent_activities": [
+
             {
                 "activity": "New Seller Registered",
                 "user": "Ko Ko",
                 "status": "Success",
                 "time": "2 mins ago",
             },
+
             {
                 "activity": "Product Submitted",
                 "user": "Su Su",
                 "status": "Pending",
                 "time": "10 mins ago",
             },
+
             {
                 "activity": "Wallet Top Up",
                 "user": "Mg Mg",
                 "status": "Completed",
                 "time": "35 mins ago",
             },
-            {
-                "activity": "Account Warning",
-                "user": "Aung Aung",
-                "status": "Warning",
-                "time": "1 hour ago",
-            },
+
         ],
+
     }
 
     return render(
@@ -56,22 +68,20 @@ def dashboard(request):
         "adminpanel/dashboard.html",
         context,
     )
-# ==========================
-# Wallet Deposit Requests
-# ==========================
+
+
+# =====================================================
+# Wallet Requests
+# =====================================================
 
 @login_required
 def wallet_requests(request):
 
-    deposits = DepositRequest.objects.all().order_by(
-        "-created_at"
-    )
-
+    deposits = DepositRequest.objects.all().order_by("-created_at")
 
     pending_count = DepositRequest.objects.filter(
         status="Pending"
     ).count()
-
 
     approved_amount = sum(
         DepositRequest.objects.filter(
@@ -81,7 +91,6 @@ def wallet_requests(request):
             flat=True
         )
     )
-
 
     context = {
 
@@ -93,15 +102,16 @@ def wallet_requests(request):
 
     }
 
-
     return render(
         request,
         "adminpanel/wallet.html",
-        context
+        context,
     )
-# ==========================
+
+
+# =====================================================
 # Approve Deposit
-# ==========================
+# =====================================================
 
 @login_required
 def approve_deposit(request, deposit_id):
@@ -111,72 +121,41 @@ def approve_deposit(request, deposit_id):
         id=deposit_id
     )
 
-
     if deposit.status == "Pending":
 
-
         deposit.status = "Approved"
-
         deposit.approved_at = timezone.now()
-
         deposit.approved_by = request.user
-
         deposit.save()
-
-
-
-        # Add money to wallet
 
         wallet, created = Wallet.objects.get_or_create(
             user=deposit.user
         )
 
-
         wallet.balance += deposit.amount
-
         wallet.save()
 
-
-
-        # Transaction history
-
         WalletTransaction.objects.create(
-
             wallet=wallet,
-
             transaction_type="Deposit",
-
             amount=deposit.amount,
-
             status="Approved",
-
             description="Deposit approved by admin",
-
             reference_id=str(deposit.id)
-
         )
-
-
-
-        # User notification
 
         Notification.objects.create(
-
             user=deposit.user,
-
-            message=f"Your wallet has been credited {deposit.amount} MMK added successfully.",
-
-            notification_type="deposit_approved"
-
+            message=f"Your wallet has been credited {deposit.amount} MMK.",
+            notification_type="deposit_approved",
         )
 
+    return redirect("wallet_requests")
 
-    return redirect(
-        "wallet_requests"
-    )
-# ==========================
+
+# =====================================================
 # Reject Deposit
-# ==========================
+# =====================================================
 
 @login_required
 def reject_deposit(request, deposit_id):
@@ -186,45 +165,51 @@ def reject_deposit(request, deposit_id):
         id=deposit_id
     )
 
-
     if deposit.status == "Pending":
 
-
         deposit.status = "Rejected"
-
         deposit.save()
 
         Notification.objects.create(
             user=deposit.user,
-            message=f"Your wallet deposit request of {deposit.amount} MMK was rejected.",
-            notification_type="deposit_rejected"
+            message=f"Your deposit request of {deposit.amount} MMK was rejected.",
+            notification_type="deposit_rejected",
         )
 
+    return redirect("wallet_requests")
 
-    return redirect(
-        "wallet_requests"
-    )
-# ==========================
+
+# =====================================================
 # Pending Posts
-# ==========================
+# =====================================================
+
+@login_required
 def posts(request):
+
     pending_posts = Post.objects.filter(
         status="pending"
     ).order_by("-created_at")
 
-    context = {
-        "pending_posts": pending_posts,
-    }
-
     return render(
         request,
         "adminpanel/posts.html",
-        context,
+        {
+            "pending_posts": pending_posts,
+        },
     )
 
 
+# =====================================================
+# Post Detail
+# =====================================================
+
+@login_required
 def post_detail(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+
+    post = get_object_or_404(
+        Post,
+        id=post_id,
+    )
 
     return render(
         request,
@@ -235,8 +220,17 @@ def post_detail(request, post_id):
     )
 
 
+# =====================================================
+# Approve Post
+# =====================================================
+
+@login_required
 def approve_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+
+    post = get_object_or_404(
+        Post,
+        id=post_id,
+    )
 
     post.status = "approved"
     post.save()
@@ -251,8 +245,17 @@ def approve_post(request, post_id):
     return redirect("posts")
 
 
+# =====================================================
+# Reject Post
+# =====================================================
+
+@login_required
 def reject_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+
+    post = get_object_or_404(
+        Post,
+        id=post_id,
+    )
 
     post.status = "rejected"
     post.save()
@@ -266,7 +269,10 @@ def reject_post(request, post_id):
 
     return redirect("posts")
 
-from django.contrib.auth.decorators import login_required
+
+# =====================================================
+# Read Notification
+# =====================================================
 
 @login_required
 def read_notification(request, noti_id):
@@ -274,13 +280,10 @@ def read_notification(request, noti_id):
     notification = get_object_or_404(
         Notification,
         id=noti_id,
-        user=request.user
+        user=request.user,
     )
 
     notification.is_read = True
     notification.save()
-
-    if notification.notification_type == "new_post":
-        return redirect("posts")
 
     return redirect("dashboard")
