@@ -195,6 +195,42 @@ body{
 
 
 
+
+.profile-link{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+
+.nav-profile-image{
+
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #1565C0;
+
+}
+
+
+.nav-profile-icon{
+
+    font-size:40px;
+    color:#1565C0;
+
+}
+
+
+.profile-name{
+
+    font-weight:600;
+    color:#1e3a8a;
+
+}
+
+
+
 .scrolled .nav-link.active{
 
     background:white;
@@ -503,6 +539,27 @@ footer a:hover{
 
     color:white;
 
+    font-size:12px;
+
+    width:20px;
+
+    height:20px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-weight:bold;
+
+}
+
+
+
+
 .profile-link{
     display:flex;
     align-items:center;
@@ -523,7 +580,7 @@ footer a:hover{
 
 .nav-profile-icon{
 
-    font-size:40px;
+    font-size:35px;
     color:#1565C0;
 
 }
@@ -533,23 +590,5 @@ footer a:hover{
 
     font-weight:600;
     color:#1e3a8a;
-
-}
-
-    font-size:12px;
-
-    width:20px;
-
-    height:20px;
-
-    border-radius:50%;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-weight:bold;
 
 }

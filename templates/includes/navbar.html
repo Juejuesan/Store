@@ -1,3 +1,8 @@
+
+   <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
     <nav class="navbar navbar-expand-md cute-navbar fixed-top">
         <div class="container">
             <!-- SHOP LOGO -->
@@ -90,27 +95,44 @@
                         {% endif %}
                     </li>
 
-                    <!-- PROFILE -->
-                    <li class="nav-item">
-                        {% if request.user.is_authenticated %}
-                            <a class="nav-link profile-link {% if request.path == '/user/dashboard/' %}active{% endif %}" href="{% url 'user:dashboard' %}">
-                                {% if request.user.profile.profile_pic %}
-                                    <img src="{{ request.user.profile.profile_pic.url }}"
-                                         style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #1565C0;">
-                                {% else %}
-                                    <i class="fa-solid fa-circle-user nav-profile-icon"></i>
-                                {% endif %}
-                                <span class="profile-name">
-                                    {{ request.user.username }}
-                                </span>
-                            </a>
-                        {% else %}
-                            <a class="nav-link" href="{% url 'user:register' %}">
-                                <i class="fa-solid fa-user"></i>
-                                Profile
-                            </a>
-                        {% endif %}
-                    </li>
+                      <!-- PROFILE -->
+<li class="nav-item">
+
+{% if request.user.is_authenticated %}
+
+<a class="nav-link profile-link" href="{% url 'user:dashboard' %}">
+
+    {% if request.user.profile.profile_pic %}
+
+        <img src="{{ request.user.profile.profile_pic.url }}"
+             class="nav-profile-image">
+
+    {% else %}
+
+        <i class="fa-solid fa-circle-user nav-profile-icon"></i>
+
+    {% endif %}
+
+
+    <span class="profile-name">
+        {{ request.user.profile.fullName}}
+    </span>
+
+
+</a>
+
+
+{% else %}
+
+<a class="nav-link" href="{% url 'user:register' %}">
+    <i class="fa-solid fa-user"></i>
+    Profile
+</a>
+
+{% endif %}
+
+</li>
+
 
                 </ul>
             </div>
