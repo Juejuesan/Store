@@ -70,6 +70,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'adminpanel.context_processors.admin_notifications',
+'notifications.context_processors.user_notifications',
             ],
         },
     },

@@ -4,11 +4,13 @@ from posts.models import Post
 
 
 class Notification(models.Model):
-
     NOTIFICATION_TYPES = [
         ("new_post", "New Post"),
         ("approved", "Approved"),
         ("rejected", "Rejected"),
+        ("deposit_request", "Deposit Request"),
+        ("deposit_approved", "Deposit Approved"),
+        ("deposit_rejected", "Deposit Rejected"),
     ]
 
     user = models.ForeignKey(

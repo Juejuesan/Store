@@ -168,21 +168,19 @@
 
                 </li>
 
-                <li>
+                <li class="{% if request.resolver_match.url_name == 'wallet_requests' %}active{% endif %}">
 
-                    <a href="#">
+    <a href="{% url 'wallet_requests' %}">
 
-                        <i class="fa-solid fa-wallet"></i>
+        <i class="fa-solid fa-wallet"></i>
 
-                        <span>
+        <span>
+            Wallet
+        </span>
 
-                            Wallet
+    </a>
 
-                        </span>
-
-                    </a>
-
-                </li>
+</li>
 
                 <li>
 
@@ -349,17 +347,25 @@
 
                 {% if notification.notification_type == "approved" %}
 
-                    <i class="fa-solid fa-circle-check"></i>
+<i class="fa-solid fa-circle-check"></i>
 
-                {% elif notification.notification_type == "rejected" %}
 
-                    <i class="fa-solid fa-circle-xmark"></i>
+{% elif notification.notification_type == "rejected" %}
 
-                {% else %}
+<i class="fa-solid fa-circle-xmark"></i>
 
-                    <i class="fa-solid fa-box-open"></i>
 
-                {% endif %}
+{% elif notification.notification_type == "deposit_request" %}
+
+<i class="fa-solid fa-wallet"></i>
+
+
+{% else %}
+
+<i class="fa-solid fa-box-open"></i>
+
+
+{% endif %}
 
             </div>
 

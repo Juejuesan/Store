@@ -1,10 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 from posts.models import Post
 from notifications.models import Notification
 
-
+from wallet.models import (
+    DepositRequest,
+    Wallet,
+    WalletTransaction,
+)
 # ==========================
 # Dashboard
 # ==========================
@@ -50,8 +56,154 @@ def dashboard(request):
         "adminpanel/dashboard.html",
         context,
     )
+# ==========================
+# Wallet Deposit Requests
+# ==========================
+
+@login_required
+def wallet_requests(request):
+
+    deposits = DepositRequest.objects.all().order_by(
+        "-created_at"
+    )
 
 
+    pending_count = DepositRequest.objects.filter(
+        status="Pending"
+    ).count()
+
+
+    approved_amount = sum(
+        DepositRequest.objects.filter(
+            status="Approved"
+        ).values_list(
+            "amount",
+            flat=True
+        )
+    )
+
+
+    context = {
+
+        "deposits": deposits,
+
+        "pending_count": pending_count,
+
+        "approved_amount": approved_amount,
+
+    }
+
+
+    return render(
+        request,
+        "adminpanel/wallet.html",
+        context
+    )
+# ==========================
+# Approve Deposit
+# ==========================
+
+@login_required
+def approve_deposit(request, deposit_id):
+
+    deposit = get_object_or_404(
+        DepositRequest,
+        id=deposit_id
+    )
+
+
+    if deposit.status == "Pending":
+
+
+        deposit.status = "Approved"
+
+        deposit.approved_at = timezone.now()
+
+        deposit.approved_by = request.user
+
+        deposit.save()
+
+
+
+        # Add money to wallet
+
+        wallet, created = Wallet.objects.get_or_create(
+            user=deposit.user
+        )
+
+
+        wallet.balance += deposit.amount
+
+        wallet.save()
+
+
+
+        # Transaction history
+
+        WalletTransaction.objects.create(
+
+            wallet=wallet,
+
+            transaction_type="Deposit",
+
+            amount=deposit.amount,
+
+            status="Approved",
+
+            description="Deposit approved by admin",
+
+            reference_id=str(deposit.id)
+
+        )
+
+
+
+        # User notification
+
+        Notification.objects.create(
+
+            user=deposit.user,
+
+            message=f"Your wallet has been credited {deposit.amount} MMK added successfully.",
+
+            notification_type="deposit_approved"
+
+        )
+
+
+    return redirect(
+        "wallet_requests"
+    )
+# ==========================
+# Reject Deposit
+# ==========================
+
+@login_required
+def reject_deposit(request, deposit_id):
+
+    deposit = get_object_or_404(
+        DepositRequest,
+        id=deposit_id
+    )
+
+
+    if deposit.status == "Pending":
+
+
+        deposit.status = "Rejected"
+
+        deposit.save()
+
+        Notification.objects.create(
+            user=deposit.user,
+            message=f"Your wallet deposit request of {deposit.amount} MMK was rejected.",
+            notification_type="deposit_rejected"
+        )
+
+
+    return redirect(
+        "wallet_requests"
+    )
 # ==========================
 # Pending Posts
 # ==========================

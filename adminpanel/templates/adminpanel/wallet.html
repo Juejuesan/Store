@@ -1,0 +1,419 @@
+{% extends "adminpanel/base_admin.html" %}
+
+{% load static %}
+
+
+{% block title %}
+Wallet Requests | Trusty Shop Admin
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<div class="page-header">
+
+    <div>
+
+        <h1 class="page-title">
+            Wallet Balance Requests
+        </h1>
+
+
+        <p class="page-subtitle">
+            Review and manage user deposit requests.
+        </p>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- ==========================
+        SUMMARY CARDS
+========================== -->
+
+
+<div class="cards wallet-summary">
+
+
+    <div class="card">
+
+        <h4>
+            Total Requests
+        </h4>
+
+
+        <h2>
+            {{ deposits|length }}
+        </h2>
+
+
+        <i class="fa-solid fa-wallet"></i>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h4>
+            Pending Requests
+        </h4>
+
+
+        <h2>
+            {{ pending_count }}
+        </h2>
+
+
+        <i class="fa-solid fa-clock"></i>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h4>
+            Approved Amount
+        </h4>
+
+
+        <h2>
+            {{ approved_amount }} MMK
+        </h2>
+
+
+        <i class="fa-solid fa-money-bill-transfer"></i>
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+<!-- ==========================
+        DEPOSIT TABLE
+========================== -->
+
+
+<div class="content-card wallet-table">
+
+
+<div class="table-header">
+
+
+<h2>
+Deposit Requests
+</h2>
+
+
+<div class="search-wallet">
+
+<i class="fa-solid fa-search"></i>
+
+<input type="text"
+id="walletSearch"
+placeholder="Search user...">
+
+</div>
+
+
+</div>
+
+
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>
+User
+</th>
+
+
+<th>
+Payment
+</th>
+
+
+<th>
+Amount
+</th>
+
+
+<th>
+Transaction ID
+</th>
+
+
+<th>
+Screenshot
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Date
+</th>
+
+
+<th>
+Action
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+
+<tbody id="walletTable">
+
+
+{% for deposit in deposits %}
+
+
+
+<tr>
+
+
+
+<td>
+
+<div class="user-box">
+
+
+<div class="user-avatar">
+
+<i class="fa-solid fa-user"></i>
+
+</div>
+
+
+<strong>
+
+{{ deposit.user.username }}
+
+</strong>
+
+
+</div>
+
+
+</td>
+
+
+
+
+
+
+<td>
+
+{{ deposit.payment_method }}
+
+</td>
+
+
+
+
+
+
+<td>
+
+<strong class="amount">
+
+{{ deposit.amount }} MMK
+
+</strong>
+
+
+</td>
+
+
+
+
+
+
+<td>
+
+{{ deposit.transaction_id }}
+
+</td>
+
+
+
+
+
+<td>
+
+
+<a href="{{ deposit.screenshot.url }}"
+target="_blank"
+class="image-btn">
+
+
+<i class="fa-solid fa-image"></i>
+
+View
+
+
+</a>
+
+
+</td>
+
+
+
+
+
+<td>
+
+
+<span class="status {{ deposit.status|lower }}">
+
+{{ deposit.status }}
+
+</span>
+
+
+</td>
+
+
+
+
+
+
+<td>
+
+{{ deposit.created_at|date:"d M Y" }}
+
+</td>
+
+
+
+
+
+
+<td>
+
+
+<div class="action-buttons">
+
+
+{% if deposit.status == "Pending" %}
+
+
+<a href="{% url 'approve_deposit' deposit.id %}"
+class="btn btn-approve">
+
+
+<i class="fa-solid fa-check"></i>
+
+</a>
+
+
+
+
+
+<a href="{% url 'reject_deposit' deposit.id %}"
+class="btn btn-reject">
+
+
+<i class="fa-solid fa-xmark"></i>
+
+</a>
+
+
+
+{% else %}
+
+
+<span class="completed">
+
+Completed
+
+</span>
+
+
+{% endif %}
+
+
+</div>
+
+
+</td>
+
+
+
+</tr>
+
+
+
+{% empty %}
+
+
+
+<tr>
+
+
+<td colspan="8"
+class="empty-state">
+
+
+<i class="fa-solid fa-wallet"></i>
+
+
+<h2>
+No Deposit Requests
+</h2>
+
+
+<p>
+All wallet requests are completed.
+</p>
+
+
+</td>
+
+
+</tr>
+
+
+
+{% endfor %}
+
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+
+{% endblock %}
