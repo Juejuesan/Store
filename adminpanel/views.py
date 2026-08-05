@@ -3,7 +3,125 @@ from django.contrib.auth.models import User
 
 from posts.models import Post
 from notifications.models import Notification
+from django.contrib import messages
+from wallet.models import (
+    Wallet,
+    DepositRequest,
+    WithdrawRequest,
+    WalletTransaction,
+)
+from django.db.models import Sum
+from decimal import Decimal
+from django.db import transaction
+from django.utils import timezone
 
+@transaction.atomic
+def approve_deposit(request, deposit_id):
+
+    deposit = get_object_or_404(
+        DepositRequest,
+        id=deposit_id
+    )
+
+    # Prevent approving twice
+    if deposit.status != "Pending":
+        return redirect("deposit_requests")
+
+    wallet, created = Wallet.objects.get_or_create(
+        user=deposit.user
+    )
+
+    # Add balance
+    wallet.balance += deposit.amount
+    wallet.save()
+
+    # Update request
+    deposit.status = "Approved"
+    deposit.approved_at = timezone.now()
+    deposit.approved_by = request.user
+    deposit.save()
+
+    # Save transaction history
+    WalletTransaction.objects.create(
+        wallet=wallet,
+        transaction_type="Deposit",
+        amount=deposit.amount,
+        status="Approved",
+        description="Wallet deposit approved by admin.",
+        reference_id=str(deposit.id),
+    )
+
+    # Send notification
+    Notification.objects.create(
+        user=deposit.user,
+        message=f"Your deposit of MMK {deposit.amount:,.0f} has been approved.",
+        notification_type="deposit_approved",
+    )
+
+    return redirect("deposit_requests")
+
+
+
+
+@transaction.atomic
+def reject_deposit(request, deposit_id):
+
+    deposit = get_object_or_404(
+        DepositRequest,
+        id=deposit_id
+    )
+
+    if deposit.status != "Pending":
+        return redirect("deposit_requests")
+
+    deposit.status = "Rejected"
+    deposit.approved_at = timezone.now()
+    deposit.approved_by = request.user
+    deposit.save()
+
+    Notification.objects.create(
+        user=deposit.user,
+        message="Your deposit request has been rejected.",
+        notification_type="deposit_rejected",
+    )
+
+    return redirect("deposit_requests")
+
+
+
+def deposit_requests(request):
+
+    deposits = DepositRequest.objects.select_related(
+        "user"
+    ).order_by("-created_at")
+
+    pending_count = deposits.filter(
+        status="Pending"
+    ).count()
+
+    approved_amount = (
+        deposits.filter(
+            status="Approved"
+        )
+        .aggregate(total=Sum("amount"))["total"]
+        or 0
+    )
+
+    context = {
+
+        "deposits": deposits,
+
+        "pending_count": pending_count,
+
+        "approved_amount": approved_amount,
+
+    }
+
+    return render(
+        request,
+        "adminpanel/deposit_requests.html",
+        context,
+    )
 
 # ==========================
 # Dashboard
@@ -132,3 +250,151 @@ def read_notification(request, noti_id):
         return redirect("posts")
 
     return redirect("dashboard")
+
+# ==========================================
+# Withdrawal Requests
+# ==========================================
+
+def withdraw_requests(request):
+
+    withdrawals = WithdrawRequest.objects.select_related(
+        "user"
+    ).order_by("-created_at")
+
+    pending_count = withdrawals.filter(
+        status="Pending"
+    ).count()
+
+    approved_amount = sum(
+        w.amount
+        for w in withdrawals.filter(status="Approved")
+    )
+
+    context = {
+
+        "withdrawals": withdrawals,
+
+        "pending_count": pending_count,
+
+        "approved_amount": approved_amount,
+
+    }
+
+    return render(
+        request,
+        "adminpanel/withdraw_requests.html",
+        context,
+    )
+
+
+# ==========================================
+# Approve Withdrawal
+# ==========================================
+
+def approve_withdraw(request, withdraw_id):
+
+    withdraw = get_object_or_404(
+
+        WithdrawRequest,
+
+        id=withdraw_id
+
+    )
+
+    if withdraw.status == "Pending":
+
+        wallet = get_object_or_404(
+
+            Wallet,
+
+            user=withdraw.user
+
+        )
+
+        if wallet.balance >= withdraw.amount:
+
+            wallet.balance -= withdraw.amount
+
+            wallet.save()
+
+            WalletTransaction.objects.create(
+
+                wallet=wallet,
+
+                transaction_type="Withdraw",
+
+                amount=withdraw.amount,
+
+                status="Approved",
+
+                description="Withdrawal approved by admin",
+
+                reference_id=str(withdraw.id),
+
+            )
+
+            withdraw.status = "Approved"
+
+            withdraw.approved_by = request.user
+
+            withdraw.approved_at = timezone.now()
+
+            withdraw.save()
+
+            # Optional Notification
+            # Notification.objects.create(
+            #     user=withdraw.user,
+            #     message="Your withdrawal request has been approved.",
+            # )
+
+    return redirect("withdraw_requests")
+
+
+def reject_withdraw(request, withdraw_id):
+
+    withdraw = get_object_or_404(
+        WithdrawRequest,
+        id=withdraw_id
+    )
+
+    if withdraw.status != "Pending":
+
+        messages.warning(
+            request,
+            "This withdrawal request has already been processed."
+        )
+
+        return redirect("withdraw_requests")
+
+    withdraw.status = "Rejected"
+
+    withdraw.approved_at = timezone.now()
+
+    withdraw.approved_by = request.user
+
+    withdraw.save()
+
+    WalletTransaction.objects.create(
+        wallet=withdraw.user.wallet,
+        transaction_type="Withdraw",
+        amount=withdraw.amount,
+        status="Rejected",
+        description="Withdrawal request rejected by admin.",
+        reference_id=f"WD-{withdraw.id}"
+    )
+
+    Notification.objects.create(
+        user=withdraw.user,
+        message=(
+            f"Your withdrawal request of "
+            f"{withdraw.amount} MMK has been rejected."
+        ),
+        notification_type="withdraw_rejected",
+    )
+
+    messages.success(
+        request,
+        "Withdrawal request rejected successfully."
+    )
+
+    return redirect("withdraw_requests")

@@ -9,6 +9,8 @@ class Notification(models.Model):
         ("new_post", "New Post"),
         ("approved", "Approved"),
         ("rejected", "Rejected"),
+        ("deposit_approved", "Deposit Approved"),
+        ("deposit_rejected", "Deposit Rejected"),
     ]
 
     user = models.ForeignKey(
