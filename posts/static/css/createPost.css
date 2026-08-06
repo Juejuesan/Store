@@ -392,6 +392,9 @@ body {
 .input-card select,
 .description-card textarea,
 .description-card input {
+    resize: vertical;
+    min-height: 120px;
+    max-height:400px;
     width: 100%;
     border: 2px solid var(--border-light);
     border-radius: 16px;
@@ -1179,4 +1182,37 @@ body {
     .size-buttons {
         justify-content: center;
     }
+}
+
+/*==================================================
+            SIZE PRICE INPUT
+==================================================*/
+.price-input {
+    width: 100px;
+    padding: 8px 12px;
+    border: 2px solid #dbeafe;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    transition: .35s;
+    color: #334155;
+    background: #fff;
+}
+
+.price-input:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 .25rem rgba(37,99,235,.12);
+}
+
+.price-input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+    font-size: 13px;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }

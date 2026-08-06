@@ -105,13 +105,14 @@ class SizeVariant(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='size_variants')
     size = models.CharField(max_length=50)
     quantity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    price = models.IntegerField(default=0, validators=[MinValueValidator(0)])  # ADD THIS
 
     class Meta:
         unique_together = ['item', 'size']
         ordering = ['size']
 
     def __str__(self):
-        return f"{self.item.name} - Size {self.size} (Qty: {self.quantity})"
+        return f"{self.item.name} - Size {self.size} (Qty: {self.quantity}, Price: {self.price})"
 
 
 class ItemImage(models.Model):

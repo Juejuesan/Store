@@ -12,6 +12,7 @@ def create_categories(apps, schema_editor):
         {'name': 'Jackets', 'size_type': 'clothing', 'size_label': 'Size', 'custom_sizes': ''},
         {'name': 'Sweaters', 'size_type': 'clothing', 'size_label': 'Size', 'custom_sizes': ''},
         {'name': 'Dresses', 'size_type': 'clothing', 'size_label': 'Size', 'custom_sizes': ''},
+        {'name': 'Sport Wear', 'size_type': 'clothing', 'size_label': 'Size', 'custom_sizes': ''},
 
         # PANTS
         {'name': 'Jeans', 'size_type': 'pants', 'size_label': 'Waist Size (inches)', 'custom_sizes': ''},

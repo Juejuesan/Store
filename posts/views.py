@@ -9,9 +9,6 @@ from .models import Category, Post, Item, SizeVariant, ItemImage
 @login_required
 def create_post(request):
     categories = Category.objects.all()
-    print(f"=== CREATE POST VIEW CALLED ===")
-    print(f"Categories count: {categories.count()}")
-    print(f"User: {request.user}")
 
     if request.method == 'POST':
         post_form = PostForm(request.POST)
@@ -21,13 +18,17 @@ def create_post(request):
             post.user = request.user.profile
             post.save()
 
-            # Process items
-            item_count = int(request.POST.get('item_count', 0))
+            # Get ALL item names from POST data
+            item_names = []
+            for key in request.POST.keys():
+                if key.startswith('item_name_'):
+                    index = key.replace('item_name_', '')
+                    item_names.append(index)
 
-            for i in range(item_count):
+            for i in item_names:
                 item_name = request.POST.get(f'item_name_{i}')
-                item_description = request.POST.get(f'item_description_{i}')
                 item_price = request.POST.get(f'item_price_{i}')
+                item_description = request.POST.get(f'item_description_{i}', '')
 
                 if item_name and item_price:
                     item = Item.objects.create(
@@ -43,12 +44,14 @@ def create_post(request):
                     for j in range(size_count):
                         size = request.POST.get(f'size_{i}_{j}')
                         quantity = request.POST.get(f'quantity_{i}_{j}')
+                        size_price = request.POST.get(f'size_price_{i}_{j}', 0)  # ADDED
 
                         if size and quantity:
                             SizeVariant.objects.create(
                                 item=item,
                                 size=size,
-                                quantity=quantity
+                                quantity=quantity,
+                                price=size_price,  # ADDED
                             )
 
                     # Process images
@@ -58,9 +61,10 @@ def create_post(request):
 
             messages.success(request, 'Post created successfully!')
             return redirect('home')
+        else:
+            print(f"DEBUG: Form errors: {post_form.errors}")
     else:
         post_form = PostForm()
-
 
     return render(request, 'createPost.html', {
         'post_form': post_form,

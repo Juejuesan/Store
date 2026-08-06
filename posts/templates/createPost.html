@@ -128,6 +128,7 @@
 // ============================================
 let itemIndex = 0;
 let sizeOptions = [];
+let selectedSizes = {};
 
 function loadSizes() {
     const categorySelect = document.getElementById('categorySelect');
@@ -217,6 +218,7 @@ function addItem() {
 function removeItem(index) {
     const item = document.getElementById('item' + index);
     if (item) item.remove();
+    delete selectedSizes[index];
 }
 
 function handleFileSelect(input, itemIdx) {
@@ -238,11 +240,13 @@ function handleFileSelect(input, itemIdx) {
 }
 
 function updateAllSizeCharts() {
+    const condition = document.getElementById('conditionSelect').value;
+
     for (let i = 0; i < itemIndex; i++) {
         const sizeChart = document.getElementById('sizeChart' + i);
         const addMoreBtn = document.getElementById('addMoreSizes' + i);
         if (sizeChart && addMoreBtn) {
-            if (sizeOptions.length > 0) {
+            if (condition === 'new' && sizeOptions.length > 0) {
                 sizeChart.style.display = 'block';
                 addMoreBtn.style.display = 'inline-flex';
                 populateSizeButtons(i);
@@ -250,6 +254,7 @@ function updateAllSizeCharts() {
                 sizeChart.style.display = 'none';
                 addMoreBtn.style.display = 'none';
                 document.getElementById('selectedSizes' + i).style.display = 'none';
+                if (selectedSizes[i]) selectedSizes[i] = [];
             }
         }
     }
@@ -265,19 +270,36 @@ function populateSizeButtons(itemIdx) {
         button.type = 'button';
         button.className = 'size-btn';
         button.textContent = size;
+        if (selectedSizes[itemIdx] && selectedSizes[itemIdx].find(s => s.size === size)) {
+            button.classList.add('active');
+        }
         button.onclick = function() { toggleSize(itemIdx, size, button); };
         sizeButtons.appendChild(button);
     });
 }
 
-let selectedSizes = {};
+function saveAllQuantities(itemIdx) {
+    const rows = document.querySelectorAll('#selectedSizes' + itemIdx + ' .size-row');
+    rows.forEach(function(row, idx) {
+        const qtyInput = row.querySelector('.quantity-input');
+        const priceInput = row.querySelector('.price-input');
+        if (selectedSizes[itemIdx] && selectedSizes[itemIdx][idx]) {
+            if (qtyInput) selectedSizes[itemIdx][idx].quantity = parseInt(qtyInput.value) || 0;
+            if (priceInput) selectedSizes[itemIdx][idx].price = parseInt(priceInput.value) || 0;
+        }
+    });
+}
 
 function toggleSize(itemIdx, size, button) {
     if (!selectedSizes[itemIdx]) selectedSizes[itemIdx] = [];
+
+    // Save current values before changing
+    saveAllQuantities(itemIdx);
+
     const index = selectedSizes[itemIdx].findIndex(function(s) { return s.size === size; });
 
     if (index === -1) {
-        selectedSizes[itemIdx].push({size: size, quantity: 0});
+        selectedSizes[itemIdx].push({size: size, quantity: 0, price: 0});
         button.classList.add('active');
     } else {
         selectedSizes[itemIdx].splice(index, 1);
@@ -301,9 +323,12 @@ function updateSelectedSizesDisplay(itemIdx) {
     html += '<input type="hidden" name="size_count_' + itemIdx + '" value="' + selectedSizes[itemIdx].length + '">';
 
     selectedSizes[itemIdx].forEach(function(sizeObj, j) {
+        let qty = sizeObj.quantity || 0;
+        let price = sizeObj.price || '';
         html += '<div class="size-row">' +
             '<span class="size-label">' + sizeObj.size + '</span>' +
-            '<input type="number" class="quantity-input" name="quantity_' + itemIdx + '_' + j + '" placeholder="Qty" min="0" required>' +
+            '<input type="number" class="quantity-input" name="quantity_' + itemIdx + '_' + j + '" placeholder="Qty" value="' + qty + '" min="0" required oninput="saveQuantity(' + itemIdx + ', ' + j + ', this.value)">' +
+            '<input type="number" class="price-input" name="size_price_' + itemIdx + '_' + j + '" placeholder="Price" value="' + price + '" min="0" required oninput="saveSizePrice(' + itemIdx + ', ' + j + ', this.value)">' +
             '<input type="hidden" name="size_' + itemIdx + '_' + j + '" value="' + sizeObj.size + '">' +
             '<button type="button" class="remove-size-btn" onclick="removeSize(' + itemIdx + ', ' + j + ', \'' + sizeObj.size + '\')">' +
             '<i class="fa-solid fa-times"></i></button>' +
@@ -312,8 +337,22 @@ function updateSelectedSizesDisplay(itemIdx) {
     div.innerHTML = html;
 }
 
+function saveQuantity(itemIdx, sizeIndex, value) {
+    if (selectedSizes[itemIdx] && selectedSizes[itemIdx][sizeIndex]) {
+        selectedSizes[itemIdx][sizeIndex].quantity = parseInt(value) || 0;
+    }
+}
+
+function saveSizePrice(itemIdx, sizeIndex, value) {
+    if (selectedSizes[itemIdx] && selectedSizes[itemIdx][sizeIndex]) {
+        selectedSizes[itemIdx][sizeIndex].price = parseInt(value) || 0;
+    }
+}
+
 function removeSize(itemIdx, sizeIndex, size) {
+    saveAllQuantities(itemIdx);
     selectedSizes[itemIdx].splice(sizeIndex, 1);
+
     const sizeButtons = document.getElementById('sizeButtons' + itemIdx);
     if (sizeButtons) {
         const buttons = sizeButtons.getElementsByClassName('size-btn');
@@ -326,7 +365,9 @@ function removeSize(itemIdx, sizeIndex, size) {
 
 function toggleSizeChart(itemIdx) {
     const chart = document.getElementById('sizeChart' + itemIdx);
-    chart.style.display = chart.style.display === 'none' ? 'block' : 'none';
+    if (chart) {
+        chart.style.display = chart.style.display === 'none' ? 'block' : 'none';
+    }
 }
 
 // Mouse glow

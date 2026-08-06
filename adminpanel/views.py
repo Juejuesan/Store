@@ -55,6 +55,11 @@ def dashboard(request):
 # ==========================
 # Pending Posts
 # ==========================
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from posts.models import Post
+
+
 def posts(request):
     pending_posts = Post.objects.filter(
         status="pending"
@@ -74,45 +79,31 @@ def posts(request):
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
+    context = {
+        "post": post,
+    }
+
     return render(
         request,
         "adminpanel/post_detail.html",
-        {
-            "post": post,
-        },
+        context,
     )
 
 
 def approve_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-
-    post.status = "approved"
+    post.status = 'approved'
     post.save()
-
-    Notification.objects.create(
-        user=post.user.user,
-        post=post,
-        message="Your post has been approved.",
-        notification_type="approved",
-    )
-
-    return redirect("posts")
+    messages.success(request, f'Post #{post.id} has been approved.')
+    return redirect('posts')
 
 
 def reject_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-
-    post.status = "rejected"
+    post.status = 'rejected'
     post.save()
-
-    Notification.objects.create(
-        user=post.user.user,
-        post=post,
-        message="Your post has been rejected.",
-        notification_type="rejected",
-    )
-
-    return redirect("posts")
+    messages.success(request, f'Post #{post.id} has been rejected.')
+    return redirect('posts')
 
 from django.contrib.auth.decorators import login_required
 
