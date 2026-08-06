@@ -15,27 +15,39 @@
     <form class="mt-8 space-y-5" method="POST" action="{% url 'user:login' %}" id="loginForm">
         {% csrf_token %}
 
+        <!-- Display Messages / Errors -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-rose-500/20 border border-rose-500/50 rounded-lg p-3 text-rose-400 text-sm">
+                    <i class="fa-solid fa-circle-exclamation mr-2"></i> {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Email or Username Input -->
         <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Username or Email</label>
-            <div class="input-container">
-                <input type="text" name="username" required class="auth-input" placeholder="your_username_or_email">
-                <i class="fa-regular fa-user input-icon"></i>
+            <label class="block text-sm font-medium text-slate-300 mb-1">Email or Username</label>
+            <div class="input-container relative">
+                <input type="text" name="username" required class="auth-input"
+                       placeholder="Email or Username"
+                       value="{{ request.POST.username|default:'' }}">
+                <i class="fa-solid fa-user input-icon"></i>
             </div>
         </div>
 
-        <!-- Login Form -->
-<div class="form-group">
-    <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
-    <div class="input-container relative">
-        <input type="password" name="password" id="loginPasswordInput" required
-               class="auth-input pr-10" placeholder="••••••••">
-        <button type="button" id="toggleLoginPassword"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors">
-            <i class="fa-solid fa-eye"></i>
-        </button>
-        <i class="fa-solid fa-lock input-icon"></i>
-    </div>
-</div>
+        <!-- Password Input -->
+        <div class="form-group">
+            <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
+            <div class="input-container relative">
+                <input type="password" name="password" id="loginPasswordInput" required
+                       class="auth-input pr-10" placeholder="••••••••">
+                <button type="button" id="toggleLoginPassword"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+                <i class="fa-solid fa-lock input-icon"></i>
+            </div>
+        </div>
 
         <button type="submit" id="loginSubmitBtn" class="btn-primary w-full mt-6">
             <i class="fa-solid fa-right-to-bracket"></i> Sign In
@@ -51,62 +63,40 @@
 </div>
 
 <script>
-    const loginPassword = document.getElementById('loginPassword');
-    const loginPassNoti = document.getElementById('loginPassNoti');
-    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
-    setupPasswordToggle('toggleLoginPassword', 'loginPasswordInput');
-
-    loginPassword.addEventListener('input', () => {
-        if (loginPassword.value.length < 8 && loginPassword.value.length > 0) {
-            loginPassNoti.classList.remove('hidden');
-            loginSubmitBtn.disabled = true;
-            loginSubmitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        } else {
-            loginPassNoti.classList.add('hidden');
-            loginSubmitBtn.disabled = false;
-            loginSubmitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
-    });
     function setupPasswordToggle(toggleButtonId, passwordInputId) {
-    const toggleBtn = document.getElementById(toggleButtonId);
-    const passwordInput = document.getElementById(passwordInputId);
+        const toggleBtn = document.getElementById(toggleButtonId);
+        const passwordInput = document.getElementById(passwordInputId);
 
-    if (!toggleBtn || !passwordInput) return;
+        if (!toggleBtn || !passwordInput) return;
 
-    toggleBtn.addEventListener('click', function(e) {
-        e.preventDefault();
+        toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
 
-        // Toggle password visibility
-        const isPassword = passwordInput.type === 'password';
-        passwordInput.type = isPassword ? 'text' : 'password';
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
 
-        // Toggle icon with animation
-        const icon = toggleBtn.querySelector('i');
+            const icon = toggleBtn.querySelector('i');
 
-        // Add rotation animation
-        icon.style.transition = 'transform 0.3s ease';
-        icon.style.transform = 'rotate(360deg)';
+            icon.style.transition = 'transform 0.3s ease';
+            icon.style.transform = 'rotate(360deg)';
 
-        setTimeout(() => {
-            icon.style.transform = 'rotate(0deg)';
+            setTimeout(() => {
+                icon.style.transform = 'rotate(0deg)';
 
-            if (isPassword) {
-                // Showing password
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-                toggleBtn.classList.add('text-blue-400');
-            } else {
-                // Hiding password
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-                toggleBtn.classList.remove('text-blue-400');
-            }
-        }, 150);
-    });
-}
+                if (isPassword) {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                    toggleBtn.classList.add('text-blue-400');
+                } else {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                    toggleBtn.classList.remove('text-blue-400');
+                }
+            }, 150);
+        });
+    }
 
-// Initialize toggles
-setupPasswordToggle('togglePassword1', 'passwordInput');
-setupPasswordToggle('togglePassword2', 'confirmPasswordInput');
+    // Initialize toggle for login password
+    setupPasswordToggle('toggleLoginPassword', 'loginPasswordInput');
 </script>
 {% endblock %}

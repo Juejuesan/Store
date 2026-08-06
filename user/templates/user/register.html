@@ -64,7 +64,6 @@
         <div class="form-group">
             <label class="block text-sm font-medium text-slate-300 mb-1">Name</label>
             <div class="input-container">
-                <!-- FIXED: Added value attribute to preserve input -->
                 <input type="text" name="fullName" required class="auth-input" placeholder="Your Name"
                        value="{{ request.POST.fullName|default:'' }}">
                 <i class="fa-solid fa-user input-icon"></i>
@@ -79,7 +78,6 @@
         <div class="form-group">
             <label class="block text-sm font-medium text-slate-300 mb-1">Username</label>
             <div class="input-container">
-                <!-- FIXED: Added value attribute -->
                 <input type="text" name="username" required class="auth-input" placeholder="johndoe"
                        value="{{ request.POST.username|default:'' }}">
                 <i class="fa-solid fa-at input-icon"></i>
@@ -91,7 +89,6 @@
         <div class="form-group">
             <label class="block text-sm font-medium text-slate-300 mb-1">Email Address</label>
             <div class="input-container">
-                <!-- FIXED: Added value attribute -->
                 <input type="email" name="email" required class="auth-input" placeholder="john@example.com"
                        value="{{ request.POST.email|default:'' }}">
                 <i class="fa-regular fa-envelope input-icon"></i>
@@ -106,11 +103,13 @@
         <div class="form-group">
             <label class="block text-sm font-medium text-slate-300 mb-1">Phone Number</label>
             <div class="input-container">
-                <!-- FIXED: Added value attribute -->
-                <input type="text" name="phone_number" required class="auth-input" placeholder="09xxxxxxxxx" maxlength="11"  inputmode="numeric"
+                <input type="tel" name="phone_number" id="phone_number" required class="auth-input"
+                       placeholder="09xxxxxxxxx" maxlength="11" inputmode="numeric"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, ''); validatePhone();"
                        value="{{ request.POST.phone_number|default:'' }}">
                 <i class="fa-solid fa-phone input-icon"></i>
             </div>
+            <p id="phoneError" class="text-rose-400 text-xs mt-1 hidden"></p>
             {% if form.phone_number.errors %}
                 <p class="text-rose-400 text-xs mt-1">{{ form.phone_number.errors.0 }}</p>
             {% endif %}
@@ -118,11 +117,10 @@
         <div class="form-group">
             <label class="block text-sm font-medium text-slate-300 mb-1">Gender</label>
             <div class="input-container">
-                <!-- FIXED: Added selected attribute for preservation -->
-                <select name="gender" required class="auth-input">
-                    <option value="" disabled {% if not request.POST.gender %}selected{% endif %}>Select Gender</option>
-                    <option value="M" {% if request.POST.gender == 'M' %}selected{% endif %}>Male</option>
-                    <option value="F" {% if request.POST.gender == 'F' %}selected{% endif %}>Female</option>
+               <select name="gender" required class="auth-input">
+                        <option value="" disabled {% if not request.POST.gender %}selected{% endif %}>Select Gender</option>
+                        <option value="M" {% if request.POST.gender == 'M' %}selected{% endif %}>Male</option>
+                        <option value="F" {% if request.POST.gender == 'F' %}selected{% endif %}>Female</option>
                 </select>
                 <i class="fa-solid fa-venus-mars input-icon"></i>
             </div>
@@ -135,7 +133,6 @@
     <div class="form-group">
         <label class="block text-sm font-medium text-slate-300 mb-1">Address</label>
         <div class="input-container">
-            <!-- FIXED: Added value attribute -->
             <input type="text" name="address" id="addressInput" maxlength="200" required class="auth-input"
                    placeholder="No.123, Street, Yangon, Myanmar"
                    value="{{ request.POST.address|default:'' }}">
@@ -215,13 +212,11 @@
 </form>
 
 <script>
-// Update address counter on page load if there's existing value
 document.addEventListener('DOMContentLoaded', function() {
     const addressInput = document.getElementById('addressInput');
     const addressCount = document.getElementById('addressCount');
 
     if (addressInput && addressCount) {
-        // Set initial count from existing value
         const length = addressInput.value.length;
         addressCount.textContent = `${length} / 200`;
 
@@ -231,11 +226,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Also trigger password validation if there are values (from autocomplete)
     if (passwordInput.value || confirmInput.value) {
         validatePasswords();
     }
+
+    validatePhone();
 });
+
+function validatePhone() {
+    const phoneInput = document.getElementById('phone_number');
+    const phoneError = document.getElementById('phoneError');
+    if (!phoneInput || !phoneError) return false;
+
+    const val = phoneInput.value;
+
+    if (val.length > 0) {
+        if (!val.startsWith('09')) {
+            phoneError.textContent = "Phone number must start with 09";
+            phoneError.classList.remove('hidden');
+            return false;
+        } else if (val.length < 9 || val.length > 11) {
+            phoneError.textContent = "Phone number must be 9 to 11 digits";
+            phoneError.classList.remove('hidden');
+            return false;
+        } else {
+            phoneError.classList.add('hidden');
+            return true;
+        }
+    } else {
+        phoneError.classList.add('hidden');
+        return false;
+    }
+}
 
 const passwordInput = document.getElementById('passwordInput');
 const confirmInput = document.getElementById('confirmPasswordInput');
@@ -247,7 +269,6 @@ const specCheck = document.getElementById('specCheck');
 const matchCheck = document.getElementById('matchCheck');
 const addressCount = document.getElementById('addressCount');
 
-// Address Counter
 if (addressInput && addressCount) {
     addressInput.addEventListener('input', () => {
         const length = addressInput.value.length;
@@ -263,7 +284,6 @@ if (addressInput && addressCount) {
     });
 }
 
-// Password Validation
 function validatePasswords() {
     const password = passwordInput.value;
     const confirm = confirmInput.value;
@@ -271,8 +291,8 @@ function validatePasswords() {
     const isLongEnough = password.length >= 8;
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
     const passwordsMatch = password === confirm && confirm !== "";
+    const isPhoneValid = validatePhone();
 
-    // Length Check
     if (isLongEnough) {
         lenCheck.classList.remove('text-rose-400');
         lenCheck.classList.add('text-emerald-400');
@@ -283,7 +303,6 @@ function validatePasswords() {
         lenCheck.querySelector('i').className = "fa-solid fa-circle-xmark";
     }
 
-    // Special Character Check
     if (hasSpecialChar) {
         specCheck.classList.remove('text-rose-400');
         specCheck.classList.add('text-emerald-400');
@@ -294,7 +313,6 @@ function validatePasswords() {
         specCheck.querySelector('i').className = "fa-solid fa-circle-xmark";
     }
 
-    // Match Check
     if (passwordsMatch) {
         matchCheck.classList.remove('text-rose-400');
         matchCheck.classList.add('text-emerald-400');
@@ -305,8 +323,7 @@ function validatePasswords() {
         matchCheck.querySelector('i').className = "fa-solid fa-circle-xmark";
     }
 
-    // Enable Button
-    if (isLongEnough && hasSpecialChar && passwordsMatch) {
+    if (isLongEnough && hasSpecialChar && passwordsMatch && isPhoneValid) {
         submitBtn.disabled = false;
         submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
     } else {
@@ -317,10 +334,7 @@ function validatePasswords() {
 
 passwordInput.addEventListener('input', validatePasswords);
 confirmInput.addEventListener('input', validatePasswords);
-
-// =============================
-// Profile Photo Preview
-// =============================
+document.getElementById('phone_number').addEventListener('input', validatePasswords);
 
 const profileInput = document.getElementById("profileInput");
 const previewImage = document.getElementById("previewImage");
@@ -334,21 +348,18 @@ profileInput.addEventListener("change", function () {
         return;
     }
 
-    // Check image type
     if (!file.type.startsWith("image/")) {
         alert("Please select an image file.");
         this.value = "";
         return;
     }
 
-    // Maximum 2MB
     if (file.size > 2 * 1024 * 1024) {
         alert("Image size must be less than 2 MB.");
         this.value = "";
         return;
     }
 
-    // Display filename
     fileName.innerHTML = '<span class="text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i>Profile photo selected</span>';
 
     const reader = new FileReader();
@@ -359,9 +370,6 @@ profileInput.addEventListener("change", function () {
     };
     reader.readAsDataURL(file);
 });
-// =============================
-// Password Toggle Visibility (Enhanced)
-// =============================
 
 function setupPasswordToggle(toggleButtonId, passwordInputId) {
     const toggleBtn = document.getElementById(toggleButtonId);
@@ -372,14 +380,11 @@ function setupPasswordToggle(toggleButtonId, passwordInputId) {
     toggleBtn.addEventListener('click', function(e) {
         e.preventDefault();
 
-        // Toggle password visibility
         const isPassword = passwordInput.type === 'password';
         passwordInput.type = isPassword ? 'text' : 'password';
 
-        // Toggle icon with animation
         const icon = toggleBtn.querySelector('i');
 
-        // Add rotation animation
         icon.style.transition = 'transform 0.3s ease';
         icon.style.transform = 'rotate(360deg)';
 
@@ -387,12 +392,10 @@ function setupPasswordToggle(toggleButtonId, passwordInputId) {
             icon.style.transform = 'rotate(0deg)';
 
             if (isPassword) {
-                // Showing password
                 icon.classList.remove('fa-eye');
                 icon.classList.add('fa-eye-slash');
                 toggleBtn.classList.add('text-blue-400');
             } else {
-                // Hiding password
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
                 toggleBtn.classList.remove('text-blue-400');
@@ -401,7 +404,6 @@ function setupPasswordToggle(toggleButtonId, passwordInputId) {
     });
 }
 
-// Initialize toggles
 setupPasswordToggle('togglePassword1', 'passwordInput');
 setupPasswordToggle('togglePassword2', 'confirmPasswordInput');
 </script>

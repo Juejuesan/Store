@@ -26,6 +26,7 @@
     ================================================== -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/header-footer.css' %}">
+
 </head>
 
 <body>
@@ -107,28 +108,116 @@
                         {% endif %}
                     </li>
 
-                    <!-- PROFILE -->
-                    <li class="nav-item">
-                        {% if request.user.is_authenticated %}
-                            <a class="nav-link profile-link {% if request.path == '/user/dashboard/' %}active{% endif %}" href="{% url 'user:dashboard' %}">
-                                {% if request.user.profile.profile_pic %}
-                                    <img src="{{ request.user.profile.profile_pic.url }}"
-                                         style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #1565C0;">
-                                {% else %}
-                                    <i class="fa-solid fa-circle-user nav-profile-icon"></i>
-                                {% endif %}
-                                <span class="profile-name">
-                                    {{ request.user.username }}
-                                </span>
-                            </a>
-                        {% else %}
-                            <a class="nav-link" href="{% url 'user:register' %}">
-                                <i class="fa-solid fa-user"></i>
-                                Profile
-                            </a>
-                        {% endif %}
-                    </li>
+<link rel="stylesheet" href="{% static 'css/profile_dropdown.css' %}?v=3.0">
 
+<!-- PROFILE ITEM IN NAVBAR -->
+<li class="nav-item profile-dropdown-container">
+    {% if request.user.is_authenticated %}
+        <!-- Trigger Link -->
+        <a class="nav-link profile-trigger-link" href="#">
+            {% if request.user.profile.profile_pic %}
+                <img src="{{ request.user.profile.profile_pic.url }}" class="profile-trigger-avatar" alt="Avatar">
+            {% else %}
+                <i class="fa-solid fa-circle-user nav-profile-icon"></i>
+            {% endif %}
+            <span class="profile-name">{{ request.user.username }}</span>
+            <i class="fa-solid fa-chevron-down profile-trigger-chevron"></i>
+        </a>
+
+        <!-- Dropdown Box -->
+        <div class="profile-menu-card">
+            <!-- Header Section -->
+            <div class="profile-card-header">
+                {% if request.user.profile.profile_pic %}
+                    <img src="{{ request.user.profile.profile_pic.url }}" class="profile-card-avatar" alt="Profile">
+                {% else %}
+                    <div class="profile-card-avatar-placeholder">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                {% endif %}
+
+                <div class="profile-card-info">
+                    <h4 class="profile-card-name">
+                        {{ request.user.profile.fullName|default:request.user.username }}
+                    </h4>
+                    <p class="profile-card-username">@{{ request.user.username }}</p>
+                </div>
+            </div>
+
+            <!-- Balance Display with Ks Unit -->
+            <div class="profile-card-balance-box">
+                <span class="profile-card-balance-label">Balance</span>
+                <span class="profile-card-balance-value">
+                    {{ request.user.profile.balance|default:"0" }} Ks
+                </span>
+            </div>
+
+            <!-- Options Section -->
+            <div class="profile-card-links">
+                <a href="{% url 'user:dashboard' %}" class="profile-card-item">
+                    <div class="profile-card-item-left">
+                        <div class="icon-badge icon-badge-blue">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <span class="profile-card-item-title">Withdraw & Deposit</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right profile-card-item-arrow"></i>
+                </a>
+
+                <a href="{% url 'user:dashboard' %}" class="profile-card-item">
+                    <div class="profile-card-item-left">
+                        <div class="icon-badge icon-badge-purple">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+                        <span class="profile-card-item-title">Post History</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right profile-card-item-arrow"></i>
+                </a>
+
+                <a href="{% url 'user:dashboard' %}" class="profile-card-item">
+                    <div class="profile-card-item-left">
+                        <div class="icon-badge icon-badge-green">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </div>
+                        <span class="profile-card-item-title">Order History</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right profile-card-item-arrow"></i>
+                </a>
+
+                <!-- Edit Profile Option -->
+                <a href="{% url 'user:dashboard' %}" class="profile-card-item">
+                    <div class="profile-card-item-left">
+                        <div class="icon-badge icon-badge-orange">
+                            <i class="fa-solid fa-user-gear"></i>
+                        </div>
+                        <span class="profile-card-item-title">Edit Profile</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right profile-card-item-arrow"></i>
+                </a>
+            </div>
+
+            <!-- Footer Section (Logout) -->
+            <div class="profile-card-footer">
+                <a href="{% url 'user:logout' %}" class="profile-card-item logout-card-item">
+                    <div class="profile-card-item-left">
+                        <div class="icon-badge icon-badge-red">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </div>
+                        <span class="profile-card-item-title">Log Out</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right profile-card-item-arrow"></i>
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <a class="nav-link" href="{% url 'user:register' %}">
+            <i class="fa-solid fa-user"></i> Profile
+        </a>
+    {% endif %}
+</li>
+
+<!-- Link JS with cache-busting version query -->
+<script src="{% static 'js/profile_dropdown.js' %}?v=3.0"></script>
                 </ul>
             </div>
         </div>
@@ -412,6 +501,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/about.js' %}"></script>
     <script src="{% static 'js/header-footer.js' %}"></script>
+
 </body>
 
 </html>
