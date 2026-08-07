@@ -1,202 +1,434 @@
-/**
- * ==========================================================================
- * Trusty Shop - Premium About Page Interactive Engine
- * ==========================================================================
- */
+/*=====================================================
+    TRUSTY SHOP ABOUT PAGE
+======================================================*/
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
-    // 1. DYNAMIC CURSOR GLOW EFFECT (DESKTOP ONLY)
-    const cursorGlow = document.querySelector(".cursor-glow");
-    if (cursorGlow) {
-        window.addEventListener("mousemove", (e) => {
-            cursorGlow.style.left = `${e.clientX}px`;
-            cursorGlow.style.top = `${e.clientY}px`;
+    /*=====================================================
+        CURSOR GLOW
+    ======================================================*/
+
+    const cursor = document.querySelector(".cursor-glow");
+
+    if(cursor){
+
+        document.addEventListener("mousemove",(e)=>{
+
+            cursor.style.left = e.clientX + "px";
+            cursor.style.top = e.clientY + "px";
+
         });
+
     }
 
-    // 2. SCROLL PROGRESS & TIMELINE LINE FILL TRACKER
-    const progressBar = document.getElementById("progressBar");
-    const timelineFill = document.getElementById("timelineFill");
 
-    window.addEventListener("scroll", () => {
-        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+    /*=====================================================
+        NAVBAR SCROLL
+    ======================================================*/
 
-        // Update top global reading bar
-        if (progressBar) progressBar.style.width = `${scrolled}%`;
+    const navbar = document.querySelector(".cute-navbar");
 
-        // Update vertical timeline progression track
-        if (timelineFill) {
-            const timelineSection = document.getElementById("how-it-works");
-            if (timelineSection) {
-                const sectionTop = timelineSection.offsetTop;
-                const sectionHeight = timelineSection.offsetHeight;
-                const scrollPositionWithinSection = (winScroll + window.innerHeight / 2) - sectionTop;
+    function navbarScroll(){
 
-                let timelineProgress = (scrollPositionWithinSection / sectionHeight) * 100;
-                timelineProgress = Math.max(0, Math.min(timelineProgress, 100)); // Clamp between 0-100%
-                timelineFill.style.height = `${timelineProgress}%`;
-            }
+        if(window.scrollY>50){
+
+            navbar.classList.add("scrolled");
+
         }
-    });
+        else{
 
-    // 3. REVEAL-ON-SCROLL & ANIMATED COUNTERS ENGINE (INTERSECTION OBSERVER)
-    const revealElements = document.querySelectorAll(".reveal-on-scroll");
+            navbar.classList.remove("scrolled");
 
-    const countUp = (counterNode) => {
-        const target = parseInt(counterNode.getAttribute("data-target"), 10);
-        const duration = 2000; // 2 seconds execution
-        const frameRate = 1000 / 60; // 60 FPS
-        const totalFrames = Math.round(duration / frameRate);
-        let currentFrame = 0;
+        }
 
-        const animate = () => {
-            currentFrame++;
-            const progress = currentFrame / totalFrames;
-            // Ease-out quad equation for cleaner scaling transitions
-            const easeProgress = progress * (2 - progress);
-            const currentValue = Math.round(easeProgress * target);
+    }
 
-            counterNode.innerText = currentValue.toLocaleString();
+    navbarScroll();
 
-            if (currentFrame < totalFrames) {
-                requestAnimationFrame(animate);
-            } else {
-                counterNode.innerText = target.toLocaleString();
-            }
-        };
-        requestAnimationFrame(animate);
-    };
+    window.addEventListener("scroll",navbarScroll);
 
-    const intersectionObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Add the CSS engine class to transition visibility elements
+
+    /*=====================================================
+        SCROLL PROGRESS
+    ======================================================*/
+
+    const progressBar=document.getElementById("progressBar");
+
+    function progress(){
+
+        const scrollTop=window.scrollY;
+
+        const height=document.documentElement.scrollHeight-window.innerHeight;
+
+        const percent=(scrollTop/height)*100;
+
+        if(progressBar){
+
+            progressBar.style.width=percent+"%";
+
+        }
+
+    }
+
+    progress();
+
+    window.addEventListener("scroll",progress);
+
+
+
+    /*=====================================================
+        REVEAL ON SCROLL
+    ======================================================*/
+
+    const reveals=document.querySelectorAll(".reveal-on-scroll");
+
+    const revealObserver=new IntersectionObserver((entries)=>{
+
+        entries.forEach(entry=>{
+
+            if(entry.isIntersecting){
+
                 entry.target.classList.add("revealed");
 
-                // If the dynamic container item is a timeline node, trigger active state
-                if (entry.target.classList.contains("timeline-item")) {
-                    entry.target.classList.add("item-active");
-                }
-
-                // Fire counting mechanics if nested stat counters are located
-                const counters = entry.target.querySelectorAll(".counter-number");
-                counters.forEach(counter => {
-                    if (!counter.classList.contains("counted")) {
-                        counter.classList.add("counted");
-                        countUp(counter);
-                    }
-                });
-
-                // Unobserve clean static elements once fully animated to save process cycles
-                if (!entry.target.classList.contains("timeline-item") && counters.length === 0) {
-                    observer.unobserve(entry.target);
-                }
             }
-        });
-    }, { threshold: 0.15 });
 
-    revealElements.forEach(el => intersectionObserver.observe(el));
-
-    // 4. PREMIUM USER TESTIMONIAL CAROUSEL SLIDER ENGINE
-    const slider = document.getElementById("testimonialSlider");
-    const prevBtn = document.getElementById("sliderPrev");
-    const nextBtn = document.getElementById("sliderNext");
-
-    if (slider && prevBtn && nextBtn) {
-        let currentIndex = 0;
-
-        const getVisibleCards = () => {
-            if (window.innerWidth <= 768) return 1;
-            if (window.innerWidth <= 992) return 2;
-            return 3;
-        };
-
-        const updateSliderPosition = () => {
-            const cards = slider.querySelectorAll(".testimonial-card");
-            const visibleCards = getVisibleCards();
-            const totalCards = cards.length;
-
-            // Limit limits boundaries cleanly
-            if (currentIndex > totalCards - visibleCards) {
-                currentIndex = totalCards - visibleCards;
-            }
-            if (currentIndex < 0) currentIndex = 0;
-
-            const cardWidth = cards[0].offsetWidth;
-            const gap = parseFloat(window.getComputedStyle(slider).gap) || 0;
-
-            // Compute translate vector
-            const translateValue = currentIndex * (cardWidth + gap);
-            slider.style.transform = `translateX(-${translateValue}px)`;
-        };
-
-        nextBtn.addEventListener("click", () => {
-            const cards = slider.querySelectorAll(".testimonial-card");
-            if (currentIndex < cards.length - getVisibleCards()) {
-                currentIndex++;
-                updateSliderPosition();
-            }
         });
 
-        prevBtn.addEventListener("click", () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateSliderPosition();
-            }
-        });
+    },{
 
-        window.addEventListener("resize", updateSliderPosition);
-    }
+        threshold:.18
 
-    // 5. PREMIUM FAQ SMOOTH SMOOTH COLLAPSE ACCORDION TRACKER
-    const faqItems = document.querySelectorAll(".faq-item");
-
-    faqItems.forEach(item => {
-        const trigger = item.querySelector(".faq-trigger");
-        const body = item.querySelector(".faq-body");
-
-        // Set initial heights for active elements
-        if (item.classList.contains("active") && body) {
-            body.style.maxHeight = `${body.scrollHeight}px`;
-        }
-
-        trigger.addEventListener("click", () => {
-            const isActive = item.classList.contains("active");
-
-            // Close all open panels clean (Accordion Style rule execution)
-            faqItems.forEach(innerItem => {
-                innerItem.classList.remove("active");
-                const innerBody = innerItem.querySelector(".faq-body");
-                if (innerBody) innerBody.style.maxHeight = null;
-            });
-
-            // Toggle target element state
-            if (!isActive) {
-                item.classList.add("active");
-                body.style.maxHeight = `${body.scrollHeight}px`;
-            }
-        });
     });
 
-    // 6. FLOATING BACK-TO-TOP CONTROL TOGGLE NODE
-    const backToTopBtn = document.getElementById("backToTop");
-    if (backToTopBtn) {
-        window.addEventListener("scroll", () => {
-            if (window.scrollY > 500) {
-                backToTopBtn.classList.add("btn-visible");
-            } else {
-                backToTopBtn.classList.remove("btn-visible");
-            }
+    reveals.forEach(item=>{
+
+        revealObserver.observe(item);
+
+    });
+
+
+
+    /*=====================================================
+        COUNTER
+    ======================================================*/
+
+    const counters=document.querySelectorAll(".counter-number");
+
+    let counted=false;
+
+    function runCounter(){
+
+        if(counted) return;
+
+        const trigger=document.querySelector(".stats-section");
+
+        if(!trigger) return;
+
+        const top=trigger.getBoundingClientRect().top;
+
+        if(top<window.innerHeight-120){
+
+            counted=true;
+
+            counters.forEach(counter=>{
+
+                const target=+counter.dataset.target;
+
+                let count=0;
+
+                const increment=target/120;
+
+                function update(){
+
+                    count+=increment;
+
+                    if(count<target){
+
+                        counter.innerText=Math.floor(count).toLocaleString();
+
+                        requestAnimationFrame(update);
+
+                    }
+
+                    else{
+
+                        counter.innerText=target.toLocaleString();
+
+                    }
+
+                }
+
+                update();
+
+            });
+
+        }
+
+    }
+
+    runCounter();
+
+    window.addEventListener("scroll",runCounter);
+
+
+
+    /*=====================================================
+        TIMELINE FILL
+    ======================================================*/
+
+    const fill=document.getElementById("timelineFill");
+
+    const timeline=document.querySelector(".timeline-wrapper");
+
+    function timelineAnimation(){
+
+        if(!fill || !timeline) return;
+
+        const rect=timeline.getBoundingClientRect();
+
+        const total=timeline.offsetHeight;
+
+        const visible=window.innerHeight-rect.top;
+
+        let percent=(visible/total)*100;
+
+        percent=Math.max(0,Math.min(percent,100));
+
+        fill.style.height=percent+"%";
+
+    }
+
+    timelineAnimation();
+
+    window.addEventListener("scroll",timelineAnimation);
+
+
+
+    /*=====================================================
+        FAQ
+    ======================================================*/
+
+    const faq=document.querySelectorAll(".faq-item");
+
+    faq.forEach(item=>{
+
+        const trigger=item.querySelector(".faq-trigger");
+
+        trigger.addEventListener("click",()=>{
+
+            faq.forEach(i=>{
+
+                if(i!==item){
+
+                    i.classList.remove("active");
+
+                }
+
+            });
+
+            item.classList.toggle("active");
+
         });
 
-        backToTopBtn.addEventListener("click", () => {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-        });
+    });
+
+
+
+    /*=====================================================
+        BACK TO TOP
+    ======================================================*/
+
+    const topBtn=document.getElementById("backToTop");
+
+    function topButton(){
+
+        if(!topBtn) return;
+
+        if(window.scrollY>500){
+
+            topBtn.classList.add("btn-visible");
+
+        }
+
+        else{
+
+            topBtn.classList.remove("btn-visible");
+
+        }
+
     }
+
+    topButton();
+
+    window.addEventListener("scroll",topButton);
+
+    if(topBtn){
+
+        topBtn.addEventListener("click",()=>{
+
+            window.scrollTo({
+
+                top:0,
+
+                behavior:"smooth"
+
+            });
+
+        });
+
+    }
+
+
+
+    /*=====================================================
+        HERO TYPE EFFECT
+    ======================================================*/
+
+    const typing=document.querySelector(".type-effect");
+
+    if(typing){
+
+        const words=[
+
+            "Buyers & Sellers",
+
+            "Safe Transactions",
+
+            "Secure Shopping",
+
+            "Trusted Marketplace"
+
+        ];
+
+        let wordIndex=0;
+
+        let charIndex=0;
+
+        let deleting=false;
+
+        function type(){
+
+            const current=words[wordIndex];
+
+            if(!deleting){
+
+                typing.textContent=current.substring(0,charIndex);
+
+                charIndex++;
+
+                if(charIndex>current.length){
+
+                    deleting=true;
+
+                    setTimeout(type,1800);
+
+                    return;
+
+                }
+
+            }
+
+            else{
+
+                typing.textContent=current.substring(0,charIndex);
+
+                charIndex--;
+
+                if(charIndex===0){
+
+                    deleting=false;
+
+                    wordIndex++;
+
+                    if(wordIndex>=words.length){
+
+                        wordIndex=0;
+
+                    }
+
+                }
+
+            }
+
+            setTimeout(type,deleting?60:120);
+
+        }
+
+        type();
+
+    }
+
+
+
+    /*=====================================================
+        FLOATING CARDS
+    ======================================================*/
+
+    const cards=document.querySelectorAll(".glass-card");
+
+    cards.forEach(card=>{
+
+        card.addEventListener("mousemove",(e)=>{
+
+            const rect=card.getBoundingClientRect();
+
+            const x=e.clientX-rect.left;
+
+            const y=e.clientY-rect.top;
+
+            const rotateY=((x/rect.width)-0.5)*8;
+
+            const rotateX=((rect.height/2-y)/rect.height)*8;
+
+            card.style.transform=
+
+                `perspective(900px)
+                 rotateX(${rotateX}deg)
+                 rotateY(${rotateY}deg)
+                 translateY(-8px)`;
+
+        });
+
+        card.addEventListener("mouseleave",()=>{
+
+            card.style.transform="";
+
+        });
+
+    });
+
+
+
+    /*=====================================================
+        SMOOTH SCROLL
+    ======================================================*/
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
+
+        anchor.addEventListener("click",function(e){
+
+            const id=this.getAttribute("href");
+
+            if(id==="#" || id==="") return;
+
+            const target=document.querySelector(id);
+
+            if(target){
+
+                e.preventDefault();
+
+                window.scrollTo({
+
+                    top:target.offsetTop-90,
+
+                    behavior:"smooth"
+
+                });
+
+            }
+
+        });
+
+    });
+
 });

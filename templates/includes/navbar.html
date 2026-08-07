@@ -30,8 +30,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                                 Home
                             </a>
                         {% else %}
-                            <a class="nav-link {% if request.resolver_match.url_name == 'welcome' %}active{% endif %}" href="{% url 'welcome' %}">
-                                <i class="fa-solid fa-house"></i>
+                            <a class="nav-link" href="{% url 'welcome' %}">                                <i class="fa-solid fa-house"></i>
                                 Home
                             </a>
                         {% endif %}
@@ -43,7 +42,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
     {% if request.user.is_authenticated %}
 
-    <a class="nav-link position-relative"
+   <a class="nav-link {% if request.path == '/notifications/' %}active{% endif %}"
        href="{% url 'notifications' %}">
 
         <i class="fa-solid fa-bell"></i>
@@ -78,6 +77,17 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     {% endif %}
 
 </li>
+
+                    <!-- ABOUT -->
+
+<li class="nav-item">
+    <a class="nav-link {% if request.path == '/about/' %}active{% endif %}"
+       href="{% url 'about' %}">
+        <i class="fa-solid fa-circle-info"></i>
+        About
+    </a>
+</li>
+
                     <!-- CART -->
                     <li class="nav-item">
                         {% if request.user.is_authenticated %}

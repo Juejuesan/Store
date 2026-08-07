@@ -216,193 +216,408 @@
 
 <script>
 // Update address counter on page load if there's existing value
-document.addEventListener('DOMContentLoaded', function() {
-    const addressInput = document.getElementById('addressInput');
-    const addressCount = document.getElementById('addressCount');
+document.addEventListener("DOMContentLoaded", () => {
 
-    if (addressInput && addressCount) {
-        // Set initial count from existing value
-        const length = addressInput.value.length;
-        addressCount.textContent = `${length} / 200`;
+    /* ===========================================
+       ELEMENTS
+    =========================================== */
 
-        if (length >= 200) {
-            addressCount.classList.remove('text-slate-500');
-            addressCount.classList.add('text-rose-400');
-        }
-    }
+    const form = document.getElementById("registerForm");
 
-    // Also trigger password validation if there are values (from autocomplete)
-    if (passwordInput.value || confirmInput.value) {
-        validatePasswords();
-    }
-});
+    const passwordInput = document.getElementById("passwordInput");
+    const confirmInput = document.getElementById("confirmPasswordInput");
 
-const passwordInput = document.getElementById('passwordInput');
-const confirmInput = document.getElementById('confirmPasswordInput');
-const addressInput = document.getElementById('addressInput');
-const submitBtn = document.getElementById('submitBtn');
+    const submitBtn = document.getElementById("submitBtn");
 
-const lenCheck = document.getElementById('lenCheck');
-const specCheck = document.getElementById('specCheck');
-const matchCheck = document.getElementById('matchCheck');
-const addressCount = document.getElementById('addressCount');
+    const addressInput = document.getElementById("addressInput");
+    const addressCount = document.getElementById("addressCount");
 
-// Address Counter
-if (addressInput && addressCount) {
-    addressInput.addEventListener('input', () => {
-        const length = addressInput.value.length;
-        addressCount.textContent = `${length} / 200`;
+    const profileInput = document.getElementById("profileInput");
+    const previewImage = document.getElementById("previewImage");
+    const defaultIcon = document.getElementById("defaultIcon");
+    const fileName = document.getElementById("fileName");
 
-        if (length >= 200) {
-            addressCount.classList.remove('text-slate-500');
-            addressCount.classList.add('text-rose-400');
-        } else {
-            addressCount.classList.remove('text-rose-400');
-            addressCount.classList.add('text-slate-500');
-        }
-    });
-}
+    const phoneInput = document.querySelector('input[name="phone_number"]');
 
-// Password Validation
-function validatePasswords() {
-    const password = passwordInput.value;
-    const confirm = confirmInput.value;
+    const lenCheck = document.getElementById("lenCheck");
+    const specCheck = document.getElementById("specCheck");
+    const matchCheck = document.getElementById("matchCheck");
 
-    const isLongEnough = password.length >= 8;
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const passwordsMatch = password === confirm && confirm !== "";
 
-    // Length Check
-    if (isLongEnough) {
-        lenCheck.classList.remove('text-rose-400');
-        lenCheck.classList.add('text-emerald-400');
-        lenCheck.querySelector('i').className = "fa-solid fa-circle-check";
-    } else {
-        lenCheck.classList.remove('text-emerald-400');
-        lenCheck.classList.add('text-rose-400');
-        lenCheck.querySelector('i').className = "fa-solid fa-circle-xmark";
-    }
+    /* ===========================================
+       ADDRESS COUNTER
+    =========================================== */
 
-    // Special Character Check
-    if (hasSpecialChar) {
-        specCheck.classList.remove('text-rose-400');
-        specCheck.classList.add('text-emerald-400');
-        specCheck.querySelector('i').className = "fa-solid fa-circle-check";
-    } else {
-        specCheck.classList.remove('text-emerald-400');
-        specCheck.classList.add('text-rose-400');
-        specCheck.querySelector('i').className = "fa-solid fa-circle-xmark";
-    }
+    if(addressInput){
 
-    // Match Check
-    if (passwordsMatch) {
-        matchCheck.classList.remove('text-rose-400');
-        matchCheck.classList.add('text-emerald-400');
-        matchCheck.querySelector('i').className = "fa-solid fa-circle-check";
-    } else {
-        matchCheck.classList.remove('text-emerald-400');
-        matchCheck.classList.add('text-rose-400');
-        matchCheck.querySelector('i').className = "fa-solid fa-circle-xmark";
-    }
+        updateCounter();
 
-    // Enable Button
-    if (isLongEnough && hasSpecialChar && passwordsMatch) {
-        submitBtn.disabled = false;
-        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-    } else {
-        submitBtn.disabled = true;
-        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-    }
-}
+        addressInput.addEventListener("input", updateCounter);
 
-passwordInput.addEventListener('input', validatePasswords);
-confirmInput.addEventListener('input', validatePasswords);
+        function updateCounter(){
 
-// =============================
-// Profile Photo Preview
-// =============================
+            const len = addressInput.value.length;
 
-const profileInput = document.getElementById("profileInput");
-const previewImage = document.getElementById("previewImage");
-const defaultIcon = document.getElementById("defaultIcon");
-const fileName = document.getElementById("fileName");
+            addressCount.textContent = `${len} / 200`;
 
-profileInput.addEventListener("change", function () {
-    const file = this.files[0];
+            if(len > 180){
 
-    if (!file) {
-        return;
-    }
+                addressCount.classList.add("text-rose-400");
 
-    // Check image type
-    if (!file.type.startsWith("image/")) {
-        alert("Please select an image file.");
-        this.value = "";
-        return;
-    }
+            }else{
 
-    // Maximum 2MB
-    if (file.size > 2 * 1024 * 1024) {
-        alert("Image size must be less than 2 MB.");
-        this.value = "";
-        return;
-    }
+                addressCount.classList.remove("text-rose-400");
 
-    // Display filename
-    fileName.innerHTML = '<span class="text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i>Profile photo selected</span>';
-
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        previewImage.src = e.target.result;
-        previewImage.classList.remove("hidden");
-        defaultIcon.classList.add("hidden");
-    };
-    reader.readAsDataURL(file);
-});
-// =============================
-// Password Toggle Visibility (Enhanced)
-// =============================
-
-function setupPasswordToggle(toggleButtonId, passwordInputId) {
-    const toggleBtn = document.getElementById(toggleButtonId);
-    const passwordInput = document.getElementById(passwordInputId);
-
-    if (!toggleBtn || !passwordInput) return;
-
-    toggleBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        // Toggle password visibility
-        const isPassword = passwordInput.type === 'password';
-        passwordInput.type = isPassword ? 'text' : 'password';
-
-        // Toggle icon with animation
-        const icon = toggleBtn.querySelector('i');
-
-        // Add rotation animation
-        icon.style.transition = 'transform 0.3s ease';
-        icon.style.transform = 'rotate(360deg)';
-
-        setTimeout(() => {
-            icon.style.transform = 'rotate(0deg)';
-
-            if (isPassword) {
-                // Showing password
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-                toggleBtn.classList.add('text-blue-400');
-            } else {
-                // Hiding password
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-                toggleBtn.classList.remove('text-blue-400');
             }
-        }, 150);
-    });
-}
 
-// Initialize toggles
-setupPasswordToggle('togglePassword1', 'passwordInput');
-setupPasswordToggle('togglePassword2', 'confirmPasswordInput');
+        }
+
+    }
+
+
+
+    /* ===========================================
+       PHONE NUMBER
+    =========================================== */
+
+    if(phoneInput){
+
+        phoneInput.addEventListener("input", function(){
+
+            this.value=this.value.replace(/\D/g,'');
+
+        });
+
+    }
+
+
+
+    /* ===========================================
+       PROFILE IMAGE
+    =========================================== */
+
+    if(profileInput){
+
+        profileInput.addEventListener("change",function(){
+
+            const file=this.files[0];
+
+            if(!file) return;
+
+            if(!file.type.startsWith("image/")){
+
+                alert("Please choose image.");
+
+                this.value="";
+
+                return;
+
+            }
+
+            if(file.size > 2*1024*1024){
+
+                alert("Maximum image size is 2MB.");
+
+                this.value="";
+
+                return;
+
+            }
+
+            fileName.innerHTML=
+            '<span class="text-emerald-400"><i class="fa-solid fa-circle-check"></i> Profile Photo Selected</span>';
+
+            const reader=new FileReader();
+
+            reader.onload=function(e){
+
+                previewImage.src=e.target.result;
+
+                previewImage.classList.remove("hidden");
+
+                defaultIcon.classList.add("hidden");
+
+            }
+
+            reader.readAsDataURL(file);
+
+        });
+
+    }
+
+
+
+    /* ===========================================
+       PASSWORD VALIDATION
+    =========================================== */
+
+    function validatePassword(){
+
+        const password=passwordInput.value;
+
+        const confirm=confirmInput.value;
+
+        const longEnough=password.length>=8;
+
+        const special=/[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+        const match=password===confirm && confirm!== "";
+
+
+
+        updateIndicator(lenCheck,longEnough);
+
+        updateIndicator(specCheck,special);
+
+        updateIndicator(matchCheck,match);
+
+
+
+        if(longEnough && special && match){
+
+            submitBtn.disabled=false;
+
+            submitBtn.classList.remove("opacity-50","cursor-not-allowed");
+
+        }
+
+        else{
+
+            submitBtn.disabled=true;
+
+            submitBtn.classList.add("opacity-50","cursor-not-allowed");
+
+        }
+
+
+
+        updateStrength(password);
+
+    }
+
+
+
+    function updateIndicator(element,status){
+
+        const icon=element.querySelector("i");
+
+        if(status){
+
+            element.classList.remove("text-rose-400");
+
+            element.classList.add("text-emerald-400");
+
+            icon.className="fa-solid fa-circle-check";
+
+        }
+
+        else{
+
+            element.classList.remove("text-emerald-400");
+
+            element.classList.add("text-rose-400");
+
+            icon.className="fa-solid fa-circle-xmark";
+
+        }
+
+    }
+
+
+
+    if(passwordInput){
+
+        passwordInput.addEventListener("input",validatePassword);
+
+    }
+
+    if(confirmInput){
+
+        confirmInput.addEventListener("input",validatePassword);
+
+    }
+
+
+
+    /* ===========================================
+       PASSWORD STRENGTH
+    =========================================== */
+
+    function updateStrength(password){
+
+        let score=0;
+
+        if(password.length>=8) score++;
+
+        if(/[A-Z]/.test(password)) score++;
+
+        if(/[0-9]/.test(password)) score++;
+
+        if(/[!@#$%^&*]/.test(password)) score++;
+
+        if(password.length>=12) score++;
+
+        let color="#ef4444";
+
+        if(score>=2) color="#f59e0b";
+
+        if(score>=4) color="#10b981";
+
+        passwordInput.style.borderColor=color;
+
+    }
+
+
+
+    /* ===========================================
+       PASSWORD TOGGLE
+    =========================================== */
+
+    function toggle(btnID,inputID){
+
+        const btn=document.getElementById(btnID);
+
+        const input=document.getElementById(inputID);
+
+        if(!btn || !input) return;
+
+        btn.addEventListener("click",()=>{
+
+            const icon=btn.querySelector("i");
+
+            if(input.type==="password"){
+
+                input.type="text";
+
+                icon.className="fa-solid fa-eye-slash";
+
+            }
+
+            else{
+
+                input.type="password";
+
+                icon.className="fa-solid fa-eye";
+
+            }
+
+        });
+
+    }
+
+
+
+    toggle("togglePassword1","passwordInput");
+
+    toggle("togglePassword2","confirmPasswordInput");
+
+
+
+    /* ===========================================
+       BUTTON LOADING
+    =========================================== */
+
+    if(form){
+
+        form.addEventListener("submit",function(){
+
+            submitBtn.disabled=true;
+
+            submitBtn.innerHTML=
+            '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
+
+        });
+
+    }
+
+
+
+    /* ===========================================
+       AUTO DISMISS ALERTS
+    =========================================== */
+
+    setTimeout(()=>{
+
+        document.querySelectorAll(".fixed > div").forEach(alert=>{
+
+            alert.style.opacity="0";
+
+            alert.style.transform="translateX(40px)";
+
+            setTimeout(()=>{
+
+                alert.remove();
+
+            },500);
+
+        });
+
+    },4000);
+
+
+
+    /* ===========================================
+       INPUT FOCUS EFFECT
+    =========================================== */
+
+    document.querySelectorAll(".auth-input").forEach(input=>{
+
+        input.addEventListener("focus",()=>{
+
+            input.parentElement.style.transform="translateY(-2px)";
+
+        });
+
+        input.addEventListener("blur",()=>{
+
+            input.parentElement.style.transform="translateY(0px)";
+
+        });
+
+    });
+
+
+
+    /* ===========================================
+       RIPPLE BUTTON
+    =========================================== */
+
+    submitBtn.addEventListener("click",function(e){
+
+        const ripple=document.createElement("span");
+
+        ripple.style.position="absolute";
+
+        ripple.style.width="20px";
+
+        ripple.style.height="20px";
+
+        ripple.style.borderRadius="50%";
+
+        ripple.style.background="rgba(255,255,255,.5)";
+
+        ripple.style.left=e.offsetX+"px";
+
+        ripple.style.top=e.offsetY+"px";
+
+        ripple.style.transform="scale(0)";
+
+        ripple.style.pointerEvents="none";
+
+        ripple.style.animation="ripple .7s linear";
+
+        this.appendChild(ripple);
+
+        setTimeout(()=>{
+
+            ripple.remove();
+
+        },700);
+
+    });
+
+
+
+});
 </script>
 {% endblock %}
