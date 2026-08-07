@@ -156,7 +156,21 @@ def withdraw_request(request):
 
                 withdraw.user = request.user
                 withdraw.save()
+                admins = User.objects.filter(
+                    is_staff=True
+                )
 
+                for admin in admins:
+                    Notification.objects.create(
+                        user=admin,
+                        message=(
+                            f"{request.user.username} "
+                            f"requested a withdrawal of "
+                            f"{withdraw.amount} MMK "
+                            f"waiting for approval."
+                        ),
+                        notification_type="withdraw_request"
+                    )
                 messages.success(
                     request,
                     "Withdrawal request submitted successfully."

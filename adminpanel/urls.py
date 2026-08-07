@@ -87,4 +87,16 @@ urlpatterns = [
         name="read_notification"
     ),
 
+path(
+    'wallet/withdraw/approve/<int:withdraw_id>/',
+    views.approve_withdraw,
+    name="approve_withdraw"
+),
+
+path(
+    'wallet/withdraw/reject/<int:withdraw_id>/',
+    views.reject_withdraw,
+    name="reject_withdraw"
+),
+
 ]

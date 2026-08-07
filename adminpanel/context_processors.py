@@ -15,6 +15,7 @@ def admin_notifications(request):
         notification_type__in=[
             "new_post",
             "deposit_request",
+            "withdraw_request",
         ],
 
         is_read=False
