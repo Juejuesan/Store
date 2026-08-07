@@ -410,7 +410,195 @@ All wallet requests are completed.
 
 </table>
 
+<div class="content-card wallet-table">
 
+    <div class="table-header">
+
+        <h2>
+            Withdraw Requests
+        </h2>
+
+        <div class="search-wallet">
+
+            <i class="fa-solid fa-search"></i>
+
+            <input
+                type="text"
+                placeholder="Search user..."
+            >
+
+        </div>
+
+    </div>
+
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>User</th>
+
+                <th>Payment</th>
+
+                <th>Receiver</th>
+
+                <th>Phone</th>
+
+                <th>Amount</th>
+
+                <th>Status</th>
+
+                <th>Date</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for withdraw in withdrawals %}
+
+            <tr>
+
+                <td>
+
+                    <div class="user-box">
+
+                        <div class="user-avatar">
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+                        <strong>
+                            {{ withdraw.user.username }}
+                        </strong>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+                    {{ withdraw.payment_method }}
+                </td>
+
+
+                <td>
+                    {{ withdraw.receiver_name }}
+                </td>
+
+
+                <td>
+                    {{ withdraw.receiver_phone }}
+                </td>
+
+
+                <td>
+
+                    <strong class="amount">
+
+                        {{ withdraw.amount }} MMK
+
+                    </strong>
+
+                </td>
+
+
+                <td>
+
+                    <span class="status {{ withdraw.status|lower }}">
+
+                        {{ withdraw.status }}
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    {{ withdraw.created_at|date:"d M Y" }}
+
+                </td>
+
+
+                <td>
+
+                    <div class="action-buttons">
+
+                        {% if withdraw.status == "Pending" %}
+
+                        <a
+                            href="{% url 'approve_withdraw' withdraw.id %}"
+                            class="btn btn-approve"
+                        >
+
+                            <i class="fa-solid fa-check"></i>
+
+                        </a>
+
+
+                        <a
+                            href="{% url 'reject_withdraw' withdraw.id %}"
+                            class="btn btn-reject"
+                        >
+
+                            <i class="fa-solid fa-xmark"></i>
+
+                        </a>
+
+                        {% else %}
+
+                        <span class="completed">
+
+                            Completed
+
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="empty-state"
+                >
+
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+
+                    <h2>
+                        No Withdraw Requests
+                    </h2>
+
+                    <p>
+                        All withdrawal requests are completed.
+                    </p>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
 </div>
 
 

@@ -1,148 +1,340 @@
-from .models import Profile
-from django.contrib import messages
-import re
+
+# user/views.py
+
 import os
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.models import User
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, LoginForm, ProfilePicForm
-
-
-# REGISTER VIEW
 import re
-from django.shortcuts import render, redirect
+
 from django.contrib import messages
-from django.contrib.auth import login
-from .forms import RegisterForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+
+from .forms import RegisterForm, LoginForm, ProfilePicForm
 from .models import Profile
 
+
+# ==========================================
+# REGISTER
+# ==========================================
 
 def register_view(request):
-    if request.user.is_authenticated:
-        return redirect('home')
 
-    if request.method == 'POST':
-        form = RegisterForm(request.POST, request.FILES)
+    # Already logged in
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    if request.method == "POST":
+
+        form = RegisterForm(
+            request.POST,
+            request.FILES
+        )
+
         if form.is_valid():
 
-            password = form.cleaned_data.get('password')
-            address = form.cleaned_data.get('address', '')
-            phone_number = form.cleaned_data.get('phone_number')
+            password = form.cleaned_data.get("password")
+            phone_number = form.cleaned_data.get("phone_number")
+            address = form.cleaned_data.get("address")
+
+            # ----------------------------------
+            # Password length
+            # ----------------------------------
 
             if len(password) < 8 or len(password) > 20:
-                messages.error(request, "Password must be at least 8 characters long!")
-                return render(request, 'user/register.html', {'form': form})
 
+                messages.error(
+                    request,
+                    "Password must be between 8 and 20 characters."
+                )
 
-            special_char_pattern = re.compile(r'[@_!#$%^&*()<>?/\|}{~:]')
+                return render(
+                    request,
+                    "user/register.html",
+                    {"form": form}
+                )
+
+            # ----------------------------------
+            # Password special character
+            # ----------------------------------
+
+            special_char_pattern = re.compile(
+                r"[@_!#$%^&*()<>?/\|}{~:]"
+            )
+
             if not special_char_pattern.search(password):
-                messages.error(request, "Password must contain at least one special character (e.g., @, #, $, %)! ")
-                return render(request, 'user/register.html', {'form': form})
 
+                messages.error(
+                    request,
+                    "Password must contain at least one special character."
+                )
 
-            if len(address) > 200:
-                messages.error(request, "Address is too long! (Maximum 200 characters allowed)")
-                return render(request, 'user/register.html', {'form': form})
+                return render(
+                    request,
+                    "user/register.html",
+                    {"form": form}
+                )
 
+            # ----------------------------------
+            # Address length
+            # ----------------------------------
 
-            if Profile.objects.filter(phone_number=phone_number).exists():
-                messages.error(request, "This phone number is already registered!")
-                return render(request, 'user/register.html', {'form': form})
+            if address and len(address) > 200:
+
+                messages.error(
+                    request,
+                    "Address is too long. Maximum 200 characters."
+                )
+
+                return render(
+                    request,
+                    "user/register.html",
+                    {"form": form}
+                )
+
+            # ----------------------------------
+            # Phone duplicate check
+            # ----------------------------------
+
+            if Profile.objects.filter(
+                phone_number=phone_number
+            ).exists():
+
+                messages.error(
+                    request,
+                    "This phone number is already registered."
+                )
+
+                return render(
+                    request,
+                    "user/register.html",
+                    {"form": form}
+                )
+
+            # ----------------------------------
+            # Create User
+            # ----------------------------------
 
             user = form.save(commit=False)
+
             user.set_password(password)
+
             user.save()
 
-            # Save profile
-            profile = user.profile
-            profile.fullName = form.cleaned_data['fullName']
+            # ----------------------------------
+            # Get / create profile
+            # ----------------------------------
+
+            profile, created = Profile.objects.get_or_create(
+                user=user
+            )
+
+            profile.fullName = form.cleaned_data.get("fullName")
             profile.phone_number = phone_number
             profile.address = address
-            profile.gender = form.cleaned_data['gender']
-            if form.cleaned_data.get('profile_pic'):
-                profile.profile_pic = form.cleaned_data['profile_pic']
+            profile.gender = form.cleaned_data.get("gender")
+
+            if form.cleaned_data.get("profile_pic"):
+
+                profile.profile_pic = form.cleaned_data.get(
+                    "profile_pic"
+                )
+
             profile.save()
 
-            # Auto login after registration
-            user.backend = 'user.backends.EmailOrUsernameModelBackend'
+            # ----------------------------------
+            # Login automatically
+            # ----------------------------------
+
+            user.backend = (
+                "user.backends.EmailOrUsernameModelBackend"
+            )
+
             login(request, user)
 
-            messages.success(request, f'Welcome, {profile.fullName or user.username}! Your account has been created.')
-            return redirect('home')  # or 'user:login' if you want them to login manually
+            messages.success(
+                request,
+                f"Welcome, {profile.fullName or user.username}! "
+                "Your account has been created successfully."
+            )
+
+            return redirect("home")
 
         else:
+
+            # Show form errors
             for field, errors in form.errors.items():
+
                 for error in errors:
-                    messages.error(request, f"{error}")
+
+                    messages.error(
+                        request,
+                        error
+                    )
+
     else:
+
         form = RegisterForm()
 
-    return render(request, 'user/register.html', {'form': form})
+    return render(
+        request,
+        "user/register.html",
+        {
+            "form": form
+        }
+    )
 
+
+# ==========================================
+# LOGIN
+# ==========================================
 
 def login_view(request):
-    if request.method == 'POST':
-        username_or_email = request.POST.get('username')
-        password = request.POST.get('password')
 
-        user = None
+    if request.user.is_authenticated:
+        return redirect("home")
 
-        # First try to authenticate with username
-        user = authenticate(request, username=username_or_email, password=password)
+    if request.method == "POST":
 
-        # If authentication fails, try to find user by email
-        if user is None:
-            try:
-                # Find user by email
-                user_obj = User.objects.get(email=username_or_email)
-                # Authenticate with the found username
-                user = authenticate(request, username=user_obj.username, password=password)
-            except User.DoesNotExist:
-                user = None
+        form = LoginForm(request.POST)
 
-        if user is not None:
-            login(request, user)
-            messages.success(request, f'Welcome back, {user.username}!')
-            return redirect('home')
-        else:
-            messages.error(request, 'Invalid username/email or password.')
+        if form.is_valid():
 
-    return render(request, 'user/login.html')
+            username_or_email = form.cleaned_data.get(
+                "username"
+            )
 
+            password = form.cleaned_data.get(
+                "password"
+            )
+
+            # ----------------------------------
+            # Authenticate
+            # ----------------------------------
+
+            user = authenticate(
+                request,
+                username=username_or_email,
+                password=password
+            )
+
+            # ----------------------------------
+            # Login successful
+            # ----------------------------------
+
+            if user is not None:
+
+                login(request, user)
+
+                messages.success(
+                    request,
+                    f"Welcome back, {user.username}!"
+                )
+
+                return redirect("home")
+
+            # ----------------------------------
+            # Login failed
+            # ----------------------------------
+
+            messages.error(
+                request,
+                "Invalid username/email or password."
+            )
+
+    else:
+
+        form = LoginForm()
+
+    return render(
+        request,
+        "user/login.html",
+        {
+            "form": form
+        }
+    )
+
+
+# ==========================================
+# LOGOUT
+# ==========================================
 
 def logout_view(request):
+
     logout(request)
-    messages.info(request, 'You have been logged out.')
-    return redirect('/')
+
+    messages.info(
+        request,
+        "You have been logged out."
+    )
+
+    return redirect("home")
 
 
-# DASHBOARD VIEW
+# ==========================================
+# DASHBOARD
+# ==========================================
+
 @login_required
 def dashboard(request):
-    return render(request, 'user/dashboard.html')
+
+    return render(
+        request,
+        "user/dashboard.html"
+    )
 
 
-# UPDATE PROFILE PICTURE VIEW
+# ==========================================
+# UPDATE PROFILE PICTURE
+# ==========================================
+
 @login_required
 def update_profile_pic(request):
-    if request.method == 'POST':
-        form = ProfilePicForm(request.POST, request.FILES, instance=request.user.profile)
+
+    if request.method == "POST":
+
+        form = ProfilePicForm(
+            request.POST,
+            request.FILES,
+            instance=request.user.profile
+        )
+
         if form.is_valid():
+
             profile = request.user.profile
 
-            if profile.profile_pic and not profile.profile_pic.name.endswith('default.jpg'):
+            # Delete old profile picture
+            if (
+                profile.profile_pic
+                and profile.profile_pic.name
+                and not profile.profile_pic.name.endswith(
+                    "default.jpg"
+                )
+            ):
+
                 old_path = profile.profile_pic.path
+
                 if os.path.exists(old_path):
+
                     try:
                         os.remove(old_path)
+
                     except OSError:
                         pass
 
             form.save()
-            messages.success(request, 'Profile picture updated successfully!')
-        else:
-            messages.error(request, 'Failed to update. Please select a valid image.')
 
-    return redirect('user:dashboard')
+            messages.success(
+                request,
+                "Profile picture updated successfully!"
+            )
+
+        else:
+
+            messages.error(
+                request,
+                "Failed to update. Please select a valid image."
+            )
+
+    return redirect("user:dashboard")
+

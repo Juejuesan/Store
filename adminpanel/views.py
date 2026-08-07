@@ -8,6 +8,7 @@ from notifications.models import Notification
 
 from wallet.models import (
     DepositRequest,
+    WithdrawRequest,
     Wallet,
     WalletTransaction,
 )
@@ -73,18 +74,32 @@ def dashboard(request):
 # =====================================================
 # Wallet Requests
 # =====================================================
-
 @login_required
 def wallet_requests(request):
 
     deposits = DepositRequest.objects.all().order_by("-created_at")
 
-    pending_count = DepositRequest.objects.filter(
+    withdrawals = WithdrawRequest.objects.all().order_by("-created_at")
+
+    pending_deposits = DepositRequest.objects.filter(
         status="Pending"
     ).count()
 
-    approved_amount = sum(
+    pending_withdrawals = WithdrawRequest.objects.filter(
+        status="Pending"
+    ).count()
+
+    approved_deposit_amount = sum(
         DepositRequest.objects.filter(
+            status="Approved"
+        ).values_list(
+            "amount",
+            flat=True
+        )
+    )
+
+    approved_withdraw_amount = sum(
+        WithdrawRequest.objects.filter(
             status="Approved"
         ).values_list(
             "amount",
@@ -96,9 +111,15 @@ def wallet_requests(request):
 
         "deposits": deposits,
 
-        "pending_count": pending_count,
+        "withdrawals": withdrawals,
 
-        "approved_amount": approved_amount,
+        "pending_count": pending_deposits,
+
+        "pending_withdrawals": pending_withdrawals,
+
+        "approved_amount": approved_deposit_amount,
+
+        "approved_withdraw_amount": approved_withdraw_amount,
 
     }
 
@@ -109,6 +130,93 @@ def wallet_requests(request):
     )
 
 
+@login_required
+def approve_withdraw(request, withdraw_id):
+
+    withdraw = get_object_or_404(
+        WithdrawRequest,
+        id=withdraw_id
+    )
+
+    if withdraw.status == "Pending":
+
+        wallet = get_object_or_404(
+            Wallet,
+            user=withdraw.user
+        )
+
+        if withdraw.amount > wallet.balance:
+
+            Notification.objects.create(
+                user=withdraw.user,
+                message=(
+                    f"Your withdrawal request of "
+                    f"{withdraw.amount} MMK was rejected "
+                    f"because of insufficient wallet balance."
+                ),
+                notification_type="withdraw_rejected",
+            )
+
+            withdraw.status = "Rejected"
+            withdraw.admin_remark = (
+                "Insufficient wallet balance."
+            )
+            withdraw.save()
+
+            return redirect("wallet_requests")
+
+        wallet.balance -= withdraw.amount
+        wallet.save()
+
+        withdraw.status = "Approved"
+        withdraw.approved_at = timezone.now()
+        withdraw.approved_by = request.user
+        withdraw.save()
+
+        WalletTransaction.objects.create(
+            wallet=wallet,
+            transaction_type="Withdraw",
+            amount=withdraw.amount,
+            status="Approved",
+            description="Withdrawal approved by admin",
+            reference_id=str(withdraw.id)
+        )
+
+        Notification.objects.create(
+            user=withdraw.user,
+            message=(
+                f"Your withdrawal request of "
+                f"{withdraw.amount} MMK has been approved."
+            ),
+            notification_type="withdraw_approved",
+        )
+
+    return redirect("wallet_requests")
+
+@login_required
+def reject_withdraw(request, withdraw_id):
+
+    withdraw = get_object_or_404(
+        WithdrawRequest,
+        id=withdraw_id
+    )
+
+    if withdraw.status == "Pending":
+
+        withdraw.status = "Rejected"
+        withdraw.approved_by = request.user
+        withdraw.save()
+
+        Notification.objects.create(
+            user=withdraw.user,
+            message=(
+                f"Your withdrawal request of "
+                f"{withdraw.amount} MMK was rejected."
+            ),
+            notification_type="withdraw_rejected",
+        )
+
+    return redirect("wallet_requests")
 # =====================================================
 # Approve Deposit
 # =====================================================
