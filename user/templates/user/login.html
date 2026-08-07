@@ -1,112 +1,192 @@
-{% extends 'user/base.html' %}
+{% extends "user/base.html" %}
+{% load static %}
 
-{% block title %}Login | TrustyShop{% endblock %}
+{% block title %}
+Login | TrustyShop
+{% endblock %}
 
 {% block content %}
-<div class="max-w-md auth-card p-8 sm:p-10 my-8">
-    <div class="text-center">
-        <div class="brand-icon-wrapper">
-            <i class="fa-solid fa-right-to-bracket"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-white">Sign In</h2>
-        <p class="text-slate-400 text-sm mt-1">Please enter your credentials to login</p>
-    </div>
 
-    <form class="mt-8 space-y-5" method="POST" action="{% url 'user:login' %}" id="loginForm">
-        {% csrf_token %}
+<div class="universe">
 
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Username or Email</label>
-            <div class="input-container">
-                <input type="text" name="username" required class="auth-input" placeholder="your_username_or_email">
-                <i class="fa-regular fa-user input-icon"></i>
+    <span class="planet planet-1"></span>
+    <span class="planet planet-2"></span>
+    <span class="planet planet-3"></span>
+
+    <span class="glow glow-1"></span>
+    <span class="glow glow-2"></span>
+
+    <div id="stars"></div>
+
+    <div id="particles"></div>
+
+</div>
+
+
+<section class="auth-page">
+
+    <div class="auth-card">
+
+        <span class="card-border"></span>
+
+
+        <!-- Logo -->
+
+        <div class="logo-box">
+
+            <div class="logo-circle">
+
+                <i class="fa-solid fa-store"></i>
+
             </div>
+
+            <h1>Welcome Back</h1>
+
+            <p>
+                Continue shopping with TrustyShop
+            </p>
+
         </div>
+
 
         <!-- Login Form -->
-<div class="form-group">
-    <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
-    <div class="input-container relative">
-        <input type="password" name="password" id="loginPasswordInput" required
-               class="auth-input pr-10" placeholder="••••••••">
-        <button type="button" id="toggleLoginPassword"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors">
-            <i class="fa-solid fa-eye"></i>
-        </button>
-        <i class="fa-solid fa-lock input-icon"></i>
+
+        <form method="POST"
+              autocomplete="off">
+
+            {% csrf_token %}
+
+
+            <!-- Username -->
+
+            <div class="input-box">
+
+                <i class="fa-solid fa-user input-icon"></i>
+
+                {{ form.username }}
+
+                <label>
+                    Username or Email
+                </label>
+
+            </div>
+
+
+            <!-- Password -->
+
+            <div class="password-box">
+
+                <i class="fa-solid fa-lock input-icon"></i>
+
+                {{ form.password }}
+
+                <label>
+                    Password
+                </label>
+
+                <button
+                    type="button"
+                    class="toggle-password">
+
+                    <i class="fa-solid fa-eye-slash"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- Remember / Forgot -->
+
+            <div class="login-options">
+
+                <label class="remember">
+
+                    {{ form.remember_me }}
+
+                    <span>
+                        Remember Me
+                    </span>
+
+                </label>
+
+
+                <a href="#"
+                   class="forgot-link">
+
+                    Forgot Password?
+
+                </a>
+
+            </div>
+
+
+            <!-- Login Button -->
+
+            <button
+                type="submit"
+                class="auth-btn">
+
+                <span class="btn-glow"></span>
+
+                <i class="fa-solid fa-right-to-bracket"></i>
+
+                <span>
+                    Login
+                </span>
+
+            </button>
+
+
+            <!-- Divider -->
+
+            <div class="divider">
+
+                <span>
+                    OR
+                </span>
+
+            </div>
+
+
+            <!-- Social -->
+
+            <div class="social-login">
+
+                <button type="button"
+                        aria-label="Google">
+
+                    <i class="fab fa-google"></i>
+
+                </button>
+
+                <button type="button"
+                        aria-label="Facebook">
+
+                    <i class="fab fa-facebook-f"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- Register -->
+
+            <div class="bottom-text">
+
+                Don't have an account?
+
+                <a href="{% url 'user:register' %}">
+
+                    Register
+
+                </a>
+
+            </div>
+
+        </form>
+
     </div>
-</div>
 
-        <button type="submit" id="loginSubmitBtn" class="btn-primary w-full mt-6">
-            <i class="fa-solid fa-right-to-bracket"></i> Sign In
-        </button>
-    </form>
+</section>
 
-    <div class="text-center mt-6">
-        <p class="text-sm text-slate-400">
-            Don't have an account?
-            <a href="{% url 'user:register' %}" class="text-blue-400 font-semibold hover:text-blue-300 hover:underline ml-1">Register here</a>
-        </p>
-    </div>
-</div>
-
-<script>
-    const loginPassword = document.getElementById('loginPassword');
-    const loginPassNoti = document.getElementById('loginPassNoti');
-    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
-    setupPasswordToggle('toggleLoginPassword', 'loginPasswordInput');
-
-    loginPassword.addEventListener('input', () => {
-        if (loginPassword.value.length < 8 && loginPassword.value.length > 0) {
-            loginPassNoti.classList.remove('hidden');
-            loginSubmitBtn.disabled = true;
-            loginSubmitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        } else {
-            loginPassNoti.classList.add('hidden');
-            loginSubmitBtn.disabled = false;
-            loginSubmitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
-    });
-    function setupPasswordToggle(toggleButtonId, passwordInputId) {
-    const toggleBtn = document.getElementById(toggleButtonId);
-    const passwordInput = document.getElementById(passwordInputId);
-
-    if (!toggleBtn || !passwordInput) return;
-
-    toggleBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        // Toggle password visibility
-        const isPassword = passwordInput.type === 'password';
-        passwordInput.type = isPassword ? 'text' : 'password';
-
-        // Toggle icon with animation
-        const icon = toggleBtn.querySelector('i');
-
-        // Add rotation animation
-        icon.style.transition = 'transform 0.3s ease';
-        icon.style.transform = 'rotate(360deg)';
-
-        setTimeout(() => {
-            icon.style.transform = 'rotate(0deg)';
-
-            if (isPassword) {
-                // Showing password
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-                toggleBtn.classList.add('text-blue-400');
-            } else {
-                // Hiding password
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-                toggleBtn.classList.remove('text-blue-400');
-            }
-        }, 150);
-    });
-}
-
-// Initialize toggles
-setupPasswordToggle('togglePassword1', 'passwordInput');
-setupPasswordToggle('togglePassword2', 'confirmPasswordInput');
-</script>
 {% endblock %}

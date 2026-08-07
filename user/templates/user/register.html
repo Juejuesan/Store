@@ -1,623 +1,343 @@
-{% extends 'user/base.html' %}
+{% extends "user/base.html" %}
+{% load static %}
 
-{% block title %}Register | TrustyShop{% endblock %}
+{% block title %}
+Register | TrustyShop
+{% endblock %}
 
 {% block content %}
 
+<!-- ========================================= -->
+<!-- UNIVERSE BACKGROUND -->
+<!-- ========================================= -->
 
-<form class="mt-8 space-y-4" method="POST" action="{% url 'user:register' %}" enctype="multipart/form-data" id="registerForm">
-    {% csrf_token %}
+<div class="universe">
 
-    <!-- Header -->
-    <div class="text-center">
+    <span class="planet planet-1"></span>
+    <span class="planet planet-2"></span>
+    <span class="planet planet-3"></span>
 
-        <!-- Profile Photo -->
-        <div class="flex justify-center mb-6">
-            <div class="relative">
-                <div class="w-28 h-28 rounded-full bg-slate-700 border-4 border-slate-600 overflow-hidden flex items-center justify-center">
-                    <img id="previewImage"
-                         class="hidden w-full h-full object-cover">
-                    <i id="defaultIcon"
-                       class="fa-solid fa-user text-5xl text-slate-400"></i>
+    <span class="glow glow-1"></span>
+    <span class="glow glow-2"></span>
+
+    <div id="stars"></div>
+
+    <div id="particles"></div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- REGISTER SECTION -->
+<!-- ========================================= -->
+
+<section class="register-page">
+
+    <div class="register-card">
+
+        <!-- Decorative Border -->
+
+        <span class="card-border"></span>
+
+        <!-- Logo -->
+
+        <div class="logo-box">
+
+            <div class="logo-circle">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+            </div>
+
+            <h1>TrustyShop</h1>
+
+            <p>
+                Create your marketplace account
+            </p>
+
+        </div>
+
+        <!-- Form -->
+
+        <form method="POST"
+              enctype="multipart/form-data"
+              autocomplete="off">
+
+            {% csrf_token %}
+
+            <!-- Profile Upload -->
+
+            <div class="profile-upload">
+
+                <div class="profile-preview">
+
+                    <img
+                        id="previewImage"
+                        src="{% static 'user/images/default-profile.png' %}"
+                        alt="Profile">
+
+                    <label for="id_profile_pic">
+
+                        <i class="fa-solid fa-camera"></i>
+
+                    </label>
+
                 </div>
-                <label for="profileInput"
-                       class="absolute bottom-1 right-1 w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center cursor-pointer">
-                    <i class="fa-solid fa-camera text-white"></i>
+
+                {{ form.profile_pic }}
+
+            </div>
+
+            <!-- Row -->
+
+            <div class="form-row">
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-user input-icon"></i>
+
+                    {{ form.fullName }}
+
+                    <label>
+                        Full Name
+                    </label>
+
+                </div>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-at input-icon"></i>
+
+                    {{ form.username }}
+
+                    <label>
+                        Username
+                    </label>
+
+                </div>
+
+            </div>
+
+            <!-- Row -->
+
+            <div class="form-row">
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-envelope input-icon"></i>
+
+                    {{ form.email }}
+
+                    <label>
+                        Email
+                    </label>
+
+                </div>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-phone input-icon"></i>
+
+                    {{ form.phone_number }}
+
+                    <label>
+                        Phone Number
+                    </label>
+
+                </div>
+
+            </div>
+
+            <!-- Address -->
+
+            <div class="input-box full-width">
+
+                <i class="fa-solid fa-location-dot input-icon"></i>
+
+                {{ form.address }}
+
+                <label>
+                    Address
                 </label>
-                <!-- IMPORTANT -->
-                <input
-                    type="file"
-                    id="profileInput"
-                    name="profile_pic"
-                    accept="image/*"
-                    hidden>
+
             </div>
-        </div>
 
-        <div id="fileName"
-             class="text-xs text-slate-400 mb-4">
-            No image selected
-        </div>
+            <!-- Gender -->
 
-        <h2 class="text-2xl font-bold text-white">
-            Create Account
-        </h2>
-    </div>
+            <div class="gender-box">
 
+                <div class="gender-title">
 
-    <!-- Display form errors -->
-    {% if form.errors %}
-        <div class="bg-rose-500/20 border border-rose-500/50 rounded-lg p-4 mb-4">
-            {% for field, errors in form.errors.items %}
-                {% for error in errors %}
-                    <p class="text-rose-400 text-sm">
-                        <i class="fa-solid fa-circle-exclamation mr-2"></i>
-                        {{ error }}
-                    </p>
-                {% endfor %}
-            {% endfor %}
-        </div>
-    {% endif %}
+                    <i class="fa-solid fa-venus-mars"></i>
 
+                    <span>Gender</span>
 
-    <div class="grid grid-cols-1 sm:grid-cols-1 gap-4">
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Name</label>
-            <div class="input-container">
-                <!-- FIXED: Added value attribute to preserve input -->
-                <input type="text" name="fullName" required class="auth-input" placeholder="Your Name"
-                       value="{{ request.POST.fullName|default:'' }}">
-                <i class="fa-solid fa-user input-icon"></i>
+                </div>
+
+                <div class="gender-options">
+
+                    {{ form.gender }}
+
+                </div>
+
             </div>
-            {% if form.fullName.errors %}
-                <p class="text-rose-400 text-xs mt-1">{{ form.fullName.errors.0 }}</p>
-            {% endif %}
-        </div>
-    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Username</label>
-            <div class="input-container">
-                <!-- FIXED: Added value attribute -->
-                <input type="text" name="username" required class="auth-input" placeholder="johndoe"
-                       value="{{ request.POST.username|default:'' }}">
-                <i class="fa-solid fa-at input-icon"></i>
+            <!-- Password -->
+
+            <div class="password-box">
+
+                <i class="fa-solid fa-lock input-icon"></i>
+
+                {{ form.password }}
+
+                <label>Password</label>
+
+                <button
+                    class="toggle-password"
+                    type="button">
+
+                    <i class="fa-solid fa-eye-slash"></i>
+
+                </button>
+
             </div>
-            {% if form.username.errors %}
-                <p class="text-rose-400 text-xs mt-1">{{ form.username.errors.0 }}</p>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Email Address</label>
-            <div class="input-container">
-                <!-- FIXED: Added value attribute -->
-                <input type="email" name="email" required class="auth-input" placeholder="john@example.com"
-                       value="{{ request.POST.email|default:'' }}">
-                <i class="fa-regular fa-envelope input-icon"></i>
+
+            <!-- Confirm Password -->
+
+            <div class="password-box">
+
+                <i class="fa-solid fa-shield-halved input-icon"></i>
+
+                {{ form.confirm_password }}
+
+                <label>
+                    Confirm Password
+                </label>
+
+                <button
+                    class="toggle-password"
+                    type="button">
+
+                    <i class="fa-solid fa-eye-slash"></i>
+
+                </button>
+
             </div>
-            {% if form.email.errors %}
-                <p class="text-rose-400 text-xs mt-1">{{ form.email.errors.0 }}</p>
-            {% endif %}
-        </div>
-    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Phone Number</label>
-            <div class="input-container">
-                <!-- FIXED: Added value attribute -->
-                <input type="text" name="phone_number" required class="auth-input" placeholder="09xxxxxxxxx" maxlength="11"  inputmode="numeric"
-                       value="{{ request.POST.phone_number|default:'' }}">
-                <i class="fa-solid fa-phone input-icon"></i>
+            <!-- Strength -->
+
+            <div class="password-strength">
+
+                <div class="strength-bar">
+
+                    <span id="strengthFill"></span>
+
+                </div>
+
+                <small id="strengthText">
+
+                    Password Strength
+
+                </small>
+
             </div>
-            {% if form.phone_number.errors %}
-                <p class="text-rose-400 text-xs mt-1">{{ form.phone_number.errors.0 }}</p>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Gender</label>
-            <div class="input-container">
-                <!-- FIXED: Added selected attribute for preservation -->
-                <select name="gender" required class="auth-input">
-                    <option value="" disabled {% if not request.POST.gender %}selected{% endif %}>Select Gender</option>
-                    <option value="M" {% if request.POST.gender == 'M' %}selected{% endif %}>Male</option>
-                    <option value="F" {% if request.POST.gender == 'F' %}selected{% endif %}>Female</option>
-                </select>
-                <i class="fa-solid fa-venus-mars input-icon"></i>
+
+            <!-- Terms -->
+
+            <div class="remember-box">
+
+                <label>
+
+                    <input type="checkbox" required>
+
+                    <span>
+
+                        I agree to the
+                        <a href="#">
+                            Terms
+                        </a>
+                        &
+                        <a href="#">
+                            Privacy Policy
+                        </a>
+
+                    </span>
+
+                </label>
+
             </div>
-            {% if form.gender.errors %}
-                <p class="text-rose-400 text-xs mt-1">{{ form.gender.errors.0 }}</p>
-            {% endif %}
-        </div>
+
+            <!-- Register -->
+
+            <button
+                class="auth-btn"
+                type="submit">
+
+                <span class="btn-glow"></span>
+
+                <i class="fa-solid fa-user-plus"></i>
+
+                <span>
+
+                    Create Account
+
+                </span>
+
+            </button>
+
+            <!-- Divider -->
+
+            <div class="divider">
+
+                <span>
+
+                    OR
+
+                </span>
+
+            </div>
+
+            <!-- Social Login -->
+
+            <div class="social-login">
+
+                <button type="button">
+
+                    <i class="fab fa-google"></i>
+
+                </button>
+
+                <button type="button">
+
+                    <i class="fab fa-facebook-f"></i>
+
+                </button>
+
+                <button type="button">
+
+                    <i class="fab fa-github"></i>
+
+                </button>
+
+            </div>
+
+            <!-- Bottom -->
+
+            <div class="bottom-text">
+
+                Already have an account?
+
+                <a href="{% url 'user:login' %}">
+
+                    Login Now
+
+                </a>
+
+            </div>
+
+        </form>
+
     </div>
 
-    <div class="form-group">
-        <label class="block text-sm font-medium text-slate-300 mb-1">Address</label>
-        <div class="input-container">
-            <!-- FIXED: Added value attribute -->
-            <input type="text" name="address" id="addressInput" maxlength="200" required class="auth-input"
-                   placeholder="No.123, Street, Yangon, Myanmar"
-                   value="{{ request.POST.address|default:'' }}">
-            <p id="addressCount" class="text-xs text-slate-500 mt-1">0 / 200</p>
-            <i class="fa-solid fa-location-dot input-icon"></i>
-        </div>
-        {% if form.address.errors %}
-            <p class="text-rose-400 text-xs mt-1">{{ form.address.errors.0 }}</p>
-        {% endif %}
-    </div>
+</section>
 
-
-   <div class="form-group">
-    <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
-    <div class="input-container relative">
-        <input type="password" name="password" id="passwordInput" maxlength="20" required
-               class="auth-input pr-12" placeholder="••••••••">
-        <button type="button" id="togglePassword1"
-                class="absolute right-10 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors z-10">
-            <i class="fa-solid fa-eye"></i>
-        </button>
-        <i class="fa-solid fa-key input-icon"></i>
-    </div>
-
-    <!-- Password Validation Indicators -->
-    <div class="mt-2 space-y-1 text-xs">
-        <p id="lenCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
-            <i class="fa-solid fa-circle-xmark"></i> At least 8 characters
-        </p>
-        <p id="specCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
-            <i class="fa-solid fa-circle-xmark"></i> Must contain a special character (@, #, $, etc.)
-        </p>
-    </div>
-
-    <!-- Error Messages (if any) -->
-    {% if form.password.errors %}
-        <p class="text-rose-400 text-xs mt-1">{{ form.password.errors.0 }}</p>
-    {% endif %}
-</div>
-
-       <div class="form-group">
-    <label class="block text-sm font-medium text-slate-300 mb-1">Confirm Password</label>
-    <div class="input-container relative">
-        <input type="password" name="confirm_password" id="confirmPasswordInput" required
-               class="auth-input pr-12" placeholder="••••••••">
-        <button type="button" id="togglePassword2"
-                class="absolute right-10 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors z-10">
-            <i class="fa-solid fa-eye"></i>
-        </button>
-        <i class="fa-solid fa-shield-halved input-icon"></i>
-    </div>
-
-    <!-- Password Match Indicator -->
-    <div class="mt-2 text-xs">
-        <p id="matchCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
-            <i class="fa-solid fa-circle-xmark"></i> Passwords must match
-        </p>
-    </div>
-
-    <!-- Error Messages (if any) -->
-    {% if form.confirm_password.errors %}
-        <p class="text-rose-400 text-xs mt-1">{{ form.confirm_password.errors.0 }}</p>
-    {% endif %}
-</div>
-
-
-    <button type="submit" id="submitBtn" class="btn-primary w-full mt-4 opacity-50 cursor-not-allowed" disabled>
-        <i class="fa-solid fa-user-plus"></i> Create Account
-    </button>
-
-    <div class="text-center mt-6">
-        <p class="text-sm text-slate-400">
-            Already have an account?
-            <a href="{% url 'user:login' %}" class="text-blue-400 font-semibold hover:text-blue-300 hover:underline ml-1">Sign in here</a>
-        </p>
-    </div>
-</form>
-
-<script>
-// Update address counter on page load if there's existing value
-document.addEventListener("DOMContentLoaded", () => {
-
-    /* ===========================================
-       ELEMENTS
-    =========================================== */
-
-    const form = document.getElementById("registerForm");
-
-    const passwordInput = document.getElementById("passwordInput");
-    const confirmInput = document.getElementById("confirmPasswordInput");
-
-    const submitBtn = document.getElementById("submitBtn");
-
-    const addressInput = document.getElementById("addressInput");
-    const addressCount = document.getElementById("addressCount");
-
-    const profileInput = document.getElementById("profileInput");
-    const previewImage = document.getElementById("previewImage");
-    const defaultIcon = document.getElementById("defaultIcon");
-    const fileName = document.getElementById("fileName");
-
-    const phoneInput = document.querySelector('input[name="phone_number"]');
-
-    const lenCheck = document.getElementById("lenCheck");
-    const specCheck = document.getElementById("specCheck");
-    const matchCheck = document.getElementById("matchCheck");
-
-
-    /* ===========================================
-       ADDRESS COUNTER
-    =========================================== */
-
-    if(addressInput){
-
-        updateCounter();
-
-        addressInput.addEventListener("input", updateCounter);
-
-        function updateCounter(){
-
-            const len = addressInput.value.length;
-
-            addressCount.textContent = `${len} / 200`;
-
-            if(len > 180){
-
-                addressCount.classList.add("text-rose-400");
-
-            }else{
-
-                addressCount.classList.remove("text-rose-400");
-
-            }
-
-        }
-
-    }
-
-
-
-    /* ===========================================
-       PHONE NUMBER
-    =========================================== */
-
-    if(phoneInput){
-
-        phoneInput.addEventListener("input", function(){
-
-            this.value=this.value.replace(/\D/g,'');
-
-        });
-
-    }
-
-
-
-    /* ===========================================
-       PROFILE IMAGE
-    =========================================== */
-
-    if(profileInput){
-
-        profileInput.addEventListener("change",function(){
-
-            const file=this.files[0];
-
-            if(!file) return;
-
-            if(!file.type.startsWith("image/")){
-
-                alert("Please choose image.");
-
-                this.value="";
-
-                return;
-
-            }
-
-            if(file.size > 2*1024*1024){
-
-                alert("Maximum image size is 2MB.");
-
-                this.value="";
-
-                return;
-
-            }
-
-            fileName.innerHTML=
-            '<span class="text-emerald-400"><i class="fa-solid fa-circle-check"></i> Profile Photo Selected</span>';
-
-            const reader=new FileReader();
-
-            reader.onload=function(e){
-
-                previewImage.src=e.target.result;
-
-                previewImage.classList.remove("hidden");
-
-                defaultIcon.classList.add("hidden");
-
-            }
-
-            reader.readAsDataURL(file);
-
-        });
-
-    }
-
-
-
-    /* ===========================================
-       PASSWORD VALIDATION
-    =========================================== */
-
-    function validatePassword(){
-
-        const password=passwordInput.value;
-
-        const confirm=confirmInput.value;
-
-        const longEnough=password.length>=8;
-
-        const special=/[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-        const match=password===confirm && confirm!== "";
-
-
-
-        updateIndicator(lenCheck,longEnough);
-
-        updateIndicator(specCheck,special);
-
-        updateIndicator(matchCheck,match);
-
-
-
-        if(longEnough && special && match){
-
-            submitBtn.disabled=false;
-
-            submitBtn.classList.remove("opacity-50","cursor-not-allowed");
-
-        }
-
-        else{
-
-            submitBtn.disabled=true;
-
-            submitBtn.classList.add("opacity-50","cursor-not-allowed");
-
-        }
-
-
-
-        updateStrength(password);
-
-    }
-
-
-
-    function updateIndicator(element,status){
-
-        const icon=element.querySelector("i");
-
-        if(status){
-
-            element.classList.remove("text-rose-400");
-
-            element.classList.add("text-emerald-400");
-
-            icon.className="fa-solid fa-circle-check";
-
-        }
-
-        else{
-
-            element.classList.remove("text-emerald-400");
-
-            element.classList.add("text-rose-400");
-
-            icon.className="fa-solid fa-circle-xmark";
-
-        }
-
-    }
-
-
-
-    if(passwordInput){
-
-        passwordInput.addEventListener("input",validatePassword);
-
-    }
-
-    if(confirmInput){
-
-        confirmInput.addEventListener("input",validatePassword);
-
-    }
-
-
-
-    /* ===========================================
-       PASSWORD STRENGTH
-    =========================================== */
-
-    function updateStrength(password){
-
-        let score=0;
-
-        if(password.length>=8) score++;
-
-        if(/[A-Z]/.test(password)) score++;
-
-        if(/[0-9]/.test(password)) score++;
-
-        if(/[!@#$%^&*]/.test(password)) score++;
-
-        if(password.length>=12) score++;
-
-        let color="#ef4444";
-
-        if(score>=2) color="#f59e0b";
-
-        if(score>=4) color="#10b981";
-
-        passwordInput.style.borderColor=color;
-
-    }
-
-
-
-    /* ===========================================
-       PASSWORD TOGGLE
-    =========================================== */
-
-    function toggle(btnID,inputID){
-
-        const btn=document.getElementById(btnID);
-
-        const input=document.getElementById(inputID);
-
-        if(!btn || !input) return;
-
-        btn.addEventListener("click",()=>{
-
-            const icon=btn.querySelector("i");
-
-            if(input.type==="password"){
-
-                input.type="text";
-
-                icon.className="fa-solid fa-eye-slash";
-
-            }
-
-            else{
-
-                input.type="password";
-
-                icon.className="fa-solid fa-eye";
-
-            }
-
-        });
-
-    }
-
-
-
-    toggle("togglePassword1","passwordInput");
-
-    toggle("togglePassword2","confirmPasswordInput");
-
-
-
-    /* ===========================================
-       BUTTON LOADING
-    =========================================== */
-
-    if(form){
-
-        form.addEventListener("submit",function(){
-
-            submitBtn.disabled=true;
-
-            submitBtn.innerHTML=
-            '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
-
-        });
-
-    }
-
-
-
-    /* ===========================================
-       AUTO DISMISS ALERTS
-    =========================================== */
-
-    setTimeout(()=>{
-
-        document.querySelectorAll(".fixed > div").forEach(alert=>{
-
-            alert.style.opacity="0";
-
-            alert.style.transform="translateX(40px)";
-
-            setTimeout(()=>{
-
-                alert.remove();
-
-            },500);
-
-        });
-
-    },4000);
-
-
-
-    /* ===========================================
-       INPUT FOCUS EFFECT
-    =========================================== */
-
-    document.querySelectorAll(".auth-input").forEach(input=>{
-
-        input.addEventListener("focus",()=>{
-
-            input.parentElement.style.transform="translateY(-2px)";
-
-        });
-
-        input.addEventListener("blur",()=>{
-
-            input.parentElement.style.transform="translateY(0px)";
-
-        });
-
-    });
-
-
-
-    /* ===========================================
-       RIPPLE BUTTON
-    =========================================== */
-
-    submitBtn.addEventListener("click",function(e){
-
-        const ripple=document.createElement("span");
-
-        ripple.style.position="absolute";
-
-        ripple.style.width="20px";
-
-        ripple.style.height="20px";
-
-        ripple.style.borderRadius="50%";
-
-        ripple.style.background="rgba(255,255,255,.5)";
-
-        ripple.style.left=e.offsetX+"px";
-
-        ripple.style.top=e.offsetY+"px";
-
-        ripple.style.transform="scale(0)";
-
-        ripple.style.pointerEvents="none";
-
-        ripple.style.animation="ripple .7s linear";
-
-        this.appendChild(ripple);
-
-        setTimeout(()=>{
-
-            ripple.remove();
-
-        },700);
-
-    });
-
-
-
-});
-</script>
 {% endblock %}

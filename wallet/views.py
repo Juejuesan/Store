@@ -15,6 +15,7 @@ from .models import (
     WithdrawRequest,
 )
 
+
 # ======================================================
 # WALLET DASHBOARD
 # ======================================================
@@ -97,42 +98,70 @@ def deposit_request(request):
 
             messages.success(
                 request,
-                "Your deposit request has been submitted successfully and is waiting for admin approval."
+                "Deposit request submitted successfully. Please wait for admin approval."
             )
 
             return redirect("wallet:deposit")
 
-        else:
-
-            # Show every validation error as a popup message
-            for errors in form.errors.values():
-
-                for error in errors:
-
-                    messages.error(
-                        request,
-                        error
-                    )
 
     else:
 
-        form = DepositForm()
 
-    recent_deposits = DepositRequest.objects.filter(
-        user=request.user
-    ).order_by("-created_at")[:5]
+        # Show every validation error as a popup message
 
-    context = {
-        "wallet": wallet,
-        "form": form,
-        "deposits": recent_deposits,
-    }
+        for errors in form.errors.values():
 
-    return render(
-        request,
-        "wallet/deposit.html",
-        context,
-    )
+
+            for error in errors:
+
+
+                messages.error(
+
+                    request,
+
+                    error
+
+                )
+
+
+else:
+
+
+form = DepositForm()
+
+
+recent_deposits = DepositRequest.objects.filter(
+
+    user=request.user
+
+).order_by("-created_at")[:5]
+
+
+context = {
+
+    "wallet": wallet,
+
+    "form": form,
+
+    "deposits": recent_deposits,
+
+}
+
+
+return render(
+
+    request,
+
+    "wallet/deposit.html",
+
+    context,
+
+)
+
+# ======================================================
+# WITHDRAW REQUEST
+# ======================================================
+
 @login_required
 def withdraw_request(request):
 
@@ -170,9 +199,11 @@ def withdraw_request(request):
                     context,
                 )
 
-            # Save withdrawal request
-            withdraw.user = request.user
-            withdraw.save()
+                withdraw.user = request.user
+                withdraw.save()
+                admins = User.objects.filter(
+                    is_staff=True
+                )
 
             messages.success(
                 request,
@@ -198,6 +229,23 @@ def withdraw_request(request):
                 "wallet/withdraw.html",
                 context,
             )
+                for admin in admins:
+                    Notification.objects.create(
+                        user=admin,
+                        message=(
+                            f"{request.user.username} "
+                            f"requested a withdrawal of "
+                            f"{withdraw.amount} MMK "
+                            f"waiting for approval."
+                        ),
+                        notification_type="withdraw_request"
+                    )
+                messages.success(
+                    request,
+                    "Withdrawal request submitted successfully."
+                )
+
+                return redirect("wallet:history")
 
     else:
 
@@ -213,6 +261,7 @@ def withdraw_request(request):
         "wallet/withdraw.html",
         context,
     )
+
 
 # ======================================================
 # TRANSACTION HISTORY
@@ -248,4 +297,3 @@ def transaction_history(request):
         "wallet/history.html",
         context,
     )
-

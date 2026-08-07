@@ -1,11 +1,31 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
 
-    path('', views.dashboard, name="dashboard"),
+    # ==========================
+    # Dashboard
+    # ==========================
 
-    path('posts/', views.posts, name="posts"),
+    path(
+        '',
+        views.dashboard,
+        name="dashboard"
+    ),
+
+
+
+    # ==========================
+    # Pending Posts
+    # ==========================
+
+    path(
+        'posts/',
+        views.posts,
+        name="posts"
+    ),
+
 
     path(
         'posts/<int:post_id>/',
@@ -13,11 +33,13 @@ urlpatterns = [
         name="post_detail"
     ),
 
+
     path(
         'posts/<int:post_id>/approve/',
         views.approve_post,
         name="approve_post"
     ),
+
 
     path(
         'posts/<int:post_id>/reject/',
@@ -101,6 +123,18 @@ path(
     "wallet/withdraws/<int:withdraw_id>/reject/",
     views.reject_withdraw,
     name="reject_withdraw",
+),
+
+path(
+    'wallet/withdraw/approve/<int:withdraw_id>/',
+    views.approve_withdraw,
+    name="approve_withdraw"
+),
+
+path(
+    'wallet/withdraw/reject/<int:withdraw_id>/',
+    views.reject_withdraw,
+    name="reject_withdraw"
 ),
 
 ]
