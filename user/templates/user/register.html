@@ -1,408 +1,398 @@
-{% extends 'user/base.html' %}
+{% extends "user/base.html" %}
+{% load static %}
 
-{% block title %}Register | TrustyShop{% endblock %}
+{% block title %}
+Register | TrustyShop
+{% endblock %}
 
 {% block content %}
 
+<!-- =========================================================
+     BACKGROUND
+========================================================= -->
 
-<form class="mt-8 space-y-4" method="POST" action="{% url 'user:register' %}" enctype="multipart/form-data" id="registerForm">
-    {% csrf_token %}
+<span class="planet planet-1"></span>
+<span class="planet planet-2"></span>
+<span class="planet planet-3"></span>
 
-    <!-- Header -->
-    <div class="text-center">
+<span class="glow glow-1"></span>
+<span class="glow glow-2"></span>
 
-        <!-- Profile Photo -->
-        <div class="flex justify-center mb-6">
-            <div class="relative">
-                <div class="w-28 h-28 rounded-full bg-slate-700 border-4 border-slate-600 overflow-hidden flex items-center justify-center">
-                    <img id="previewImage"
-                         class="hidden w-full h-full object-cover">
-                    <i id="defaultIcon"
-                       class="fa-solid fa-user text-5xl text-slate-400"></i>
-                </div>
-                <label for="profileInput"
-                       class="absolute bottom-1 right-1 w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center cursor-pointer">
-                    <i class="fa-solid fa-camera text-white"></i>
+<div id="stars"></div>
+<div id="particles"></div>
+
+
+<!-- =========================================================
+     REGISTER CARD
+========================================================= -->
+
+<div class="register-card">
+
+    <span
+        class="card-border"
+        aria-hidden="true">
+    </span>
+
+
+    <!-- =====================================================
+         BRAND
+    ====================================================== -->
+
+    <header class="logo-box">
+
+        <div class="logo-circle">
+
+            <i
+                class="fa-solid fa-cart-shopping"
+                aria-hidden="true">
+            </i>
+
+        </div>
+
+        <h1>
+            TrustyShop
+        </h1>
+
+        <p>
+            Create your marketplace account
+        </p>
+
+    </header>
+
+
+    <!-- =====================================================
+         REGISTER FORM
+    ====================================================== -->
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        autocomplete="off">
+
+        {% csrf_token %}
+
+
+        <!-- =================================================
+             PROFILE PHOTO
+        ================================================== -->
+
+        <div class="profile-upload">
+
+            <div class="profile-preview">
+
+                <img
+                    id="previewImage"
+                    src="{% static 'user/images/default-profile.png' %}"
+                    alt="Profile preview">
+
+                <label
+                    for="id_profile_pic"
+                    title="Choose profile photo">
+
+                    <i
+                        class="fa-solid fa-camera"
+                        aria-hidden="true">
+                    </i>
+
                 </label>
-                <!-- IMPORTANT -->
-                <input
-                    type="file"
-                    id="profileInput"
-                    name="profile_pic"
-                    accept="image/*"
-                    hidden>
+
             </div>
+
+            {{ form.profile_pic }}
+
         </div>
 
-        <div id="fileName"
-             class="text-xs text-slate-400 mb-4">
-            No image selected
-        </div>
 
-        <h2 class="text-2xl font-bold text-white">
-            Create Account
-        </h2>
-    </div>
+        <!-- =================================================
+             FULL NAME + USERNAME
+        ================================================== -->
 
+        <div class="form-row">
 
-    <!-- Display form errors -->
-    {% if form.errors %}
-        <div class="bg-rose-500/20 border border-rose-500/50 rounded-lg p-4 mb-4">
-            {% for field, errors in form.errors.items %}
-                {% for error in errors %}
-                    <p class="text-rose-400 text-sm">
-                        <i class="fa-solid fa-circle-exclamation mr-2"></i>
-                        {{ error }}
-                    </p>
-                {% endfor %}
-            {% endfor %}
-        </div>
-    {% endif %}
+            <!-- FULL NAME -->
 
+            <div class="input-box">
 
-    <div class="grid grid-cols-1 sm:grid-cols-1 gap-4">
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Name</label>
-            <div class="input-container">
-                <!-- FIXED: Added value attribute to preserve input -->
-                <input type="text" name="fullName" required class="auth-input" placeholder="Your Name"
-                       value="{{ request.POST.fullName|default:'' }}">
-                <i class="fa-solid fa-user input-icon"></i>
+                <i
+                    class="fa-solid fa-user input-icon"
+                    aria-hidden="true">
+                </i>
+
+                {{ form.fullName }}
+
+                <label
+                    for="{{ form.fullName.id_for_label }}">
+
+                    Full Name
+
+                </label>
+
             </div>
-            {% if form.fullName.errors %}
-                <p class="text-rose-400 text-xs mt-1">{{ form.fullName.errors.0 }}</p>
-            {% endif %}
-        </div>
-    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Username</label>
-            <div class="input-container">
-                <!-- FIXED: Added value attribute -->
-                <input type="text" name="username" required class="auth-input" placeholder="johndoe"
-                       value="{{ request.POST.username|default:'' }}">
-                <i class="fa-solid fa-at input-icon"></i>
+
+            <!-- USERNAME -->
+
+            <div class="input-box">
+
+                <i
+                    class="fa-solid fa-at input-icon"
+                    aria-hidden="true">
+                </i>
+
+                {{ form.username }}
+
+                <label
+                    for="{{ form.username.id_for_label }}">
+
+                    Username
+
+                </label>
+
             </div>
-            {% if form.username.errors %}
-                <p class="text-rose-400 text-xs mt-1">{{ form.username.errors.0 }}</p>
-            {% endif %}
+
         </div>
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Email Address</label>
-            <div class="input-container">
-                <!-- FIXED: Added value attribute -->
-                <input type="email" name="email" required class="auth-input" placeholder="john@example.com"
-                       value="{{ request.POST.email|default:'' }}">
-                <i class="fa-regular fa-envelope input-icon"></i>
+
+
+        <!-- =================================================
+             EMAIL + PHONE
+        ================================================== -->
+
+        <div class="form-row">
+
+            <!-- EMAIL -->
+
+            <div class="input-box">
+
+                <i
+                    class="fa-solid fa-envelope input-icon"
+                    aria-hidden="true">
+                </i>
+
+                {{ form.email }}
+
+                <label
+                    for="{{ form.email.id_for_label }}">
+
+                    Email
+
+                </label>
+
             </div>
-            {% if form.email.errors %}
-                <p class="text-rose-400 text-xs mt-1">{{ form.email.errors.0 }}</p>
-            {% endif %}
-        </div>
-    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Phone Number</label>
-            <div class="input-container">
-                <!-- FIXED: Added value attribute -->
-                <input type="text" name="phone_number" required class="auth-input" placeholder="09xxxxxxxxx" maxlength="11"  inputmode="numeric"
-                       value="{{ request.POST.phone_number|default:'' }}">
-                <i class="fa-solid fa-phone input-icon"></i>
+
+            <!-- PHONE -->
+
+            <div class="input-box">
+
+                <i
+                    class="fa-solid fa-phone input-icon"
+                    aria-hidden="true">
+                </i>
+
+                {{ form.phone_number }}
+
+                <label
+                    for="{{ form.phone_number.id_for_label }}">
+
+                    Phone Number
+
+                </label>
+
             </div>
-            {% if form.phone_number.errors %}
-                <p class="text-rose-400 text-xs mt-1">{{ form.phone_number.errors.0 }}</p>
-            {% endif %}
+
         </div>
-        <div class="form-group">
-            <label class="block text-sm font-medium text-slate-300 mb-1">Gender</label>
-            <div class="input-container">
-                <!-- FIXED: Added selected attribute for preservation -->
-                <select name="gender" required class="auth-input">
-                    <option value="" disabled {% if not request.POST.gender %}selected{% endif %}>Select Gender</option>
-                    <option value="M" {% if request.POST.gender == 'M' %}selected{% endif %}>Male</option>
-                    <option value="F" {% if request.POST.gender == 'F' %}selected{% endif %}>Female</option>
-                </select>
-                <i class="fa-solid fa-venus-mars input-icon"></i>
+
+
+        <!-- =================================================
+             ADDRESS
+        ================================================== -->
+
+        <div class="input-box full-width">
+
+            <i
+                class="fa-solid fa-location-dot input-icon"
+                aria-hidden="true">
+            </i>
+
+            {{ form.address }}
+
+            <label
+                for="{{ form.address.id_for_label }}">
+
+                Address
+
+            </label>
+
+        </div>
+
+
+        <!-- =================================================
+             GENDER
+        ================================================== -->
+
+        <div class="gender-box">
+
+            <div class="gender-title">
+
+                <i
+                    class="fa-solid fa-venus-mars"
+                    aria-hidden="true">
+                </i>
+
+                <span>
+                    Gender
+                </span>
+
             </div>
-            {% if form.gender.errors %}
-                <p class="text-rose-400 text-xs mt-1">{{ form.gender.errors.0 }}</p>
-            {% endif %}
+
+
+            <div class="gender-options">
+
+                {{ form.gender }}
+
+            </div>
+
         </div>
-    </div>
-
-    <div class="form-group">
-        <label class="block text-sm font-medium text-slate-300 mb-1">Address</label>
-        <div class="input-container">
-            <!-- FIXED: Added value attribute -->
-            <input type="text" name="address" id="addressInput" maxlength="200" required class="auth-input"
-                   placeholder="No.123, Street, Yangon, Myanmar"
-                   value="{{ request.POST.address|default:'' }}">
-            <p id="addressCount" class="text-xs text-slate-500 mt-1">0 / 200</p>
-            <i class="fa-solid fa-location-dot input-icon"></i>
-        </div>
-        {% if form.address.errors %}
-            <p class="text-rose-400 text-xs mt-1">{{ form.address.errors.0 }}</p>
-        {% endif %}
-    </div>
 
 
-   <div class="form-group">
-    <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
-    <div class="input-container relative">
-        <input type="password" name="password" id="passwordInput" maxlength="20" required
-               class="auth-input pr-12" placeholder="••••••••">
-        <button type="button" id="togglePassword1"
-                class="absolute right-10 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors z-10">
-            <i class="fa-solid fa-eye"></i>
-        </button>
-        <i class="fa-solid fa-key input-icon"></i>
-    </div>
+        <!-- =====================================================
+     PASSWORD
+===================================================== -->
 
-    <!-- Password Validation Indicators -->
-    <div class="mt-2 space-y-1 text-xs">
-        <p id="lenCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
-            <i class="fa-solid fa-circle-xmark"></i> At least 8 characters
-        </p>
-        <p id="specCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
-            <i class="fa-solid fa-circle-xmark"></i> Must contain a special character (@, #, $, etc.)
-        </p>
-    </div>
+<div class="password-box">
 
-    <!-- Error Messages (if any) -->
-    {% if form.password.errors %}
-        <p class="text-rose-400 text-xs mt-1">{{ form.password.errors.0 }}</p>
-    {% endif %}
-</div>
+    <i
+        class="fa-solid fa-lock input-icon"
+        aria-hidden="true">
+    </i>
 
-       <div class="form-group">
-    <label class="block text-sm font-medium text-slate-300 mb-1">Confirm Password</label>
-    <div class="input-container relative">
-        <input type="password" name="confirm_password" id="confirmPasswordInput" required
-               class="auth-input pr-12" placeholder="••••••••">
-        <button type="button" id="togglePassword2"
-                class="absolute right-10 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors z-10">
-            <i class="fa-solid fa-eye"></i>
-        </button>
-        <i class="fa-solid fa-shield-halved input-icon"></i>
-    </div>
+    {{ form.password }}
 
-    <!-- Password Match Indicator -->
-    <div class="mt-2 text-xs">
-        <p id="matchCheck" class="text-rose-400 flex items-center gap-1.5 transition-colors duration-200">
-            <i class="fa-solid fa-circle-xmark"></i> Passwords must match
-        </p>
-    </div>
+    <label for="{{ form.password.id_for_label }}">
+        Password
+    </label>
 
-    <!-- Error Messages (if any) -->
-    {% if form.confirm_password.errors %}
-        <p class="text-rose-400 text-xs mt-1">{{ form.confirm_password.errors.0 }}</p>
-    {% endif %}
-</div>
+    <button
+        type="button"
+        class="toggle-password"
+        aria-label="Show password"
+        aria-pressed="false">
 
+        <i class="fa-solid fa-eye-slash"></i>
 
-    <button type="submit" id="submitBtn" class="btn-primary w-full mt-4 opacity-50 cursor-not-allowed" disabled>
-        <i class="fa-solid fa-user-plus"></i> Create Account
     </button>
 
-    <div class="text-center mt-6">
-        <p class="text-sm text-slate-400">
-            Already have an account?
-            <a href="{% url 'user:login' %}" class="text-blue-400 font-semibold hover:text-blue-300 hover:underline ml-1">Sign in here</a>
-        </p>
+</div>
+
+
+<!-- =====================================================
+     PASSWORD REQUIREMENTS
+===================================================== -->
+
+<div class="password-requirements">
+
+    <div
+        class="password-rule invalid"
+        id="passwordLengthRule">
+
+        <i class="fa-solid fa-circle-xmark"></i>
+
+        <span>
+            At least 8 characters
+        </span>
+
     </div>
-</form>
 
-<script>
-// Update address counter on page load if there's existing value
-document.addEventListener('DOMContentLoaded', function() {
-    const addressInput = document.getElementById('addressInput');
-    const addressCount = document.getElementById('addressCount');
 
-    if (addressInput && addressCount) {
-        // Set initial count from existing value
-        const length = addressInput.value.length;
-        addressCount.textContent = `${length} / 200`;
+    <div
+        class="password-rule invalid"
+        id="passwordSpecialRule">
 
-        if (length >= 200) {
-            addressCount.classList.remove('text-slate-500');
-            addressCount.classList.add('text-rose-400');
-        }
-    }
+        <i class="fa-solid fa-circle-xmark"></i>
 
-    // Also trigger password validation if there are values (from autocomplete)
-    if (passwordInput.value || confirmInput.value) {
-        validatePasswords();
-    }
-});
+        <span>
+            Must contain a special character
+            (@, #, $, %, !, etc.)
+        </span>
 
-const passwordInput = document.getElementById('passwordInput');
-const confirmInput = document.getElementById('confirmPasswordInput');
-const addressInput = document.getElementById('addressInput');
-const submitBtn = document.getElementById('submitBtn');
+    </div>
 
-const lenCheck = document.getElementById('lenCheck');
-const specCheck = document.getElementById('specCheck');
-const matchCheck = document.getElementById('matchCheck');
-const addressCount = document.getElementById('addressCount');
+</div>
+        <br>
 
-// Address Counter
-if (addressInput && addressCount) {
-    addressInput.addEventListener('input', () => {
-        const length = addressInput.value.length;
-        addressCount.textContent = `${length} / 200`;
 
-        if (length >= 200) {
-            addressCount.classList.remove('text-slate-500');
-            addressCount.classList.add('text-rose-400');
-        } else {
-            addressCount.classList.remove('text-rose-400');
-            addressCount.classList.add('text-slate-500');
-        }
-    });
-}
+<!-- =====================================================
+     CONFIRM PASSWORD
+===================================================== -->
 
-// Password Validation
-function validatePasswords() {
-    const password = passwordInput.value;
-    const confirm = confirmInput.value;
+<div class="password-box">
 
-    const isLongEnough = password.length >= 8;
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const passwordsMatch = password === confirm && confirm !== "";
+    <i
+        class="fa-solid fa-shield-halved input-icon"
+        aria-hidden="true">
+    </i>
 
-    // Length Check
-    if (isLongEnough) {
-        lenCheck.classList.remove('text-rose-400');
-        lenCheck.classList.add('text-emerald-400');
-        lenCheck.querySelector('i').className = "fa-solid fa-circle-check";
-    } else {
-        lenCheck.classList.remove('text-emerald-400');
-        lenCheck.classList.add('text-rose-400');
-        lenCheck.querySelector('i').className = "fa-solid fa-circle-xmark";
-    }
+    {{ form.confirm_password }}
 
-    // Special Character Check
-    if (hasSpecialChar) {
-        specCheck.classList.remove('text-rose-400');
-        specCheck.classList.add('text-emerald-400');
-        specCheck.querySelector('i').className = "fa-solid fa-circle-check";
-    } else {
-        specCheck.classList.remove('text-emerald-400');
-        specCheck.classList.add('text-rose-400');
-        specCheck.querySelector('i').className = "fa-solid fa-circle-xmark";
-    }
+    <label for="{{ form.confirm_password.id_for_label }}">
+        Confirm Password
+    </label>
 
-    // Match Check
-    if (passwordsMatch) {
-        matchCheck.classList.remove('text-rose-400');
-        matchCheck.classList.add('text-emerald-400');
-        matchCheck.querySelector('i').className = "fa-solid fa-circle-check";
-    } else {
-        matchCheck.classList.remove('text-emerald-400');
-        matchCheck.classList.add('text-rose-400');
-        matchCheck.querySelector('i').className = "fa-solid fa-circle-xmark";
-    }
+    <button
+        type="button"
+        class="toggle-password"
+        aria-label="Show confirm password"
+        aria-pressed="false">
 
-    // Enable Button
-    if (isLongEnough && hasSpecialChar && passwordsMatch) {
-        submitBtn.disabled = false;
-        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-    } else {
-        submitBtn.disabled = true;
-        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-    }
-}
+        <i class="fa-solid fa-eye-slash"></i>
 
-passwordInput.addEventListener('input', validatePasswords);
-confirmInput.addEventListener('input', validatePasswords);
+    </button>
 
-// =============================
-// Profile Photo Preview
-// =============================
+</div>
 
-const profileInput = document.getElementById("profileInput");
-const previewImage = document.getElementById("previewImage");
-const defaultIcon = document.getElementById("defaultIcon");
-const fileName = document.getElementById("fileName");
+        <!-- =================================================
+             REGISTER BUTTON
+        ================================================== -->
 
-profileInput.addEventListener("change", function () {
-    const file = this.files[0];
+        <button
+            type="submit"
+            class="auth-btn">
 
-    if (!file) {
-        return;
-    }
+            <span
+                class="btn-glow"
+                aria-hidden="true">
+            </span>
 
-    // Check image type
-    if (!file.type.startsWith("image/")) {
-        alert("Please select an image file.");
-        this.value = "";
-        return;
-    }
+            <i
+                class="fa-solid fa-user-plus"
+                aria-hidden="true">
+            </i>
 
-    // Maximum 2MB
-    if (file.size > 2 * 1024 * 1024) {
-        alert("Image size must be less than 2 MB.");
-        this.value = "";
-        return;
-    }
+            <span>
+                Create Account
+            </span>
 
-    // Display filename
-    fileName.innerHTML = '<span class="text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i>Profile photo selected</span>';
+        </button>
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        previewImage.src = e.target.result;
-        previewImage.classList.remove("hidden");
-        defaultIcon.classList.add("hidden");
-    };
-    reader.readAsDataURL(file);
-});
-// =============================
-// Password Toggle Visibility (Enhanced)
-// =============================
 
-function setupPasswordToggle(toggleButtonId, passwordInputId) {
-    const toggleBtn = document.getElementById(toggleButtonId);
-    const passwordInput = document.getElementById(passwordInputId);
+        <!-- =================================================
+             LOGIN LINK
+        ================================================== -->
 
-    if (!toggleBtn || !passwordInput) return;
+        <div class="bottom-text">
 
-    toggleBtn.addEventListener('click', function(e) {
-        e.preventDefault();
+            <span>
+                Already have an account?
+            </span>
 
-        // Toggle password visibility
-        const isPassword = passwordInput.type === 'password';
-        passwordInput.type = isPassword ? 'text' : 'password';
+            <a href="{% url 'user:login' %}">
+                Login Now
+            </a>
 
-        // Toggle icon with animation
-        const icon = toggleBtn.querySelector('i');
+        </div>
 
-        // Add rotation animation
-        icon.style.transition = 'transform 0.3s ease';
-        icon.style.transform = 'rotate(360deg)';
+    </form>
 
-        setTimeout(() => {
-            icon.style.transform = 'rotate(0deg)';
+</div>
 
-            if (isPassword) {
-                // Showing password
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-                toggleBtn.classList.add('text-blue-400');
-            } else {
-                // Hiding password
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-                toggleBtn.classList.remove('text-blue-400');
-            }
-        }, 150);
-    });
-}
-
-// Initialize toggles
-setupPasswordToggle('togglePassword1', 'passwordInput');
-setupPasswordToggle('togglePassword2', 'confirmPasswordInput');
-</script>
 {% endblock %}

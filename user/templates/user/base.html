@@ -1,60 +1,203 @@
+
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}TrustyShop{% endblock %}</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
 
-    <link rel="stylesheet" href="{% static 'user/user.css' %}">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#020617">
+
+<title>
+    {% block title %}
+        TrustyShop
+    {% endblock %}
+</title>
+
+
+<!-- Google Font -->
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+
+<!-- Font Awesome -->
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+
+<!-- Auth CSS -->
+
+<link
+    rel="stylesheet"
+    href="{% static 'user/css/auth.css' %}">
+
 </head>
-<body class="auth-bg">
+
+<body>
+<!-- =================================================
+     PAGE CONTENT
+================================================== -->
+
+{% block content %}
+
+{% endblock %}
+
+
+
+<!-- =================================================
+     CENTER ALERT MODAL
+================================================== -->
+
+<div
+    id="authAlert"
+    class="auth-alert-overlay"
+    aria-hidden="true">
+
+    <div
+        class="auth-alert"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="authAlertTitle">
+
+
+        <!-- Glow -->
+
+        <div class="alert-glow"></div>
+
+
+        <!-- Icon -->
+
+        <div class="alert-icon">
+
+            <i
+                id="authAlertIcon"
+                class="fa-solid fa-circle-exclamation">
+            </i>
+
+        </div>
+
+
+        <!-- Content -->
+
+        <div class="alert-content">
+
+            <h3 id="authAlertTitle">
+                Please check
+            </h3>
+
+            <p id="authAlertMessage">
+                Something went wrong.
+            </p>
+
+        </div>
+
+
+        <!-- OK Button -->
+
+        <button
+            type="button"
+            id="authAlertOk"
+            class="alert-ok">
+
+            <span>OK</span>
+
+            <i class="fa-solid fa-check"></i>
+
+        </button>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =================================================
+     DJANGO MESSAGES
+================================================== -->
+
+<div
+    id="djangoMessages"
+    hidden>
 
     {% if messages %}
-    <div class="fixed top-4 right-4 z-50 space-y-2">
+
         {% for message in messages %}
-        <div class="p-4 rounded-xl shadow-2xl border text-sm font-medium flex items-center gap-3 text-white backdrop-blur-md
-            {% if message.tags == 'success' %}
-                bg-emerald-500/20 border-emerald-500/30 text-emerald-300
-            {% elif message.tags == 'error' %}
-                bg-rose-500/20 border-rose-500/30 text-rose-300
-            {% else %}
-                bg-blue-500/20 border-blue-500/30 text-blue-300
-            {% endif %}">
 
-            {% if message.tags == 'success' %}
-                <i class="fa-solid fa-circle-check text-emerald-400"></i>
-            {% elif message.tags == 'error' %}
-                <i class="fa-solid fa-circle-exclamation text-rose-400"></i>
-            {% else %}
-                <i class="fa-solid fa-circle-info text-blue-400"></i>
-            {% endif %}
+            <div
+                class="django-message"
+                data-level="{{ message.tags }}">
 
-            {{ message }}
-        </div>
+                {{ message }}
+
+            </div>
+
         {% endfor %}
-    </div>
 
-    <script>
-        // Alert box လေးများကို ၄ စက္ကန့်အကြာတွင် အလိုအလျောက် ပျောက်သွားစေရန်
-        setTimeout(() => {
-            const alerts = document.querySelectorAll('.fixed > div');
-            alerts.forEach(alert => {
-                alert.style.transition = 'opacity 0.5s ease';
-                alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 500);
-            });
-        }, 4000);
-    </script>
     {% endif %}
 
-    <div class="container mx-auto px-4 flex justify-center items-center min-h-screen">
-        {% block content %}
-        {% endblock %}
+</div>
+
+
+
+<!-- =================================================
+     FORM ERRORS
+================================================== -->
+
+{% if form.errors %}
+
+    <div
+        id="formErrors"
+        hidden>
+
+        {% for field in form %}
+
+            {% for error in field.errors %}
+
+                <div class="form-error">
+
+                    {{ error }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endfor %}
+
+
+        {% for error in form.non_field_errors %}
+
+            <div class="form-error">
+
+                {{ error }}
+
+            </div>
+
+        {% endfor %}
+
     </div>
 
+{% endif %}
+
+
+
+<!-- Auth JavaScript -->
+
+<script
+    src="{% static 'user/js/auth.js' %}"
+    defer>
+</script>
+
 </body>
+
 </html>

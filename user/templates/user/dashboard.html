@@ -1,55 +1,444 @@
 {% extends 'user/base.html' %}
+{% load static %}
 
-{% block title %}Dashboard | TrustyShop{% endblock %}
+{% block title %}
+Dashboard | TrustyShop
+{% endblock %}
 
 {% block content %}
-<div class="max-w-md auth-card p-8 sm:p-10 my-8">
-    <div class="text-center">
-        {% if request.user.profile.profile_pic %}
-            <img src="{{ request.user.profile.profile_pic.url }}" alt="Profile" class="avatar-frame">
-        {% else %}
-            <div class="brand-icon-wrapper">
-                <i class="fa-regular fa-user"></i>
-            </div>
-        {% endif %}
 
-        <h2 class="text-2xl font-bold text-white">{{ request.user.first_name }} {{ request.user.last_name }}</h2>
-        <p class="text-blue-400 text-sm font-medium">@{{ request.user.username }}</p>
+<!-- =========================================
+     UNIVERSE BACKGROUND
+========================================= -->
 
-        <form method="POST" action="{% url 'user:update_profile_pic' %}" enctype="multipart/form-data" class="mt-3">
-            {% csrf_token %}
-            <div class="file-upload-wrapper">
-                <button class="file-upload-btn"><i class="fa-solid fa-camera mr-1"></i> Change Photo</button>
-                <input type="file" name="profile_pic" accept="image/*" onchange="this.form.submit()">
-            </div>
-        </form>
-    </div>
+<div class="universe">
 
-    <div class="mt-8 space-y-4 border-t border-slate-800 pt-6">
-        <div class="flex justify-between items-center text-sm">
-            <span class="text-slate-400 font-medium"><i class="fa-regular fa-envelope mr-2"></i>Email</span>
-            <span class="text-slate-200 font-semibold">{{ request.user.email }}</span>
-        </div>
-        <div class="flex justify-between items-center text-sm">
-            <span class="text-slate-400 font-medium"><i class="fa-solid fa-venus-mars mr-2"></i>Gender</span>
-            <span class="text-slate-200 font-semibold">
-                {% if request.user.profile.gender == 'M' %}Male{% elif request.user.profile.gender == 'F' %}Female{% else %}Not Set{% endif %}
-            </span>
-        </div>
-        <div class="flex justify-between items-center text-sm">
-            <span class="text-slate-400 font-medium"><i class="fa-solid fa-phone mr-2"></i>Phone</span>
-            <span class="text-slate-200 font-semibold">{{ request.user.profile.phone_number|default:"Not Provided" }}</span>
-        </div>
-        <div class="flex justify-between items-start text-sm">
-            <span class="text-slate-400 font-medium"><i class="fa-solid fa-location-dot mr-2"></i>Address</span>
-            <span class="text-slate-200 font-semibold text-right max-w-[200px]">{{ request.user.profile.address|default:"Not Provided" }}</span>
-        </div>
-    </div>
+    <span class="planet planet-1"></span>
+    <span class="planet planet-2"></span>
+    <span class="planet planet-3"></span>
 
-    <div class="mt-8">
-        <a href="{% url 'user:logout' %}" class="btn-primary bg-rose-600 hover:bg-rose-500 shadow-rose-950 w-full border-rose-500/20">
-            <i class="fa-solid fa-right-from-bracket"></i> Log Out
-        </a>
-    </div>
+    <span class="glow glow-1"></span>
+    <span class="glow glow-2"></span>
+
+    <div id="stars"></div>
+    <div id="particles"></div>
+
 </div>
+
+
+<!-- =========================================
+     DASHBOARD
+========================================= -->
+
+<section class="dashboard-page">
+
+    <div class="dashboard-card">
+
+        <!-- Decorative Border -->
+
+        <span class="card-border"></span>
+
+
+        <!-- =================================
+             HEADER
+        ================================== -->
+
+        <div class="dashboard-header">
+
+            <div class="dashboard-brand">
+
+                <div class="dashboard-brand-icon">
+
+                    <i class="fa-solid fa-store"></i>
+
+                </div>
+
+                <div>
+
+                    <h1>
+                        TrustyShop
+                    </h1>
+
+                    <p>
+                        My Account
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="online-status">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    Online
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================
+             PROFILE
+        ================================== -->
+
+        <div class="profile-section">
+
+            <div class="profile-image-wrapper">
+
+                {% if request.user.profile.profile_pic %}
+
+                    <img
+                        src="{{ request.user.profile.profile_pic.url }}"
+                        alt="Profile Picture"
+                        class="dashboard-avatar">
+
+                {% else %}
+
+                    <div class="dashboard-avatar default-avatar">
+
+                        <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- Online indicator -->
+
+                <span class="avatar-online"></span>
+
+
+                <!-- Camera -->
+
+                <label
+                    for="profile-picture-input"
+                    class="avatar-camera">
+
+                    <i class="fa-solid fa-camera"></i>
+
+                </label>
+
+            </div>
+
+
+            <div class="profile-info">
+
+                <h2>
+
+                    {% if request.user.profile.fullName %}
+
+                        {{ request.user.profile.fullName }}
+
+                    {% else %}
+
+                        {{ request.user.username }}
+
+                    {% endif %}
+
+                </h2>
+
+                <p class="username">
+
+                    @{{ request.user.username }}
+
+                </p>
+
+                <div class="account-badge">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    Verified Account
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================
+             CHANGE PROFILE FORM
+        ================================== -->
+
+        <form
+            method="POST"
+            action="{% url 'user:update_profile_pic' %}"
+            enctype="multipart/form-data"
+            id="profile-picture-form">
+
+            {% csrf_token %}
+
+            <input
+                type="file"
+                name="profile_pic"
+                id="profile-picture-input"
+                accept="image/*"
+                hidden>
+
+        </form>
+
+
+        <!-- =================================
+             ACCOUNT INFORMATION
+        ================================== -->
+
+        <div class="dashboard-section-title">
+
+            <div class="section-icon">
+
+                <i class="fa-solid fa-user"></i>
+
+            </div>
+
+            <div>
+
+                <h3>
+                    Personal Information
+                </h3>
+
+                <p>
+                    Your TrustyShop account details
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="profile-details">
+
+
+            <!-- EMAIL -->
+
+            <div class="detail-card">
+
+                <div class="detail-icon email-icon">
+
+                    <i class="fa-solid fa-envelope"></i>
+
+                </div>
+
+                <div class="detail-content">
+
+                    <span>
+                        Email Address
+                    </span>
+
+                    <strong>
+                        {{ request.user.email|default:"Not Provided" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="detail-card">
+
+                <div class="detail-icon phone-icon">
+
+                    <i class="fa-solid fa-phone"></i>
+
+                </div>
+
+                <div class="detail-content">
+
+                    <span>
+                        Phone Number
+                    </span>
+
+                    <strong>
+                        {{ request.user.profile.phone_number|default:"Not Provided" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- GENDER -->
+
+            <div class="detail-card">
+
+                <div class="detail-icon gender-icon">
+
+                    <i class="fa-solid fa-venus-mars"></i>
+
+                </div>
+
+                <div class="detail-content">
+
+                    <span>
+                        Gender
+                    </span>
+
+                    <strong>
+
+                        {% if request.user.profile.gender == 'M' %}
+
+                            Male
+
+                        {% elif request.user.profile.gender == 'F' %}
+
+                            Female
+
+                        {% else %}
+
+                            Not Set
+
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- ADDRESS -->
+
+            <div class="detail-card address-card">
+
+                <div class="detail-icon location-icon">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                </div>
+
+                <div class="detail-content">
+
+                    <span>
+                        Address
+                    </span>
+
+                    <strong>
+                        {{ request.user.profile.address|default:"Not Provided" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================
+             ACCOUNT STATUS
+        ================================== -->
+
+        <div class="account-status">
+
+            <div class="status-left">
+
+                <div class="status-icon">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                </div>
+
+                <div>
+
+                    <h4>
+                        Account Status
+                    </h4>
+
+                    <p>
+                        Your account is currently active
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="status-badge">
+
+                <span></span>
+
+                {{ request.user.profile.status }}
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================
+             ACTIONS
+        ================================== -->
+
+        <div class="dashboard-actions">
+
+            <a
+                href="{% url 'user:logout' %}"
+                class="dashboard-btn logout-btn">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Log Out
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- =================================
+             FOOTER
+        ================================== -->
+
+        <div class="dashboard-footer">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <span>
+                Your account information is securely protected
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     PROFILE IMAGE JAVASCRIPT
+========================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const input =
+        document.getElementById("profile-picture-input");
+
+    const form =
+        document.getElementById("profile-picture-form");
+
+
+    if (input && form) {
+
+        input.addEventListener("change", function () {
+
+            if (this.files && this.files.length > 0) {
+
+                form.submit();
+
+            }
+
+        });
+
+    }
+
+});
+
+</script>
+
 {% endblock %}

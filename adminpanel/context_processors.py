@@ -1,23 +1,31 @@
 from notifications.models import Notification
 
+
 def admin_notifications(request):
 
-    if request.user.is_authenticated:
-
-        notifications = Notification.objects.filter(
-            user=request.user,
-            is_read=False
-        )
-
-        print("Current User :", request.user.username)
-        print("Notification Count :", notifications.count())
+    if not request.user.is_authenticated or not request.user.is_staff:
 
         return {
-            "notification_count": notifications.count(),
-            "admin_notifications": notifications
+            "admin_notifications": [],
+            "notification_count": 0,
         }
 
+    notifications = Notification.objects.filter(
+
+        notification_type__in=[
+            "new_post",
+            "deposit_request",
+            "withdraw_request",
+        ],
+
+        is_read=False
+
+    ).order_by("-created_at")
+
     return {
-        "notification_count": 0,
-        "admin_notifications": []
+
+        "admin_notifications": notifications,
+
+        "notification_count": notifications.count(),
+
     }

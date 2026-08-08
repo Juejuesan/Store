@@ -1,0 +1,147 @@
+/* ==========================================
+   PROFESSIONAL MESSAGE BOX
+==========================================*/
+
+#messageOverlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:99999;
+
+    animation:fadeIn .3s;
+}
+
+.message-box{
+
+    width:420px;
+
+    max-width:90%;
+
+    background:white;
+
+    border-radius:25px;
+
+    padding:40px;
+
+    text-align:center;
+
+    box-shadow:0 25px 60px rgba(0,0,0,.25);
+
+    animation:popup .35s;
+}
+
+.message-icon{
+
+    font-size:70px;
+
+    margin-bottom:20px;
+}
+
+.message-box.success .message-icon{
+
+    color:#16a34a;
+}
+
+.message-box.error .message-icon{
+
+    color:#dc2626;
+}
+
+.message-box.warning .message-icon{
+
+    color:#f59e0b;
+}
+
+.message-box.info .message-icon{
+
+    color:#2563eb;
+}
+
+.message-box h3{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+}
+
+.message-box p{
+
+    color:#64748b;
+
+    line-height:1.7;
+
+    margin-bottom:30px;
+}
+
+#closeMessage{
+
+    border:none;
+
+    background:#1565C0;
+
+    color:white;
+
+    padding:12px 45px;
+
+    border-radius:40px;
+
+    font-weight:600;
+
+    transition:.3s;
+}
+
+#closeMessage:hover{
+
+    transform:translateY(-3px);
+
+    background:#0d47a1;
+}
+
+@keyframes popup{
+
+    from{
+
+        transform:scale(.8);
+
+        opacity:0;
+    }
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+    }
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+    }
+
+    to{
+
+        opacity:1;
+    }
+}
+
+
+#messageOverlay{
+
+    transition: opacity .3s ease;
+
+}

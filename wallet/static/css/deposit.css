@@ -1201,3 +1201,12 @@
     }
 
 }
+
+.deposit-btn.loading{
+    opacity: .8;
+    cursor: not-allowed;
+}
+
+.deposit-btn.loading i{
+    margin-right: 8px;
+}

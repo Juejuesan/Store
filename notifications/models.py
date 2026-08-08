@@ -9,7 +9,16 @@ class Notification(models.Model):
         ("new_post", "New Post"),
         ("approved", "Approved"),
         ("rejected", "Rejected"),
+        ("deposit_request", "Deposit Request"),
+        ("deposit_approved", "Deposit Approved"),
+        ("deposit_rejected", "Deposit Rejected"),
     ]
+
+    target_url = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
 
     user = models.ForeignKey(
         User,
@@ -40,6 +49,12 @@ class Notification(models.Model):
 
     created_at = models.DateTimeField(
         auto_now_add=True
+    )
+
+    target_url = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
     )
 
     class Meta:

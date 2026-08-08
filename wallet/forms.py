@@ -1,6 +1,7 @@
 from django import forms
 from .models import DepositRequest, WithdrawRequest
 from PIL import Image
+import re
 
 
 class DepositForm(forms.ModelForm):
@@ -137,6 +138,7 @@ class DepositForm(forms.ModelForm):
         return tx
 
 
+
 class WithdrawForm(forms.ModelForm):
 
     class Meta:
@@ -169,14 +171,14 @@ class WithdrawForm(forms.ModelForm):
             "receiver_phone": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "09xxxxxxxx"
+                    "placeholder": "09xxxxxxxxx"
                 }
             ),
 
             "amount": forms.NumberInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Amount"
+                    "placeholder": "Minimum MMK 1,000"
                 }
             ),
 
@@ -187,17 +189,52 @@ class WithdrawForm(forms.ModelForm):
                     "placeholder": "Optional note..."
                 }
             ),
-
         }
 
     def clean_amount(self):
 
-        amount = self.cleaned_data["amount"]
+        amount = self.cleaned_data.get("amount")
 
-        if amount <= 0:
-
+        if amount is None:
             raise forms.ValidationError(
-                "Amount must be greater than zero."
+                "Please enter the withdrawal amount."
+            )
+
+        if amount < 1000:
+            raise forms.ValidationError(
+                "The minimum withdrawal amount is MMK 1,000."
             )
 
         return amount
+
+    def clean_receiver_name(self):
+
+        name = self.cleaned_data.get("receiver_name")
+
+        if len(name.strip()) < 3:
+            raise forms.ValidationError(
+                "Receiver name must contain at least 3 characters."
+            )
+
+        return name
+
+    def clean_receiver_phone(self):
+
+        phone = self.cleaned_data.get("receiver_phone")
+
+        if not phone.startswith("09"):
+            raise forms.ValidationError(
+                "Phone number must start with 09."
+            )
+
+
+    def clean_receiver_phone(self):
+
+        phone = self.cleaned_data.get("receiver_phone").strip()
+
+        if not re.fullmatch(r"09\d{9}", phone):
+            raise forms.ValidationError(
+                "Enter a valid Myanmar phone number (e.g. 09123456789)."
+            )
+
+        return phone

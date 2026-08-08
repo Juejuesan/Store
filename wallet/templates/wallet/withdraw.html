@@ -114,7 +114,7 @@
 
                     </div>
 
-                    <form method="POST">
+                    <form method="POST" id="withdrawForm">
 
                         {% csrf_token %}
 
@@ -130,8 +130,6 @@
 
                             {{ form.payment_method }}
 
-                            {{ form.payment_method.errors }}
-
                         </div>
 
                         <!-- Receiver Name -->
@@ -145,8 +143,6 @@
                             </label>
 
                             {{ form.receiver_name }}
-
-                            {{ form.receiver_name.errors }}
 
                         </div>
 
@@ -162,8 +158,6 @@
 
                             {{ form.receiver_phone }}
 
-                            {{ form.receiver_phone.errors }}
-
                         </div>
 
                         <!-- Amount -->
@@ -178,7 +172,6 @@
 
                             {{ form.amount }}
 
-                            {{ form.amount.errors }}
 
                         </div>
 
@@ -193,8 +186,6 @@
                             </label>
 
                             {{ form.note }}
-
-                            {{ form.note.errors }}
 
                         </div>
 

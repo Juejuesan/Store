@@ -170,21 +170,19 @@
 
                 </li>
 
-                <li>
+                <li class="{% if request.resolver_match.url_name == 'wallet_requests' %}active{% endif %}">
 
-                    <a href="#">
+    <a href="{% url 'wallet_requests' %}">
 
-                        <i class="fa-solid fa-wallet"></i>
+        <i class="fa-solid fa-wallet"></i>
 
-                        <span>
+        <span>
+            Wallet
+        </span>
 
-                            Wallet
+    </a>
 
-                        </span>
-
-                    </a>
-
-                </li>
+</li>
 
                 <li>
 
@@ -272,22 +270,23 @@
             <!-- Notification -->
 
             <button class="notification-btn"
-                    id="notificationBell"
-                    type="button">
+        id="notificationBell"
+        type="button">
 
-                <i class="fa-regular fa-bell"></i>
+    <i class="fa-regular fa-bell"></i>
 
-                {% if notification_count > 0 %}
+    {% if admin_notification_count > 0 %}
 
-                <span class="notify-count">
+    <span class="notify-count"
+          id="adminNotificationBadge">
 
-                    {{ notification_count }}
+        {{ admin_notification_count }}
 
-                </span>
+    </span>
 
-                {% endif %}
+    {% endif %}
 
-            </button>
+</button>
 
             <!-- Theme -->
 
@@ -351,17 +350,28 @@
 
                 {% if notification.notification_type == "approved" %}
 
-                    <i class="fa-solid fa-circle-check"></i>
+<i class="fa-solid fa-circle-check"></i>
 
-                {% elif notification.notification_type == "rejected" %}
 
-                    <i class="fa-solid fa-circle-xmark"></i>
+{% elif notification.notification_type == "rejected" %}
 
-                {% else %}
+<i class="fa-solid fa-circle-xmark"></i>
 
-                    <i class="fa-solid fa-box-open"></i>
 
-                {% endif %}
+{% elif notification.notification_type == "deposit_request" %}
+
+<i class="fa-solid fa-wallet"></i>
+
+                {% elif notification.notification_type == "withdraw_request" %}
+
+<i class="fa-solid fa-money-bill-transfer"></i>
+
+{% else %}
+
+<i class="fa-solid fa-box-open"></i>
+
+
+{% endif %}
 
             </div>
 
