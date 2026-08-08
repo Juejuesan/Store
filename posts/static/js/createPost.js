@@ -1,7 +1,6 @@
 // ============================================
 // ITEMS & SIZES SYSTEM
 // ============================================
-let itemIndex = 0;
 let sizeOptions = [];
 let selectedSizes = {};
 
@@ -40,73 +39,134 @@ function checkSizeVisibility() {
 }
 
 function addItem() {
-    if (itemIndex >= 10) {
+    const existingItems = document.querySelectorAll('.item-section').length;
+    
+    if (existingItems >= 10) {
         showCustomAlert('You can only add up to 10 items per post.');
         return;
     }
 
     const container = document.getElementById('itemsContainer');
-    const currentIndex = itemIndex;
+    
+    let newIndex = 0;
+    while (document.getElementById('item' + newIndex)) {
+        newIndex++;
+    }
+    
+    const itemNumber = existingItems + 1;
 
     const itemHTML =
-        '<div class="glass-card item-section" id="item' + currentIndex + '">' +
+        '<div class="glass-card item-section" id="item' + newIndex + '">' +
             '<div class="item-header">' +
-                '<h3><i class="fa-solid fa-box"></i> Item ' + (currentIndex + 1) + '</h3>' +
-                '<button type="button" class="remove-item-btn" onclick="removeItem(' + currentIndex + ')">' +
+                '<h3><i class="fa-solid fa-box"></i> Item ' + itemNumber + '</h3>' +
+                (existingItems === 0 ? '' : '<button type="button" class="remove-item-btn" onclick="removeItem(' + newIndex + ')">' +
                     '<i class="fa-solid fa-trash"></i> Remove Item' +
-                '</button>' +
+                '</button>') +
             '</div>' +
             '<div class="product-grid">' +
                 '<div class="input-card">' +
                     '<label><i class="fa-solid fa-tag"></i> Item Name *</label>' +
-                    '<input type="text" name="item_name_' + currentIndex + '" placeholder="e.g., Blue Cotton T-Shirt" required>' +
+                    '<input type="text" name="item_name_' + newIndex + '" placeholder="e.g., Blue Cotton T-Shirt" required>' +
                 '</div>' +
                 '<div class="input-card">' +
                     '<label><i class="fa-solid fa-money-bill-wave"></i> Price (MMK) *</label>' +
-                    '<input type="number" name="item_price_' + currentIndex + '" placeholder="Enter price" required min="1">' +
+                    '<input type="number" name="item_price_' + newIndex + '" placeholder="Enter price" required min="1">' +
                 '</div>' +
             '</div>' +
             '<div class="description-card">' +
                 '<label><i class="fa-solid fa-align-left"></i> Item Description</label>' +
-                '<textarea name="item_description_' + currentIndex + '" placeholder="Describe this item..."></textarea>' +
+                '<textarea name="item_description_' + newIndex + '" placeholder="Describe this item..."></textarea>' +
             '</div>' +
-            '<label class="item-upload-area" for="fileInput' + currentIndex + '">' +
+            '<label class="item-upload-area" for="fileInput' + newIndex + '">' +
                 '<div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>' +
                 '<h3>Upload Photos</h3>' +
                 '<p>Click to browse</p>' +
                 '<span>Choose Files</span>' +
-                '<input type="file" id="fileInput' + currentIndex + '" name="images_' + currentIndex + '" multiple accept="image/*" style="display:none" onchange="handleFileSelect(this, ' + currentIndex + ')">' +
+                '<input type="file" id="fileInput' + newIndex + '" name="images_' + newIndex + '" multiple accept="image/*" style="display:none" onchange="handleFileSelect(this, ' + newIndex + ')">' +
             '</label>' +
-            '<div class="preview-grid" id="previewGrid' + currentIndex + '"></div>' +
-            '<div id="sizeChart' + currentIndex + '" class="size-chart" style="display:none">' +
+            '<div class="preview-grid" id="previewGrid' + newIndex + '"></div>' +
+            '<div id="sizeChart' + newIndex + '" class="size-chart" style="display:none">' +
                 '<label><i class="fa-solid fa-ruler"></i> Select Sizes</label>' +
-                '<div class="size-buttons" id="sizeButtons' + currentIndex + '"></div>' +
+                '<div class="size-buttons" id="sizeButtons' + newIndex + '"></div>' +
             '</div>' +
-            '<div id="selectedSizes' + currentIndex + '" class="selected-sizes" style="display:none">' +
-                '<input type="hidden" name="size_count_' + currentIndex + '" id="sizeCount' + currentIndex + '" value="0">' +
+            '<div id="selectedSizes' + newIndex + '" class="selected-sizes" style="display:none">' +
+                '<input type="hidden" name="size_count_' + newIndex + '" value="0">' +
             '</div>' +
-            '<button type="button" class="add-sizes-btn" id="addMoreSizes' + currentIndex + '" style="display:none" onclick="toggleSizeChart(' + currentIndex + ')">' +
+            '<button type="button" class="add-sizes-btn" id="addMoreSizes' + newIndex + '" style="display:none" onclick="toggleSizeChart(' + newIndex + ')">' +
                 '<i class="fa-solid fa-plus"></i> Add Sizes' +
             '</button>' +
         '</div>';
 
     container.insertAdjacentHTML('beforeend', itemHTML);
-    itemIndex++;
     updateAllSizeCharts();
     checkItemLimit();
+    renumberItems();
 }
 
 function removeItem(index) {
+    const allItems = document.querySelectorAll('.item-section');
+    if (allItems.length <= 1) {
+        showCustomAlert('You must have at least one item in your post.');
+        return;
+    }
+
     const item = document.getElementById('item' + index);
     if (item) item.remove();
     delete selectedSizes[index];
     checkItemLimit();
+    renumberItems();
+}
+
+function renumberItems() {
+    const allItems = document.querySelectorAll('.item-section');
+
+    allItems.forEach(function(item, i) {
+        const itemNumber = i + 1;
+
+        // Update item heading
+        const header = item.querySelector('.item-header h3');
+        if (header) {
+            header.innerHTML =
+                '<i class="fa-solid fa-box"></i> Item ' + itemNumber;
+        }
+
+        // Handle remove button
+        const removeBtn = item.querySelector('.remove-item-btn');
+
+        if (i === 0) {
+            // First item can NEVER be removed
+            if (removeBtn) {
+                removeBtn.style.display = 'none';
+            }
+        } else {
+            // Item 2, 3, 4... can be removed
+            if (removeBtn) {
+                removeBtn.style.display = 'flex';
+            } else {
+                // Create remove button if it doesn't exist
+                const headerDiv = item.querySelector('.item-header');
+
+                if (headerDiv) {
+                    const index = item.id.replace('item', '');
+
+                    headerDiv.insertAdjacentHTML(
+                        'beforeend',
+                        '<button type="button" class="remove-item-btn" ' +
+                        'onclick="removeItem(' + index + ')">' +
+                        '<i class="fa-solid fa-trash"></i> Remove Item' +
+                        '</button>'
+                    );
+                }
+            }
+        }
+    });
 }
 
 function checkItemLimit() {
     const addBtn = document.querySelector('.add-item-btn');
+    const existingItems = document.querySelectorAll('.item-section').length;
     if (addBtn) {
-        if (itemIndex >= 10) {
+        if (existingItems >= 10) {
             addBtn.style.display = 'none';
         } else {
             addBtn.style.display = 'inline-flex';
@@ -135,22 +195,24 @@ function handleFileSelect(input, itemIdx) {
 function updateAllSizeCharts() {
     const condition = document.getElementById('conditionSelect').value;
 
-    for (let i = 0; i < itemIndex; i++) {
-        const sizeChart = document.getElementById('sizeChart' + i);
-        const addMoreBtn = document.getElementById('addMoreSizes' + i);
+    const allItems = document.querySelectorAll('.item-section');
+    allItems.forEach(function(item) {
+        const itemId = item.id.replace('item', '');
+        const sizeChart = document.getElementById('sizeChart' + itemId);
+        const addMoreBtn = document.getElementById('addMoreSizes' + itemId);
         if (sizeChart && addMoreBtn) {
             if (condition === 'new' && sizeOptions.length > 0) {
                 sizeChart.style.display = 'block';
                 addMoreBtn.style.display = 'inline-flex';
-                populateSizeButtons(i);
+                populateSizeButtons(itemId);
             } else {
                 sizeChart.style.display = 'none';
                 addMoreBtn.style.display = 'none';
-                document.getElementById('selectedSizes' + i).style.display = 'none';
-                if (selectedSizes[i]) selectedSizes[i] = [];
+                document.getElementById('selectedSizes' + itemId).style.display = 'none';
+                if (selectedSizes[itemId]) selectedSizes[itemId] = [];
             }
         }
-    }
+    });
 }
 
 function populateSizeButtons(itemIdx) {
@@ -243,7 +305,7 @@ function updateSelectedSizesDisplay(itemIndex) {
     if (!selectedSizesDiv) return;
 
     if (!selectedSizes[itemIndex] || selectedSizes[itemIndex].length === 0) {
-        selectedSizesDiv.innerHTML = '<input type="hidden" name="size_count_' + itemIndex + '" id="sizeCount' + itemIndex + '" value="0">';
+        selectedSizesDiv.innerHTML = '<input type="hidden" name="size_count_' + itemIndex + '" value="0">';
         selectedSizesDiv.classList.add('hidden');
         return;
     }
@@ -251,7 +313,7 @@ function updateSelectedSizesDisplay(itemIndex) {
     selectedSizesDiv.classList.remove('hidden');
 
     let html = '<h4><i class="fa-solid fa-circle-check"></i> Selected Sizes</h4>';
-    html += '<input type="hidden" name="size_count_' + itemIndex + '" id="sizeCount' + itemIndex + '" value="' + selectedSizes[itemIndex].length + '">';
+    html += '<input type="hidden" name="size_count_' + itemIndex + '" value="' + selectedSizes[itemIndex].length + '">';
 
     selectedSizes[itemIndex].forEach(function(sizeObj, j) {
         let qty = sizeObj.quantity || 0;

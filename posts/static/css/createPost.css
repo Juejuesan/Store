@@ -392,19 +392,27 @@ body {
 .input-card select,
 .description-card textarea,
 .description-card input {
-    resize: vertical;
-    min-height: 120px;
-    max-height:400px;
+    resize: none;
     width: 100%;
     border: 2px solid var(--border-light);
     border-radius: 16px;
-    padding: 15px 18px;
+    padding: 12px 16px;
     font-size: 15px;
     outline: none;
     transition: var(--transition);
     background: #fff;
     color: var(--text-medium);
     font-family: 'Poppins', sans-serif;
+}
+
+.input-card input,
+.input-card select {
+    height: 48px;
+}
+
+.description-card textarea {
+    min-height: 120px;
+    max-height: 400px;
 }
 
 .input-card input:focus,
@@ -417,6 +425,18 @@ body {
 
 .input-card select {
     cursor: pointer;
+}
+
+/* Hide "Choose category" option after selection */
+#categorySelect option[value=""] {
+    display: none;
+}
+
+/* Smaller select boxes */
+#categorySelect,
+#conditionSelect {
+    max-width: 280px;
+    font-size: 14px;
 }
 
 /*==================================================
@@ -449,7 +469,7 @@ body {
 .description-card textarea {
     min-height: 120px;
     max-height: 400px;
-    resize: vertical;
+    resize: none;
 }
 
 .description-card small {
@@ -709,48 +729,6 @@ body {
 }
 
 /*==================================================
-            PHOTO TIPS
-==================================================*/
-.photo-tips {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin-top: 40px;
-}
-
-.tip {
-    background: white;
-    border-radius: 22px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 15px 35px rgba(0,0,0,.08);
-    transition: .35s;
-}
-
-.tip:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 25px 50px rgba(37,99,235,.12);
-}
-
-.tip i {
-    font-size: 42px;
-    color: #2563eb;
-    margin-bottom: 18px;
-}
-
-.tip h5 {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    color: #1e293b;
-}
-
-.tip p {
-    color: #64748b;
-    line-height: 1.7;
-}
-
-/*==================================================
             SIZE CHART
 ==================================================*/
 .size-chart {
@@ -850,11 +828,11 @@ body {
 }
 
 .quantity-input {
-    width: 100px;
-    padding: 8px 12px;
+    width: 80px;
+    padding: 8px 10px;
     border: 2px solid #dbeafe;
     border-radius: 12px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     text-align: center;
     font-family: 'Poppins', sans-serif;
@@ -1114,6 +1092,40 @@ body {
 }
 
 /*==================================================
+            SIZE PRICE INPUT
+==================================================*/
+.price-input {
+    width: 80px;
+    padding: 8px 10px;
+    border: 2px solid #dbeafe;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    transition: .35s;
+    color: #334155;
+    background: #fff;
+}
+
+.price-input:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 .25rem rgba(37,99,235,.12);
+}
+
+.price-input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/*==================================================
             RESPONSIVE
 ==================================================*/
 @media(max-width: 992px) {
@@ -1182,37 +1194,4 @@ body {
     .size-buttons {
         justify-content: center;
     }
-}
-
-/*==================================================
-            SIZE PRICE INPUT
-==================================================*/
-.price-input {
-    width: 100px;
-    padding: 8px 12px;
-    border: 2px solid #dbeafe;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
-    transition: .35s;
-    color: #334155;
-    background: #fff;
-}
-
-.price-input:focus {
-    border-color: #2563eb;
-    outline: none;
-    box-shadow: 0 0 0 .25rem rgba(37,99,235,.12);
-}
-
-.price-input::placeholder {
-    color: #94a3b8;
-    font-weight: 400;
-    font-size: 13px;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
 }
