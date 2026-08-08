@@ -84,7 +84,10 @@ class RegisterForm(forms.ModelForm):
     # -----------------------------------------------------
 
     gender = forms.ChoiceField(
-        choices=Profile.GENDER_CHOICES,
+        choices=[
+            ("", "Select your gender"),
+            *Profile.GENDER_CHOICES,
+        ],
         required=True,
         widget=forms.Select(
             attrs={

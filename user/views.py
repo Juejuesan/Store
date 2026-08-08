@@ -15,7 +15,7 @@ from .forms import (
     EmailVerificationForm,
 )
 from .models import Profile
-
+from django.db.models import Q
 
 # ==========================================
 # REGISTER
@@ -35,51 +35,72 @@ def register_view(request):
 
         if form.is_valid():
 
-            password = form.cleaned_data["password"]
+            # ==========================================
+            # GENERATE EXACTLY 6 DIGIT CODE
+            # ==========================================
 
-            # Create Django User
-            user = form.save(commit=False)
-
-            user.set_password(password)
-
-            user.save()
-
-            # Create/Get Profile
-            profile = Profile.objects.get_or_create(
-                user=user
-            )[0]
-
-            profile.fullName = form.cleaned_data["fullName"]
-            profile.phone_number = form.cleaned_data["phone_number"]
-            profile.address = form.cleaned_data["address"]
-            profile.gender = form.cleaned_data["gender"]
-
-            # Profile picture
-            if form.cleaned_data.get("profile_pic"):
-
-                profile.profile_pic = form.cleaned_data[
-                    "profile_pic"
-                ]
-
-            # Generate 6-digit verification code
             verification_code = str(
                 random.randint(100000, 999999)
             )
 
-            profile.verification_code = verification_code
-            profile.email_verified = False
+            # ==========================================
+            # STORE REGISTRATION DATA TEMPORARILY
+            # ==========================================
 
-            profile.save()
+            request.session["pending_registration"] = {
+
+                "username": form.cleaned_data["username"],
+
+                "email": form.cleaned_data["email"],
+
+                "password": form.cleaned_data["password"],
+
+                "fullName": form.cleaned_data["fullName"],
+
+                "phone_number": form.cleaned_data["phone_number"],
+
+                "address": form.cleaned_data["address"],
+
+                "gender": form.cleaned_data["gender"],
+
+                "verification_code": verification_code,
+            }
+
+            # ==========================================
+            # PROFILE PICTURE
+            # ==========================================
+            #
+            # Django sessions cannot store uploaded files.
+            #
+            # Therefore, for now we will temporarily store
+            # the uploaded image separately.
+            #
+
+            if form.cleaned_data.get("profile_pic"):
+
+                profile_pic = form.cleaned_data[
+                    "profile_pic"
+                ]
+
+                # Store uploaded file temporarily
+                request.session["pending_profile_pic_name"] = (
+                    profile_pic.name
+                )
+
+                # NOTE:
+                # We will handle the actual file storage
+                # in the next step.
 
             # ==========================================
             # SEND VERIFICATION EMAIL
             # ==========================================
 
             send_mail(
+
                 subject="TrustyShop Email Verification",
 
                 message=f"""
-Hello {user.username},
+Hello {form.cleaned_data["username"]},
 
 Welcome to TrustyShop!
 
@@ -87,7 +108,8 @@ Your verification code is:
 
 {verification_code}
 
-Please enter this code on the verification page.
+Please enter this 6-digit code to complete
+your TrustyShop registration.
 
 Thank you,
 TrustyShop Team
@@ -96,22 +118,17 @@ TrustyShop Team
                 from_email=None,
 
                 recipient_list=[
-                    user.email
+                    form.cleaned_data["email"]
                 ],
 
                 fail_silently=False,
             )
 
-            # Save user ID for verification page
-            request.session[
-                "verification_user_id"
-            ] = user.id
-
             messages.success(
                 request,
-                "Registration successful! "
-                "A verification code has been sent "
-                "to your email."
+                "Your registration information is valid. "
+                "Please enter the 6-digit code sent "
+                "to your email to complete registration."
             )
 
             return redirect(
@@ -140,8 +157,6 @@ TrustyShop Team
             "form": form
         }
     )
-
-
 # ==========================================
 # LOGIN
 # ==========================================
@@ -307,21 +322,19 @@ def update_profile_pic(request):
 
 def verify_email(request):
 
-    # Don't allow already logged-in users
-    if request.user.is_authenticated:
+    # ==========================================
+    # GET PENDING REGISTRATION
+    # ==========================================
 
-        return redirect("home")
-
-    # Get user ID from session
-    user_id = request.session.get(
-        "verification_user_id"
+    pending = request.session.get(
+        "pending_registration"
     )
 
-    if not user_id:
+    if not pending:
 
         messages.error(
             request,
-            "Verification session expired. "
+            "Your registration session has expired. "
             "Please register again."
         )
 
@@ -329,28 +342,8 @@ def verify_email(request):
             "user:register"
         )
 
-    # Find user
-    try:
-
-        user = User.objects.get(
-            id=user_id
-        )
-
-        profile = user.profile
-
-    except User.DoesNotExist:
-
-        messages.error(
-            request,
-            "User account not found."
-        )
-
-        return redirect(
-            "user:register"
-        )
-
     # ==========================================
-    # VERIFY CODE
+    # POST
     # ==========================================
 
     if request.method == "POST":
@@ -361,12 +354,60 @@ def verify_email(request):
 
         if form.is_valid():
 
-            code = form.cleaned_data[
+            entered_code = form.cleaned_data[
                 "code"
             ]
 
-            # Correct code
-            if profile.verification_code == code:
+            correct_code = pending.get(
+                "verification_code"
+            )
+
+            # ======================================
+            # CORRECT 6 DIGITS
+            # ======================================
+
+            if entered_code == correct_code:
+
+                # ==================================
+                # CREATE USER ONLY NOW
+                # ==================================
+
+                user = User.objects.create_user(
+
+                    username=pending["username"],
+
+                    email=pending["email"],
+
+                    password=pending["password"]
+                )
+
+                # ==================================
+                # CREATE PROFILE
+                # ==================================
+
+                profile = Profile.objects.get(
+                    user=user
+                )
+
+                profile.fullName = pending[
+                    "fullName"
+                ]
+
+                profile.phone_number = pending[
+                    "phone_number"
+                ]
+
+                profile.address = pending[
+                    "address"
+                ]
+
+                profile.gender = pending[
+                    "gender"
+                ]
+
+                # ==================================
+                # EMAIL IS VERIFIED
+                # ==================================
 
                 profile.email_verified = True
 
@@ -374,18 +415,28 @@ def verify_email(request):
 
                 profile.save()
 
-                # Remove verification session
+                # ==================================
+                # DELETE TEMPORARY REGISTRATION DATA
+                # ==================================
+
                 request.session.pop(
-                    "verification_user_id",
+                    "pending_registration",
                     None
                 )
 
-                # Specify authentication backend
+                request.session.pop(
+                    "pending_profile_pic_name",
+                    None
+                )
+
+                # ==================================
+                # LOGIN NEW USER
+                # ==================================
+
                 user.backend = (
                     "user.backends.EmailOrUsernameModelBackend"
                 )
 
-                # Log user in
                 login(
                     request,
                     user
@@ -393,7 +444,7 @@ def verify_email(request):
 
                 messages.success(
                     request,
-                    "Email verified successfully! "
+                    "Registration completed successfully! "
                     "Welcome to TrustyShop."
                 )
 
@@ -401,13 +452,16 @@ def verify_email(request):
                     "home"
                 )
 
-            # Incorrect code
-            else:
+            # ======================================
+            # WRONG CODE
+            # ======================================
 
-                messages.error(
-                    request,
-                    "Invalid verification code."
-                )
+            messages.error(
+                request,
+                "Incorrect verification code. "
+                "Please enter the 6-digit code "
+                "sent to your email."
+            )
 
     else:
 

@@ -926,6 +926,166 @@ if (password) {
 
 
 /* =====================================================
+   PASSWORD REQUIREMENTS
+   RED → GREEN WHEN SATISFIED
+===================================================== */
+
+const passwordLengthRule =
+    document.getElementById("passwordLengthRule");
+
+const passwordSpecialRule =
+    document.getElementById("passwordSpecialRule");
+
+
+function updatePasswordRequirements() {
+
+    if (!password)
+        return;
+
+
+    const value =
+        password.value;
+
+
+    /* -------------------------------------------------
+       PASSWORD LENGTH
+    ------------------------------------------------- */
+
+    if (passwordLengthRule) {
+
+        const lengthIcon =
+            passwordLengthRule.querySelector("i");
+
+        if (value.length >= 8) {
+
+            passwordLengthRule.classList.remove(
+                "invalid"
+            );
+
+            passwordLengthRule.classList.add(
+                "valid"
+            );
+
+            if (lengthIcon) {
+
+                lengthIcon.classList.remove(
+                    "fa-circle-xmark"
+                );
+
+                lengthIcon.classList.add(
+                    "fa-circle-check"
+                );
+
+            }
+
+        } else {
+
+            passwordLengthRule.classList.remove(
+                "valid"
+            );
+
+            passwordLengthRule.classList.add(
+                "invalid"
+            );
+
+            if (lengthIcon) {
+
+                lengthIcon.classList.remove(
+                    "fa-circle-check"
+                );
+
+                lengthIcon.classList.add(
+                    "fa-circle-xmark"
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* -------------------------------------------------
+       SPECIAL CHARACTER
+    ------------------------------------------------- */
+
+    if (passwordSpecialRule) {
+
+        const specialIcon =
+            passwordSpecialRule.querySelector("i");
+
+        const hasSpecialCharacter =
+            /[!@#$%^&*(),.?":{}|<>]/.test(value);
+
+
+        if (hasSpecialCharacter) {
+
+            passwordSpecialRule.classList.remove(
+                "invalid"
+            );
+
+            passwordSpecialRule.classList.add(
+                "valid"
+            );
+
+            if (specialIcon) {
+
+                specialIcon.classList.remove(
+                    "fa-circle-xmark"
+                );
+
+                specialIcon.classList.add(
+                    "fa-circle-check"
+                );
+
+            }
+
+        } else {
+
+            passwordSpecialRule.classList.remove(
+                "valid"
+            );
+
+            passwordSpecialRule.classList.add(
+                "invalid"
+            );
+
+            if (specialIcon) {
+
+                specialIcon.classList.remove(
+                    "fa-circle-check"
+                );
+
+                specialIcon.classList.add(
+                    "fa-circle-xmark"
+                );
+
+            }
+
+        }
+
+    }
+
+}
+
+
+/* -----------------------------------------------------
+   UPDATE WHILE TYPING
+----------------------------------------------------- */
+
+if (password) {
+
+    password.addEventListener(
+        "input",
+        updatePasswordRequirements
+    );
+
+    updatePasswordRequirements();
+
+}
+
+
+/* =====================================================
    CONFIRM PASSWORD
 ===================================================== */
 

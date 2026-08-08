@@ -7,25 +7,25 @@ Register | TrustyShop
 
 {% block content %}
 
-<section class="register-page">
+<!-- =========================================================
+     BACKGROUND
+========================================================= -->
 
-<!-- BACKGROUND DECORATION -->
-<div class="auth-background" aria-hidden="true">
+<span class="planet planet-1"></span>
+<span class="planet planet-2"></span>
+<span class="planet planet-3"></span>
 
-    <span class="planet planet-1"></span>
-    <span class="planet planet-2"></span>
-    <span class="planet planet-3"></span>
+<span class="glow glow-1"></span>
+<span class="glow glow-2"></span>
 
-    <span class="glow glow-1"></span>
-    <span class="glow glow-2"></span>
-
-    <div id="stars"></div>
-    <div id="particles"></div>
-
-</div>
+<div id="stars"></div>
+<div id="particles"></div>
 
 
-<!-- REGISTER CARD -->
+<!-- =========================================================
+     REGISTER CARD
+========================================================= -->
+
 <div class="register-card">
 
     <span
@@ -34,17 +34,24 @@ Register | TrustyShop
     </span>
 
 
-    <!-- BRAND -->
+    <!-- =====================================================
+         BRAND
+    ====================================================== -->
+
     <header class="logo-box">
 
         <div class="logo-circle">
+
             <i
                 class="fa-solid fa-cart-shopping"
                 aria-hidden="true">
             </i>
+
         </div>
 
-        <h1>TrustyShop</h1>
+        <h1>
+            TrustyShop
+        </h1>
 
         <p>
             Create your marketplace account
@@ -53,7 +60,10 @@ Register | TrustyShop
     </header>
 
 
-    <!-- REGISTER FORM -->
+    <!-- =====================================================
+         REGISTER FORM
+    ====================================================== -->
+
     <form
         method="POST"
         enctype="multipart/form-data"
@@ -62,7 +72,10 @@ Register | TrustyShop
         {% csrf_token %}
 
 
-        <!-- PROFILE PHOTO -->
+        <!-- =================================================
+             PROFILE PHOTO
+        ================================================== -->
+
         <div class="profile-upload">
 
             <div class="profile-preview">
@@ -90,8 +103,13 @@ Register | TrustyShop
         </div>
 
 
-        <!-- FULL NAME / USERNAME -->
+        <!-- =================================================
+             FULL NAME + USERNAME
+        ================================================== -->
+
         <div class="form-row">
+
+            <!-- FULL NAME -->
 
             <div class="input-box">
 
@@ -102,12 +120,17 @@ Register | TrustyShop
 
                 {{ form.fullName }}
 
-                <label for="{{ form.fullName.id_for_label }}">
+                <label
+                    for="{{ form.fullName.id_for_label }}">
+
                     Full Name
+
                 </label>
 
             </div>
 
+
+            <!-- USERNAME -->
 
             <div class="input-box">
 
@@ -118,8 +141,11 @@ Register | TrustyShop
 
                 {{ form.username }}
 
-                <label for="{{ form.username.id_for_label }}">
+                <label
+                    for="{{ form.username.id_for_label }}">
+
                     Username
+
                 </label>
 
             </div>
@@ -127,8 +153,13 @@ Register | TrustyShop
         </div>
 
 
-        <!-- EMAIL / PHONE -->
+        <!-- =================================================
+             EMAIL + PHONE
+        ================================================== -->
+
         <div class="form-row">
+
+            <!-- EMAIL -->
 
             <div class="input-box">
 
@@ -139,12 +170,17 @@ Register | TrustyShop
 
                 {{ form.email }}
 
-                <label for="{{ form.email.id_for_label }}">
+                <label
+                    for="{{ form.email.id_for_label }}">
+
                     Email
+
                 </label>
 
             </div>
 
+
+            <!-- PHONE -->
 
             <div class="input-box">
 
@@ -155,8 +191,11 @@ Register | TrustyShop
 
                 {{ form.phone_number }}
 
-                <label for="{{ form.phone_number.id_for_label }}">
+                <label
+                    for="{{ form.phone_number.id_for_label }}">
+
                     Phone Number
+
                 </label>
 
             </div>
@@ -164,7 +203,10 @@ Register | TrustyShop
         </div>
 
 
-        <!-- ADDRESS -->
+        <!-- =================================================
+             ADDRESS
+        ================================================== -->
+
         <div class="input-box full-width">
 
             <i
@@ -174,14 +216,20 @@ Register | TrustyShop
 
             {{ form.address }}
 
-            <label for="{{ form.address.id_for_label }}">
+            <label
+                for="{{ form.address.id_for_label }}">
+
                 Address
+
             </label>
 
         </div>
 
 
-        <!-- GENDER -->
+        <!-- =================================================
+             GENDER
+        ================================================== -->
+
         <div class="gender-box">
 
             <div class="gender-title">
@@ -191,120 +239,121 @@ Register | TrustyShop
                     aria-hidden="true">
                 </i>
 
-                <span>Gender</span>
-
-            </div>
-
-            <div class="gender-options">
-                {{ form.gender }}
-            </div>
-
-        </div>
-
-
-        <!-- PASSWORD -->
-        <div class="password-box">
-
-            <i
-                class="fa-solid fa-lock input-icon"
-                aria-hidden="true">
-            </i>
-
-            {{ form.password }}
-
-            <label for="{{ form.password.id_for_label }}">
-                Password
-            </label>
-
-            <button
-                type="button"
-                class="toggle-password"
-                aria-label="Show password"
-                aria-pressed="false">
-
-                <i class="fa-solid fa-eye-slash"></i>
-
-            </button>
-
-        </div>
-
-
-        <!-- CONFIRM PASSWORD -->
-        <div class="password-box">
-
-            <i
-                class="fa-solid fa-shield-halved input-icon"
-                aria-hidden="true">
-            </i>
-
-            {{ form.confirm_password }}
-
-            <label for="{{ form.confirm_password.id_for_label }}">
-                Confirm Password
-            </label>
-
-            <button
-                type="button"
-                class="toggle-password"
-                aria-label="Show confirm password"
-                aria-pressed="false">
-
-                <i class="fa-solid fa-eye-slash"></i>
-
-            </button>
-
-        </div>
-
-
-        <!-- PASSWORD STRENGTH -->
-        <div class="password-strength">
-
-            <div class="strength-bar">
-
-                <span id="strengthFill"></span>
-
-            </div>
-
-            <small id="strengthText">
-                Password Strength
-            </small>
-
-        </div>
-
-
-        <!-- TERMS -->
-        <div class="remember-box">
-
-            <label for="terms">
-
-                <input
-                    type="checkbox"
-                    id="terms"
-                    name="terms"
-                    required>
-
                 <span>
-
-                    I agree to the
-
-                    <a href="#">
-                        Terms
-                    </a>
-
-                    &
-
-                    <a href="#">
-                        Privacy Policy
-                    </a>
-
+                    Gender
                 </span>
 
-            </label>
+            </div>
+
+
+            <div class="gender-options">
+
+                {{ form.gender }}
+
+            </div>
 
         </div>
 
 
-        <!-- REGISTER BUTTON -->
+        <!-- =====================================================
+     PASSWORD
+===================================================== -->
+
+<div class="password-box">
+
+    <i
+        class="fa-solid fa-lock input-icon"
+        aria-hidden="true">
+    </i>
+
+    {{ form.password }}
+
+    <label for="{{ form.password.id_for_label }}">
+        Password
+    </label>
+
+    <button
+        type="button"
+        class="toggle-password"
+        aria-label="Show password"
+        aria-pressed="false">
+
+        <i class="fa-solid fa-eye-slash"></i>
+
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     PASSWORD REQUIREMENTS
+===================================================== -->
+
+<div class="password-requirements">
+
+    <div
+        class="password-rule invalid"
+        id="passwordLengthRule">
+
+        <i class="fa-solid fa-circle-xmark"></i>
+
+        <span>
+            At least 8 characters
+        </span>
+
+    </div>
+
+
+    <div
+        class="password-rule invalid"
+        id="passwordSpecialRule">
+
+        <i class="fa-solid fa-circle-xmark"></i>
+
+        <span>
+            Must contain a special character
+            (@, #, $, %, !, etc.)
+        </span>
+
+    </div>
+
+</div>
+        <br>
+
+
+<!-- =====================================================
+     CONFIRM PASSWORD
+===================================================== -->
+
+<div class="password-box">
+
+    <i
+        class="fa-solid fa-shield-halved input-icon"
+        aria-hidden="true">
+    </i>
+
+    {{ form.confirm_password }}
+
+    <label for="{{ form.confirm_password.id_for_label }}">
+        Confirm Password
+    </label>
+
+    <button
+        type="button"
+        class="toggle-password"
+        aria-label="Show confirm password"
+        aria-pressed="false">
+
+        <i class="fa-solid fa-eye-slash"></i>
+
+    </button>
+
+</div>
+
+        <!-- =================================================
+             REGISTER BUTTON
+        ================================================== -->
+
         <button
             type="submit"
             class="auth-btn">
@@ -326,56 +375,10 @@ Register | TrustyShop
         </button>
 
 
-        <!-- DIVIDER -->
-        <div class="divider">
+        <!-- =================================================
+             LOGIN LINK
+        ================================================== -->
 
-            <span>OR</span>
-
-        </div>
-
-
-        <!-- SOCIAL LOGIN -->
-        <div class="social-login">
-
-            <button
-                type="button"
-                aria-label="Continue with Google">
-
-                <i
-                    class="fab fa-google"
-                    aria-hidden="true">
-                </i>
-
-            </button>
-
-
-            <button
-                type="button"
-                aria-label="Continue with Facebook">
-
-                <i
-                    class="fab fa-facebook-f"
-                    aria-hidden="true">
-                </i>
-
-            </button>
-
-
-            <button
-                type="button"
-                aria-label="Continue with GitHub">
-
-                <i
-                    class="fab fa-github"
-                    aria-hidden="true">
-                </i>
-
-            </button>
-
-        </div>
-
-
-        <!-- LOGIN LINK -->
         <div class="bottom-text">
 
             <span>
@@ -391,7 +394,5 @@ Register | TrustyShop
     </form>
 
 </div>
-
-</section>
 
 {% endblock %}
