@@ -607,3 +607,56 @@ footer a:hover{
 .scrolled .profile-name {
     color: #ffffff;
 }
+
+
+
+
+
+/*next*/
+/* =====================================================
+   BACK TO TOP BUTTON
+===================================================== */
+
+.top-btn {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+
+    width: 48px;
+    height: 48px;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 50%;
+
+    background: linear-gradient(
+        135deg,
+        #42A5F5,
+        #1565C0
+    );
+
+    color: #fff;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 30px rgba(21, 101, 192, 0.3);
+
+    z-index: 9999;
+
+    transition: all 0.3s ease;
+}
+
+.top-btn:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 15px 35px rgba(21, 101, 192, 0.4);
+}
+
+

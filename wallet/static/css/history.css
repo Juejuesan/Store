@@ -535,16 +535,90 @@
 
 }
 
-
 /*==================================================
-    TRANSACTION TABLE
+    PROFESSIONAL TRANSACTION TABLE
 ==================================================*/
+
+.transaction-table-wrapper{
+
+    width:100%;
+
+    overflow-x:auto;
+
+    border-radius:20px;
+
+}
+
+
+/* TABLE */
 
 .history-table{
 
-    margin-bottom:0;
+    width:100%;
+
+    margin:0;
+
+    table-layout:fixed;
+
+    border-collapse:separate;
+
+    border-spacing:0;
+
+    background:#ffffff;
 
 }
+
+
+/*!*==================================================*/
+/*    COLUMN WIDTHS*/
+/*==================================================*!*/
+
+.history-table th:nth-child(1),
+.history-table td:nth-child(1){
+
+    width:15%;
+
+}
+
+.history-table th:nth-child(2),
+.history-table td:nth-child(2){
+
+    width:15%;
+
+}
+
+.history-table th:nth-child(3),
+.history-table td:nth-child(3){
+
+    width:13%;
+
+}
+
+.history-table th:nth-child(4),
+.history-table td:nth-child(4){
+
+    width:27%;
+
+}
+
+.history-table th:nth-child(5),
+.history-table td:nth-child(5){
+
+    width:10%;
+
+}
+
+.history-table th:nth-child(6),
+.history-table td:nth-child(6){
+
+    width:20%;
+
+}
+
+
+/*==================================================
+    TABLE HEADER
+==================================================*/
 
 .history-table thead{
 
@@ -553,34 +627,53 @@
 }
 
 .history-table thead th{
-
-    border:none;
-
-    color:#1e3a8a;
-
-    font-weight:700;
-
-    padding:18px;
-
-    white-space:nowrap;
-
+    text-align:center;
+    vertical-align:middle;
 }
+
+
+/*==================================================
+    TABLE BODY
+==================================================*/
 
 .history-table tbody td{
 
-    padding:18px;
+    padding:20px;
+
+    border-bottom:1px solid #eef2f7;
+
+    color:#334155;
+
+    font-size:14px;
 
     vertical-align:middle;
 
-    border-color:#eef2f7;
+}
+
+
+/* REMOVE LAST BORDER */
+
+.history-table tbody tr:last-child td{
+
+    border-bottom:none;
 
 }
+
+
+/*==================================================
+    ROW
+==================================================*/
 
 .history-row{
 
-    transition:.35s;
+    transition:background-color .2s ease;
 
 }
+
+
+/* IMPORTANT:
+   NO TRANSLATE / NO SCALE
+   SO ROW DOES NOT SHAKE */
 
 .history-row:hover{
 
@@ -588,6 +681,98 @@
 
 }
 
+/*==================================================
+    TABLE COLUMN ALIGNMENT
+==================================================*/
+/* TYPE */
+.history-table tbody td:nth-child(1){
+    text-align:center;
+}
+
+/* AMOUNT */
+.history-table tbody td:nth-child(2){
+    text-align:right;
+}
+
+/* STATUS */
+.history-table tbody td:nth-child(3){
+    text-align:center;
+}
+
+/* DESCRIPTION */
+.history-table tbody td:nth-child(4){
+    text-align:left;
+}
+
+/* REFERENCE */
+.history-table tbody td:nth-child(5){
+    text-align:center;
+}
+
+/* DATE */
+.history-table tbody td:nth-child(6){
+    text-align:center;
+}
+/*==================================================
+    AMOUNT
+==================================================*/
+
+.history-table td:nth-child(2) strong{
+
+    display:inline-block;
+
+    color:#1e293b;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+}
+
+
+/*==================================================
+    DESCRIPTION
+==================================================*/
+
+.history-table td:nth-child(4){
+
+    color:#475569;
+
+    line-height:1.5;
+
+}
+
+
+/*==================================================
+    REFERENCE
+==================================================*/
+
+.history-table td:nth-child(5){
+
+    color:#64748b;
+
+    font-weight:600;
+
+}
+
+
+/*==================================================
+    DATE
+==================================================*/
+
+.history-table td:nth-child(6){
+
+    color:#64748b;
+
+    font-size:13px;
+
+    font-weight:500;
+
+    white-space:nowrap;
+
+}
 
 /*==================================================
     TRANSACTION TYPE BADGES
@@ -599,15 +784,19 @@
 
     align-items:center;
 
-    gap:8px;
+    justify-content:center;
 
-    padding:8px 16px;
+    gap:7px;
 
-    border-radius:30px;
+    padding:8px 14px;
 
-    font-size:14px;
+    border-radius:50px;
+
+    font-size:13px;
 
     font-weight:700;
+
+    white-space:nowrap;
 
 }
 
@@ -832,6 +1021,8 @@
     .history-table{
 
         font-size:14px;
+        width: 100%;
+        table-layout: fixed;
 
     }
 
@@ -900,37 +1091,29 @@
 
 }
 
-
 /*==================================================
-    TABLE ROW ANIMATION
+    STABLE TRANSACTION ROWS
 ==================================================*/
 
 .history-row{
 
-    animation:fadeTable .4s ease;
+    transform:none !important;
+
+    animation:none !important;
+
+    transition:background-color .2s ease !important;
 
 }
 
-@keyframes fadeTable{
+.history-row:hover{
 
-    from{
+    transform:none !important;
 
-        opacity:0;
+    animation:none !important;
 
-        transform:translateY(10px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
+    background:#f8fbff;
 
 }
-
 
 /*==================================================
     UTILITIES
@@ -961,3 +1144,132 @@
 }
 
 
+/*==================================================
+    STATUS BADGES
+==================================================*/
+
+.status-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-width:90px;
+
+    padding:7px 14px;
+
+    border-radius:50px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+}
+
+
+/* APPROVED */
+
+.status-badge.approved{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+}
+
+
+/* PENDING */
+
+.status-badge.pending{
+
+    background:#fef3c7;
+
+    color:#b45309;
+
+}
+
+
+/* REJECTED */
+
+.status-badge.rejected{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+
+}
+
+
+
+/*==================================================
+    PROFESSIONAL DATE
+==================================================*/
+
+.transaction-date{
+
+    white-space:nowrap;
+
+}
+
+.transaction-date span{
+
+    display:block;
+
+    color:#334155;
+
+    font-weight:600;
+
+}
+
+.transaction-date small{
+
+    display:block;
+
+    margin-top:3px;
+
+    color:#94a3b8;
+
+    font-size:12px;
+
+}
+
+
+
+/*==================================================
+    STABLE WALLET TRANSACTION CONTAINER
+==================================================*/
+
+.transaction-history-box{
+
+    animation:none !important;
+
+    transform:none !important;
+
+}
+
+.transaction-history-box:hover{
+
+    animation:none !important;
+
+    transform:none !important;
+
+}
+
+
+/*==================================================
+    STABLE TABLE HEADER
+==================================================*/
+
+.history-table thead,
+.history-table thead tr,
+.history-table thead th{
+
+    transform:none !important;
+
+    animation:none !important;
+
+}

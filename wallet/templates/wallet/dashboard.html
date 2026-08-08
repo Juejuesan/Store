@@ -6,7 +6,7 @@ Wallet Dashboard
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/wallet.css' %}">
+<link rel="stylesheet" href="{% static 'css/wallet.css' %}?v=2">
 {% endblock %}
 
 {% block content %}
@@ -85,13 +85,13 @@ Wallet Dashboard
 
                     MMK
 
-                    <span
+                    <strong
                         id="balanceCounter"
                         data-balance="{{ wallet.balance }}">
 
                         {{ wallet.balance }}
 
-                    </span>
+                    </strong>
 
                 </h2>
 
@@ -375,272 +375,385 @@ Wallet Dashboard
 
         </div>
                 <!-- ==========================================
-                RECENT ACTIVITY
-        =========================================== -->
+     RECENT ACTIVITY
+=========================================== -->
 
-        <div class="section-header mt-5">
+<div class="section-header mt-5">
 
-            <h2>
+    <div>
+        <span class="section-label">
+            WALLET ACTIVITY
+        </span>
 
-                Recent Activity
+        <h2>
+            Recent Activity
+        </h2>
+    </div>
 
-            </h2>
+    <a href="{% url 'wallet:history' %}"
+       class="view-all-btn">
 
-            <a href="{% url 'wallet:history' %}">
+        View All
 
-                View All
+        <i class="fa-solid fa-arrow-right"></i>
 
-            </a>
+    </a>
 
-        </div>
+</div>
 
-        <div class="activity-box">
 
-            {% for deposit in deposits %}
+<div class="activity-box">
 
-            <div class="activity-item">
+    <!-- ==========================
+         DEPOSITS
+    =========================== -->
 
-                <div class="activity-left">
+    {% for deposit in deposits %}
 
-                    <div class="activity-icon success">
+    <div class="activity-item">
 
-                        <i class="fa-solid fa-arrow-down"></i>
+        <div class="activity-left">
 
-                    </div>
+            <div class="activity-icon success">
 
-                    <div>
-
-                        <h5>
-
-                            Deposit
-
-                        </h5>
-
-                        <small>
-
-                            {{ deposit.created_at|date:"M d, Y H:i" }}
-
-                        </small>
-
-                    </div>
-
-                </div>
-
-                <div class="activity-right">
-
-                    <span class="amount plus">
-
-                        + MMK {{ deposit.amount }}
-
-                    </span>
-
-                    <small>
-
-                        {{ deposit.status }}
-
-                    </small>
-
-                </div>
+                <i class="fa-solid fa-arrow-down"></i>
 
             </div>
 
-            {% empty %}
-
-            <div class="empty-state">
-
-                <i class="fa-solid fa-wallet"></i>
+            <div>
 
                 <h5>
-
-                    No Deposits Yet
-
+                    Deposit
                 </h5>
 
-            </div>
+                <!-- REAL DEPOSIT DATE + TIME -->
 
-            {% endfor %}
-
-
-            {% for withdraw in withdrawals %}
-
-            <div class="activity-item">
-
-                <div class="activity-left">
-
-                    <div class="activity-icon danger">
-
-                        <i class="fa-solid fa-arrow-up"></i>
-
-                    </div>
-
-                    <div>
-
-                        <h5>
-
-                            Withdrawal
-
-                        </h5>
-
-                        <small>
-
-                            {{ withdraw.created_at|date:"M d, Y H:i" }}
-
-                        </small>
-
-                    </div>
-
-                </div>
-
-                <div class="activity-right">
-
-                    <span class="amount minus">
-
-                        - MMK {{ withdraw.amount }}
-
-                    </span>
-
-                    <small>
-
-                        {{ withdraw.status }}
-
-                    </small>
-
-                </div>
+                <small>
+                    {{ deposit.created_at|date:"d M Y h:i A" }}
+                </small>
 
             </div>
-
-            {% endfor %}
 
         </div>
+
+
+        <div class="activity-right">
+
+            <span class="amount plus">
+
+                + MMK {{ deposit.amount }}
+
+            </span>
+
+            <span class="status approved">
+
+                <i class="fa-solid fa-check"></i>
+
+                {{ deposit.status }}
+
+            </span>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="empty-state">
+
+        <i class="fa-solid fa-wallet"></i>
+
+        <h5>
+            No Deposits Yet
+        </h5>
+
+        <p>
+            Your deposit activity will appear here.
+        </p>
+
+    </div>
+
+    {% endfor %}
+
+
+    <!-- ==========================
+         WITHDRAWALS
+    =========================== -->
+
+    {% for withdraw in withdrawals %}
+
+    <div class="activity-item">
+
+        <div class="activity-left">
+
+            <div class="activity-icon danger">
+
+                <i class="fa-solid fa-arrow-up"></i>
+
+            </div>
+
+            <div>
+
+                <h5>
+                    Withdrawal
+                </h5>
+
+                <!-- REAL WITHDRAWAL DATE + TIME -->
+
+                <small>
+                    {{ withdraw.created_at|date:"d M Y h:i A" }}
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="activity-right">
+
+            <span class="amount minus">
+
+                - MMK {{ withdraw.amount }}
+
+            </span>
+
+            <span class="status approved">
+
+                <i class="fa-solid fa-check"></i>
+
+                {{ withdraw.status }}
+
+            </span>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
 
 
         <!-- ==========================================
-                RECENT TRANSACTIONS
-        =========================================== -->
+     RECENT TRANSACTIONS
+=========================================== -->
 
-        <div class="transaction-card mt-5">
+<div class="transaction-card mt-5">
 
-            <div class="card-header-custom">
+    <!-- HEADER -->
+    <div class="card-header-custom">
 
-                <h3>
+        <div class="transaction-header-left">
 
-                    <i class="fa-solid fa-clock-rotate-left"></i>
+            <div class="transaction-header-icon">
 
-                    Recent Transactions
-
-                </h3>
+                <i class="fa-solid fa-clock-rotate-left"></i>
 
             </div>
 
-            <table class="table align-middle">
+            <div>
 
-                <thead>
+                <span class="transaction-label">
+                    WALLET ACTIVITY
+                </span>
 
-                    <tr>
+                <h3>
+                    Recent Transactions
+                </h3>
 
-                        <th>Date</th>
+                <p>
+                    Your latest wallet transactions
+                </p>
 
-                        <th>Type</th>
-
-                        <th>Amount</th>
-
-                        <th>Status</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for t in transactions %}
-
-                    <tr>
-
-                        <td>
-
-                            {{ t.created_at|date:"d M Y H:i" }}
-
-                        </td>
-
-                        <td>
-
-                            {% if t.transaction_type == "Deposit" %}
-
-                                <span class="badge bg-success">
-
-                                    Deposit
-
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge bg-danger">
-
-                                    Withdraw
-
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-
-                            MMK {{ t.amount }}
-
-                        </td>
-
-                        <td>
-
-                            {% if t.status == "Pending" %}
-
-                                <span class="badge bg-warning">
-
-                                    Pending
-
-                                </span>
-
-                            {% elif t.status == "Approved" %}
-
-                                <span class="badge bg-success">
-
-                                    Approved
-
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge bg-danger">
-
-                                    Rejected
-
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-                    {% empty %}
-
-                    <tr>
-
-                        <td colspan="4" class="text-center">
-
-                            No transactions yet.
-
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
+            </div>
 
         </div>
+
+        <a href="{% url 'wallet:history' %}"
+           class="transaction-view-all">
+
+            View All
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+        </a>
+
+    </div>
+
+
+    <!-- TABLE -->
+    <div class="transaction-table-wrapper">
+
+        <table class="table transaction-table align-middle">
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Type</th>
+
+                    <th>Amount</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for t in transactions %}
+
+                <tr>
+
+                    <!-- DATE -->
+
+                    <td>
+
+                        <div class="transaction-date">
+
+                            <strong>
+                                {{ t.created_at|date:"d M Y" }}
+                            </strong>
+
+                            <small>
+                                {{ t.created_at|date:"h:i A" }}
+                            </small>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- TYPE -->
+
+                    <td>
+
+                        {% if t.transaction_type == "Deposit" %}
+
+                            <span class="transaction-type deposit">
+
+                                <i class="fa-solid fa-arrow-down"></i>
+
+                                Deposit
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="transaction-type withdraw">
+
+                                <i class="fa-solid fa-arrow-up"></i>
+
+                                Withdraw
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- AMOUNT -->
+
+                    <td>
+
+                        {% if t.transaction_type == "Deposit" %}
+
+                            <strong class="transaction-amount positive">
+
+                                + MMK {{ t.amount }}
+
+                            </strong>
+
+                        {% else %}
+
+                            <strong class="transaction-amount negative">
+
+                                - MMK {{ t.amount }}
+
+                            </strong>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if t.status == "Pending" %}
+
+                            <span class="transaction-status pending">
+
+                                <i class="fa-solid fa-clock"></i>
+
+                                Pending
+
+                            </span>
+
+                        {% elif t.status == "Approved" %}
+
+                            <span class="transaction-status approved">
+
+                                <i class="fa-solid fa-check"></i>
+
+                                Approved
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="transaction-status rejected">
+
+                                <i class="fa-solid fa-xmark"></i>
+
+                                Rejected
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4">
+
+                        <div class="empty-table">
+
+                            <i class="fa-solid fa-wallet"></i>
+
+                            <h4>
+                                No Transactions Yet
+                            </h4>
+
+                            <p>
+                                Your wallet transactions will appear here.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
                 <!-- ==========================================
                 SMART WALLET TIPS
         =========================================== -->
