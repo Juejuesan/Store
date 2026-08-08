@@ -1,6 +1,3 @@
-
-# user/forms.py
-
 from django import forms
 from django.contrib.auth.models import User
 
@@ -89,13 +86,13 @@ class RegisterForm(forms.ModelForm):
             attrs={
                 "class": "form-input",
                 "placeholder": " ",
+                "id": "id_confirm_password",
                 "autocomplete": "new-password"
             }
         )
     )
 
     class Meta:
-
         model = User
 
         fields = [
@@ -105,7 +102,6 @@ class RegisterForm(forms.ModelForm):
         ]
 
         widgets = {
-
             "username": forms.TextInput(
                 attrs={
                     "class": "form-input",
@@ -127,12 +123,10 @@ class RegisterForm(forms.ModelForm):
 
     def clean_username(self):
 
-        username = self.cleaned_data.get(
-            "username"
-        )
+        username = self.cleaned_data.get("username")
 
         if User.objects.filter(
-            username=username
+            username__iexact=username
         ).exists():
 
             raise forms.ValidationError(
@@ -150,23 +144,16 @@ class RegisterForm(forms.ModelForm):
         email = self.cleaned_data.get("email")
 
         if User.objects.filter(
-            email=email
+                email__iexact=email
         ).exists():
-
             raise forms.ValidationError(
                 "Email is already registered."
             )
 
-        # External email verification
-        is_valid, message = check_email_with_abstract(
-            email
-        )
+        is_valid, message = check_email_with_abstract(email)
 
         if not is_valid:
-
-            raise forms.ValidationError(
-                message
-            )
+            raise forms.ValidationError(message)
 
         return email
 
@@ -176,9 +163,7 @@ class RegisterForm(forms.ModelForm):
 
     def clean_phone_number(self):
 
-        phone = self.cleaned_data.get(
-            "phone_number"
-        )
+        phone = self.cleaned_data.get("phone_number")
 
         phone = "".join(
             filter(str.isdigit, phone)
@@ -206,9 +191,7 @@ class RegisterForm(forms.ModelForm):
 
     def clean_password(self):
 
-        password = self.cleaned_data.get(
-            "password"
-        )
+        password = self.cleaned_data.get("password")
 
         if len(password) < 8:
 
@@ -243,13 +226,8 @@ class RegisterForm(forms.ModelForm):
 
         cleaned_data = super().clean()
 
-        password = cleaned_data.get(
-            "password"
-        )
-
-        confirm_password = cleaned_data.get(
-            "confirm_password"
-        )
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
 
         if (
             password
@@ -313,3 +291,22 @@ class ProfilePicForm(forms.ModelForm):
             "profile_pic"
         ]
 
+# ==========================================
+# EMAIL VERIFICATION
+# ==========================================
+
+class EmailVerificationForm(forms.Form):
+
+    code = forms.CharField(
+        max_length=6,
+        min_length=6,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-input",
+                "placeholder": "Enter 6-digit code",
+                "inputmode": "numeric",
+                "maxlength": "6"
+            }
+        )
+    )

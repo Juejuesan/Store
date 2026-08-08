@@ -186,12 +186,10 @@ def dashboard(request):
 # =====================================================
 # Wallet Requests
 # =====================================================
-
 @login_required
 def wallet_requests(request):
 
     deposits = DepositRequest.objects.all().order_by("-created_at")
-
     withdrawals = WithdrawRequest.objects.all().order_by("-created_at")
 
     pending_deposits = DepositRequest.objects.filter(
@@ -202,38 +200,27 @@ def wallet_requests(request):
         status="Pending"
     ).count()
 
-    approved_amount = sum(
+    approved_amount = (
         DepositRequest.objects.filter(
             status="Approved"
-        ).values_list(
-            "amount",
-            flat=True
-        )
+        ).aggregate(total=Sum("amount"))["total"]
+        or Decimal("0")
     )
 
-    approved_withdraw_amount = sum(
+    approved_withdraw_amount = (
         WithdrawRequest.objects.filter(
             status="Approved"
-        ).values_list(
-            "amount",
-            flat=True
-        )
+        ).aggregate(total=Sum("amount"))["total"]
+        or Decimal("0")
     )
 
     context = {
-
         "deposits": deposits,
-
         "withdrawals": withdrawals,
-
         "pending_count": pending_deposits,
-
         "pending_withdrawals": pending_withdrawals,
-
-        "approved_amount": approved_deposit_amount,
-
+        "approved_amount": approved_amount,
         "approved_withdraw_amount": approved_withdraw_amount,
-
     }
 
     return render(
@@ -241,8 +228,6 @@ def wallet_requests(request):
         "adminpanel/wallet.html",
         context,
     )
-
-
 @login_required
 def approve_withdraw(request, withdraw_id):
 

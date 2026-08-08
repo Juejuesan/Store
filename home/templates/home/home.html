@@ -132,7 +132,7 @@
                                 {% if post.user.profile.profile_pic %}
                                     <img src="{{ post.user.profile.profile_pic.url }}" class="seller-profile">
                                 {% else %}
-                                    <img src="{% static 'images/default-profile.png' %}" class="seller-profile">
+                                    <i class="fa-solid fa-circle-user nav-profile-icon"></i>
                                 {% endif %}
                                 <div>
                                     <h5>

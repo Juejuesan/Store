@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email</title>
+</head>
+
+<body>
+
+```
+<h2>Verify Your Email</h2>
+
+<p>
+    We sent a verification code to your email address.
+</p>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label for="{{ form.code.id_for_label }}">
+        Verification Code
+    </label>
+
+    {{ form.code }}
+
+    {% if form.code.errors %}
+        {% for error in form.code.errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <button type="submit">
+        Verify Email
+    </button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+```
+
+</body>
+</html>

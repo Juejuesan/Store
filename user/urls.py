@@ -10,4 +10,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('update-profile-pic/', views.update_profile_pic, name='update_profile_pic'),
+    path('verify-email/',views.verify_email,name='verify_email'),
 ]
