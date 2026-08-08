@@ -7,11 +7,10 @@ Register | TrustyShop
 
 {% block content %}
 
-<!-- ========================================= -->
-<!-- UNIVERSE BACKGROUND -->
-<!-- ========================================= -->
+<section class="register-page">
 
-<div class="universe">
+<!-- BACKGROUND DECORATION -->
+<div class="auth-background" aria-hidden="true">
 
     <span class="planet planet-1"></span>
     <span class="planet planet-2"></span>
@@ -21,322 +20,377 @@ Register | TrustyShop
     <span class="glow glow-2"></span>
 
     <div id="stars"></div>
-
     <div id="particles"></div>
 
 </div>
 
-<!-- ========================================= -->
-<!-- REGISTER SECTION -->
-<!-- ========================================= -->
 
-<section class="register-page">
+<!-- REGISTER CARD -->
+<div class="register-card">
 
-    <div class="register-card">
+    <span
+        class="card-border"
+        aria-hidden="true">
+    </span>
 
-        <!-- Decorative Border -->
 
-        <span class="card-border"></span>
+    <!-- BRAND -->
+    <header class="logo-box">
 
-        <!-- Logo -->
+        <div class="logo-circle">
+            <i
+                class="fa-solid fa-cart-shopping"
+                aria-hidden="true">
+            </i>
+        </div>
 
-        <div class="logo-box">
+        <h1>TrustyShop</h1>
 
-            <div class="logo-circle">
+        <p>
+            Create your marketplace account
+        </p>
 
-                <i class="fa-solid fa-cart-shopping"></i>
+    </header>
+
+
+    <!-- REGISTER FORM -->
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        autocomplete="off">
+
+        {% csrf_token %}
+
+
+        <!-- PROFILE PHOTO -->
+        <div class="profile-upload">
+
+            <div class="profile-preview">
+
+                <img
+                    id="previewImage"
+                    src="{% static 'user/images/default-profile.png' %}"
+                    alt="Profile preview">
+
+                <label
+                    for="id_profile_pic"
+                    title="Choose profile photo">
+
+                    <i
+                        class="fa-solid fa-camera"
+                        aria-hidden="true">
+                    </i>
+
+                </label>
 
             </div>
 
-            <h1>TrustyShop</h1>
-
-            <p>
-                Create your marketplace account
-            </p>
+            {{ form.profile_pic }}
 
         </div>
 
-        <!-- Form -->
 
-        <form method="POST"
-              enctype="multipart/form-data"
-              autocomplete="off">
+        <!-- FULL NAME / USERNAME -->
+        <div class="form-row">
 
-            {% csrf_token %}
+            <div class="input-box">
 
-            <!-- Profile Upload -->
+                <i
+                    class="fa-solid fa-user input-icon"
+                    aria-hidden="true">
+                </i>
 
-            <div class="profile-upload">
+                {{ form.fullName }}
 
-                <div class="profile-preview">
-
-                    <img
-                        id="previewImage"
-                        src="{% static 'user/images/default-profile.png' %}"
-                        alt="Profile">
-
-                    <label for="id_profile_pic">
-
-                        <i class="fa-solid fa-camera"></i>
-
-                    </label>
-
-                </div>
-
-                {{ form.profile_pic }}
-
-            </div>
-
-            <!-- Row -->
-
-            <div class="form-row">
-
-                <div class="input-box">
-
-                    <i class="fa-solid fa-user input-icon"></i>
-
-                    {{ form.fullName }}
-
-                    <label>
-                        Full Name
-                    </label>
-
-                </div>
-
-                <div class="input-box">
-
-                    <i class="fa-solid fa-at input-icon"></i>
-
-                    {{ form.username }}
-
-                    <label>
-                        Username
-                    </label>
-
-                </div>
-
-            </div>
-
-            <!-- Row -->
-
-            <div class="form-row">
-
-                <div class="input-box">
-
-                    <i class="fa-solid fa-envelope input-icon"></i>
-
-                    {{ form.email }}
-
-                    <label>
-                        Email
-                    </label>
-
-                </div>
-
-                <div class="input-box">
-
-                    <i class="fa-solid fa-phone input-icon"></i>
-
-                    {{ form.phone_number }}
-
-                    <label>
-                        Phone Number
-                    </label>
-
-                </div>
-
-            </div>
-
-            <!-- Address -->
-
-            <div class="input-box full-width">
-
-                <i class="fa-solid fa-location-dot input-icon"></i>
-
-                {{ form.address }}
-
-                <label>
-                    Address
+                <label for="{{ form.fullName.id_for_label }}">
+                    Full Name
                 </label>
 
             </div>
 
-            <!-- Gender -->
 
-            <div class="gender-box">
+            <div class="input-box">
 
-                <div class="gender-title">
+                <i
+                    class="fa-solid fa-at input-icon"
+                    aria-hidden="true">
+                </i>
 
-                    <i class="fa-solid fa-venus-mars"></i>
+                {{ form.username }}
 
-                    <span>Gender</span>
-
-                </div>
-
-                <div class="gender-options">
-
-                    {{ form.gender }}
-
-                </div>
-
-            </div>
-
-            <!-- Password -->
-
-            <div class="password-box">
-
-                <i class="fa-solid fa-lock input-icon"></i>
-
-                {{ form.password }}
-
-                <label>Password</label>
-
-                <button
-                    class="toggle-password"
-                    type="button">
-
-                    <i class="fa-solid fa-eye-slash"></i>
-
-                </button>
-
-            </div>
-
-            <!-- Confirm Password -->
-
-            <div class="password-box">
-
-                <i class="fa-solid fa-shield-halved input-icon"></i>
-
-                {{ form.confirm_password }}
-
-                <label>
-                    Confirm Password
-                </label>
-
-                <button
-                    class="toggle-password"
-                    type="button">
-
-                    <i class="fa-solid fa-eye-slash"></i>
-
-                </button>
-
-            </div>
-
-            <!-- Strength -->
-
-            <div class="password-strength">
-
-                <div class="strength-bar">
-
-                    <span id="strengthFill"></span>
-
-                </div>
-
-                <small id="strengthText">
-
-                    Password Strength
-
-                </small>
-
-            </div>
-
-            <!-- Terms -->
-
-            <div class="remember-box">
-
-                <label>
-
-                    <input type="checkbox" required>
-
-                    <span>
-
-                        I agree to the
-                        <a href="#">
-                            Terms
-                        </a>
-                        &
-                        <a href="#">
-                            Privacy Policy
-                        </a>
-
-                    </span>
-
+                <label for="{{ form.username.id_for_label }}">
+                    Username
                 </label>
 
             </div>
 
-            <!-- Register -->
+        </div>
+
+
+        <!-- EMAIL / PHONE -->
+        <div class="form-row">
+
+            <div class="input-box">
+
+                <i
+                    class="fa-solid fa-envelope input-icon"
+                    aria-hidden="true">
+                </i>
+
+                {{ form.email }}
+
+                <label for="{{ form.email.id_for_label }}">
+                    Email
+                </label>
+
+            </div>
+
+
+            <div class="input-box">
+
+                <i
+                    class="fa-solid fa-phone input-icon"
+                    aria-hidden="true">
+                </i>
+
+                {{ form.phone_number }}
+
+                <label for="{{ form.phone_number.id_for_label }}">
+                    Phone Number
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- ADDRESS -->
+        <div class="input-box full-width">
+
+            <i
+                class="fa-solid fa-location-dot input-icon"
+                aria-hidden="true">
+            </i>
+
+            {{ form.address }}
+
+            <label for="{{ form.address.id_for_label }}">
+                Address
+            </label>
+
+        </div>
+
+
+        <!-- GENDER -->
+        <div class="gender-box">
+
+            <div class="gender-title">
+
+                <i
+                    class="fa-solid fa-venus-mars"
+                    aria-hidden="true">
+                </i>
+
+                <span>Gender</span>
+
+            </div>
+
+            <div class="gender-options">
+                {{ form.gender }}
+            </div>
+
+        </div>
+
+
+        <!-- PASSWORD -->
+        <div class="password-box">
+
+            <i
+                class="fa-solid fa-lock input-icon"
+                aria-hidden="true">
+            </i>
+
+            {{ form.password }}
+
+            <label for="{{ form.password.id_for_label }}">
+                Password
+            </label>
 
             <button
-                class="auth-btn"
-                type="submit">
+                type="button"
+                class="toggle-password"
+                aria-label="Show password"
+                aria-pressed="false">
 
-                <span class="btn-glow"></span>
-
-                <i class="fa-solid fa-user-plus"></i>
-
-                <span>
-
-                    Create Account
-
-                </span>
+                <i class="fa-solid fa-eye-slash"></i>
 
             </button>
 
-            <!-- Divider -->
+        </div>
 
-            <div class="divider">
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="password-box">
+
+            <i
+                class="fa-solid fa-shield-halved input-icon"
+                aria-hidden="true">
+            </i>
+
+            {{ form.confirm_password }}
+
+            <label for="{{ form.confirm_password.id_for_label }}">
+                Confirm Password
+            </label>
+
+            <button
+                type="button"
+                class="toggle-password"
+                aria-label="Show confirm password"
+                aria-pressed="false">
+
+                <i class="fa-solid fa-eye-slash"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- PASSWORD STRENGTH -->
+        <div class="password-strength">
+
+            <div class="strength-bar">
+
+                <span id="strengthFill"></span>
+
+            </div>
+
+            <small id="strengthText">
+                Password Strength
+            </small>
+
+        </div>
+
+
+        <!-- TERMS -->
+        <div class="remember-box">
+
+            <label for="terms">
+
+                <input
+                    type="checkbox"
+                    id="terms"
+                    name="terms"
+                    required>
 
                 <span>
 
-                    OR
+                    I agree to the
+
+                    <a href="#">
+                        Terms
+                    </a>
+
+                    &
+
+                    <a href="#">
+                        Privacy Policy
+                    </a>
 
                 </span>
 
-            </div>
+            </label>
 
-            <!-- Social Login -->
+        </div>
 
-            <div class="social-login">
 
-                <button type="button">
+        <!-- REGISTER BUTTON -->
+        <button
+            type="submit"
+            class="auth-btn">
 
-                    <i class="fab fa-google"></i>
+            <span
+                class="btn-glow"
+                aria-hidden="true">
+            </span>
 
-                </button>
+            <i
+                class="fa-solid fa-user-plus"
+                aria-hidden="true">
+            </i>
 
-                <button type="button">
+            <span>
+                Create Account
+            </span>
 
-                    <i class="fab fa-facebook-f"></i>
+        </button>
 
-                </button>
 
-                <button type="button">
+        <!-- DIVIDER -->
+        <div class="divider">
 
-                    <i class="fab fa-github"></i>
+            <span>OR</span>
 
-                </button>
+        </div>
 
-            </div>
 
-            <!-- Bottom -->
+        <!-- SOCIAL LOGIN -->
+        <div class="social-login">
 
-            <div class="bottom-text">
+            <button
+                type="button"
+                aria-label="Continue with Google">
 
+                <i
+                    class="fab fa-google"
+                    aria-hidden="true">
+                </i>
+
+            </button>
+
+
+            <button
+                type="button"
+                aria-label="Continue with Facebook">
+
+                <i
+                    class="fab fa-facebook-f"
+                    aria-hidden="true">
+                </i>
+
+            </button>
+
+
+            <button
+                type="button"
+                aria-label="Continue with GitHub">
+
+                <i
+                    class="fab fa-github"
+                    aria-hidden="true">
+                </i>
+
+            </button>
+
+        </div>
+
+
+        <!-- LOGIN LINK -->
+        <div class="bottom-text">
+
+            <span>
                 Already have an account?
+            </span>
 
-                <a href="{% url 'user:login' %}">
+            <a href="{% url 'user:login' %}">
+                Login Now
+            </a>
 
-                    Login Now
+        </div>
 
-                </a>
+    </form>
 
-            </div>
-
-        </form>
-
-    </div>
+</div>
 
 </section>
 

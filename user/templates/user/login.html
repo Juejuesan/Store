@@ -7,185 +7,250 @@ Login | TrustyShop
 
 {% block content %}
 
-<div class="universe">
-
-    <span class="planet planet-1"></span>
-    <span class="planet planet-2"></span>
-    <span class="planet planet-3"></span>
-
-    <span class="glow glow-1"></span>
-    <span class="glow glow-2"></span>
-
-    <div id="stars"></div>
-
-    <div id="particles"></div>
-
-</div>
-
+<!-- =========================================================
+     LOGIN PAGE
+========================================================= -->
 
 <section class="auth-page">
 
-    <div class="auth-card">
+<!-- Background decoration -->
 
-        <span class="card-border"></span>
+<span class="planet planet-1" aria-hidden="true"></span>
+<span class="planet planet-2" aria-hidden="true"></span>
+<span class="planet planet-3" aria-hidden="true"></span>
+
+<span class="glow glow-1" aria-hidden="true"></span>
+<span class="glow glow-2" aria-hidden="true"></span>
+
+<div id="stars" aria-hidden="true"></div>
+<div id="particles" aria-hidden="true"></div>
 
 
-        <!-- Logo -->
+<!-- =====================================================
+     LOGIN CARD
+====================================================== -->
 
-        <div class="logo-box">
+<div class="auth-card">
 
-            <div class="logo-circle">
+    <span
+        class="card-border"
+        aria-hidden="true">
+    </span>
 
-                <i class="fa-solid fa-store"></i>
 
-            </div>
+    <!-- =================================================
+         BRAND
+    ================================================== -->
 
-            <h1>Welcome Back</h1>
+    <header class="logo-box">
 
-            <p>
-                Continue shopping with TrustyShop
-            </p>
+        <div
+            class="logo-circle"
+            aria-hidden="true">
+
+            <i class="fa-solid fa-store"></i>
+
+        </div>
+
+        <h1>
+            Welcome Back
+        </h1>
+
+        <p>
+            Continue shopping with TrustyShop
+        </p>
+
+    </header>
+
+
+    <!-- =================================================
+         LOGIN FORM
+    ================================================== -->
+
+    <form
+        method="POST"
+        autocomplete="off">
+
+        {% csrf_token %}
+
+
+        <!-- =============================================
+             USERNAME / EMAIL
+        ============================================== -->
+
+        <div class="input-box">
+
+            <i
+                class="fa-solid fa-user input-icon"
+                aria-hidden="true">
+            </i>
+
+            {{ form.username }}
+
+            <label
+                for="{{ form.username.id_for_label }}">
+
+                Username or Email
+
+            </label>
 
         </div>
 
 
-        <!-- Login Form -->
+        <!-- =============================================
+             PASSWORD
+        ============================================== -->
 
-        <form method="POST"
-              autocomplete="off">
+        <div class="password-box">
 
-            {% csrf_token %}
+            <i
+                class="fa-solid fa-lock input-icon"
+                aria-hidden="true">
+            </i>
 
+            {{ form.password }}
 
-            <!-- Username -->
+            <label
+                for="{{ form.password.id_for_label }}">
 
-            <div class="input-box">
+                Password
 
-                <i class="fa-solid fa-user input-icon"></i>
+            </label>
 
-                {{ form.username }}
-
-                <label>
-                    Username or Email
-                </label>
-
-            </div>
-
-
-            <!-- Password -->
-
-            <div class="password-box">
-
-                <i class="fa-solid fa-lock input-icon"></i>
-
-                {{ form.password }}
-
-                <label>
-                    Password
-                </label>
-
-                <button
-                    type="button"
-                    class="toggle-password">
-
-                    <i class="fa-solid fa-eye-slash"></i>
-
-                </button>
-
-            </div>
-
-
-            <!-- Remember / Forgot -->
-
-            <div class="login-options">
-
-                <label class="remember">
-
-                    {{ form.remember_me }}
-
-                    <span>
-                        Remember Me
-                    </span>
-
-                </label>
-
-
-                <a href="#"
-                   class="forgot-link">
-
-                    Forgot Password?
-
-                </a>
-
-            </div>
-
-
-            <!-- Login Button -->
 
             <button
-                type="submit"
-                class="auth-btn">
+                type="button"
+                class="toggle-password"
+                aria-label="Show password"
+                aria-pressed="false">
 
-                <span class="btn-glow"></span>
+                <i
+                    class="fa-solid fa-eye-slash"
+                    aria-hidden="true">
+                </i>
 
-                <i class="fa-solid fa-right-to-bracket"></i>
+            </button>
+
+        </div>
+
+
+        <!-- =============================================
+             LOGIN OPTIONS
+        ============================================== -->
+
+        <div class="login-options">
+
+            <label class="remember">
+
+                {{ form.remember_me }}
 
                 <span>
-                    Login
+                    Remember Me
                 </span>
+
+            </label>
+
+
+            <a
+                href="#"
+                class="forgot-link">
+
+                Forgot Password?
+
+            </a>
+
+        </div>
+
+
+        <!-- =============================================
+             LOGIN BUTTON
+        ============================================== -->
+
+        <button
+            type="submit"
+            class="auth-btn">
+
+            <span
+                class="btn-glow"
+                aria-hidden="true">
+            </span>
+
+            <i
+                class="fa-solid fa-right-to-bracket"
+                aria-hidden="true">
+            </i>
+
+            <span>
+                Login
+            </span>
+
+        </button>
+
+
+        <!-- =============================================
+             SOCIAL DIVIDER
+        ============================================== -->
+
+        <div class="divider">
+
+            <span>
+                OR
+            </span>
+
+        </div>
+
+
+        <!-- =============================================
+             SOCIAL LOGIN
+        ============================================== -->
+
+        <div class="social-login">
+
+            <button
+                type="button"
+                aria-label="Continue with Google">
+
+                <i
+                    class="fab fa-google"
+                    aria-hidden="true">
+                </i>
 
             </button>
 
 
-            <!-- Divider -->
+            <button
+                type="button"
+                aria-label="Continue with Facebook">
 
-            <div class="divider">
+                <i
+                    class="fab fa-facebook-f"
+                    aria-hidden="true">
+                </i>
 
-                <span>
-                    OR
-                </span>
+            </button>
 
-            </div>
-
-
-            <!-- Social -->
-
-            <div class="social-login">
-
-                <button type="button"
-                        aria-label="Google">
-
-                    <i class="fab fa-google"></i>
-
-                </button>
-
-                <button type="button"
-                        aria-label="Facebook">
-
-                    <i class="fab fa-facebook-f"></i>
-
-                </button>
-
-            </div>
+        </div>
 
 
-            <!-- Register -->
+        <!-- =============================================
+             REGISTER LINK
+        ============================================== -->
 
-            <div class="bottom-text">
+        <div class="bottom-text">
 
+            <span>
                 Don't have an account?
+            </span>
 
-                <a href="{% url 'user:register' %}">
+            <a href="{% url 'user:register' %}">
+                Create Account
+            </a>
 
-                    Register
+        </div>
 
-                </a>
+    </form>
 
-            </div>
-
-        </form>
-
-    </div>
+</div>
 
 </section>
 

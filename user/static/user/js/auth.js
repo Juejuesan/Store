@@ -1,1109 +1,1245 @@
-/*=========================================================
-        TRUSTYSHOP PREMIUM AUTH JAVASCRIPT
-            PART 1 - UNIVERSE ENGINE
-=========================================================*/
+/* =========================================================
+TRUSTYSHOP AUTH JAVASCRIPT
+LOGIN + REGISTER
+MODERN • STABLE • CENTER ALERT
+========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
-    /*====================================================
-                    ELEMENTS
-    ====================================================*/
+const body =
+    document.body;
 
-    const body = document.body;
+const particles =
+    document.getElementById("particles");
 
-    const particles =
-        document.getElementById("particles");
+const stars =
+    document.getElementById("stars");
 
-    const stars =
-        document.getElementById("stars");
+const profileInput =
+    document.getElementById("id_profile_pic");
 
-    const registerCard =
-        document.querySelector(".register-card");
+const previewImage =
+    document.getElementById("previewImage");
 
+const password =
+    document.getElementById("id_password");
 
+const confirmPassword =
+    document.getElementById("id_confirm_password");
 
-    /*====================================================
-                    RANDOM NUMBER
-    ====================================================*/
+const strengthFill =
+    document.getElementById("strengthFill");
 
-    function random(min, max){
+const strengthText =
+    document.getElementById("strengthText");
 
-        return Math.random() * (max - min) + min;
+const registerForm =
+    document.querySelector(
+        ".register-card form"
+    );
 
-    }
+const toggleButtons =
+    document.querySelectorAll(
+        ".toggle-password"
+    );
 
+const authButtons =
+    document.querySelectorAll(
+        ".auth-btn"
+    );
 
-
-    /*====================================================
-                FLOATING PARTICLES
-    ====================================================*/
-
-    if(particles){
-
-        for(let i = 0; i < 120; i++){
-
-            const particle =
-                document.createElement("span");
-
-            const size =
-                random(2,6);
-
-            particle.style.width =
-                size + "px";
-
-            particle.style.height =
-                size + "px";
-
-            particle.style.left =
-                random(0,100) + "%";
-
-            particle.style.top =
-                random(0,100) + "%";
-
-            particle.style.opacity =
-                random(.2,.9);
-
-            particle.style.animationDuration =
-                random(8,20) + "s";
-
-            particle.style.animationDelay =
-                random(0,8) + "s";
-
-            particles.appendChild(particle);
-
-        }
-
-    }
-
-
-
-    /*====================================================
-                    TWINKLING STARS
-    ====================================================*/
-
-    if(stars){
-
-        setInterval(()=>{
-
-            stars.style.opacity =
-                random(.45,.85);
-
-        },900);
-
-    }
-
-
-
-    /*====================================================
-                    SHOOTING STAR
-    ====================================================*/
-
-    function createShootingStar(){
-
-        const star =
-            document.createElement("div");
-
-        star.className =
-            "shooting-star";
-
-        star.style.top =
-            random(0,40) + "%";
-
-        star.style.left =
-            "-150px";
-
-        star.style.animationDuration =
-            random(2,3.5) + "s";
-
-        body.appendChild(star);
-
-        setTimeout(()=>{
-
-            star.remove();
-
-        },4000);
-
-    }
-
-    setInterval(
-
-        createShootingStar,
-
-        3500
-
+const socialButtons =
+    document.querySelectorAll(
+        ".social-login button"
     );
 
 
+/* =====================================================
+   CENTER ALERT ELEMENTS
+===================================================== */
 
-    /*====================================================
-                    MOUSE GLOW
-    ====================================================*/
+const alertOverlay =
+    document.getElementById(
+        "authAlert"
+    );
 
-    const glow =
-        document.createElement("div");
+const alertCard =
+    alertOverlay?.querySelector(
+        ".auth-alert"
+    );
 
-    glow.className =
-        "cursor-glow";
+const alertTitle =
+    document.getElementById(
+        "authAlertTitle"
+    );
 
-    body.appendChild(glow);
+const alertMessage =
+    document.getElementById(
+        "authAlertMessage"
+    );
 
-    document.addEventListener(
+const alertIcon =
+    document.getElementById(
+        "authAlertIcon"
+    );
 
-        "mousemove",
-
-        (e)=>{
-
-            glow.style.left =
-                e.clientX + "px";
-
-            glow.style.top =
-                e.clientY + "px";
-
-        }
-
+const alertOk =
+    document.getElementById(
+        "authAlertOk"
     );
 
 
+/* =====================================================
+   DEVICE
+===================================================== */
 
-    /*====================================================
-                CARD PARALLAX EFFECT
-    ====================================================*/
-
-    if(registerCard){
-
-        registerCard.addEventListener(
-
-            "mousemove",
-
-            (e)=>{
-
-                const rect =
-                    registerCard.getBoundingClientRect();
-
-                const x =
-                    e.clientX - rect.left;
-
-                const y =
-                    e.clientY - rect.top;
-
-                const rotateY =
-                    ((x / rect.width) - .5) * 10;
-
-                const rotateX =
-                    ((y / rect.height) - .5) * -10;
-
-                registerCard.style.transform =
-
-                    `
-                    perspective(1200px)
-                    rotateX(${rotateX}deg)
-                    rotateY(${rotateY}deg)
-                    scale(1.02)
-                    `;
-
-            }
-
-        );
-
-        registerCard.addEventListener(
-
-            "mouseleave",
-
-            ()=>{
-
-                registerCard.style.transform =
-
-                `
-                perspective(1200px)
-                rotateX(0)
-                rotateY(0)
-                scale(1)
-                `;
-
-            }
-
-        );
-
-    }
+const canHover =
+    window.matchMedia(
+        "(hover: hover) and (pointer: fine)"
+    ).matches;
 
 
+/* =====================================================
+   BASIC BODY SAFETY
+===================================================== */
 
-    /*====================================================
-            FLOATING PLANET MOVEMENT
-    ====================================================*/
+if (body) {
 
-    const planets =
-        document.querySelectorAll(".planet");
+    body.style.backgroundColor =
+        "#020617";
 
-    planets.forEach((planet,index)=>{
+    body.style.color =
+        "#ffffff";
 
-        let angle = index * 100;
+    body.style.margin =
+        "0";
 
-        setInterval(()=>{
-
-            angle += .5;
-
-            planet.style.transform =
-
-                `
-                translateY(${Math.sin(angle/20)*12}px)
-                translateX(${Math.cos(angle/30)*8}px)
-                `;
-
-        },30);
-
-    });
+}
 
 
+/* =====================================================
+   RANDOM NUMBER
+===================================================== */
 
-    /*====================================================
-                LOGO GLOW PULSE
-    ====================================================*/
+function random(min, max) {
 
-    const logo =
-        document.querySelector(".logo-circle");
+    return Math.random() *
+        (max - min) +
+        min;
 
-    if(logo){
+}
 
-        setInterval(()=>{
 
-            logo.animate(
+/* =====================================================
+   PARTICLES
+===================================================== */
 
-                [
+function createParticles() {
 
-                    {
+    if (!particles)
+        return;
 
-                        transform:"scale(1)",
+    const fragment =
+        document.createDocumentFragment();
 
-                        boxShadow:
+    for (
+        let i = 0;
+        i < 90;
+        i++
+    ) {
 
-                        "0 0 25px #0ea5ff"
-
-                    },
-
-                    {
-
-                        transform:"scale(1.08)",
-
-                        boxShadow:
-
-                        "0 0 60px #38bdf8"
-
-                    },
-
-                    {
-
-                        transform:"scale(1)",
-
-                        boxShadow:
-
-                        "0 0 25px #0ea5ff"
-
-                    }
-
-                ],
-
-                {
-
-                    duration:2500
-
-                }
-
+        const particle =
+            document.createElement(
+                "span"
             );
 
-        },2600);
+        const size =
+            random(2, 5);
 
-    }
+        particle.style.width =
+            `${size}px`;
 
+        particle.style.height =
+            `${size}px`;
 
+        particle.style.left =
+            `${random(0, 100)}%`;
 
-    /*====================================================
-                CARD FADE IN
-    ====================================================*/
+        particle.style.top =
+            `${random(0, 100)}%`;
 
-    if(registerCard){
+        particle.style.opacity =
+            random(0.2, 0.8);
 
-        registerCard.animate(
+        particle.style.animationDuration =
+            `${random(8, 20)}s`;
 
-            [
+        particle.style.animationDelay =
+            `${random(0, 8)}s`;
 
-                {
-
-                    opacity:0,
-
-                    transform:
-
-                    "translateY(80px) scale(.9)"
-
-                },
-
-                {
-
-                    opacity:1,
-
-                    transform:
-
-                    "translateY(0) scale(1)"
-
-                }
-
-            ],
-
-            {
-
-                duration:1000,
-
-                easing:"ease"
-
-            }
-
+        fragment.appendChild(
+            particle
         );
 
     }
 
-});
+    particles.appendChild(
+        fragment
+    );
 
-    /*====================================================
-                PROFILE IMAGE PREVIEW
-    ====================================================*/
+}
 
-    const profileInput =
-        document.querySelector("#id_profile_pic");
 
-    const previewImage =
-        document.querySelector("#previewImage");
+createParticles();
 
-    if(profileInput && previewImage){
 
-        profileInput.addEventListener("change",(e)=>{
+/* =====================================================
+   STAR TWINKLE
+===================================================== */
 
-            const file = e.target.files[0];
+if (stars) {
 
-            if(!file) return;
+    setInterval(() => {
 
-            previewImage.style.opacity = ".3";
-            previewImage.style.transform = "scale(.8)";
+        stars.style.opacity =
+            random(0.45, 0.85);
 
-            const reader = new FileReader();
+    }, 1200);
 
-            reader.onload = function(event){
+}
 
-                previewImage.src = event.target.result;
 
-                setTimeout(()=>{
+/* =====================================================
+   SHOOTING STARS
+===================================================== */
 
-                    previewImage.style.opacity = "1";
-                    previewImage.style.transform = "scale(1)";
+function createShootingStar() {
 
-                },150);
+    if (!body)
+        return;
 
-            };
+    const star =
+        document.createElement(
+            "div"
+        );
 
-            reader.readAsDataURL(file);
+    star.className =
+        "shooting-star";
 
-        });
+    star.style.top =
+        `${random(0, 40)}%`;
+
+    star.style.left =
+        "-150px";
+
+    star.style.animationDuration =
+        `${random(2, 3.5)}s`;
+
+    body.appendChild(
+        star
+    );
+
+    setTimeout(() => {
+
+        star.remove();
+
+    }, 4000);
+
+}
+
+
+setInterval(
+    createShootingStar,
+    4500
+);
+
+
+/* =====================================================
+   CURSOR GLOW
+===================================================== */
+
+if (canHover && body) {
+
+    const cursorGlow =
+        document.createElement(
+            "div"
+        );
+
+    cursorGlow.className =
+        "cursor-glow";
+
+    body.appendChild(
+        cursorGlow
+    );
+
+    document.addEventListener(
+        "mousemove",
+        (event) => {
+
+            cursorGlow.style.left =
+                `${event.clientX}px`;
+
+            cursorGlow.style.top =
+                `${event.clientY}px`;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   CENTER ALERT SYSTEM
+===================================================== */
+
+function getAlertType(level) {
+
+    const value =
+        String(level || "")
+            .toLowerCase();
+
+    if (
+        value.includes("success")
+    ) {
+
+        return "success";
+
+    }
+
+    if (
+        value.includes("warning")
+    ) {
+
+        return "warning";
+
+    }
+
+    if (
+        value.includes("info")
+    ) {
+
+        return "info";
+
+    }
+
+    return "error";
+
+}
+
+
+function setAlertIcon(type) {
+
+    if (!alertIcon)
+        return;
+
+    alertIcon.className =
+        "fa-solid";
+
+    if (type === "success") {
+
+        alertIcon.classList.add(
+            "fa-circle-check"
+        );
+
+        return;
+    }
+
+    if (type === "warning") {
+
+        alertIcon.classList.add(
+            "fa-triangle-exclamation"
+        );
+
+        return;
+    }
+
+    if (type === "info") {
+
+        alertIcon.classList.add(
+            "fa-circle-info"
+        );
+
+        return;
+    }
+
+    alertIcon.classList.add(
+        "fa-circle-exclamation"
+    );
+
+}
+
+
+function showAlert(
+    message,
+    type = "error",
+    title = null
+) {
+
+    if (
+        !alertOverlay ||
+        !alertCard ||
+        !alertMessage
+    ) {
+
+        return;
 
     }
 
 
+    const alertType =
+        getAlertType(type);
 
-    /*====================================================
-                FLOATING LABELS
-    ====================================================*/
 
-    const allInputs =
-        document.querySelectorAll(
+    /* Remove previous state */
 
-            ".input-box input, .password-box input, textarea"
+    alertCard.classList.remove(
+        "error",
+        "success",
+        "warning",
+        "info"
+    );
 
-        );
 
-    allInputs.forEach(input=>{
+    alertCard.classList.add(
+        alertType
+    );
 
-        if(input.value !== ""){
 
-            input.parentElement.classList.add("filled");
+    /* Icon */
+
+    setAlertIcon(
+        alertType
+    );
+
+
+    /* Title */
+
+    if (alertTitle) {
+
+        if (title) {
+
+            alertTitle.textContent =
+                title;
+
+        } else if (
+            alertType === "success"
+        ) {
+
+            alertTitle.textContent =
+                "Success";
+
+        } else if (
+            alertType === "warning"
+        ) {
+
+            alertTitle.textContent =
+                "Warning";
+
+        } else if (
+            alertType === "info"
+        ) {
+
+            alertTitle.textContent =
+                "Information";
+
+        } else {
+
+            alertTitle.textContent =
+                "Please check";
 
         }
 
-        input.addEventListener("focus",()=>{
-
-            input.parentElement.classList.add("focused");
-
-        });
-
-        input.addEventListener("blur",()=>{
-
-            input.parentElement.classList.remove("focused");
-
-            if(input.value !== ""){
-
-                input.parentElement.classList.add("filled");
-
-            }else{
-
-                input.parentElement.classList.remove("filled");
-
-            }
-
-        });
-
-    });
-
-
-
-    /*====================================================
-                PASSWORD SHOW / HIDE
-    ====================================================*/
-
-    const toggleButtons =
-        document.querySelectorAll(".toggle-password");
-
-    toggleButtons.forEach(button=>{
-
-        button.addEventListener("click",()=>{
-
-            const box =
-                button.closest(".password-box");
-
-            const input =
-                box.querySelector("input");
-
-            const icon =
-                button.querySelector("i");
-
-            if(input.type === "password"){
-
-                input.type = "text";
-
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-
-                button.animate(
-
-                    [
-
-                        {
-
-                            transform:
-
-                            "translateY(-50%) scale(.8)"
-
-                        },
-
-                        {
-
-                            transform:
-
-                            "translateY(-50%) scale(1.2)"
-
-                        },
-
-                        {
-
-                            transform:
-
-                            "translateY(-50%) scale(1)"
-
-                        }
-
-                    ],
-
-                    {
-
-                        duration:300
-
-                    }
-
-                );
-
-            }else{
-
-                input.type = "password";
-
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-
-            }
-
-        });
-
-    });
-
-
-
-    /*====================================================
-            PASSWORD STRENGTH METER
-    ====================================================*/
-
-    const password =
-        document.querySelector("#id_password");
-
-    const fill =
-        document.querySelector("#strengthFill");
-
-    const text =
-        document.querySelector("#strengthText");
-
-    if(password){
-
-        password.addEventListener("input",()=>{
-
-            const value =
-                password.value;
-
-            let score = 0;
-
-            if(value.length >= 8) score++;
-
-            if(/[A-Z]/.test(value)) score++;
-
-            if(/[a-z]/.test(value)) score++;
-
-            if(/[0-9]/.test(value)) score++;
-
-            if(/[!@#$%^&*(),.?":{}|<>]/.test(value)) score++;
-
-            const percent =
-                score * 20;
-
-            fill.style.width =
-                percent + "%";
-
-            switch(score){
-
-                case 0:
-
-                case 1:
-
-                    fill.style.background =
-                    "#ef4444";
-
-                    text.innerHTML =
-                    "Weak Password";
-
-                    break;
-
-                case 2:
-
-                    fill.style.background =
-                    "#f97316";
-
-                    text.innerHTML =
-                    "Fair Password";
-
-                    break;
-
-                case 3:
-
-                    fill.style.background =
-                    "#facc15";
-
-                    text.innerHTML =
-                    "Good Password";
-
-                    break;
-
-                case 4:
-
-                    fill.style.background =
-                    "#38bdf8";
-
-                    text.innerHTML =
-                    "Strong Password";
-
-                    break;
-
-                case 5:
-
-                    fill.style.background =
-                    "#22c55e";
-
-                    text.innerHTML =
-                    "Excellent Password 🔥";
-
-                    break;
-
-            }
-
-        });
-
     }
 
 
+    /* Message */
 
-    /*====================================================
-            CONFIRM PASSWORD CHECK
-    ====================================================*/
+    alertMessage.textContent =
+        message;
 
-    const confirmPassword =
-        document.querySelector("#id_confirm_password");
 
-    if(password && confirmPassword){
+    /* Show */
 
-        function checkPassword(){
+    alertOverlay.classList.add(
+        "show"
+    );
 
-            if(confirmPassword.value === ""){
+    alertOverlay.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 
-                confirmPassword.style.borderColor =
-                    "";
+
+    /* Prevent background scrolling */
+
+    document.body.style.overflow =
+        "hidden";
+
+
+    /* Focus OK */
+
+    setTimeout(() => {
+
+        if (alertOk) {
+
+            alertOk.focus();
+
+        }
+
+    }, 100);
+
+}
+
+
+function hideAlert() {
+
+    if (!alertOverlay)
+        return;
+
+
+    alertOverlay.classList.remove(
+        "show"
+    );
+
+    alertOverlay.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+/* =====================================================
+   OK BUTTON
+===================================================== */
+
+if (alertOk) {
+
+    alertOk.addEventListener(
+        "click",
+        hideAlert
+    );
+
+}
+
+
+/* =====================================================
+   ESC KEY
+   Optional keyboard support
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.key === "Escape" &&
+            alertOverlay?.classList.contains(
+                "show"
+            )
+        ) {
+
+            hideAlert();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   DJANGO MESSAGES
+===================================================== */
+
+const djangoMessages =
+    document.querySelectorAll(
+        "#djangoMessages .django-message"
+    );
+
+
+djangoMessages.forEach(
+    (messageElement) => {
+
+        const message =
+            messageElement.textContent
+                .trim();
+
+        const level =
+            messageElement.dataset.level ||
+            "error";
+
+
+        if (message) {
+
+            showAlert(
+                message,
+                level
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   FORM ERRORS
+===================================================== */
+
+const formErrors =
+    document.querySelectorAll(
+        "#formErrors .form-error"
+    );
+
+
+if (formErrors.length > 0) {
+
+    const errors = [];
+
+
+    formErrors.forEach(
+        (errorElement) => {
+
+            const message =
+                errorElement.textContent
+                    .trim();
+
+            if (
+                message &&
+                !errors.includes(
+                    message
+                )
+            ) {
+
+                errors.push(
+                    message
+                );
+
+            }
+
+        }
+    );
+
+
+    if (errors.length > 0) {
+
+        showAlert(
+            errors.join("\n"),
+            "error",
+            "Please check your information"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   PROFILE IMAGE PREVIEW
+===================================================== */
+
+if (
+    profileInput &&
+    previewImage
+) {
+
+    profileInput.addEventListener(
+        "change",
+        (event) => {
+
+            const file =
+                event.target.files?.[0];
+
+            if (!file)
+                return;
+
+
+            if (
+                !file.type.startsWith(
+                    "image/"
+                )
+            ) {
+
+                profileInput.value = "";
+
+                showAlert(
+                    "Please select a valid image file.",
+                    "error",
+                    "Invalid Image"
+                );
 
                 return;
 
             }
 
-            if(password.value === confirmPassword.value){
 
-                confirmPassword.style.borderColor =
-                    "#22c55e";
+            previewImage.style.opacity =
+                "0.3";
 
-                confirmPassword.style.boxShadow =
-                    "0 0 20px rgba(34,197,94,.35)";
+            previewImage.style.transform =
+                "scale(0.85)";
 
-            }else{
 
-                confirmPassword.style.borderColor =
-                    "#ef4444";
+            const reader =
+                new FileReader();
 
-                confirmPassword.style.boxShadow =
-                    "0 0 20px rgba(239,68,68,.35)";
 
-            }
+            reader.onload =
+                (loadEvent) => {
+
+                    previewImage.src =
+                        loadEvent.target.result;
+
+                    requestAnimationFrame(
+                        () => {
+
+                            previewImage.style.opacity =
+                                "1";
+
+                            previewImage.style.transform =
+                                "scale(1)";
+
+                        }
+                    );
+
+                };
+
+
+            reader.readAsDataURL(
+                file
+            );
 
         }
+    );
 
-        password.addEventListener("input",checkPassword);
-
-        confirmPassword.addEventListener("input",checkPassword);
-
-    }
+}
 
 
+/* =====================================================
+   PASSWORD SHOW / HIDE
+===================================================== */
 
-    /*====================================================
-                INPUT HOVER GLOW
-    ====================================================*/
+toggleButtons.forEach(
+    (button) => {
 
-    allInputs.forEach(input=>{
+        button.addEventListener(
+            "click",
+            () => {
 
-        input.addEventListener("mouseenter",()=>{
+                const box =
+                    button.closest(
+                        ".password-box"
+                    );
 
-            input.animate(
+                if (!box)
+                    return;
 
-                [
 
-                    {
+                const input =
+                    box.querySelector(
+                        "input"
+                    );
 
-                        transform:"translateY(0)"
+                const icon =
+                    button.querySelector(
+                        "i"
+                    );
 
-                    },
+                if (!input)
+                    return;
 
-                    {
 
-                        transform:"translateY(-2px)"
+                const showPassword =
+                    input.type ===
+                    "password";
 
-                    },
 
-                    {
+                input.type =
+                    showPassword
+                        ? "text"
+                        : "password";
 
-                        transform:"translateY(0)"
 
-                    }
+                button.setAttribute(
+                    "aria-label",
+                    showPassword
+                        ? "Hide password"
+                        : "Show password"
+                );
 
-                ],
 
-                {
+                if (icon) {
 
-                    duration:300
+                    icon.classList.toggle(
+                        "fa-eye",
+                        showPassword
+                    );
+
+                    icon.classList.toggle(
+                        "fa-eye-slash",
+                        !showPassword
+                    );
 
                 }
 
-            );
-
-        });
-
-    });
-
-
-
-    /*====================================================
-                AUTO FOCUS FIRST FIELD
-    ====================================================*/
-
-    const firstInput =
-        document.querySelector(
-
-            ".input-box input"
-
+            }
         );
 
-    if(firstInput){
-
-        setTimeout(()=>{
-
-            firstInput.focus();
-
-        },700);
-
     }
-
-        /*====================================================
-                BUTTON RIPPLE EFFECT
-    ====================================================*/
-
-    const authButtons =
-        document.querySelectorAll(".auth-btn");
-
-    authButtons.forEach(button=>{
-
-        button.addEventListener("click",(e)=>{
-
-            const ripple =
-                document.createElement("span");
-
-            ripple.className =
-                "ripple";
-
-            const rect =
-                button.getBoundingClientRect();
-
-            const size =
-                Math.max(rect.width, rect.height);
-
-            ripple.style.width =
-                size + "px";
-
-            ripple.style.height =
-                size + "px";
-
-            ripple.style.left =
-                (e.clientX - rect.left - size/2) + "px";
-
-            ripple.style.top =
-                (e.clientY - rect.top - size/2) + "px";
-
-            button.appendChild(ripple);
-
-            setTimeout(()=>{
-
-                ripple.remove();
-
-            },700);
-
-        });
-
-    });
+);
 
 
+/* =====================================================
+   PASSWORD STRENGTH
+===================================================== */
 
-    /*====================================================
-                REGISTER BUTTON LOADING
-    ====================================================*/
+function updatePasswordStrength() {
 
-    const registerForm =
-        document.querySelector("form");
+    if (
+        !password ||
+        !strengthFill ||
+        !strengthText
+    ) {
 
-    if(registerForm){
-
-        registerForm.addEventListener("submit",(e)=>{
-
-            const btn =
-                registerForm.querySelector(".auth-btn");
-
-            if(!btn) return;
-
-            btn.disabled = true;
-
-            const original =
-                btn.innerHTML;
-
-            btn.innerHTML = `
-
-                <i class="fa-solid fa-spinner fa-spin"></i>
-
-                <span>Creating Account...</span>
-
-            `;
-
-            setTimeout(()=>{
-
-                btn.innerHTML =
-                    original;
-
-                btn.disabled = false;
-
-            },2500);
-
-        });
+        return;
 
     }
 
 
+    const value =
+        password.value;
 
-    /*====================================================
-                STAGGER ANIMATION
-    ====================================================*/
+    let score = 0;
 
-    const animatedItems =
-        document.querySelectorAll(
 
-            ".profile-upload,\
-             .form-row,\
-             .input-box,\
-             .password-box,\
-             .gender-box,\
-             .password-strength,\
-             .remember-box,\
-             .auth-btn,\
-             .divider,\
-             .social-login,\
-             .bottom-text"
+    if (value.length >= 8)
+        score++;
 
+    if (/[A-Z]/.test(value))
+        score++;
+
+    if (/[a-z]/.test(value))
+        score++;
+
+    if (/[0-9]/.test(value))
+        score++;
+
+    if (
+        /[!@#$%^&*(),.?":{}|<>]/.test(
+            value
+        )
+    ) {
+
+        score++;
+
+    }
+
+
+    if (!value) {
+
+        strengthFill.style.width =
+            "0";
+
+        strengthText.textContent =
+            "Password Strength";
+
+        strengthText.style.color =
+            "#9fdcff";
+
+        return;
+
+    }
+
+
+    const percentage =
+        score * 20;
+
+
+    strengthFill.style.width =
+        `${percentage}%`;
+
+
+    const strength = {
+
+        1: {
+            color: "#ef4444",
+            text: "Weak Password"
+        },
+
+        2: {
+            color: "#f97316",
+            text: "Fair Password"
+        },
+
+        3: {
+            color: "#facc15",
+            text: "Good Password"
+        },
+
+        4: {
+            color: "#38bdf8",
+            text: "Strong Password"
+        },
+
+        5: {
+            color: "#22c55e",
+            text: "Excellent Password 🔥"
+        }
+
+    };
+
+
+    const result =
+        strength[score] ||
+        strength[1];
+
+
+    strengthFill.style.background =
+        result.color;
+
+    strengthText.textContent =
+        result.text;
+
+    strengthText.style.color =
+        result.color;
+
+}
+
+
+if (password) {
+
+    password.addEventListener(
+        "input",
+        updatePasswordStrength
+    );
+
+    updatePasswordStrength();
+
+}
+
+
+/* =====================================================
+   CONFIRM PASSWORD
+===================================================== */
+
+function checkPasswordMatch() {
+
+    if (
+        !password ||
+        !confirmPassword
+    ) {
+
+        return;
+
+    }
+
+
+    if (!confirmPassword.value) {
+
+        confirmPassword.style.borderColor =
+            "";
+
+        confirmPassword.style.boxShadow =
+            "";
+
+        return;
+
+    }
+
+
+    const matches =
+        password.value ===
+        confirmPassword.value;
+
+
+    confirmPassword.style.borderColor =
+        matches
+            ? "#22c55e"
+            : "#ef4444";
+
+
+    confirmPassword.style.boxShadow =
+        matches
+            ? "0 0 20px rgba(34, 197, 94, 0.25)"
+            : "0 0 20px rgba(239, 68, 68, 0.25)";
+
+}
+
+
+if (
+    password &&
+    confirmPassword
+) {
+
+    password.addEventListener(
+        "input",
+        checkPasswordMatch
+    );
+
+    confirmPassword.addEventListener(
+        "input",
+        checkPasswordMatch
+    );
+
+}
+
+
+/* =====================================================
+   BUTTON RIPPLE
+===================================================== */
+
+authButtons.forEach(
+    (button) => {
+
+        button.addEventListener(
+            "click",
+            (event) => {
+
+                if (button.disabled)
+                    return;
+
+
+                const ripple =
+                    document.createElement(
+                        "span"
+                    );
+
+                ripple.className =
+                    "ripple";
+
+
+                const rect =
+                    button.getBoundingClientRect();
+
+
+                const size =
+                    Math.max(
+                        rect.width,
+                        rect.height
+                    );
+
+
+                ripple.style.width =
+                    `${size}px`;
+
+                ripple.style.height =
+                    `${size}px`;
+
+
+                const x =
+                    event.clientX ||
+                    rect.left +
+                    rect.width / 2;
+
+
+                const y =
+                    event.clientY ||
+                    rect.top +
+                    rect.height / 2;
+
+
+                ripple.style.left =
+                    `${x - rect.left - size / 2}px`;
+
+                ripple.style.top =
+                    `${y - rect.top - size / 2}px`;
+
+
+                button.appendChild(
+                    ripple
+                );
+
+
+                setTimeout(
+                    () => {
+
+                        ripple.remove();
+
+                    },
+                    700
+                );
+
+            }
         );
 
-    animatedItems.forEach((item,index)=>{
+    }
+);
 
-        item.animate(
 
-            [
+/* =====================================================
+   REGISTER FORM VALIDATION
+===================================================== */
 
-                {
+if (registerForm) {
 
-                    opacity:0,
+    registerForm.addEventListener(
+        "submit",
+        (event) => {
 
-                    transform:
-                    "translateY(40px)"
+            const terms =
+                registerForm.querySelector(
+                    "#terms, " +
+                    "#id_terms, " +
+                    'input[name="terms"]'
+                );
 
-                },
 
-                {
+            /* Terms */
 
-                    opacity:1,
+            if (
+                terms &&
+                !terms.checked
+            ) {
 
-                    transform:
-                    "translateY(0)"
+                event.preventDefault();
 
-                }
+                showAlert(
+                    "Please accept the Terms & Conditions before creating your account.",
+                    "warning",
+                    "Terms Required"
+                );
 
-            ],
+                terms.focus();
 
-            {
-
-                duration:700,
-
-                delay:index*80,
-
-                fill:"forwards",
-
-                easing:"ease"
+                return;
 
             }
 
-        );
 
-    });
+            /* Password confirmation */
 
+            if (
+                password &&
+                confirmPassword &&
+                password.value !==
+                confirmPassword.value
+            ) {
 
+                event.preventDefault();
 
-    /*====================================================
-                AUTO HIDE ALERTS
-    ====================================================*/
+                showAlert(
+                    "Your passwords do not match. Please enter the same password in both fields.",
+                    "error",
+                    "Password Mismatch"
+                );
 
-    const alerts =
-        document.querySelectorAll(".alert");
+                confirmPassword.focus();
 
-    alerts.forEach(alert=>{
+                return;
 
-        setTimeout(()=>{
-
-            alert.style.transition =
-                ".5s";
-
-            alert.style.opacity =
-                "0";
-
-            alert.style.transform =
-                "translateY(-20px)";
-
-            setTimeout(()=>{
-
-                alert.remove();
-
-            },500);
-
-        },4000);
-
-    });
+            }
 
 
+            /* Submit */
 
-    /*====================================================
-                INPUT SHINE EFFECT
-    ====================================================*/
+            const button =
+                registerForm.querySelector(
+                    ".auth-btn"
+                );
 
-    const boxes =
+
+            if (!button)
+                return;
+
+
+            button.disabled =
+                true;
+
+            button.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <span>Creating Account...</span>
+            `;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   INPUT HOVER
+===================================================== */
+
+if (canHover) {
+
+    const inputBoxes =
         document.querySelectorAll(
-
-            ".input-box,.password-box"
-
+            ".input-box, .password-box"
         );
 
-    boxes.forEach(box=>{
 
-        box.addEventListener("mouseenter",()=>{
+    inputBoxes.forEach(
+        (box) => {
 
-            box.classList.add("shine");
+            box.addEventListener(
+                "mouseenter",
+                () => {
 
-        });
-
-        box.addEventListener("mouseleave",()=>{
-
-            box.classList.remove("shine");
-
-        });
-
-    });
-
-
-
-    /*====================================================
-                TYPING GLOW
-    ====================================================*/
-
-    allInputs.forEach(input=>{
-
-        input.addEventListener("input",()=>{
-
-            input.parentElement.animate(
-
-                [
-
-                    {
-
-                        boxShadow:
-
-                        "0 0 0 rgba(0,0,0,0)"
-
-                    },
-
-                    {
-
-                        boxShadow:
-
-                        "0 0 25px rgba(56,189,248,.25)"
-
-                    },
-
-                    {
-
-                        boxShadow:
-
-                        "0 0 0 rgba(0,0,0,0)"
-
-                    }
-
-                ],
-
-                {
-
-                    duration:350
+                    box.classList.add(
+                        "shine"
+                    );
 
                 }
-
             );
 
-        });
 
-    });
+            box.addEventListener(
+                "mouseleave",
+                () => {
 
-
-
-    /*====================================================
-                SOCIAL BUTTON EFFECT
-    ====================================================*/
-
-    const socials =
-        document.querySelectorAll(
-
-            ".social-login button"
-
-        );
-
-    socials.forEach(button=>{
-
-        button.addEventListener("mouseenter",()=>{
-
-            button.animate(
-
-                [
-
-                    {
-
-                        transform:
-                        "translateY(0) rotate(0)"
-
-                    },
-
-                    {
-
-                        transform:
-                        "translateY(-8px) rotate(12deg)"
-
-                    },
-
-                    {
-
-                        transform:
-                        "translateY(-5px) rotate(6deg)"
-
-                    }
-
-                ],
-
-                {
-
-                    duration:350,
-
-                    fill:"forwards"
+                    box.classList.remove(
+                        "shine"
+                    );
 
                 }
-
             );
 
-        });
-
-        button.addEventListener("mouseleave",()=>{
-
-            button.style.transform="";
-
-        });
-
-    });
+        }
+    );
 
 
+    socialButtons.forEach(
+        (button) => {
 
-    /*====================================================
-                PARALLAX GLOW
-    ====================================================*/
+            button.addEventListener(
+                "mouseenter",
+                () => {
 
-    document.addEventListener("mousemove",(e)=>{
+                    button.classList.add(
+                        "shine"
+                    );
 
-        document.documentElement.style.setProperty(
-
-            "--mouse-x",
-
-            e.clientX + "px"
-
-        );
-
-        document.documentElement.style.setProperty(
-
-            "--mouse-y",
-
-            e.clientY + "px"
-
-        );
-
-    });
+                }
+            );
 
 
+            button.addEventListener(
+                "mouseleave",
+                () => {
+
+                    button.classList.remove(
+                        "shine"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   END
+===================================================== */
+
+
+});

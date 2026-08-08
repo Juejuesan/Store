@@ -1,47 +1,144 @@
-<!DOCTYPE html>
+{% extends "user/base.html" %}
+{% load static %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Email</title>
-</head>
+{% block title %}
+Verify Your Email | TrustyShop
+{% endblock %}
 
-<body>
+{% block content %}
 
-```
-<h2>Verify Your Email</h2>
+<div class="verify-page">
 
-<p>
-    We sent a verification code to your email address.
-</p>
 
-<form method="POST">
-    {% csrf_token %}
+<!-- Background -->
+<div class="auth-background">
+    <span id="stars"></span>
 
-    <label for="{{ form.code.id_for_label }}">
-        Verification Code
-    </label>
+    <span class="planet planet-1"></span>
+    <span class="planet planet-2"></span>
+    <span class="planet planet-3"></span>
 
-    {{ form.code }}
+    <span class="glow glow-1"></span>
+    <span class="glow glow-2"></span>
+</div>
 
-    {% if form.code.errors %}
-        {% for error in form.code.errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
+
+<!-- Verification Card -->
+<div class="verify-card">
+
+    <div class="card-border"></div>
+
+    <!-- Icon -->
+    <div class="verify-icon">
+        <i class="fas fa-envelope-open-text"></i>
+    </div>
+
+
+    <!-- Header -->
+    <div class="verify-header">
+
+        <span class="verify-badge">
+            <i class="fas fa-shield-check"></i>
+            EMAIL SECURITY
+        </span>
+
+        <h1>Verify Your Email</h1>
+
+        <p>
+            We sent a verification code to your email address.
+            Enter the code below to continue.
+        </p>
+
+    </div>
+
+
+    <!-- Form -->
+    <form method="POST" class="verify-form">
+
+        {% csrf_token %}
+
+        <div class="verify-field">
+
+            <label for="{{ form.code.id_for_label }}">
+                Verification Code
+            </label>
+
+            <div class="code-input-wrapper">
+
+                <span class="code-icon">
+                    <i class="fas fa-key"></i>
+                </span>
+
+                {{ form.code }}
+
+            </div>
+
+            {% if form.code.errors %}
+                <div class="field-error">
+
+                    <i class="fas fa-circle-exclamation"></i>
+
+                    {% for error in form.code.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <!-- Submit -->
+        <button type="submit" class="verify-btn">
+
+            <span class="btn-shine"></span>
+
+            <span class="btn-content">
+                <i class="fas fa-circle-check"></i>
+                Verify Email
+            </span>
+
+        </button>
+
+    </form>
+
+
+    <!-- Messages -->
+    {% if messages %}
+
+        <div class="verify-messages">
+
+            {% for message in messages %}
+
+                <div class="verify-message {{ message.tags }}">
+
+                    <i class="fas fa-circle-info"></i>
+
+                    <span>{{ message }}</span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
     {% endif %}
 
-    <button type="submit">
-        Verify Email
-    </button>
-</form>
 
-{% if messages %}
-    {% for message in messages %}
-        <p>{{ message }}</p>
-    {% endfor %}
-{% endif %}
-```
+    <!-- Footer -->
+    <div class="verify-footer">
 
-</body>
-</html>
+        <i class="fas fa-lock"></i>
+
+        <span>
+            Your email verification is secure and protected.
+        </span>
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endblock %}

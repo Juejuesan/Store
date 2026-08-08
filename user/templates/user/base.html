@@ -1,111 +1,202 @@
-{% load static %}
 
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <meta name="theme-color"
-          content="#020617">
+<meta name="theme-color"
+      content="#020617">
 
-    <title>
-        {% block title %}
+<title>
+    {% block title %}
         TrustyShop
-        {% endblock %}
-    </title>
+    {% endblock %}
+</title>
 
 
-    <!-- =========================================
-         GOOGLE FONT
-    ========================================== -->
+<!-- Google Font -->
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+<link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
 
-    <!-- =========================================
-         FONT AWESOME
-    ========================================== -->
+<!-- Font Awesome -->
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 
-    <!-- =========================================
-         AUTH CSS
-    ========================================== -->
+<!-- Auth CSS -->
 
-    <link
-        rel="stylesheet"
-        href="{% static 'user/css/auth.css' %}">
+<link
+    rel="stylesheet"
+    href="{% static 'user/css/auth.css' %}">
 
 </head>
 
-
 <body>
+<!-- =================================================
+     PAGE CONTENT
+================================================== -->
+
+{% block content %}
+
+{% endblock %}
 
 
-    <!-- =========================================
-         DJANGO MESSAGES
-    ========================================== -->
+
+<!-- =================================================
+     CENTER ALERT MODAL
+================================================== -->
+
+<div
+    id="authAlert"
+    class="auth-alert-overlay"
+    aria-hidden="true">
+
+    <div
+        class="auth-alert"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="authAlertTitle">
+
+
+        <!-- Glow -->
+
+        <div class="alert-glow"></div>
+
+
+        <!-- Icon -->
+
+        <div class="alert-icon">
+
+            <i
+                id="authAlertIcon"
+                class="fa-solid fa-circle-exclamation">
+            </i>
+
+        </div>
+
+
+        <!-- Content -->
+
+        <div class="alert-content">
+
+            <h3 id="authAlertTitle">
+                Please check
+            </h3>
+
+            <p id="authAlertMessage">
+                Something went wrong.
+            </p>
+
+        </div>
+
+
+        <!-- OK Button -->
+
+        <button
+            type="button"
+            id="authAlertOk"
+            class="alert-ok">
+
+            <span>OK</span>
+
+            <i class="fa-solid fa-check"></i>
+
+        </button>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =================================================
+     DJANGO MESSAGES
+================================================== -->
+
+<div
+    id="djangoMessages"
+    hidden>
 
     {% if messages %}
 
-        <div class="django-messages">
+        {% for message in messages %}
 
-            {% for message in messages %}
+            <div
+                class="django-message"
+                data-level="{{ message.tags }}">
 
-                <div class="alert {{ message.tags }}">
+                {{ message }}
 
-                    <i class="fa-solid fa-circle-info"></i>
+            </div>
 
-                    <span>
-                        {{ message }}
-                    </span>
+        {% endfor %}
 
-                    <button
-                        type="button"
-                        class="alert-close"
-                        aria-label="Close">
+    {% endif %}
 
-                        <i class="fa-solid fa-xmark"></i>
+</div>
 
-                    </button>
+
+
+<!-- =================================================
+     FORM ERRORS
+================================================== -->
+
+{% if form.errors %}
+
+    <div
+        id="formErrors"
+        hidden>
+
+        {% for field in form %}
+
+            {% for error in field.errors %}
+
+                <div class="form-error">
+
+                    {{ error }}
 
                 </div>
 
             {% endfor %}
 
-        </div>
-
-    {% endif %}
+        {% endfor %}
 
 
-    <!-- =========================================
-         PAGE CONTENT
-    ========================================== -->
+        {% for error in form.non_field_errors %}
 
-    {% block content %}
+            <div class="form-error">
 
-    {% endblock %}
+                {{ error }}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% endif %}
 
 
-    <!-- =========================================
-         AUTH JAVASCRIPT
-    ========================================== -->
 
-    <script
-        src="{% static 'user/js/auth.js' %}"
-        defer>
-    </script>
+<!-- Auth JavaScript -->
 
+<script
+    src="{% static 'user/js/auth.js' %}"
+    defer>
+</script>
 
 </body>
 
