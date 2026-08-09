@@ -1,8 +1,10 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 
 from posts.models import Post
 
 
+@login_required(login_url='welcome')
 def home(request):
     posts = Post.objects.filter(status="approved").order_by('-created_at')
 

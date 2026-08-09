@@ -1,23 +1,30 @@
 /*==================================================
-    WITHDRAW PAGE
+    TRUSTYSHOP WITHDRAW PAGE
+    MODERN • CLEAN • STABLE • NO SHAKE
 ==================================================*/
 
-.withdraw-page{
 
-    position:relative;
+/*==================================================
+    PAGE
+==================================================*/
 
-    overflow:hidden;
+.withdraw-page {
 
-    min-height:100vh;
+    position: relative;
 
-    padding:120px 0 80px;
+    overflow: hidden;
 
-    background:linear-gradient(
-        135deg,
-        #eef5ff 0%,
-        #f7fbff 40%,
-        #ffffff 100%
-    );
+    min-height: 100vh;
+
+    padding: 120px 0 80px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef5ff 0%,
+            #f7fbff 40%,
+            #ffffff 100%
+        );
 
 }
 
@@ -26,85 +33,89 @@
     BACKGROUND CIRCLES
 ==================================================*/
 
-.withdraw-bg-circle{
+.withdraw-bg-circle {
 
-    position:absolute;
+    position: absolute;
 
-    border-radius:50%;
+    border-radius: 50%;
 
-    filter:blur(90px);
+    filter: blur(90px);
 
-    opacity:.25;
+    opacity: .25;
 
-    animation:floatCircle 12s ease-in-out infinite;
+    pointer-events: none;
 
-}
+    z-index: 0;
 
-.bg1{
-
-    width:320px;
-
-    height:320px;
-
-    background:#4f8cff;
-
-    top:-120px;
-
-    left:-120px;
+    animation: withdrawFloat 12s ease-in-out infinite;
 
 }
 
-.bg2{
+.bg1 {
 
-    width:260px;
+    width: 320px;
+    height: 320px;
 
-    height:260px;
+    background: #4f8cff;
 
-    background:#8b5cf6;
-
-    top:180px;
-
-    right:-90px;
-
-    animation-delay:2s;
+    top: -120px;
+    left: -120px;
 
 }
 
-.bg3{
+.bg2 {
 
-    width:220px;
+    width: 260px;
+    height: 260px;
 
-    height:220px;
+    background: #8b5cf6;
 
-    background:#00d4ff;
+    top: 180px;
+    right: -90px;
 
-    bottom:-80px;
-
-    left:35%;
-
-    animation-delay:5s;
+    animation-delay: 2s;
 
 }
 
-@keyframes floatCircle{
+.bg3 {
 
-    0%{
+    width: 220px;
+    height: 220px;
 
-        transform:translateY(0);
+    background: #00d4ff;
 
+    bottom: -80px;
+    left: 35%;
+
+    animation-delay: 5s;
+
+}
+
+
+@keyframes withdrawFloat {
+
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0);
     }
 
-    50%{
-
-        transform:translateY(-25px);
-
+    50% {
+        transform: translate3d(0, -15px, 0);
     }
 
-    100%{
+}
 
-        transform:translateY(0);
 
-    }
+/*==================================================
+    MAIN CONTENT
+==================================================*/
+
+.withdraw-page > .container,
+.withdraw-page .container {
+
+    position: relative;
+
+    z-index: 1;
 
 }
 
@@ -113,77 +124,79 @@
     HEADER
 ==================================================*/
 
-.withdraw-header{
+.withdraw-header {
 
-    display:flex;
+    display: flex;
 
-    justify-content:space-between;
+    justify-content: space-between;
 
-    align-items:center;
+    align-items: center;
 
-    margin-bottom:40px;
+    gap: 30px;
 
-    gap:30px;
-
-}
-
-.withdraw-small-title{
-
-    display:inline-block;
-
-    padding:8px 18px;
-
-    border-radius:40px;
-
-    background:#e9f2ff;
-
-    color:#2563eb;
-
-    font-weight:700;
-
-    font-size:13px;
-
-    letter-spacing:1px;
-
-    margin-bottom:18px;
+    margin-bottom: 40px;
 
 }
 
-.withdraw-header h1{
+.withdraw-small-title {
 
-    font-size:44px;
+    display: inline-block;
 
-    font-weight:800;
+    padding: 8px 18px;
 
-    color:#1e293b;
+    border-radius: 40px;
 
-    margin-bottom:12px;
+    background: #e9f2ff;
+
+    color: #2563eb;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 18px;
 
 }
 
-.withdraw-header p{
+.withdraw-header h1 {
 
-    color:#64748b;
+    margin: 0 0 12px;
 
-    max-width:540px;
+    color: #1e293b;
 
-    line-height:1.8;
+    font-size: 44px;
+
+    font-weight: 800;
 
 }
 
-.withdraw-avatar img{
+.withdraw-header p {
 
-    width:90px;
+    max-width: 540px;
 
-    height:90px;
+    margin: 0;
 
-    border-radius:50%;
+    color: #64748b;
 
-    object-fit:cover;
+    line-height: 1.8;
 
-    border:5px solid white;
+}
 
-    box-shadow:0 20px 40px rgba(0,0,0,.12);
+.withdraw-avatar img {
+
+    width: 90px;
+
+    height: 90px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 5px solid #fff;
+
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .12);
 
 }
 
@@ -192,19 +205,54 @@
     GLASS CARD
 ==================================================*/
 
-.glass-card{
+.glass-card {
 
-    background:rgba(255,255,255,.75);
+    position: relative;
 
-    backdrop-filter:blur(18px);
+    box-sizing: border-box;
 
-    border:1px solid rgba(255,255,255,.5);
+    width: 100%;
 
-    border-radius:24px;
+    background: rgba(255, 255, 255, .75);
 
-    padding:35px;
+    backdrop-filter: blur(18px);
 
-    box-shadow:0 25px 60px rgba(0,0,0,.08);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255, 255, 255, .5);
+
+    border-radius: 24px;
+
+    padding: 35px;
+
+    box-shadow: 0 25px 60px rgba(0, 0, 0, .08);
+
+    /*
+        IMPORTANT:
+        No transform.
+        No animation.
+        No hover movement.
+    */
+
+    transform: none !important;
+
+    transition:
+        box-shadow .25s ease,
+        border-color .25s ease,
+        background-color .25s ease;
+
+}
+
+
+/*==================================================
+    COMPLETELY STABLE CARDS
+==================================================*/
+
+.glass-card:hover,
+.info-card:hover,
+.security-card:hover {
+
+    transform: none !important;
 
 }
 
@@ -213,110 +261,147 @@
     WALLET BALANCE CARD
 ==================================================*/
 
-.wallet-balance-card{
+.wallet-balance-card {
 
-    display:flex;
+    position: relative;
 
-    justify-content:space-between;
+    display: flex;
 
-    align-items:center;
+    justify-content: space-between;
 
-    background:linear-gradient(
-        135deg,
-        #2563eb,
-        #3b82f6,
-        #60a5fa
-    );
+    align-items: center;
 
-    color:#fff;
+    box-sizing: border-box;
 
-    border-radius:28px;
+    width: 100%;
 
-    padding:40px;
+    padding: 40px;
 
-    box-shadow:0 25px 50px rgba(37,99,235,.35);
+    margin-bottom: 20px;
 
-    margin-bottom:20px;
+    overflow: hidden;
 
-    overflow:hidden;
+    border-radius: 28px;
 
-    position:relative;
+    color: #fff;
 
-}
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6,
+            #60a5fa
+        );
 
-.wallet-balance-card::before{
+    box-shadow:
+        0 25px 50px rgba(37, 99, 235, .35);
 
-    content:"";
+    transform: none !important;
 
-    position:absolute;
-
-    width:220px;
-
-    height:220px;
-
-    background:rgba(255,255,255,.08);
-
-    border-radius:50%;
-
-    top:-90px;
-
-    right:-90px;
+    animation: none !important;
 
 }
 
-.wallet-left span{
 
-    font-size:14px;
+.wallet-balance-card::before {
 
-    text-transform:uppercase;
+    content: "";
 
-    opacity:.9;
+    position: absolute;
 
-    letter-spacing:1px;
+    width: 220px;
 
-}
+    height: 220px;
 
-.wallet-left h2{
+    top: -90px;
 
-    font-size:42px;
+    right: -90px;
 
-    margin:15px 0;
+    border-radius: 50%;
 
-    font-weight:800;
+    background: rgba(255, 255, 255, .08);
 
-}
-
-.wallet-left strong{
-
-    color:#fff;
+    pointer-events: none;
 
 }
 
-.wallet-left p{
 
-    opacity:.9;
+.wallet-balance-card:hover {
 
-    max-width:430px;
+    transform: none !important;
 
 }
 
-.wallet-icon{
 
-    width:90px;
+.wallet-left {
 
-    height:90px;
+    position: relative;
 
-    border-radius:50%;
+    z-index: 1;
 
-    background:rgba(255,255,255,.18);
+}
 
-    display:flex;
+.wallet-left span {
 
-    justify-content:center;
+    font-size: 14px;
 
-    align-items:center;
+    text-transform: uppercase;
 
-    font-size:42px;
+    letter-spacing: 1px;
+
+    opacity: .9;
+
+}
+
+.wallet-left h2 {
+
+    margin: 15px 0;
+
+    font-size: 42px;
+
+    font-weight: 800;
+
+}
+
+.wallet-left strong {
+
+    color: #fff;
+
+}
+
+.wallet-left p {
+
+    max-width: 430px;
+
+    margin: 0;
+
+    opacity: .9;
+
+}
+
+.wallet-icon {
+
+    position: relative;
+
+    z-index: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 90px;
+
+    height: 90px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, .18);
+
+    font-size: 42px;
 
 }
 
@@ -325,27 +410,29 @@
     SECTION TITLE
 ==================================================*/
 
-.section-title{
+.section-title {
 
-    margin-bottom:30px;
-
-}
-
-.section-title h3{
-
-    font-size:28px;
-
-    font-weight:700;
-
-    color:#1e293b;
+    margin-bottom: 30px;
 
 }
 
-.section-title i{
+.section-title h3 {
 
-    color:#2563eb;
+    margin: 0;
 
-    margin-right:10px;
+    color: #1e293b;
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+}
+
+.section-title i {
+
+    margin-right: 10px;
+
+    color: #2563eb;
 
 }
 
@@ -354,298 +441,174 @@
     FORM LABELS
 ==================================================*/
 
-.form-label{
+.form-label {
 
-    font-weight:700;
+    display: block;
 
-    color:#334155;
+    margin-bottom: 10px;
 
-    margin-bottom:10px;
+    color: #334155;
+
+    font-weight: 700;
 
 }
 
-
-/*==================================================
-    FORM INPUTS
-==================================================*/
 
 /*==================================================
     FORM CONTROLS
 ==================================================*/
 
 .form-control,
-.form-select{
+.form-select {
 
-    border-radius:14px;
+    box-sizing: border-box;
 
-    border:1px solid #dbeafe;
+    width: 100%;
 
-    min-height:52px;
+    min-height: 52px;
 
-    padding:14px 18px;
+    padding: 14px 18px;
 
-    font-size:15px;
+    border: 1px solid #dbeafe;
 
-    transition:.3s;
+    border-radius: 14px;
 
-    background:#fff;
+    outline: none;
+
+    background: #fff;
+
+    color: #1e293b;
+
+    font-size: 15px;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background-color .2s ease;
 
 }
+
+
+/*
+    IMPORTANT:
+    Focus only changes color/shadow.
+    It does NOT change size or position.
+*/
 
 .form-control:focus,
-.form-select:focus{
+.form-select:focus {
 
-    border-color:#2563eb;
+    border-color: #2563eb;
 
-    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+    box-shadow:
+        0 0 0 .2rem rgba(37, 99, 235, .15);
+
+    transform: none !important;
 
 }
+
+
+/*
+    Prevent browser validation/focus
+    from visually changing the container.
+*/
+
+.form-control:focus-visible,
+.form-select:focus-visible {
+
+    outline: none;
+
+}
+
+
+/*==================================================
+    TEXTAREA
+==================================================*/
+
+textarea.form-control {
+
+    min-height: 110px;
+
+    resize: vertical;
+
+}
+
+
+/*==================================================
+    PAYMENT SELECT
+==================================================*/
+
+.form-select {
+
+    cursor: pointer;
+
+}
+
 
 /*==================================================
     WITHDRAW BUTTON
 ==================================================*/
 
-.withdraw-btn{
+.withdraw-btn {
 
-    width:100%;
+    position: relative;
 
-    border:none;
+    width: 100%;
 
-    border-radius:14px;
+    padding: 16px;
 
-    padding:16px;
+    border: none;
 
-    font-size:18px;
+    border-radius: 14px;
 
-    font-weight:700;
+    color: #fff;
 
-    color:white;
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
 
-    background:linear-gradient(
-        135deg,
-        #2563eb,
-        #3b82f6
-    );
+    font-size: 18px;
 
-    cursor:pointer;
+    font-weight: 700;
 
-    transition:.35s;
+    cursor: pointer;
 
-}
+    overflow: hidden;
 
-.withdraw-btn:hover{
-
-    transform:translateY(-3px);
-
-    box-shadow:0 15px 30px rgba(37,99,235,.30);
-
-}
-
-.withdraw-btn i{
-
-    margin-right:10px;
-
-}
-
-/*==================================================
-    INFO CARDS
-==================================================*/
-
-.info-card{
-
-    transition:.35s;
-
-}
-
-.info-card:hover{
-
-    transform:translateY(-6px);
-
-    box-shadow:0 20px 40px rgba(0,0,0,.12);
-
-}
-
-.info-card h4{
-
-    font-size:22px;
-
-    font-weight:700;
-
-    color:#1e293b;
-
-    margin-bottom:25px;
-
-}
-
-.info-card h4 i{
-
-    color:#2563eb;
-
-    margin-right:10px;
+    transition:
+        box-shadow .25s ease,
+        background .25s ease,
+        opacity .25s ease;
 
 }
 
 
-/*==================================================
-    PAYMENT LIST
-==================================================*/
+/*
+    No translate.
+    This prevents the button from pushing/jumping.
+*/
 
-.payment-list{
+.withdraw-btn:hover {
 
-    list-style:none;
+    transform: none !important;
 
-    padding:0;
-
-    margin:0;
-
-}
-
-.payment-list li{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:14px 0;
-
-    border-bottom:1px solid #e2e8f0;
+    box-shadow:
+        0 15px 30px rgba(37, 99, 235, .30);
 
 }
 
-.payment-list li:last-child{
+.withdraw-btn:active {
 
-    border-bottom:none;
-
-}
-
-.payment-list strong{
-
-    color:#1e293b;
-
-    font-weight:700;
+    transform: none !important;
 
 }
 
-.payment-list span{
+.withdraw-btn i {
 
-    color:#2563eb;
-
-    font-weight:600;
-
-}
-
-
-/*==================================================
-    WITHDRAW RULES
-==================================================*/
-
-.rule-list{
-
-    list-style:none;
-
-    padding:0;
-
-    margin:0;
-
-}
-
-.rule-list li{
-
-    position:relative;
-
-    padding-left:28px;
-
-    margin-bottom:16px;
-
-    color:#475569;
-
-    line-height:1.7;
-
-}
-
-.rule-list li::before{
-
-    content:"✔";
-
-    position:absolute;
-
-    left:0;
-
-    top:0;
-
-    color:#22c55e;
-
-    font-weight:bold;
-
-}
-
-
-/*==================================================
-    SECURITY CARD
-==================================================*/
-
-.security-card{
-
-    background:linear-gradient(
-        135deg,
-        #0f172a,
-        #1e293b
-    );
-
-    color:white;
-
-}
-
-.security-card h4{
-
-    color:white;
-
-}
-
-.security-card h4 i{
-
-    color:#38bdf8;
-
-}
-
-.security-card p{
-
-    margin-bottom:16px;
-
-    line-height:1.8;
-
-    color:#e2e8f0;
-
-}
-
-
-/*==================================================
-    HOVER EFFECTS
-==================================================*/
-
-.payment-list li{
-
-    transition:.3s;
-
-}
-
-.payment-list li:hover{
-
-    padding-left:8px;
-
-}
-
-.rule-list li{
-
-    transition:.3s;
-
-}
-
-.rule-list li:hover{
-
-    transform:translateX(6px);
+    margin-right: 10px;
 
 }
 
@@ -654,73 +617,340 @@
     LOADING BUTTON
 ==================================================*/
 
-.withdraw-btn.loading{
+.withdraw-btn.loading {
 
-    pointer-events:none;
+    pointer-events: none;
 
-    opacity:.8;
-
-}
-
-.withdraw-btn.loading i{
-
-    animation:spin .8s linear infinite;
+    opacity: .8;
 
 }
 
-@keyframes spin{
+.withdraw-btn.loading i {
 
-    from{
+    animation: withdrawSpin .8s linear infinite;
 
-        transform:rotate(0deg);
+}
 
+@keyframes withdrawSpin {
+
+    from {
+        transform: rotate(0deg);
     }
 
-    to{
-
-        transform:rotate(360deg);
-
+    to {
+        transform: rotate(360deg);
     }
 
 }
 
 
+/*==================================================
+    DISABLED BUTTON
+==================================================*/
 
+.withdraw-btn:disabled {
 
+    cursor: not-allowed;
 
-.errorlist{
+    opacity: .7;
 
-    list-style:none;
-
-    padding:0;
-
-    margin-top:8px;
-    margin-bottom:0;
-
-}
-
-.errorlist li{
-
-    color:#dc2626;
-
-    font-size:14px;
-
-    font-weight:600;
+    transform: none !important;
 
 }
 
 
+/*==================================================
+    INFO CARDS
+==================================================*/
 
-.withdraw-btn:disabled{
+.info-card {
 
-    cursor:not-allowed;
+    box-sizing: border-box;
 
-    opacity:.7;
+    transform: none !important;
+
+    transition:
+        box-shadow .25s ease,
+        border-color .25s ease,
+        background-color .25s ease;
 
 }
 
-.withdraw-btn.loading i{
-    animation:spin .8s linear infinite;
+.info-card:hover {
+
+    transform: none !important;
+
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, .10);
+
+}
+
+.info-card h4 {
+
+    margin-bottom: 25px;
+
+    color: #1e293b;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+}
+
+.info-card h4 i {
+
+    margin-right: 10px;
+
+    color: #2563eb;
+
+}
+
+
+/*==================================================
+    PAYMENT LIST
+==================================================*/
+
+.payment-list {
+
+    list-style: none;
+
+    padding: 0;
+
+    margin: 0;
+
+}
+
+.payment-list li {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    /*
+        Do NOT change padding on hover.
+        Changing padding causes visual movement.
+    */
+
+    transition:
+        background-color .2s ease,
+        color .2s ease;
+
+}
+
+.payment-list li:last-child {
+
+    border-bottom: none;
+
+}
+
+.payment-list li:hover {
+
+    padding-left: 0;
+
+    background: rgba(37, 99, 235, .025);
+
+}
+
+.payment-list strong {
+
+    color: #1e293b;
+
+    font-weight: 700;
+
+}
+
+.payment-list span {
+
+    color: #2563eb;
+
+    font-weight: 600;
+
+}
+
+
+/*==================================================
+    WITHDRAW RULES
+==================================================*/
+
+.rule-list {
+
+    list-style: none;
+
+    padding: 0;
+
+    margin: 0;
+
+}
+
+.rule-list li {
+
+    position: relative;
+
+    padding-left: 28px;
+
+    margin-bottom: 16px;
+
+    color: #475569;
+
+    line-height: 1.7;
+
+    transition:
+        color .2s ease;
+
+}
+
+.rule-list li::before {
+
+    content: "✔";
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    color: #22c55e;
+
+    font-weight: 700;
+
+}
+
+
+/*
+    IMPORTANT:
+    Removed translateX(6px).
+*/
+
+.rule-list li:hover {
+
+    transform: none !important;
+
+}
+
+
+/*==================================================
+    SECURITY CARD
+==================================================*/
+
+.security-card {
+
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1e293b
+        );
+
+}
+
+.security-card h4 {
+
+    color: #fff;
+
+}
+
+.security-card h4 i {
+
+    color: #38bdf8;
+
+}
+
+.security-card p {
+
+    margin-bottom: 16px;
+
+    color: #e2e8f0;
+
+    line-height: 1.8;
+
+}
+
+
+/*==================================================
+    FORM ERRORS
+==================================================*/
+
+.errorlist {
+
+    list-style: none;
+
+    padding: 0;
+
+    margin: 8px 0 0;
+
+}
+
+.errorlist li {
+
+    color: #dc2626;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+/*==================================================
+    STABLE ERROR AREA
+==================================================*/
+
+.field-error {
+
+    min-height: 20px;
+
+    margin-top: 6px;
+
+}
+
+
+/*==================================================
+    GLOBAL STABILITY
+==================================================*/
+
+/*
+    These rules make sure typing into the
+    withdraw form cannot move the card.
+*/
+
+.withdraw-page *,
+.withdraw-page *::before,
+.withdraw-page *::after {
+
+    box-sizing: border-box;
+
+}
+
+.withdraw-page .glass-card,
+.withdraw-page .wallet-balance-card,
+.withdraw-page .info-card,
+.withdraw-page .security-card {
+
+    transform: none !important;
+
+}
+
+
+/*
+    Prevent accidental animations on form containers.
+*/
+
+.withdraw-page form,
+.withdraw-page form > *,
+.withdraw-page .row,
+.withdraw-page .col,
+.withdraw-page [class*="col-"] {
+
+    transform: none;
+
 }
 
 
@@ -728,35 +958,105 @@
     RESPONSIVE
 ==================================================*/
 
-@media (max-width:768px){
+@media (max-width: 992px) {
 
-    .withdraw-header{
+    .withdraw-header {
 
-        flex-direction:column;
+        flex-direction: column;
 
-        text-align:center;
-
-    }
-
-    .withdraw-header h1{
-
-        font-size:34px;
+        text-align: center;
 
     }
 
-    .wallet-balance-card{
+    .wallet-balance-card {
 
-        flex-direction:column;
+        flex-direction: column;
 
-        text-align:center;
+        text-align: center;
 
-        gap:20px;
+        gap: 25px;
 
     }
 
-    .glass-card{
+    .wallet-left p {
 
-        padding:25px;
+        max-width: 100%;
+
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .withdraw-page {
+
+        padding: 90px 0 50px;
+
+    }
+
+    .withdraw-header h1 {
+
+        font-size: 34px;
+
+    }
+
+    .glass-card {
+
+        padding: 25px;
+
+    }
+
+    .wallet-balance-card {
+
+        padding: 30px;
+
+    }
+
+    .wallet-left h2 {
+
+        font-size: 32px;
+
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .withdraw-avatar img {
+
+        width: 70px;
+
+        height: 70px;
+
+    }
+
+    .wallet-icon {
+
+        width: 70px;
+
+        height: 70px;
+
+        font-size: 30px;
+
+    }
+
+    .withdraw-btn {
+
+        padding: 14px;
+
+        font-size: 16px;
+
+    }
+
+    .payment-list li {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 6px;
 
     }
 

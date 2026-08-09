@@ -1,6 +1,7 @@
 /* =========================================================
    TRUSTYSHOP WALLET DASHBOARD
    MODERN • CLEAN • FLUENT • RESPONSIVE
+   STABLE BALANCE CARD
    ========================================================= */
 
 
@@ -394,6 +395,8 @@ body {
 
 /* =========================================================
    WALLET BALANCE CARD
+   IMPORTANT:
+   COMPLETELY STABLE — NO HOVER MOVEMENT
    ========================================================= */
 
 .wallet-card {
@@ -427,25 +430,62 @@ body {
     box-shadow:
         0 25px 60px rgba(21,101,192,.20);
 
+    /*
+       IMPORTANT:
+       Do not animate the balance container.
+    */
+
+    transform: none !important;
+
+    animation: none !important;
+
     transition:
-        transform .4s ease,
-        box-shadow .4s ease;
+        box-shadow .25s ease;
 
 }
 
 
+/* =========================================================
+   BALANCE CARD HOVER
+   NO MOVEMENT
+   ========================================================= */
+
 .wallet-card:hover {
 
-    transform: translateY(-3px);
+    /*
+       Prevent the card from jumping upward.
+    */
+
+    transform: none !important;
+
+    animation: none !important;
+
+    /*
+       Keep only a very subtle shadow change.
+    */
 
     box-shadow:
-        0 30px 70px rgba(21,101,192,.28);
+        0 25px 60px rgba(21,101,192,.20);
+
+}
+
+
+/* =========================================================
+   DISABLE TRANSFORM FROM TOUCH / FOCUS
+   ========================================================= */
+
+.wallet-card:active,
+.wallet-card:focus,
+.wallet-card:focus-visible {
+
+    transform: none !important;
 
 }
 
 
 /* =========================================================
    WALLET SHINE
+   STABLE VERSION
    ========================================================= */
 
 .wallet-card::before {
@@ -463,20 +503,33 @@ body {
     height: 500px;
 
     background:
-        rgba(255,255,255,.15);
+        rgba(255,255,255,.10);
 
     transform: rotate(30deg);
 
-    transition: 1s ease;
+    /*
+       No transition.
+       No movement when touching the card.
+    */
+
+    transition: none;
 
     pointer-events: none;
 
 }
 
 
+/*
+   IMPORTANT:
+   Do NOT move the shine on hover.
+*/
+
+
 .wallet-card:hover::before {
 
-    left: 120%;
+    left: -220px;
+
+    transform: rotate(30deg);
 
 }
 
@@ -559,6 +612,58 @@ body {
 }
 
 
+/* =========================================================
+   BALANCE COUNTER
+   IMPORTANT:
+   NO SCALE
+   NO TRANSITION
+   NO ANIMATION
+   ========================================================= */
+
+#balanceCounter {
+
+    display: inline-block;
+
+    /*
+       Keep the number completely stable.
+    */
+
+    transform: none !important;
+
+    transition: none !important;
+
+    animation: none !important;
+
+}
+
+
+/*
+   IMPORTANT:
+   Remove the old:
+
+   .wallet-card:hover #balanceCounter {
+       transform: scale(1.04);
+   }
+
+   because this makes the amount visually move.
+*/
+
+
+.wallet-card:hover #balanceCounter {
+
+    transform: none !important;
+
+    transition: none !important;
+
+    animation: none !important;
+
+}
+
+
+/* =========================================================
+   WALLET DESCRIPTION
+   ========================================================= */
+
 .wallet-card-left p {
 
     max-width: 470px;
@@ -570,27 +675,6 @@ body {
     font-size: 15px;
 
     line-height: 1.8;
-
-}
-
-
-/* =========================================================
-   BALANCE COUNTER
-   ========================================================= */
-
-#balanceCounter {
-
-    display: inline-block;
-
-    transition:
-        transform .4s ease;
-
-}
-
-
-.wallet-card:hover #balanceCounter {
-
-    transform: scale(1.04);
 
 }
 
@@ -688,6 +772,7 @@ body {
 
 /* =========================================================
    WALLET LOGO
+   STABLE VERSION
    ========================================================= */
 
 .wallet-logo {
@@ -713,8 +798,13 @@ body {
 
     -webkit-backdrop-filter: blur(12px);
 
-    animation:
-        walletPulse 3s ease-in-out infinite;
+    /*
+       Removed walletPulse animation.
+       This prevents unnecessary movement
+       inside the balance card.
+    */
+
+    animation: none !important;
 
 }
 
@@ -728,26 +818,14 @@ body {
 }
 
 
+/* =========================================================
+   REMOVE OLD WALLET PULSE
+   ========================================================= */
+
 @keyframes walletPulse {
 
-    0% {
-
-        transform: scale(1);
-
-        box-shadow:
-            0 0 0 rgba(255,255,255,0);
-
-    }
-
-    50% {
-
-        transform: scale(1.08);
-
-        box-shadow:
-            0 0 30px rgba(255,255,255,.35);
-
-    }
-
+    0%,
+    50%,
     100% {
 
         transform: scale(1);
@@ -1931,7 +2009,7 @@ body {
 
 
 /* =========================================================
-   TRANSACTION TABLE WRAPPER
+   TRANSACTION TABLE
    ========================================================= */
 
 .transaction-table-wrapper {
@@ -1942,10 +2020,6 @@ body {
 
 }
 
-
-/* =========================================================
-   TRANSACTION TABLE
-   ========================================================= */
 
 .transaction-table {
 
@@ -2422,7 +2496,7 @@ body {
 
 
 /* =========================================================
-   OLD / OPTIONAL WALLET TIP
+   WALLET TIP
    ========================================================= */
 
 .wallet-tip {
@@ -3414,6 +3488,61 @@ body {
     position: relative;
 
     overflow: hidden;
+
+}
+
+
+/* =========================================================
+   FINAL BALANCE CARD SAFETY OVERRIDE
+   ========================================================= */
+
+/*
+   These rules are intentionally at the bottom.
+
+   They guarantee that another selector,
+   Bootstrap rule, hover rule, or JS-added class
+   cannot visually move the Available Balance card.
+*/
+
+.wallet-dashboard .wallet-card {
+
+    transform: none !important;
+
+    animation: none !important;
+
+}
+
+
+.wallet-dashboard .wallet-card:hover,
+.wallet-dashboard .wallet-card:active,
+.wallet-dashboard .wallet-card:focus,
+.wallet-dashboard .wallet-card:focus-visible {
+
+    transform: none !important;
+
+    animation: none !important;
+
+}
+
+
+.wallet-dashboard #balanceCounter {
+
+    transform: none !important;
+
+    animation: none !important;
+
+    transition: none !important;
+
+}
+
+
+.wallet-dashboard .wallet-card:hover #balanceCounter {
+
+    transform: none !important;
+
+    animation: none !important;
+
+    transition: none !important;
 
 }
 

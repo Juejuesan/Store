@@ -37,8 +37,7 @@ Wallet Dashboard
                 <h1>
 
                     Welcome,
-                    {{ request.user.first_name|default:request.user.username }}
-                    👋
+                    {{ request.user.profile.fullName }}                    👋
 
                 </h1>
 
@@ -83,8 +82,6 @@ Wallet Dashboard
 
                 <h2>
 
-                    MMK
-
                     <strong
                         id="balanceCounter"
                         data-balance="{{ wallet.balance }}">
@@ -92,6 +89,8 @@ Wallet Dashboard
                         {{ wallet.balance }}
 
                     </strong>
+
+                     MMK
 
                 </h2>
 

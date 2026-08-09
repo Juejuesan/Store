@@ -1948,4 +1948,244 @@ footer a:hover{
 .seller-posts .row{
     justify-content:center;
 }
+/* =========================================================
+   TRUSTYSHOP MESSAGE ALERT
+   CENTER • 2 SECOND AUTO CLOSE
+========================================================= */
 
+.message-overlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(2, 8, 23, 0.55);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    z-index: 999999;
+
+    opacity: 1;
+
+    transition: opacity 0.25s ease;
+}
+
+
+/* =========================================================
+   MESSAGE CARD
+========================================================= */
+
+.message-modal {
+    width: min(430px, 90vw);
+
+    padding: 40px 32px 28px;
+
+    text-align: center;
+
+    background: rgba(15, 31, 58, 0.96);
+
+    border: 1px solid rgba(56, 189, 248, 0.45);
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.45),
+        0 0 40px rgba(14, 165, 233, 0.15);
+
+    animation: messageAppear 0.35s ease forwards;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.message-icon {
+    width: 68px;
+    height: 68px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 28px;
+
+    color: white;
+}
+
+
+/* SUCCESS */
+
+.message-icon.success {
+    background: linear-gradient(
+        135deg,
+        #22c55e,
+        #16a34a
+    );
+
+    box-shadow:
+        0 0 30px rgba(34, 197, 94, 0.3);
+}
+
+
+/* ERROR */
+
+.message-icon.error {
+    background: linear-gradient(
+        135deg,
+        #ef4444,
+        #dc2626
+    );
+
+    box-shadow:
+        0 0 30px rgba(239, 68, 68, 0.3);
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.message-modal h3 {
+    margin: 0 0 10px;
+
+    color: white;
+
+    font-size: 25px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.message-modal p {
+    margin: 0;
+
+    color: #b8c7dc;
+
+    font-size: 16px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   PROGRESS BAR
+========================================================= */
+
+.message-progress {
+    width: 100%;
+    height: 4px;
+
+    margin-top: 25px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.12);
+}
+
+
+.message-progress span {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        #22c55e,
+        #38bdf8
+    );
+
+    transform-origin: left;
+
+    animation: messageProgress 2s linear forwards;
+}
+
+
+/* =========================================================
+   CLOSING
+========================================================= */
+
+.message-overlay.message-closing {
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes messageAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+@keyframes messageProgress {
+
+    from {
+        transform: scaleX(1);
+    }
+
+    to {
+        transform: scaleX(0);
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .message-modal {
+        width: 100%;
+        padding: 32px 24px 25px;
+    }
+
+    .message-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+
+    .message-modal h3 {
+        font-size: 22px;
+    }
+
+    .message-modal p {
+        font-size: 15px;
+    }
+
+}

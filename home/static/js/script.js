@@ -1,663 +1,886 @@
 // =======================================================
-// Trusty Shop JavaScript
+// TRUSTY SHOP JAVASCRIPT
 // =======================================================
 
-// =======================================================
-// 3. NAVBAR SCROLL EFFECT
-// =======================================================
+// document.addEventListener("DOMContentLoaded", function () {
+//
+//
+//     // ===================================================
+//     // 1. NAVBAR SCROLL EFFECT
+//     // ===================================================
+//
+//     const navbar =
+//         document.querySelector(".cute-navbar");
+//
+//     if (navbar) {
+//
+//         window.addEventListener("scroll", function () {
+//
+//             if (window.scrollY > 50) {
+//
+//                 navbar.classList.add("scrolled");
+//
+//             } else {
+//
+//                 navbar.classList.remove("scrolled");
+//
+//             }
+//
+//         });
+//
+//     }
+//
+
+    // ===================================================
+    // 2. SEARCH
+    // ===================================================
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const suggestionButtons =
+        document.querySelectorAll(
+            ".search-suggestions button"
+        );
 
 
-const navbar = document.querySelector(".cute-navbar");
+    // ---------------------------------------------------
+    // TRENDING SEARCH BUTTONS
+    // ---------------------------------------------------
 
-const searchInput = document.getElementById("searchInput");
+    suggestionButtons.forEach(function (button) {
 
-window.addEventListener("scroll",()=>{
+        button.addEventListener("click", function () {
 
+            if (!searchInput) {
+                return;
+            }
 
-    if(window.scrollY > 50){
+            searchInput.value =
+                button.innerText.trim();
 
+            searchInput.focus();
 
-        navbar.classList.add("scrolled");
-
-
-    }else{
-
-
-        navbar.classList.remove("scrolled");
-
-
-    }
-
-
-});
-
-
-
-
-
-
-// =======================================================
-// 4. NAVBAR ACTIVE LINK ANIMATION
-// =======================================================
-
-
-// =======================================================
-// 5. TRENDING SEARCH BUTTON
-// =======================================================
-
-
-const suggestionButtons =
-document.querySelectorAll(".search-suggestions button");
-
-
-
-suggestionButtons.forEach(button=>{
-
-
-    button.addEventListener("click",()=>{
-
-
-        searchInput.value =
-        button.innerText;
-
-
-
-        searchInput.focus();
-
-
+        });
 
     });
 
 
-});
+    // ---------------------------------------------------
+    // SEARCH BUTTON
+    // ---------------------------------------------------
+
+    const searchButton =
+        document.querySelector(
+            ".modern-search button"
+        );
+
+    if (searchButton) {
+
+        searchButton.addEventListener(
+            "click",
+            function () {
+
+                if (!searchInput) {
+                    return;
+                }
+
+                const value =
+                    searchInput.value.trim();
+
+                if (value !== "") {
+
+                    alert(
+                        "Searching for: " + value
+                    );
+
+                } else {
+
+                    alert(
+                        "Please enter product name"
+                    );
+
+                }
+
+            }
+        );
+
+    }
 
 
+    // ===================================================
+    // 3. SCROLL TO TOP BUTTON
+    // ===================================================
+
+    const topButton =
+        document.createElement("button");
+
+    topButton.className = "top-btn";
+
+    topButton.innerHTML =
+        '<i class="fa-solid fa-arrow-up"></i>';
+
+    document.body.appendChild(topButton);
 
 
-// =======================================================
-// 7. SEARCH BUTTON ACTION
-// =======================================================
+    window.addEventListener("scroll", function () {
 
+        if (window.scrollY > 500) {
 
-const searchButton =
-document.querySelector(".modern-search button");
+            topButton.style.display = "flex";
 
+        } else {
 
-
-if(searchButton){
-
-
-    searchButton.addEventListener("click",()=>{
-
-
-        let value =
-        searchInput.value.trim();
-
-
-
-        if(value !== ""){
-
-
-            alert("Searching for: " + value);
-
-
-
-        }else{
-
-
-            alert("Please enter product name");
-
-
+            topButton.style.display = "none";
 
         }
 
-
-
     });
 
 
+    topButton.addEventListener(
+        "click",
+        function () {
 
-}
+            window.scrollTo({
 
+                top: 0,
 
+                behavior: "smooth"
 
+            });
 
-
-
-
-// =======================================================
-// 8. SCROLL TO TOP BUTTON
-// =======================================================
-
-
-const topButton =
-document.createElement("button");
-
-
-
-topButton.className="top-btn";
-
-
-
-topButton.innerHTML =
-'<i class="fa-solid fa-arrow-up"></i>';
-
-
-
-document.body.appendChild(topButton);
-
-
-
-
-
-window.addEventListener("scroll",()=>{
-
-
-    if(window.scrollY > 500){
-
-
-        topButton.style.display="flex";
-
-
-    }else{
-
-
-        topButton.style.display="none";
-
-
-    }
-
-
-});
-
-
-
-
-
-topButton.addEventListener("click",()=>{
-
-
-    window.scrollTo({
-
-        top:0,
-
-        behavior:"smooth"
-
-    });
-
-
-
-});
-
-
-
-
-
-
-
-// =======================================================
-// 9. LOGO CLICK ANIMATION
-// =======================================================
-
-
-const logo =
-document.querySelector(".logo-circle");
-
-
-
-if(logo){
-
-
-    logo.addEventListener("click",()=>{
-
-
-        logo.classList.add("logo-click");
-
-
-
-        setTimeout(()=>{
-
-
-            logo.classList.remove("logo-click");
-
-
-        },500);
-
-
-
-    });
-
-
-
-}
-
-
-
-// =======================================================
-// 12. CUSTOM CURSOR ANIMATION
-// =======================================================
-
-
-const cursor =
-document.querySelector(".cursor");
-
-
-const follower =
-document.querySelector(".cursor-follower");
-
-
-
-if(cursor && follower){
-
-
-
-    document.addEventListener("mousemove",e=>{
-
-
-        cursor.style.left =
-        e.clientX + "px";
-
-
-        cursor.style.top =
-        e.clientY + "px";
-
-
-
-        setTimeout(()=>{
-
-
-            follower.style.left =
-            e.clientX + "px";
-
-
-
-            follower.style.top =
-            e.clientY + "px";
-
-
-
-        },80);
-
-
-
-    });
-
-
-
-
-
-
-
-    const hoverElements =
-    document.querySelectorAll(
-    "a, button, .modern-product, .category-card, .nav-link"
+        }
     );
 
 
+    // ===================================================
+    // 4. LOGO CLICK ANIMATION
+    // ===================================================
 
-    hoverElements.forEach(element=>{
+    const logo =
+        document.querySelector(".logo-circle");
 
+    if (logo) {
 
-        element.addEventListener("mouseenter",()=>{
+        logo.addEventListener(
+            "click",
+            function () {
 
+                logo.classList.add(
+                    "logo-click"
+                );
 
-            follower.style.width="70px";
+                setTimeout(function () {
 
-            follower.style.height="70px";
+                    logo.classList.remove(
+                        "logo-click"
+                    );
 
-            follower.style.background=
-            "rgba(13,110,253,0.2)";
+                }, 500);
 
-
-        });
-
-
-
-
-        element.addEventListener("mouseleave",()=>{
-
-
-            follower.style.width="40px";
-
-            follower.style.height="40px";
-
-            follower.style.background="transparent";
-
-
-        });
-
-
-
-    });
-
-
-
-}
-
-/*Posts section js*/
-/*=====================================================
-            TRUSTY SHOP MARKETPLACE
-======================================================*/
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    /*==========================================
-            SAVE POST
-    ==========================================*/
-
-    window.savePost = function(button){
-
-        const box = button.nextElementSibling;
-
-        document.querySelectorAll(".save-box").forEach(item=>{
-
-            if(item!==box){
-                item.classList.remove("active");
             }
+        );
 
-        });
+    }
+
+
+    // ===================================================
+    // 5. CUSTOM CURSOR
+    // ===================================================
+
+    const cursor =
+        document.querySelector(".cursor");
+
+    const follower =
+        document.querySelector(
+            ".cursor-follower"
+        );
+
+
+    if (cursor && follower) {
+
+        document.addEventListener(
+            "mousemove",
+            function (e) {
+
+                cursor.style.left =
+                    e.clientX + "px";
+
+                cursor.style.top =
+                    e.clientY + "px";
+
+
+                setTimeout(function () {
+
+                    follower.style.left =
+                        e.clientX + "px";
+
+                    follower.style.top =
+                        e.clientY + "px";
+
+                }, 80);
+
+            }
+        );
+
+
+        const hoverElements =
+            document.querySelectorAll(
+                "a, button, .modern-product, .category-card, .nav-link"
+            );
+
+
+        hoverElements.forEach(
+            function (element) {
+
+                element.addEventListener(
+                    "mouseenter",
+                    function () {
+
+                        follower.style.width =
+                            "70px";
+
+                        follower.style.height =
+                            "70px";
+
+                        follower.style.background =
+                            "rgba(13,110,253,0.2)";
+
+                    }
+                );
+
+
+                element.addEventListener(
+                    "mouseleave",
+                    function () {
+
+                        follower.style.width =
+                            "40px";
+
+                        follower.style.height =
+                            "40px";
+
+                        follower.style.background =
+                            "transparent";
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    // ===================================================
+    // 6. TRUSTY SHOP MESSAGE ALERT
+    // ===================================================
+    // APPEARS IMMEDIATELY
+    // DISAPPEARS AFTER 2 SECONDS
+    // ===================================================
+
+    const messageOverlay =
+        document.getElementById("messageOverlay");
+
+
+    if (messageOverlay) {
+
+        // Make sure the alert is visible immediately.
+        messageOverlay.style.display = "flex";
+        messageOverlay.style.opacity = "1";
+
+
+        // ------------------------------------------------
+        // WAIT 2 SECONDS
+        // ------------------------------------------------
+
+        setTimeout(function () {
+
+            // Start CSS closing animation
+            messageOverlay.classList.add(
+                "message-closing"
+            );
+
+
+            // ------------------------------------------------
+            // REMOVE AFTER FADE ANIMATION
+            // ------------------------------------------------
+
+            setTimeout(function () {
+
+                if (messageOverlay) {
+
+                    messageOverlay.remove();
+
+                }
+
+            }, 450);
+
+
+            // ------------------------------------------------
+            // EXTRA FALLBACK
+            // ------------------------------------------------
+
+            setTimeout(function () {
+
+                if (messageOverlay) {
+
+                    messageOverlay.style.display =
+                        "none";
+
+                }
+
+            }, 500);
+
+
+        }, 2000);
+
+    }
+
+
+    // ===================================================
+    // 7. SAVE POST
+    // ===================================================
+
+    window.savePost = function (button) {
+
+        const box =
+            button.nextElementSibling;
+
+
+        if (!box) {
+            return;
+        }
+
+
+        document
+            .querySelectorAll(".save-box")
+            .forEach(function (item) {
+
+                if (item !== box) {
+
+                    item.classList.remove(
+                        "active"
+                    );
+
+                }
+
+            });
+
 
         box.classList.toggle("active");
 
-    }
+    };
 
-    document.addEventListener("click",(e)=>{
 
-        if(!e.target.closest(".seller-right")){
-            document.querySelectorAll(".save-box")
-            .forEach(box=>box.classList.remove("active"));
-        }
+    // ---------------------------------------------------
+    // CLOSE SAVE MENU
+    // ---------------------------------------------------
 
-    });
+    document.addEventListener(
+        "click",
+        function (e) {
 
+            if (!e.target.closest(".seller-right")) {
 
+                document
+                    .querySelectorAll(".save-box")
+                    .forEach(function (box) {
 
+                        box.classList.remove(
+                            "active"
+                        );
 
-    /*==========================================
-              CARD HOVER FLOAT
-    ==========================================*/
-
-    document.querySelectorAll(".seller-card").forEach(card=>{
-
-        card.addEventListener("mousemove",(e)=>{
-
-            const rect=card.getBoundingClientRect();
-
-            const x=e.clientX-rect.left;
-            const y=e.clientY-rect.top;
-
-            const rotateY=(x-rect.width/2)/18;
-            const rotateX=(rect.height/2-y)/18;
-
-            card.style.transform=
-            `perspective(900px)
-            rotateX(${rotateX}deg)
-            rotateY(${rotateY}deg)
-            translateY(-10px)`;
-
-        });
-
-        card.addEventListener("mouseleave",()=>{
-
-            card.style.transform="";
-
-        });
-
-    });
-
-
-
-
-    /*==========================================
-            BUTTON RIPPLE
-    ==========================================*/
-
-    document.querySelectorAll(".cart-btn,.detail-btn")
-    .forEach(button=>{
-
-        button.addEventListener("click",function(e){
-
-            const ripple=document.createElement("span");
-
-            ripple.className="ripple";
-
-            const rect=this.getBoundingClientRect();
-
-            ripple.style.left=e.clientX-rect.left+"px";
-            ripple.style.top=e.clientY-rect.top+"px";
-
-            this.appendChild(ripple);
-
-            setTimeout(()=>{
-
-                ripple.remove();
-
-            },700);
-
-        });
-
-    });
-
-
-
-
-    /*==========================================
-          ADD TO CART ANIMATION
-    ==========================================*/
-document.querySelectorAll(".cart-btn")
-.forEach(btn=>{
-
-    btn.addEventListener("click",function(){
-
-        // Change button
-        const original=this.innerHTML;
-
-        this.innerHTML=
-        `<i class="fa-solid fa-check"></i> Added`;
-
-        this.style.background="#43A047";
-
-
-        // -----------------------------
-        // UPDATE CART BADGE
-        // -----------------------------
-
-        const cartCount=document.querySelector(".cart-count");
-        const cartLink=document.querySelector(".cart-link");
-
-        let count=parseInt(cartCount.textContent);
-
-        count++;
-
-        cartCount.textContent=count;
-
-        cartCount.classList.add("cart-pop");
-        cartLink.classList.add("shake");
-
-        setTimeout(()=>{
-
-            cartCount.classList.remove("cart-pop");
-            cartLink.classList.remove("shake");
-
-        },500);
-
-
-        // -----------------------------
-        // SHOW TOAST
-        // -----------------------------
-
-        const toast=document.getElementById("cartToast");
-
-        toast.classList.add("show");
-
-        setTimeout(()=>{
-
-            toast.classList.remove("show");
-
-        },2200);
-
-
-        // -----------------------------
-        // Restore Button
-        // -----------------------------
-
-
-
-            setTimeout(()=>{
-
-                this.innerHTML=original;
-
-                this.style.background="";
-
-            },1800);
-
-        });
-
-    });
-
-
-
-
-    /*==========================================
-            VIEW DETAIL EFFECT
-    ==========================================*/
-
-    document.querySelectorAll(".detail-btn")
-    .forEach(btn=>{
-
-        btn.addEventListener("click",function(){
-
-            const card=this.closest(".seller-card");
-
-            card.animate([
-
-                {transform:"scale(1)"},
-                {transform:"scale(.97)"},
-                {transform:"scale(1)"}
-
-            ],{
-
-                duration:350
-
-            });
-
-        });
-
-    });
-
-
-
-
-    /*==========================================
-            SCROLL REVEAL
-    ==========================================*/
-
-    const observer=new IntersectionObserver(entries=>{
-
-        entries.forEach(entry=>{
-
-            if(entry.isIntersecting){
-
-                entry.target.classList.add("show");
+                    });
 
             }
 
+        }
+    );
+
+
+    // ===================================================
+    // 8. SELLER CARD HOVER
+    // ===================================================
+
+    document
+        .querySelectorAll(".seller-card")
+        .forEach(function (card) {
+
+            card.addEventListener(
+                "mousemove",
+                function (e) {
+
+                    const rect =
+                        card.getBoundingClientRect();
+
+
+                    const x =
+                        e.clientX - rect.left;
+
+                    const y =
+                        e.clientY - rect.top;
+
+
+                    const rotateY =
+                        (x - rect.width / 2) / 18;
+
+                    const rotateX =
+                        (rect.height / 2 - y) / 18;
+
+
+                    card.style.transform =
+                        `perspective(900px)
+                         rotateX(${rotateX}deg)
+                         rotateY(${rotateY}deg)
+                         translateY(-10px)`;
+
+                }
+            );
+
+
+            card.addEventListener(
+                "mouseleave",
+                function () {
+
+                    card.style.transform = "";
+
+                }
+            );
+
         });
 
-    },{
 
-        threshold:.15
+    // ===================================================
+    // 9. BUTTON RIPPLE
+    // ===================================================
 
-    });
+    document
+        .querySelectorAll(
+            ".cart-btn, .detail-btn"
+        )
+        .forEach(function (button) {
 
-    document.querySelectorAll(".seller-card")
-    .forEach(card=>{
+            button.addEventListener(
+                "click",
+                function (e) {
 
-        card.classList.add("hidden");
-
-        observer.observe(card);
-
-    });
+                    const ripple =
+                        document.createElement("span");
 
 
+                    ripple.className =
+                        "ripple";
 
 
-    /*==========================================
-          FLOATING BACKGROUND
-    ==========================================*/
+                    const rect =
+                        this.getBoundingClientRect();
 
-    const bg=document.getElementById("marketParticles");
 
-    for(let i=0;i<35;i++){
+                    ripple.style.left =
+                        e.clientX -
+                        rect.left +
+                        "px";
 
-        const circle=document.createElement("span");
 
-        circle.className="floating-circle";
+                    ripple.style.top =
+                        e.clientY -
+                        rect.top +
+                        "px";
 
-        circle.style.left=Math.random()*100+"%";
 
-        circle.style.animationDuration=
-        8+Math.random()*8+"s";
+                    this.appendChild(ripple);
 
-        circle.style.animationDelay=
-        Math.random()*5+"s";
 
-        circle.style.width=
-        8+Math.random()*20+"px";
+                    setTimeout(function () {
 
-        circle.style.height=
-        circle.style.width;
+                        ripple.remove();
 
-        bg.appendChild(circle);
+                    }, 700);
+
+                }
+            );
+
+        });
+
+
+    // ===================================================
+    // 10. ADD TO CART
+    // ===================================================
+
+    document
+        .querySelectorAll(".cart-btn")
+        .forEach(function (btn) {
+
+            btn.addEventListener(
+                "click",
+                function () {
+
+                    const original =
+                        this.innerHTML;
+
+
+                    // ------------------------------------------------
+                    // CHANGE BUTTON
+                    // ------------------------------------------------
+
+                    this.innerHTML =
+                        '<i class="fa-solid fa-check"></i> Added';
+
+
+                    this.style.background =
+                        "#43A047";
+
+
+                    // ------------------------------------------------
+                    // CART BADGE
+                    // ------------------------------------------------
+
+                    const cartCount =
+                        document.querySelector(
+                            ".cart-count"
+                        );
+
+
+                    const cartLink =
+                        document.querySelector(
+                            ".cart-link"
+                        );
+
+
+                    if (cartCount) {
+
+                        let count =
+                            parseInt(
+                                cartCount.textContent
+                            ) || 0;
+
+
+                        count++;
+
+
+                        cartCount.textContent =
+                            count;
+
+
+                        cartCount.classList.add(
+                            "cart-pop"
+                        );
+
+                    }
+
+
+                    if (cartLink) {
+
+                        cartLink.classList.add(
+                            "shake"
+                        );
+
+                    }
+
+
+                    setTimeout(function () {
+
+                        if (cartCount) {
+
+                            cartCount.classList.remove(
+                                "cart-pop"
+                            );
+
+                        }
+
+
+                        if (cartLink) {
+
+                            cartLink.classList.remove(
+                                "shake"
+                            );
+
+                        }
+
+                    }, 500);
+
+
+                    // ------------------------------------------------
+                    // CART TOAST
+                    // ------------------------------------------------
+
+                    const toast =
+                        document.getElementById(
+                            "cartToast"
+                        );
+
+
+                    if (toast) {
+
+                        toast.classList.add(
+                            "show"
+                        );
+
+
+                        setTimeout(function () {
+
+                            toast.classList.remove(
+                                "show"
+                            );
+
+                        }, 2200);
+
+                    }
+
+
+                    // ------------------------------------------------
+                    // RESTORE BUTTON
+                    // ------------------------------------------------
+
+                    setTimeout(function () {
+
+                        btn.innerHTML =
+                            original;
+
+
+                        btn.style.background =
+                            "";
+
+                    }, 1800);
+
+                }
+            );
+
+        });
+
+
+    // ===================================================
+    // 11. VIEW DETAIL EFFECT
+    // ===================================================
+
+    document
+        .querySelectorAll(".detail-btn")
+        .forEach(function (btn) {
+
+            btn.addEventListener(
+                "click",
+                function () {
+
+                    const card =
+                        this.closest(
+                            ".seller-card"
+                        );
+
+
+                    if (!card) {
+                        return;
+                    }
+
+
+                    card.animate(
+
+                        [
+                            {
+                                transform:
+                                    "scale(1)"
+                            },
+
+                            {
+                                transform:
+                                    "scale(.97)"
+                            },
+
+                            {
+                                transform:
+                                    "scale(1)"
+                            }
+                        ],
+
+                        {
+                            duration: 350
+                        }
+
+                    );
+
+                }
+            );
+
+        });
+
+
+    // ===================================================
+    // 12. SCROLL REVEAL
+    // ===================================================
+
+    const cards =
+        document.querySelectorAll(
+            ".seller-card"
+        );
+
+
+    if (cards.length > 0) {
+
+        const observer =
+            new IntersectionObserver(
+                function (entries) {
+
+                    entries.forEach(
+                        function (entry) {
+
+                            if (
+                                entry.isIntersecting
+                            ) {
+
+                                entry.target.classList.add(
+                                    "show"
+                                );
+
+                            }
+
+                        }
+                    );
+
+                },
+                {
+                    threshold: 0.15
+                }
+            );
+
+
+        cards.forEach(
+            function (card) {
+
+                card.classList.add(
+                    "hidden"
+                );
+
+                observer.observe(card);
+
+            }
+        );
 
     }
 
 
+    // ===================================================
+    // 13. FLOATING BACKGROUND
+    // ===================================================
+
+    const bg =
+        document.getElementById(
+            "marketParticles"
+        );
 
 
-    /*==========================================
-            MOUSE GLOW
-    ==========================================*/
+    if (bg) {
 
-    const glow=document.getElementById("mouseGlow");
+        for (let i = 0; i < 35; i++) {
 
-    document.addEventListener("mousemove",(e)=>{
-
-        glow.style.left=e.clientX+"px";
-
-        glow.style.top=e.clientY+"px";
-
-    });
+            const circle =
+                document.createElement("span");
 
 
+            circle.className =
+                "floating-circle";
 
 
-    /*==========================================
-            FLOATING CARDS
-    ==========================================*/
+            circle.style.left =
+                Math.random() * 100 + "%";
 
-    document.querySelectorAll(".seller-card")
-    .forEach((card,index)=>{
 
-        setInterval(()=>{
+            circle.style.animationDuration =
+                8 + Math.random() * 8 + "s";
 
-            card.animate([
 
-                {transform:"translateY(0px)"},
-                {transform:"translateY(-6px)"},
-                {transform:"translateY(0px)"}
+            circle.style.animationDelay =
+                Math.random() * 5 + "s";
 
-            ],{
 
-                duration:4000+index*400,
+            circle.style.width =
+                8 + Math.random() * 20 + "px";
 
-                iterations:1
 
-            });
+            circle.style.height =
+                circle.style.width;
 
-        },4500+index*600);
 
-    });
+            bg.appendChild(circle);
 
-});
-/*End*/
+        }
+
+    }
+
+
+    // ===================================================
+    // 14. MOUSE GLOW
+    // ===================================================
+
+    const glow =
+        document.getElementById(
+            "mouseGlow"
+        );
+
+
+    if (glow) {
+
+        document.addEventListener(
+            "mousemove",
+            function (e) {
+
+                glow.style.left =
+                    e.clientX + "px";
+
+                glow.style.top =
+                    e.clientY + "px";
+
+            }
+        );
+
+    }
+
+
+    // ===================================================
+    // 15. FLOATING SELLER CARDS
+    // ===================================================
+
+    document
+        .querySelectorAll(".seller-card")
+        .forEach(function (card, index) {
+
+            setInterval(
+                function () {
+
+                    card.animate(
+
+                        [
+                            {
+                                transform:
+                                    "translateY(0px)"
+                            },
+
+                            {
+                                transform:
+                                    "translateY(-6px)"
+                            },
+
+                            {
+                                transform:
+                                    "translateY(0px)"
+                            }
+                        ],
+
+                        {
+                            duration:
+                                4000 +
+                                index * 400,
+
+                            iterations: 1
+                        }
+
+                    );
+
+                },
+
+                4500 +
+                index * 600
+
+            );
+
+        });

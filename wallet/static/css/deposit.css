@@ -1,23 +1,30 @@
 /*==================================================
+    TRUSTYSHOP DEPOSIT PAGE
+    MODERN • STABLE • CLEAN • RESPONSIVE
+==================================================*/
+
+
+/*==================================================
     DEPOSIT PAGE
 ==================================================*/
 
-.deposit-page{
+.deposit-page {
 
-    position:relative;
+    position: relative;
 
-    overflow:hidden;
+    min-height: 100vh;
 
-    min-height:100vh;
+    padding: 120px 0 80px;
 
-    padding:120px 0 80px;
+    overflow-x: hidden;
 
-    background:linear-gradient(
-        135deg,
-        #eef5ff 0%,
-        #f7fbff 40%,
-        #ffffff 100%
-    );
+    background:
+        linear-gradient(
+            135deg,
+            #eef5ff 0%,
+            #f7fbff 40%,
+            #ffffff 100%
+        );
 
 }
 
@@ -26,85 +33,99 @@
     BACKGROUND CIRCLES
 ==================================================*/
 
-.deposit-bg-circle{
+.deposit-bg-circle {
 
-    position:absolute;
+    position: absolute;
 
-    border-radius:50%;
+    border-radius: 50%;
 
-    filter:blur(90px);
+    filter: blur(90px);
 
-    opacity:.25;
+    opacity: .25;
 
-    animation:floatCircle 12s ease-in-out infinite;
+    pointer-events: none;
 
-}
+    z-index: 0;
 
-.bg1{
-
-    width:320px;
-
-    height:320px;
-
-    background:#4f8cff;
-
-    top:-120px;
-
-    left:-120px;
+    animation: floatCircle 12s ease-in-out infinite;
 
 }
 
-.bg2{
+.bg1 {
 
-    width:260px;
+    width: 320px;
 
-    height:260px;
+    height: 320px;
 
-    background:#8b5cf6;
+    background: #4f8cff;
 
-    top:180px;
+    top: -120px;
 
-    right:-90px;
-
-    animation-delay:2s;
+    left: -120px;
 
 }
 
-.bg3{
+.bg2 {
 
-    width:220px;
+    width: 260px;
 
-    height:220px;
+    height: 260px;
 
-    background:#00d4ff;
+    background: #8b5cf6;
 
-    bottom:-80px;
+    top: 180px;
 
-    left:35%;
+    right: -90px;
 
-    animation-delay:5s;
+    animation-delay: 2s;
 
 }
 
-@keyframes floatCircle{
+.bg3 {
 
-    0%{
+    width: 220px;
 
-        transform:translateY(0);
+    height: 220px;
+
+    background: #00d4ff;
+
+    bottom: -80px;
+
+    left: 35%;
+
+    animation-delay: 5s;
+
+}
+
+
+@keyframes floatCircle {
+
+    0%,
+    100% {
+
+        transform: translateY(0);
 
     }
 
-    50%{
+    50% {
 
-        transform:translateY(-25px);
-
-    }
-
-    100%{
-
-        transform:translateY(0);
+        transform: translateY(-25px);
 
     }
+
+}
+
+
+/*==================================================
+    CONTENT LAYER
+==================================================*/
+
+.deposit-page > .container,
+.deposit-page .container {
+
+    position: relative;
+
+    z-index: 1;
 
 }
 
@@ -113,209 +134,262 @@
     HEADER
 ==================================================*/
 
-.deposit-header{
+.deposit-header {
 
-    display:flex;
+    display: flex;
 
-    justify-content:space-between;
+    justify-content: space-between;
 
-    align-items:center;
+    align-items: center;
 
-    margin-bottom:40px;
+    gap: 30px;
 
-    gap:30px;
-
-}
-
-.deposit-small-title{
-
-    display:inline-block;
-
-    padding:8px 18px;
-
-    border-radius:40px;
-
-    background:#e9f2ff;
-
-    color:#2563eb;
-
-    font-weight:700;
-
-    font-size:13px;
-
-    letter-spacing:1px;
-
-    margin-bottom:18px;
+    margin-bottom: 40px;
 
 }
 
-.deposit-header h1{
+.deposit-small-title {
 
-    font-size:44px;
+    display: inline-block;
 
-    font-weight:800;
+    padding: 8px 18px;
 
-    color:#1e293b;
+    margin-bottom: 18px;
 
-    margin-bottom:12px;
+    border-radius: 40px;
+
+    background: #e9f2ff;
+
+    color: #2563eb;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
 
 }
 
-.deposit-header p{
+.deposit-header h1 {
 
-    color:#64748b;
+    margin-bottom: 12px;
 
-    max-width:540px;
+    color: #1e293b;
 
-    line-height:1.8;
+    font-size: 44px;
+
+    font-weight: 800;
 
 }
 
-.deposit-avatar img{
+.deposit-header p {
 
-    width:90px;
+    max-width: 540px;
 
-    height:90px;
+    color: #64748b;
 
-    border-radius:50%;
+    line-height: 1.8;
 
-    object-fit:cover;
+}
 
-    border:5px solid white;
+.deposit-avatar img {
 
-    box-shadow:0 20px 40px rgba(0,0,0,.12);
+    width: 90px;
+
+    height: 90px;
+
+    object-fit: cover;
+
+    border: 5px solid #fff;
+
+    border-radius: 50%;
+
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .12);
 
 }
 
 
 /*==================================================
     GLASS CARD
+    IMPORTANT: NO TRANSFORM
 ==================================================*/
 
-.glass-card{
+.glass-card {
 
-    background:rgba(255,255,255,.75);
+    position: relative;
 
-    backdrop-filter:blur(18px);
+    box-sizing: border-box;
 
-    border:1px solid rgba(255,255,255,.5);
+    padding: 35px;
 
-    border-radius:24px;
+    background: rgba(255, 255, 255, .88);
 
-    padding:35px;
+    border: 1px solid rgba(255, 255, 255, .75);
 
-    box-shadow:0 25px 60px rgba(0,0,0,.08);
+    border-radius: 24px;
+
+    box-shadow: 0 25px 60px rgba(0, 0, 0, .08);
+
+    /*
+        Keep the card completely stable.
+        Do NOT animate transform.
+    */
+
+    transform: none !important;
+
+    transition:
+        box-shadow .25s ease,
+        border-color .25s ease;
 
 }
+
 
 /*==================================================
     WALLET BALANCE CARD
 ==================================================*/
 
-.wallet-balance-card{
+.wallet-balance-card {
 
-    display:flex;
+    position: relative;
 
-    justify-content:space-between;
+    display: flex;
 
-    align-items:center;
+    align-items: center;
 
-    background:linear-gradient(
-        135deg,
-        #2563eb,
-        #3b82f6,
-        #60a5fa
-    );
+    justify-content: space-between;
 
-    color:#fff;
+    box-sizing: border-box;
 
-    border-radius:28px;
+    gap: 30px;
 
-    padding:40px;
+    padding: 40px;
 
-    box-shadow:0 25px 50px rgba(37,99,235,.35);
+    margin-bottom: 20px;
 
-    margin-bottom:20px;
+    overflow: hidden;
 
-    overflow:hidden;
+    color: #fff;
 
-    position:relative;
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6,
+            #60a5fa
+        );
 
-}
+    border-radius: 28px;
 
-.wallet-balance-card::before{
+    box-shadow:
+        0 25px 50px rgba(37, 99, 235, .35);
 
-    content:"";
+    /*
+        IMPORTANT:
+        No entrance animation.
+        This prevents movement/repaint
+        from affecting the layout.
+    */
 
-    position:absolute;
+    animation: none !important;
 
-    width:220px;
+    transform: none !important;
 
-    height:220px;
-
-    background:rgba(255,255,255,.08);
-
-    border-radius:50%;
-
-    top:-90px;
-
-    right:-90px;
-
-}
-
-.wallet-left span{
-
-    font-size:14px;
-
-    text-transform:uppercase;
-
-    opacity:.9;
-
-    letter-spacing:1px;
+    transition:
+        box-shadow .25s ease;
 
 }
 
-.wallet-left h2{
+.wallet-balance-card::before {
 
-    font-size:42px;
+    content: "";
 
-    margin:15px 0;
+    position: absolute;
 
-    font-weight:800;
+    width: 220px;
 
-}
+    height: 220px;
 
-.wallet-left strong{
+    top: -90px;
 
-    color:#fff;
+    right: -90px;
 
-}
+    border-radius: 50%;
 
-.wallet-left p{
+    background: rgba(255, 255, 255, .08);
 
-    opacity:.9;
-
-    max-width:430px;
+    pointer-events: none;
 
 }
 
-.wallet-icon{
+.wallet-left {
 
-    width:90px;
+    position: relative;
 
-    height:90px;
+    z-index: 1;
 
-    border-radius:50%;
+}
 
-    background:rgba(255,255,255,.18);
+.wallet-left span {
 
-    display:flex;
+    font-size: 14px;
 
-    justify-content:center;
+    text-transform: uppercase;
 
-    align-items:center;
+    letter-spacing: 1px;
 
-    font-size:42px;
+    opacity: .9;
+
+}
+
+.wallet-left h2 {
+
+    margin: 15px 0;
+
+    font-size: 42px;
+
+    font-weight: 800;
+
+}
+
+.wallet-left strong {
+
+    color: #fff;
+
+}
+
+.wallet-left p {
+
+    max-width: 430px;
+
+    margin-bottom: 0;
+
+    opacity: .9;
+
+}
+
+.wallet-icon {
+
+    position: relative;
+
+    z-index: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 90px;
+
+    height: 90px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, .18);
+
+    font-size: 42px;
 
 }
 
@@ -324,27 +398,29 @@
     SECTION TITLE
 ==================================================*/
 
-.section-title{
+.section-title {
 
-    margin-bottom:30px;
-
-}
-
-.section-title h3{
-
-    font-size:28px;
-
-    font-weight:700;
-
-    color:#1e293b;
+    margin-bottom: 30px;
 
 }
 
-.section-title i{
+.section-title h3 {
 
-    color:#2563eb;
+    margin-bottom: 0;
 
-    margin-right:10px;
+    color: #1e293b;
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+}
+
+.section-title i {
+
+    margin-right: 10px;
+
+    color: #2563eb;
 
 }
 
@@ -353,13 +429,15 @@
     FORM LABELS
 ==================================================*/
 
-.form-label{
+.form-label {
 
-    font-weight:700;
+    display: block;
 
-    color:#334155;
+    margin-bottom: 10px;
 
-    margin-bottom:10px;
+    color: #334155;
+
+    font-weight: 700;
 
 }
 
@@ -368,35 +446,79 @@
     FORM INPUTS
 ==================================================*/
 
-.modern-input{
+.modern-input {
 
-    border-radius:14px;
+    width: 100%;
 
-    border:1px solid #dbeafe;
+    box-sizing: border-box;
 
-    padding:14px 18px;
+    min-height: 52px;
 
-    font-size:15px;
+    padding: 14px 18px;
 
-    transition:.35s;
+    border: 1px solid #dbeafe;
 
-    background:#fff;
+    border-radius: 14px;
+
+    outline: none;
+
+    background: #fff;
+
+    color: #1e293b;
+
+    font-size: 15px;
+
+    /*
+        Only animate visual properties.
+        NEVER animate transform.
+    */
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background-color .2s ease;
 
 }
 
-.modern-input:focus{
+.modern-input:hover {
 
-    border-color:#2563eb;
-
-    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+    border-color: #bfdbfe;
 
 }
 
-.form-select{
+.modern-input:focus {
 
-    border-radius:14px;
+    border-color: #2563eb;
 
-    min-height:52px;
+    background: #fff;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, .12);
+
+    /*
+        Absolutely no movement.
+    */
+
+    transform: none !important;
+
+}
+
+.form-select {
+
+    min-height: 52px;
+
+    border-radius: 14px;
+
+}
+
+
+/*==================================================
+    FORM ROW STABILITY
+==================================================*/
+
+.deposit-page .row {
+
+    --bs-gutter-y: 1.5rem;
 
 }
 
@@ -405,73 +527,101 @@
     UPLOAD BOX
 ==================================================*/
 
-.upload-box{
+.upload-box {
 
-    position:relative;
+    position: relative;
 
-    border:2px dashed #93c5fd;
+    box-sizing: border-box;
 
-    border-radius:18px;
+    min-height: 180px;
 
-    background:#f8fbff;
+    padding: 45px;
 
-    padding:45px;
+    border: 2px dashed #93c5fd;
 
-    text-align:center;
+    border-radius: 18px;
 
-    transition:.35s;
+    background: #f8fbff;
 
-    cursor:pointer;
+    text-align: center;
 
-}
+    cursor: pointer;
 
-.upload-box:hover{
-
-    border-color:#2563eb;
-
-    background:#eef6ff;
-
-}
-
-.upload-box input[type=file]{
-
-    position:absolute;
-
-    inset:0;
-
-    width:100%;
-
-    height:100%;
-
-    opacity:0;
-
-    cursor:pointer;
+    transition:
+        border-color .2s ease,
+        background-color .2s ease,
+        box-shadow .2s ease;
 
 }
 
-.upload-text i{
+.upload-box:hover {
 
-    font-size:50px;
+    border-color: #2563eb;
 
-    color:#2563eb;
-
-    margin-bottom:18px;
+    background: #eef6ff;
 
 }
 
-.upload-text h5{
+.upload-box.dragover {
 
-    font-weight:700;
+    /*
+        IMPORTANT:
+        No scale.
+        No transform.
+    */
 
-    color:#1e293b;
+    transform: none !important;
+
+    border-color: #2563eb;
+
+    background: #eaf4ff;
+
+    box-shadow:
+        0 0 0 4px rgba(37, 99, 235, .08);
 
 }
 
-.upload-text p{
+.upload-box input[type="file"] {
 
-    color:#64748b;
+    position: absolute;
 
-    margin-top:8px;
+    inset: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    opacity: 0;
+
+    cursor: pointer;
+
+}
+
+.upload-text i {
+
+    margin-bottom: 18px;
+
+    color: #2563eb;
+
+    font-size: 50px;
+
+}
+
+.upload-text h5 {
+
+    color: #1e293b;
+
+    font-weight: 700;
+
+}
+
+.upload-text p {
+
+    margin-top: 8px;
+
+    margin-bottom: 0;
+
+    color: #64748b;
 
 }
 
@@ -480,19 +630,27 @@
     PREVIEW IMAGE
 ==================================================*/
 
-.preview-image{
+.preview-image {
 
-    width:100%;
+    display: block;
 
-    max-width:420px;
+    width: 100%;
 
-    display:block;
+    max-width: 420px;
 
-    margin:auto;
+    margin: auto;
 
-    border-radius:18px;
+    border-radius: 18px;
 
-    box-shadow:0 15px 35px rgba(0,0,0,.15);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, .15);
+
+    /*
+        No scale animation.
+        Keeps the layout stable.
+    */
+
+    transform: none !important;
 
 }
 
@@ -501,518 +659,65 @@
     SUBMIT BUTTON
 ==================================================*/
 
-.deposit-btn{
+.deposit-btn {
 
-    width:100%;
+    position: relative;
 
-    border:none;
+    width: 100%;
 
-    border-radius:14px;
+    padding: 16px;
 
-    padding:16px;
+    overflow: hidden;
 
-    font-size:18px;
+    border: none;
 
-    font-weight:700;
+    border-radius: 14px;
 
-    color:white;
+    color: #fff;
 
-    background:linear-gradient(
-        135deg,
-        #2563eb,
-        #3b82f6
-    );
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
 
-    transition:.35s;
+    font-size: 18px;
 
-}
+    font-weight: 700;
 
-.deposit-btn:hover{
+    cursor: pointer;
 
-    transform:translateY(-3px);
-
-    box-shadow:0 15px 30px rgba(37,99,235,.30);
-
-}
-
-.deposit-btn i{
-
-    margin-right:10px;
+    transition:
+        box-shadow .2s ease,
+        background .2s ease,
+        opacity .2s ease;
 
 }
 
-/*==================================================
-    INFO CARDS
-==================================================*/
+.deposit-btn:hover {
 
-.info-card{
+    /*
+        Removed translateY().
+        Button remains stable.
+    */
 
-    transition:.35s;
+    transform: none !important;
 
-}
-
-.info-card:hover{
-
-    transform:translateY(-6px);
-
-    box-shadow:0 20px 40px rgba(0,0,0,.12);
+    box-shadow:
+        0 15px 30px rgba(37, 99, 235, .30);
 
 }
 
-.info-card h4{
+.deposit-btn:active {
 
-    font-size:22px;
-
-    font-weight:700;
-
-    color:#1e293b;
-
-    margin-bottom:25px;
+    transform: none !important;
 
 }
 
-.info-card h4 i{
+.deposit-btn i {
 
-    color:#2563eb;
-
-    margin-right:10px;
-
-}
-
-
-/*==================================================
-    PAYMENT LIST
-==================================================*/
-
-.payment-list{
-
-    list-style:none;
-
-    padding:0;
-
-    margin:0;
-
-}
-
-.payment-list li{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:14px 0;
-
-    border-bottom:1px solid #e2e8f0;
-
-}
-
-.payment-list li:last-child{
-
-    border-bottom:none;
-
-}
-
-.payment-list strong{
-
-    color:#1e293b;
-
-    font-weight:700;
-
-}
-
-.payment-list span{
-
-    color:#2563eb;
-
-    font-weight:600;
-
-}
-
-
-/*==================================================
-    DEPOSIT RULES
-==================================================*/
-
-.rule-list{
-
-    list-style:none;
-
-    padding:0;
-
-    margin:0;
-
-}
-
-.rule-list li{
-
-    position:relative;
-
-    padding-left:28px;
-
-    margin-bottom:16px;
-
-    color:#475569;
-
-    line-height:1.7;
-
-}
-
-.rule-list li::before{
-
-    content:"✔";
-
-    position:absolute;
-
-    left:0;
-
-    top:0;
-
-    color:#22c55e;
-
-    font-weight:bold;
-
-}
-
-
-/*==================================================
-    PROCESS ITEMS
-==================================================*/
-
-.process-item{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-    padding:14px 18px;
-
-    border-radius:14px;
-
-    background:#f8fafc;
-
-    margin-bottom:15px;
-
-    transition:.3s;
-
-}
-
-.process-item:hover{
-
-    background:#eef6ff;
-
-    transform:translateX(6px);
-
-}
-
-.process-item i{
-
-    width:42px;
-
-    height:42px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    border-radius:50%;
-
-    background:#2563eb;
-
-    color:white;
-
-    font-size:18px;
-
-}
-
-
-/*==================================================
-    SECURITY CARD
-==================================================*/
-
-.security-card{
-
-    background:linear-gradient(
-        135deg,
-        #0f172a,
-        #1e293b
-    );
-
-    color:white;
-
-}
-
-.security-card h4{
-
-    color:white;
-
-}
-
-.security-card h4 i{
-
-    color:#38bdf8;
-
-}
-
-.security-card p{
-
-    margin-bottom:16px;
-
-    line-height:1.8;
-
-    color:#e2e8f0;
-
-}
-
-
-/*==================================================
-    TABLE
-==================================================*/
-
-.deposit-table{
-
-    margin-bottom:0;
-
-}
-
-.deposit-table thead{
-
-    background:#eff6ff;
-
-}
-
-.deposit-table thead th{
-
-    color:#1e3a8a;
-
-    font-weight:700;
-
-    border:none;
-
-    padding:18px;
-
-}
-
-.deposit-table tbody td{
-
-    padding:18px;
-
-    vertical-align:middle;
-
-    border-color:#f1f5f9;
-
-}
-
-.deposit-table tbody tr{
-
-    transition:.3s;
-
-}
-
-.deposit-table tbody tr:hover{
-
-    background:#f8fbff;
-
-}
-
-
-/*==================================================
-    STATUS BADGES
-==================================================*/
-
-.badge{
-
-    padding:8px 14px;
-
-    border-radius:30px;
-
-    font-size:13px;
-
-    font-weight:600;
-
-}
-
-
-/*==================================================
-    EMPTY STATE
-==================================================*/
-
-.deposit-table .fa-wallet{
-
-    color:#cbd5e1;
-
-}
-
-.deposit-table h5{
-
-    margin-top:12px;
-
-    font-weight:700;
-
-    color:#334155;
-
-}
-
-.deposit-table p{
-
-    color:#64748b;
-
-}
-
-/*==================================================
-    RESPONSIVE DESIGN
-==================================================*/
-
-@media (max-width:992px){
-
-    .deposit-header{
-
-        flex-direction:column;
-
-        text-align:center;
-
-    }
-
-    .wallet-balance-card{
-
-        flex-direction:column;
-
-        text-align:center;
-
-        gap:25px;
-
-    }
-
-    .wallet-left p{
-
-        max-width:100%;
-
-    }
-
-}
-
-@media (max-width:768px){
-
-    .deposit-page{
-
-        padding:90px 0 50px;
-
-    }
-
-    .glass-card{
-
-        padding:24px;
-
-    }
-
-    .wallet-balance-card{
-
-        padding:30px;
-
-    }
-
-    .wallet-left h2{
-
-        font-size:32px;
-
-    }
-
-    .deposit-header h1{
-
-        font-size:34px;
-
-    }
-
-    .section-title h3{
-
-        font-size:22px;
-
-    }
-
-    .upload-box{
-
-        padding:30px;
-
-    }
-
-    .upload-text i{
-
-        font-size:40px;
-
-    }
-
-}
-
-@media (max-width:576px){
-
-    .deposit-avatar img{
-
-        width:70px;
-
-        height:70px;
-
-    }
-
-    .wallet-icon{
-
-        width:70px;
-
-        height:70px;
-
-        font-size:30px;
-
-    }
-
-    .deposit-btn{
-
-        font-size:16px;
-
-        padding:14px;
-
-    }
-
-    .payment-list li{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-        gap:6px;
-
-    }
-
-}
-
-
-
-.wallet-balance-card{
-
-    animation:fadeDown .8s ease;
-
-}
-
-@keyframes fadeDown{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(-25px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
+    margin-right: 10px;
 
 }
 
@@ -1021,31 +726,35 @@
     LOADING BUTTON
 ==================================================*/
 
-.deposit-btn.loading{
+.deposit-btn.loading {
 
-    pointer-events:none;
+    pointer-events: none;
 
-    opacity:.8;
+    opacity: .8;
 
-}
-
-.deposit-btn.loading i{
-
-    animation:spin .8s linear infinite;
+    cursor: not-allowed;
 
 }
 
-@keyframes spin{
+.deposit-btn.loading i {
 
-    from{
+    margin-right: 8px;
 
-        transform:rotate(0deg);
+    animation: spin .8s linear infinite;
+
+}
+
+@keyframes spin {
+
+    from {
+
+        transform: rotate(0deg);
 
     }
 
-    to{
+    to {
 
-        transform:rotate(360deg);
+        transform: rotate(360deg);
 
     }
 
@@ -1053,252 +762,598 @@
 
 
 /*==================================================
-    HOVER EFFECTS
+    INFO CARDS
 ==================================================*/
 
-.preview-image{
+.info-card {
 
-    transition:.35s;
+    box-sizing: border-box;
 
-}
-
-.preview-image:hover{
-
-    transform:scale(1.02);
+    transition:
+        box-shadow .25s ease,
+        background-color .25s ease;
 
 }
 
-.upload-box{
+.info-card:hover {
 
-    transition:.35s;
+    /*
+        No movement.
+    */
 
-}
+    transform: none !important;
 
-.upload-box.dragover{
-
-    border-color:#2563eb;
-
-    background:#eaf4ff;
-
-    transform:scale(1.01);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, .12);
 
 }
 
+.info-card h4 {
 
+    margin-bottom: 25px;
+
+    color: #1e293b;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+}
+
+.info-card h4 i {
+
+    margin-right: 10px;
+
+    color: #2563eb;
+
+}
+
+
+/*==================================================
+    PAYMENT LIST
+==================================================*/
+
+.payment-list {
+
+    padding: 0;
+
+    margin: 0;
+
+    list-style: none;
+
+}
+
+.payment-list li {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid #e2e8f0;
+
+}
+
+.payment-list li:last-child {
+
+    border-bottom: none;
+
+}
+
+.payment-list strong {
+
+    color: #1e293b;
+
+    font-weight: 700;
+
+}
+
+.payment-list span {
+
+    color: #2563eb;
+
+    font-weight: 600;
+
+}
+
+
+/*==================================================
+    DEPOSIT RULES
+==================================================*/
+
+.rule-list {
+
+    padding: 0;
+
+    margin: 0;
+
+    list-style: none;
+
+}
+
+.rule-list li {
+
+    position: relative;
+
+    padding-left: 28px;
+
+    margin-bottom: 16px;
+
+    color: #475569;
+
+    line-height: 1.7;
+
+}
+
+.rule-list li::before {
+
+    content: "✔";
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    color: #22c55e;
+
+    font-weight: 700;
+
+}
+
+
+/*==================================================
+    PROCESS ITEMS
+==================================================*/
+
+.process-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 14px 18px;
+
+    margin-bottom: 15px;
+
+    border-radius: 14px;
+
+    background: #f8fafc;
+
+    transition:
+        background-color .2s ease,
+        box-shadow .2s ease;
+
+}
+
+.process-item:hover {
+
+    background: #eef6ff;
+
+    /*
+        Removed translateX().
+    */
+
+    transform: none !important;
+
+}
+
+.process-item i {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 50%;
+
+    background: #2563eb;
+
+    color: #fff;
+
+    font-size: 18px;
+
+}
+
+
+/*==================================================
+    SECURITY CARD
+==================================================*/
+
+.security-card {
+
+    box-sizing: border-box;
+
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1e293b
+        );
+
+    transition:
+        box-shadow .25s ease,
+        background-color .25s ease;
+
+}
+
+.security-card:hover {
+
+    transform: none !important;
+
+}
+
+.security-card h4 {
+
+    color: #fff;
+
+}
+
+.security-card h4 i {
+
+    color: #38bdf8;
+
+}
+
+.security-card p {
+
+    margin-bottom: 16px;
+
+    color: #e2e8f0;
+
+    line-height: 1.8;
+
+}
+
+
+/*==================================================
+    TABLE
+==================================================*/
+
+.deposit-table {
+
+    margin-bottom: 0;
+
+}
+
+.deposit-table thead {
+
+    background: #eff6ff;
+
+}
+
+.deposit-table thead th {
+
+    padding: 18px;
+
+    border: none;
+
+    color: #1e3a8a;
+
+    font-weight: 700;
+
+}
+
+.deposit-table tbody td {
+
+    padding: 18px;
+
+    border-color: #f1f5f9;
+
+    vertical-align: middle;
+
+}
+
+.deposit-table tbody tr {
+
+    transition: background-color .2s ease;
+
+}
+
+.deposit-table tbody tr:hover {
+
+    background: #f8fbff;
+
+}
+
+
+/*==================================================
+    STATUS BADGES
+==================================================*/
+
+.badge {
+
+    padding: 8px 14px;
+
+    border-radius: 30px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+/*==================================================
+    EMPTY STATE
+==================================================*/
+
+.deposit-table .fa-wallet {
+
+    color: #cbd5e1;
+
+}
+
+.deposit-table h5 {
+
+    margin-top: 12px;
+
+    color: #334155;
+
+    font-weight: 700;
+
+}
+
+.deposit-table p {
+
+    color: #64748b;
+
+}
+
+
+/*==================================================
+    FORM ERROR
+==================================================*/
+
+.text-danger {
+
+    margin-top: 6px;
+
+    margin-bottom: 0;
+
+    color: #dc2626;
+
+    font-size: 14px;
+
+}
+
+
+/*
+    Django's default error list
+*/
+
+.deposit-page .errorlist {
+
+    padding: 0;
+
+    margin: 6px 0 0;
+
+    color: #dc2626;
+
+    font-size: 14px;
+
+    list-style: none;
+
+}
+
+
+/*==================================================
+    RIPPLE
+==================================================*/
+
+.ripple {
+
+    position: absolute;
+
+    width: 20px;
+
+    height: 20px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, .6);
+
+    pointer-events: none;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0);
+
+    animation:
+        rippleEffect .6s linear;
+
+}
+
+@keyframes rippleEffect {
+
+    to {
+
+        transform:
+            translate(-50%, -50%)
+            scale(12);
+
+        opacity: 0;
+
+    }
+
+}
 
 
 /*==================================================
     UTILITIES
 ==================================================*/
 
-.text-danger{
+.d-none {
 
-    font-size:14px;
-
-    margin-top:6px;
+    display: none !important;
 
 }
 
-.d-none{
+.mt-5 {
 
-    display:none;
-
-}
-
-.mt-5{
-
-    margin-top:3rem !important;
+    margin-top: 3rem !important;
 
 }
 
-.mb-4{
+.mb-4 {
 
-    margin-bottom:1.5rem !important;
+    margin-bottom: 1.5rem !important;
 
 }
+
 
 /*==================================================
-    RIPPLE EFFECT
+    RESPONSIVE
 ==================================================*/
 
-.deposit-btn{
+@media (max-width: 992px) {
 
-    position:relative;
+    .deposit-header {
 
-    overflow:hidden;
+        flex-direction: column;
 
-    cursor:pointer;
+        text-align: center;
 
-}
+    }
 
-.ripple{
+    .wallet-balance-card {
 
-    position:absolute;
+        flex-direction: column;
 
-    width:20px;
+        text-align: center;
 
-    height:20px;
+    }
 
-    background:rgba(255,255,255,.6);
+    .wallet-left p {
 
-    border-radius:50%;
-
-    transform:translate(-50%,-50%) scale(0);
-
-    pointer-events:none;
-
-    animation:rippleEffect .6s linear;
-
-}
-
-@keyframes rippleEffect{
-
-    to{
-
-        transform:translate(-50%,-50%) scale(12);
-
-        opacity:0;
+        max-width: 100%;
 
     }
 
 }
 
-.deposit-btn.loading{
-    opacity: .8;
-    cursor: not-allowed;
-}
-
-.deposit-btn.loading i{
-    margin-right: 8px;
-}
-
-
-/*==================================================
-    STABLE CARD SYSTEM
-==================================================*/
-
-.glass-card,
-.info-card,
-.security-card,
-.wallet-balance-card {
-
-    box-sizing: border-box;
-
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-
-}
-
-
-/*==================================================
-    STABLE GLASS CARD
-==================================================*/
-
-.glass-card {
-
-    position: relative;
-
-    transition:
-        box-shadow .3s ease,
-        border-color .3s ease,
-        background .3s ease;
-
-}
-
-
-/*==================================================
-    STABLE INFO CARDS
-==================================================*/
-
-.info-card {
-
-    transition:
-        box-shadow .3s ease,
-        background .3s ease,
-        border-color .3s ease;
-
-}
-
-
-/*==================================================
-    STABLE SECURITY CARD
-==================================================*/
-
-.security-card {
-
-    transition:
-        box-shadow .3s ease,
-        background .3s ease,
-        border-color .3s ease;
-
-}
-
-
-/*==================================================
-    STABLE WALLET CARD
-==================================================*/
-
-.wallet-balance-card {
-
-    transition:
-        box-shadow .3s ease,
-        background .3s ease;
-
-}
-
-
-/*==================================================
-    PREVENT CARD JUMPING
-==================================================*/
-
-.glass-card:hover,
-.info-card:hover,
-.security-card:hover,
-.wallet-balance-card:hover {
-
-    transform: none;
-
-}
-
-
-/*==================================================
-    UPLOAD AREA
-==================================================*/
-
-.upload-box.dragover {
-
-    transform: none;
-
-    border-color: #2563eb;
-
-    background: #eaf4ff;
-
-}
-
-
-/*==================================================
-    BUTTON HOVER
-==================================================*/
-
-.deposit-btn:hover {
-
-    transform: translateY(-2px);
-
-}
-
-
-/*==================================================
-    MOBILE STABILITY
-==================================================*/
 
 @media (max-width: 768px) {
 
-    .glass-card,
-    .info-card,
-    .security-card,
+    .deposit-page {
+
+        padding: 90px 0 50px;
+
+    }
+
+    .glass-card {
+
+        padding: 24px;
+
+    }
+
     .wallet-balance-card {
 
-        transform: none !important;
+        padding: 30px;
+
+    }
+
+    .wallet-left h2 {
+
+        font-size: 32px;
+
+    }
+
+    .deposit-header h1 {
+
+        font-size: 34px;
+
+    }
+
+    .section-title h3 {
+
+        font-size: 22px;
+
+    }
+
+    .upload-box {
+
+        padding: 30px;
+
+    }
+
+    .upload-text i {
+
+        font-size: 40px;
+
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .deposit-avatar img {
+
+        width: 70px;
+
+        height: 70px;
+
+    }
+
+    .wallet-icon {
+
+        width: 70px;
+
+        height: 70px;
+
+        font-size: 30px;
+
+    }
+
+    .deposit-btn {
+
+        padding: 14px;
+
+        font-size: 16px;
+
+    }
+
+    .payment-list li {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 6px;
+
+    }
+
+}
+
+
+/*==================================================
+    ACCESSIBILITY
+==================================================*/
+
+@media (prefers-reduced-motion: reduce) {
+
+    .deposit-bg-circle,
+    .deposit-btn.loading i,
+    .ripple {
+
+        animation: none !important;
 
     }
 
