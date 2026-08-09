@@ -989,35 +989,6 @@
 }
 
 
-/*==================================================
-    ANIMATIONS
-==================================================*/
-
-.glass-card{
-
-    animation:fadeUp .6s ease;
-
-}
-
-@keyframes fadeUp{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(30px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
-
-}
 
 .wallet-balance-card{
 
@@ -1113,17 +1084,7 @@
 
 }
 
-.info-card,
 
-.security-card,
-
-.wallet-balance-card,
-
-.glass-card{
-
-    transition:all .35s ease;
-
-}
 
 
 /*==================================================
@@ -1209,4 +1170,136 @@
 
 .deposit-btn.loading i{
     margin-right: 8px;
+}
+
+
+/*==================================================
+    STABLE CARD SYSTEM
+==================================================*/
+
+.glass-card,
+.info-card,
+.security-card,
+.wallet-balance-card {
+
+    box-sizing: border-box;
+
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+}
+
+
+/*==================================================
+    STABLE GLASS CARD
+==================================================*/
+
+.glass-card {
+
+    position: relative;
+
+    transition:
+        box-shadow .3s ease,
+        border-color .3s ease,
+        background .3s ease;
+
+}
+
+
+/*==================================================
+    STABLE INFO CARDS
+==================================================*/
+
+.info-card {
+
+    transition:
+        box-shadow .3s ease,
+        background .3s ease,
+        border-color .3s ease;
+
+}
+
+
+/*==================================================
+    STABLE SECURITY CARD
+==================================================*/
+
+.security-card {
+
+    transition:
+        box-shadow .3s ease,
+        background .3s ease,
+        border-color .3s ease;
+
+}
+
+
+/*==================================================
+    STABLE WALLET CARD
+==================================================*/
+
+.wallet-balance-card {
+
+    transition:
+        box-shadow .3s ease,
+        background .3s ease;
+
+}
+
+
+/*==================================================
+    PREVENT CARD JUMPING
+==================================================*/
+
+.glass-card:hover,
+.info-card:hover,
+.security-card:hover,
+.wallet-balance-card:hover {
+
+    transform: none;
+
+}
+
+
+/*==================================================
+    UPLOAD AREA
+==================================================*/
+
+.upload-box.dragover {
+
+    transform: none;
+
+    border-color: #2563eb;
+
+    background: #eaf4ff;
+
+}
+
+
+/*==================================================
+    BUTTON HOVER
+==================================================*/
+
+.deposit-btn:hover {
+
+    transform: translateY(-2px);
+
+}
+
+
+/*==================================================
+    MOBILE STABILITY
+==================================================*/
+
+@media (max-width: 768px) {
+
+    .glass-card,
+    .info-card,
+    .security-card,
+    .wallet-balance-card {
+
+        transform: none !important;
+
+    }
+
 }
