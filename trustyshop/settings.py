@@ -21,9 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-z=d@zy6vop!ftw51zjh^kqo&a@u2n6fys6+=9)=)ed_x2k!*-1'
 
 DEBUG = True
-
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+ "*"
+]
 
 # ============================================================
 # APPLICATIONS
@@ -110,6 +110,11 @@ DATABASES = {
     }
 }
 
+# ============================================================
+# SITE URL
+# ============================================================
+
+SITE_URL = "http://172.16.61.162:8000"
 
 # ============================================================
 # PASSWORD VALIDATION
@@ -184,6 +189,15 @@ LOGIN_REDIRECT_URL = 'home'
 
 LOGOUT_REDIRECT_URL = 'login'
 
+# ============================================================
+# REMEMBER ME / SESSION
+# ============================================================
+
+# Default session expires when the browser is closed.
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Used when Remember Me is checked.
+SESSION_COOKIE_AGE = 30 * 24 * 60 * 60  # 30 days
 
 # ============================================================
 # ABSTRACT API

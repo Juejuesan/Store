@@ -14,7 +14,15 @@ urlpatterns = [
         name="dashboard"
     ),
 
+# ==========================
+# Users
+# ==========================
 
+path(
+    'users/',
+    views.users,
+    name="users"
+),
 
     # ==========================
     # Pending Posts

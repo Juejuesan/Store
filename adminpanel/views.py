@@ -641,3 +641,31 @@ def withdraw_requests(request):
 #     )
 #
 #     return redirect("withdraw_requests")
+
+# =====================================================
+# Users
+# =====================================================
+
+@login_required
+def users(request):
+
+    users = (
+        User.objects
+        .filter(
+            is_staff=False,
+            is_superuser=False
+        )
+        .select_related("profile")
+        .order_by("-date_joined")
+    )
+
+    context = {
+        "users": users,
+        "total_users": users.count(),
+    }
+
+    return render(
+        request,
+        "adminpanel/user.html",
+        context,
+    )

@@ -8,25 +8,25 @@
 <div class="cards">
 
 
-    <!-- TOTAL USERS -->
+   <!-- TOTAL USERS -->
+<!-- TOTAL USERS -->
 
-    <div class="card">
+<div class="card"
+     onclick="window.location.href='{% url 'users' %}'"
+     style="cursor: pointer;">
 
-        <h4>
-            Total Users
-        </h4>
+    <h4>
+        Total Users
+    </h4>
 
+    <h2 class="counter"
+        data-target="{{ total_users }}">
+        0
+    </h2>
 
-<h2>
-    {{ total_users }}
-</h2>
+    <i class="fa-solid fa-users"></i>
 
-
-        <i class="fa-solid fa-users"></i>
-
-    </div>
-
-
+</div>
 
 
     <!-- TOTAL SELLERS -->
@@ -52,27 +52,23 @@
 
 
 
-    <!-- PENDING POSTS -->
+<!-- PENDING POSTS -->
 
-    <div class="card">
+<div class="card clickable-card"
+     onclick="window.location.href='{% url 'posts' %}'">
 
-        <h4>
-            Pending Posts
-        </h4>
+    <h4>
+        Pending Posts
+    </h4>
 
+    <h2 class="counter"
+        data-target="{{ pending_posts }}">
+        0
+    </h2>
 
-<h2>
-    {{ pending_posts }}
-</h2>
+    <i class="fa-solid fa-box-open"></i>
 
-
-        <i class="fa-solid fa-box-open"></i>
-
-    </div>
-
-
-
-
+</div>
 
     <!-- PENDING ORDERS -->
 

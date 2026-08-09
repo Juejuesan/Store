@@ -1238,8 +1238,72 @@ if (canHover) {
 
 
 /* =====================================================
+   RESET OTP FORM
+===================================================== */
+
+const resetOtpForm =
+    document.getElementById(
+        "resetOtpForm"
+    );
+
+const resetOtpBtn =
+    document.getElementById(
+        "resetOtpBtn"
+    );
+
+const otpInput =
+    document.getElementById(
+        "id_otp"
+    );
+
+if (otpInput) {
+
+    otpInput.setAttribute(
+        "maxlength",
+        "6"
+    );
+
+    otpInput.addEventListener(
+        "input",
+        () => {
+
+            otpInput.value =
+                otpInput.value
+                    .replace(/\D/g, "")
+                    .slice(0, 6);
+
+        }
+    );
+
+}
+
+if (
+    resetOtpForm &&
+    resetOtpBtn
+) {
+
+    resetOtpForm.addEventListener(
+        "submit",
+        () => {
+
+            resetOtpBtn.disabled =
+                true;
+
+            resetOtpBtn.innerHTML = `
+                <span class="reset-otp-btn-content">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <span>Verifying...</span>
+                </span>
+            `;
+
+        }
+    );
+
+}
+/* =====================================================
    END
 ===================================================== */
 
 
 });
+
