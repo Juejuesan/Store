@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/header-footer.css' %}">
-    <link rel="stylesheet" href="{% static 'css/post-detail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/viewdetail.css' %}">
 </head>
 <body>
 
@@ -20,9 +20,6 @@
 <div class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-arrow-left"></i> Back
-        </a>
         <button class="wishlist-btn">
             <i class="fa-regular fa-heart"></i> <span>Wishlist</span>
         </button>
@@ -112,6 +109,6 @@
 {% include "includes/footer.html" %}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{% static 'js/post-detail.js' %}"></script>
+<script src="{% static 'js/viewdetail.js' %}"></script>
 </body>
 </html>
