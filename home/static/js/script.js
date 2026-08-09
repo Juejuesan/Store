@@ -660,4 +660,39 @@ document.querySelectorAll(".cart-btn")
     });
 
 });
+
+// ============================================
+// HOME PAGE IMAGE SLIDER
+// ============================================
+let slideIntervals = {};
+
+function startSlide(element) {
+    const images = element.dataset.images.split(',');
+    if (images.length <= 1 || !images[0]) return;
+
+    let currentIndex = 0;
+    const imgElement = element.querySelector('img');
+
+    slideIntervals[element] = setInterval(function() {
+        currentIndex = (currentIndex + 1) % images.length;
+        imgElement.style.opacity = '0';
+        setTimeout(function() {
+            imgElement.src = images[currentIndex];
+            imgElement.style.opacity = '1';
+        }, 200);
+    }, 1500);
+}
+
+function stopSlide(element) {
+    clearInterval(slideIntervals[element]);
+    const images = element.dataset.images.split(',');
+    if (images.length > 0 && images[0]) {
+        const imgElement = element.querySelector('img');
+        imgElement.style.opacity = '0';
+        setTimeout(function() {
+            imgElement.src = images[0];
+            imgElement.style.opacity = '1';
+        }, 150);
+    }
+}
 /*End*/

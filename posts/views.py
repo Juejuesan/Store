@@ -54,10 +54,14 @@ def create_post(request):
                                 price=size_price,  # ADDED
                             )
 
-                    # Process images
-                    images = request.FILES.getlist(f'images_{i}')
-                    for image in images:
-                        ItemImage.objects.create(item=item, image=image)
+                    # Process images - find all matching file inputs
+                    for key, files in request.FILES.lists():
+                        if key.startswith('images_'):
+                            file_index = key.replace('images_', '')
+                            if file_index == i:
+                                for image in files:
+                                    ItemImage.objects.create(item=item, image=image)
+                                    print(f"DEBUG: Saved {image.name} for item index {i}")
 
             messages.success(request, 'Post created successfully!')
             return redirect('home')

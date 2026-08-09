@@ -1,360 +1,62 @@
-/*=====================================================
-        TRUSTY SHOP VIEW DETAIL
-=====================================================*/
+let currentItemIndex=0;
+const totalItems=document.querySelectorAll('.item-slide').length;
 
-document.addEventListener("DOMContentLoaded",()=>{
-
-/*=====================================================
-        IMAGE GALLERY
-=====================================================*/
-
-const mainImage=document.getElementById("mainImage");
-
-const thumbs=document.querySelectorAll(".thumbs img");
-
-thumbs.forEach(img=>{
-
-img.addEventListener("click",()=>{
-
-mainImage.style.opacity="0";
-
-setTimeout(()=>{
-
-mainImage.src=img.src;
-
-mainImage.style.opacity="1";
-
-},200);
-
-thumbs.forEach(item=>{
-
-item.classList.remove("active");
-
+document.addEventListener('click',function(e){
+    var t=e.target;
+    if(t.classList.contains('thumbnail')){
+        var s=t.closest('.item-slide'),i=s.querySelector('.main-image');
+        i.style.opacity='0';
+        setTimeout(function(){i.src=t.src;i.style.opacity='1'},150);
+        s.querySelectorAll('.thumbnail').forEach(function(e){e.classList.remove('active')});
+        t.classList.add('active');
+    }
+    if(t.classList.contains('size-btn')&&!t.classList.contains('sold-out')){
+        var s=t.closest('.item-slide'),id=s.id.replace('itemSlide','');
+        s.querySelectorAll('.size-btn').forEach(function(e){e.classList.remove('active')});
+        t.classList.add('active');
+        var pr=document.getElementById('itemPrice'+id),inf=document.getElementById('sizeInfo'+id);
+        if(pr)pr.textContent=t.dataset.price+' MMK';
+        if(inf)inf.innerHTML='Size: <strong>'+t.dataset.size+'</strong> | Price: <strong>'+t.dataset.price+' MMK</strong> | Stock: <strong>'+t.dataset.quantity+'</strong>';
+    }
+    if(t.closest('#prevBtn'))navigateItem(-1);
+    if(t.closest('#nextBtn'))navigateItem(1);
+    if(t.closest('.wishlist-btn')){
+        var b=t.closest('.wishlist-btn');
+        b.classList.toggle('liked');
+        var ic=b.querySelector('i'),sp=b.querySelector('span');
+        if(b.classList.contains('liked')){ic.className='fa-solid fa-heart';sp.textContent='Saved';}
+        else{ic.className='fa-regular fa-heart';sp.textContent='Wishlist';}
+    }
+    if(t.classList.contains('qty-btn')){
+        var s=t.closest('.item-slide'),id=s.id.replace('itemSlide','');
+        var inp=document.getElementById('qty'+id);
+        var d=t.textContent.trim()==='+'?1:-1;
+        var v=parseInt(inp.value)+d;
+        if(v<1)v=1;if(v>99)v=99;
+        inp.value=v;
+    }
+    if(t.closest('.add-cart-btn')){
+        var s=t.closest('.add-cart-btn').closest('.item-slide'),id=s.id.replace('itemSlide','');
+        var qty=document.getElementById('qty'+id).value;
+        var name=s.querySelector('.item-title').textContent;
+        var sz=s.querySelector('.size-btn.active');
+        var msg='Added '+qty+' x '+name;
+        if(sz)msg+=' (Size: '+sz.dataset.size+')';
+        msg+=' to cart!';
+        alert(msg);
+    }
 });
 
-img.classList.add("active");
-
-});
-
-});
-
-
-/*=====================================================
-        WISHLIST
-=====================================================*/
-
-const wishlist=document.querySelector(".wishlist-btn");
-
-if(wishlist){
-
-wishlist.addEventListener("click",function(){
-
-this.classList.toggle("active");
-
-if(this.classList.contains("active")){
-
-this.innerHTML=
-'<i class="fa-solid fa-heart"></i> Added to Wishlist';
-
-}else{
-
-this.innerHTML=
-'<i class="fa-regular fa-heart"></i> Add to Wishlist';
-
+function navigateItem(d){
+    var n=currentItemIndex+d;
+    if(n<0||n>=totalItems)return;
+    document.getElementById('itemSlide'+currentItemIndex).style.display='none';
+    document.getElementById('itemSlide'+n).style.display='block';
+    currentItemIndex=n;updateNav();
 }
-
-});
-
+function updateNav(){
+    document.getElementById('prevBtn').disabled=currentItemIndex===0;
+    document.getElementById('nextBtn').disabled=currentItemIndex===totalItems-1;
+    document.getElementById('itemCounter').textContent='Item '+(currentItemIndex+1)+' of '+totalItems;
 }
-
-
-/*=====================================================
-        SHARE BUTTON
-=====================================================*/
-
-const share=document.querySelector(".share-btn");
-
-if(share){
-
-share.addEventListener("click",()=>{
-
-navigator.clipboard.writeText(window.location.href);
-
-share.innerHTML=
-'<i class="fa-solid fa-check"></i> Link Copied';
-
-setTimeout(()=>{
-
-share.innerHTML=
-'<i class="fa-solid fa-share-nodes"></i> Share';
-
-},1800);
-
-});
-
-}
-
-
-/*=====================================================
-        BUY NOW
-=====================================================*/
-
-const buyBtn=document.querySelector(".buy-btn");
-
-if(buyBtn){
-
-buyBtn.addEventListener("click",function(){
-
-const original=this.innerHTML;
-
-this.innerHTML=
-'<i class="fa-solid fa-circle-check"></i> Ordered';
-
-this.style.background="#43A047";
-
-this.disabled=true;
-
-setTimeout(()=>{
-
-this.innerHTML=original;
-
-this.style.background="";
-
-this.disabled=false;
-
-},2200);
-
-});
-
-}
-
-
-/*=====================================================
-        ADD TO CART
-=====================================================*/
-
-const cart=document.querySelector(".cart-btn");
-
-if(cart){
-
-cart.addEventListener("click",function(){
-
-const original=this.innerHTML;
-
-this.innerHTML=
-'<i class="fa-solid fa-cart-shopping"></i> Added';
-
-this.style.background="#1565C0";
-
-this.style.color="#fff";
-
-setTimeout(()=>{
-
-this.innerHTML=original;
-
-this.style.background="";
-
-this.style.color="";
-
-},1800);
-
-});
-
-}
-
-
-/*=====================================================
-        RIPPLE
-=====================================================*/
-
-document.querySelectorAll("button,.view-btn")
-.forEach(button=>{
-
-button.addEventListener("click",function(e){
-
-const ripple=document.createElement("span");
-
-ripple.className="ripple";
-
-const rect=this.getBoundingClientRect();
-
-ripple.style.left=
-e.clientX-rect.left+"px";
-
-ripple.style.top=
-e.clientY-rect.top+"px";
-
-this.appendChild(ripple);
-
-setTimeout(()=>{
-
-ripple.remove();
-
-},700);
-
-});
-
-});
-
-
-/*=====================================================
-        MOUSE GLOW
-=====================================================*/
-
-const glow=document.getElementById("mouseGlow");
-
-document.addEventListener("mousemove",e=>{
-
-glow.style.left=e.clientX+"px";
-
-glow.style.top=e.clientY+"px";
-
-});
-
-
-/*=====================================================
-        FLOATING PARTICLES
-=====================================================*/
-
-const bg=document.getElementById("particles");
-
-for(let i=0;i<40;i++){
-
-const circle=document.createElement("span");
-
-circle.className="particle";
-
-circle.style.left=Math.random()*100+"%";
-
-circle.style.width=
-8+Math.random()*18+"px";
-
-circle.style.height=
-circle.style.width;
-
-circle.style.animationDuration=
-8+Math.random()*8+"s";
-
-circle.style.animationDelay=
-Math.random()*5+"s";
-
-bg.appendChild(circle);
-
-}
-
-
-/*=====================================================
-        SCROLL REVEAL
-=====================================================*/
-
-const observer=new IntersectionObserver(entries=>{
-
-entries.forEach(entry=>{
-
-if(entry.isIntersecting){
-
-entry.target.classList.add("show");
-
-}
-
-});
-
-},{
-threshold:.15
-});
-
-document.querySelectorAll(
-
-".similar-card,.wishlist-box,.product-hero"
-
-).forEach(item=>{
-
-item.classList.add("hidden");
-
-observer.observe(item);
-
-});
-
-
-});
-
-/*============================================
-        LOADER
-============================================*/
-
-window.addEventListener("load",()=>{
-
-document.querySelector(".loader-wrapper")
-.classList.add("hide");
-
-});
-
-
-/*============================================
-        IMAGE MODAL
-============================================*/
-
-const modal=document.getElementById("imageModal");
-
-const modalImg=document.getElementById("modalImage");
-
-const main=document.getElementById("mainImage");
-
-const close=document.querySelector(".close-image");
-
-if(main){
-
-main.addEventListener("click",()=>{
-
-modal.classList.add("show");
-
-modalImg.src=main.src;
-
-});
-
-}
-
-if(close){
-
-close.onclick=()=>{
-
-modal.classList.remove("show");
-
-}
-
-}
-
-window.onclick=e=>{
-
-if(e.target==modal){
-
-modal.classList.remove("show");
-
-}
-
-}
-
-
-/*============================================
-        ORDER TOAST
-============================================*/
-
-const toast=document.getElementById("detailToast");
-
-const buy=document.querySelector(".buy-btn");
-
-if(buy){
-
-buy.addEventListener("click",()=>{
-
-toast.classList.add("show");
-
-setTimeout(()=>{
-
-toast.classList.remove("show");
-
-},2200);
-
-});
-
-}
+document.addEventListener('DOMContentLoaded',function(){updateNav();});

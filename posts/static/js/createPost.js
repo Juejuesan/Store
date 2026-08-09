@@ -52,13 +52,11 @@ function addItem() {
     while (document.getElementById('item' + newIndex)) {
         newIndex++;
     }
-    
-    const itemNumber = existingItems + 1;
 
     const itemHTML =
         '<div class="glass-card item-section" id="item' + newIndex + '">' +
             '<div class="item-header">' +
-                '<h3><i class="fa-solid fa-box"></i> Item ' + itemNumber + '</h3>' +
+                '<h3><i class="fa-solid fa-box"></i> Item</h3>' +
                 (existingItems === 0 ? '' : '<button type="button" class="remove-item-btn" onclick="removeItem(' + newIndex + ')">' +
                     '<i class="fa-solid fa-trash"></i> Remove Item' +
                 '</button>') +
@@ -119,43 +117,24 @@ function removeItem(index) {
 
 function renumberItems() {
     const allItems = document.querySelectorAll('.item-section');
-
     allItems.forEach(function(item, i) {
-        const itemNumber = i + 1;
-
-        // Update item heading
         const header = item.querySelector('.item-header h3');
         if (header) {
-            header.innerHTML =
-                '<i class="fa-solid fa-box"></i> Item ' + itemNumber;
+            header.innerHTML = '<i class="fa-solid fa-box"></i> Item';
         }
-
-        // Handle remove button
         const removeBtn = item.querySelector('.remove-item-btn');
-
         if (i === 0) {
-            // First item can NEVER be removed
-            if (removeBtn) {
-                removeBtn.style.display = 'none';
-            }
+            if (removeBtn) removeBtn.style.display = 'none';
         } else {
-            // Item 2, 3, 4... can be removed
             if (removeBtn) {
                 removeBtn.style.display = 'flex';
             } else {
-                // Create remove button if it doesn't exist
                 const headerDiv = item.querySelector('.item-header');
-
                 if (headerDiv) {
                     const index = item.id.replace('item', '');
-
-                    headerDiv.insertAdjacentHTML(
-                        'beforeend',
-                        '<button type="button" class="remove-item-btn" ' +
-                        'onclick="removeItem(' + index + ')">' +
-                        '<i class="fa-solid fa-trash"></i> Remove Item' +
-                        '</button>'
-                    );
+                    headerDiv.insertAdjacentHTML('beforeend',
+                        '<button type="button" class="remove-item-btn" onclick="removeItem(' + index + ')">' +
+                        '<i class="fa-solid fa-trash"></i> Remove Item</button>');
                 }
             }
         }
@@ -166,35 +145,13 @@ function checkItemLimit() {
     const addBtn = document.querySelector('.add-item-btn');
     const existingItems = document.querySelectorAll('.item-section').length;
     if (addBtn) {
-        if (existingItems >= 10) {
-            addBtn.style.display = 'none';
-        } else {
-            addBtn.style.display = 'inline-flex';
-        }
+        addBtn.style.display = existingItems >= 10 ? 'none' : 'inline-flex';
     }
 }
 
-function handleFileSelect(input, itemIdx) {
-    const files = input.files;
-    const previewGrid = document.getElementById('previewGrid' + itemIdx);
-    previewGrid.innerHTML = '';
-
-    for (let i = 0; i < files.length; i++) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const html = '<div class="preview-card"><div class="image-frame">' +
-                '<img src="' + e.target.result + '" alt="Preview">' +
-                (i === 0 ? '<div class="cover-tag"><i class="fa-solid fa-star"></i> Cover</div>' : '') +
-                '</div></div>';
-            previewGrid.insertAdjacentHTML('beforeend', html);
-        };
-        reader.readAsDataURL(files[i]);
-    }
-}
 
 function updateAllSizeCharts() {
     const condition = document.getElementById('conditionSelect').value;
-
     const allItems = document.querySelectorAll('.item-section');
     allItems.forEach(function(item) {
         const itemId = item.id.replace('item', '');
@@ -219,7 +176,6 @@ function populateSizeButtons(itemIdx) {
     const sizeButtons = document.getElementById('sizeButtons' + itemIdx);
     if (!sizeButtons) return;
     sizeButtons.innerHTML = '';
-
     sizeOptions.forEach(function(size) {
         const button = document.createElement('button');
         button.type = 'button';
@@ -233,105 +189,81 @@ function populateSizeButtons(itemIdx) {
     });
 }
 
-function toggleSize(itemIndex, size, button) {
-    if (!selectedSizes[itemIndex]) {
-        selectedSizes[itemIndex] = [];
-    }
-
-    const sizeRows = document.querySelectorAll('#selectedSizes' + itemIndex + ' .size-row');
-    sizeRows.forEach(function(row, idx) {
+function saveAllQuantities(itemIdx) {
+    const rows = document.querySelectorAll('#selectedSizes' + itemIdx + ' .size-row');
+    rows.forEach(function(row, idx) {
         const qtyInput = row.querySelector('.quantity-input');
         const priceInput = row.querySelector('.price-input');
-        if (selectedSizes[itemIndex][idx]) {
-            if (qtyInput) selectedSizes[itemIndex][idx].quantity = parseInt(qtyInput.value) || 0;
-            if (priceInput) selectedSizes[itemIndex][idx].price = parseInt(priceInput.value) || 0;
+        if (selectedSizes[itemIdx] && selectedSizes[itemIdx][idx]) {
+            if (qtyInput) selectedSizes[itemIdx][idx].quantity = parseInt(qtyInput.value) || 0;
+            if (priceInput) selectedSizes[itemIdx][idx].price = parseInt(priceInput.value) || 0;
         }
     });
+}
 
-    const index = selectedSizes[itemIndex].findIndex(function(s) { return s.size === size; });
-
+function toggleSize(itemIdx, size, button) {
+    if (!selectedSizes[itemIdx]) selectedSizes[itemIdx] = [];
+    saveAllQuantities(itemIdx);
+    const index = selectedSizes[itemIdx].findIndex(function(s) { return s.size === size; });
     if (index === -1) {
-        selectedSizes[itemIndex].push({size: size, quantity: 0, price: 0});
+        selectedSizes[itemIdx].push({size: size, quantity: 0, price: 0});
         button.classList.add('active');
     } else {
-        selectedSizes[itemIndex].splice(index, 1);
+        selectedSizes[itemIdx].splice(index, 1);
         button.classList.remove('active');
     }
-
-    updateSelectedSizesDisplay(itemIndex);
+    updateSelectedSizesDisplay(itemIdx);
 }
 
-function removeSize(itemIndex, sizeIndex, size) {
-    const sizeRows = document.querySelectorAll('#selectedSizes' + itemIndex + ' .size-row');
-    sizeRows.forEach(function(row, idx) {
-        const qtyInput = row.querySelector('.quantity-input');
-        const priceInput = row.querySelector('.price-input');
-        if (selectedSizes[itemIndex][idx]) {
-            if (qtyInput) selectedSizes[itemIndex][idx].quantity = parseInt(qtyInput.value) || 0;
-            if (priceInput) selectedSizes[itemIndex][idx].price = parseInt(priceInput.value) || 0;
-        }
-    });
-
-    selectedSizes[itemIndex].splice(sizeIndex, 1);
-
-    const sizeButtons = document.getElementById('sizeButtons' + itemIndex);
-    if (sizeButtons) {
-        const buttons = sizeButtons.getElementsByClassName('size-btn');
-        for (let btn of buttons) {
-            if (btn.textContent === size) {
-                btn.classList.remove('active');
-                break;
-            }
-        }
-    }
-
-    updateSelectedSizesDisplay(itemIndex);
-}
-
-function saveQuantity(itemIndex, sizeIndex, value) {
-    if (selectedSizes[itemIndex] && selectedSizes[itemIndex][sizeIndex]) {
-        selectedSizes[itemIndex][sizeIndex].quantity = parseInt(value) || 0;
-    }
-}
-
-function saveSizePrice(itemIndex, sizeIndex, value) {
-    if (selectedSizes[itemIndex] && selectedSizes[itemIndex][sizeIndex]) {
-        selectedSizes[itemIndex][sizeIndex].price = parseInt(value) || 0;
-    }
-}
-
-function updateSelectedSizesDisplay(itemIndex) {
-    const selectedSizesDiv = document.getElementById('selectedSizes' + itemIndex);
-    if (!selectedSizesDiv) return;
-
-    if (!selectedSizes[itemIndex] || selectedSizes[itemIndex].length === 0) {
-        selectedSizesDiv.innerHTML = '<input type="hidden" name="size_count_' + itemIndex + '" value="0">';
-        selectedSizesDiv.classList.add('hidden');
+function updateSelectedSizesDisplay(itemIdx) {
+    const div = document.getElementById('selectedSizes' + itemIdx);
+    if (!div) return;
+    if (!selectedSizes[itemIdx] || selectedSizes[itemIdx].length === 0) {
+        div.innerHTML = '<input type="hidden" name="size_count_' + itemIdx + '" value="0">';
+        div.style.display = 'none';
         return;
     }
-
-    selectedSizesDiv.classList.remove('hidden');
-
+    div.style.display = 'block';
     let html = '<h4><i class="fa-solid fa-circle-check"></i> Selected Sizes</h4>';
-    html += '<input type="hidden" name="size_count_' + itemIndex + '" value="' + selectedSizes[itemIndex].length + '">';
-
-    selectedSizes[itemIndex].forEach(function(sizeObj, j) {
+    html += '<input type="hidden" name="size_count_' + itemIdx + '" value="' + selectedSizes[itemIdx].length + '">';
+    selectedSizes[itemIdx].forEach(function(sizeObj, j) {
         let qty = sizeObj.quantity || 0;
         let price = sizeObj.price || '';
         html += '<div class="size-row">' +
             '<span class="size-label">' + sizeObj.size + '</span>' +
-            '<div class="quantity-wrapper">' +
-                '<input type="number" class="quantity-input" name="quantity_' + itemIndex + '_' + j + '" placeholder="Qty" value="' + qty + '" min="0" required oninput="saveQuantity(' + itemIndex + ', ' + j + ', this.value)">' +
-                '<input type="number" class="price-input" name="size_price_' + itemIndex + '_' + j + '" placeholder="Price" value="' + price + '" min="0" required oninput="saveSizePrice(' + itemIndex + ', ' + j + ', this.value)">' +
-            '</div>' +
-            '<input type="hidden" name="size_' + itemIndex + '_' + j + '" value="' + sizeObj.size + '">' +
-            '<button type="button" class="remove-size-btn" onclick="removeSize(' + itemIndex + ', ' + j + ', \'' + sizeObj.size + '\')">' +
-                '<i class="fa-solid fa-times"></i>' +
-            '</button>' +
-        '</div>';
+            '<input type="number" class="quantity-input" name="quantity_' + itemIdx + '_' + j + '" placeholder="Qty" value="' + qty + '" min="0" required oninput="saveQuantity(' + itemIdx + ', ' + j + ', this.value)">' +
+            '<input type="number" class="price-input" name="size_price_' + itemIdx + '_' + j + '" placeholder="Price" value="' + price + '" min="0" required oninput="saveSizePrice(' + itemIdx + ', ' + j + ', this.value)">' +
+            '<input type="hidden" name="size_' + itemIdx + '_' + j + '" value="' + sizeObj.size + '">' +
+            '<button type="button" class="remove-size-btn" onclick="removeSize(' + itemIdx + ', ' + j + ', \'' + sizeObj.size + '\')">' +
+            '<i class="fa-solid fa-times"></i></button>' +
+            '</div>';
     });
+    div.innerHTML = html;
+}
 
-    selectedSizesDiv.innerHTML = html;
+function saveQuantity(itemIdx, sizeIndex, value) {
+    if (selectedSizes[itemIdx] && selectedSizes[itemIdx][sizeIndex]) {
+        selectedSizes[itemIdx][sizeIndex].quantity = parseInt(value) || 0;
+    }
+}
+
+function saveSizePrice(itemIdx, sizeIndex, value) {
+    if (selectedSizes[itemIdx] && selectedSizes[itemIdx][sizeIndex]) {
+        selectedSizes[itemIdx][sizeIndex].price = parseInt(value) || 0;
+    }
+}
+
+function removeSize(itemIdx, sizeIndex, size) {
+    saveAllQuantities(itemIdx);
+    selectedSizes[itemIdx].splice(sizeIndex, 1);
+    const sizeButtons = document.getElementById('sizeButtons' + itemIdx);
+    if (sizeButtons) {
+        const buttons = sizeButtons.getElementsByClassName('size-btn');
+        for (let btn of buttons) {
+            if (btn.textContent === size) { btn.classList.remove('active'); break; }
+        }
+    }
+    updateSelectedSizesDisplay(itemIdx);
 }
 
 function toggleSizeChart(itemIdx) {
@@ -353,12 +285,96 @@ function showCustomAlert(message) {
     const form = document.getElementById('createPostForm');
     form.insertBefore(alert, form.firstChild);
 
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Alert stays for 5 seconds
     setTimeout(function() {
         alert.style.opacity = '0';
         alert.style.transition = 'opacity .3s';
         setTimeout(function() { alert.remove(); }, 300);
-    }, 3000);
+    }, 5000);
 }
+
+// Store files per item
+let itemFiles = {};
+
+function handleFileSelect(input, itemIdx) {
+    const files = Array.from(input.files);
+
+    if (!itemFiles[itemIdx]) {
+        itemFiles[itemIdx] = [];
+    }
+
+    if (itemFiles[itemIdx].length + files.length > 6) {
+        showCustomAlert('You can upload a maximum of 6 images per item.');
+        input.value = '';
+        return;
+    }
+
+    files.forEach(function(file) {
+        if (file.type.startsWith('image/')) {
+            itemFiles[itemIdx].push(file);
+        }
+    });
+
+    updatePreview(itemIdx);
+    // DON'T clear input.value - let the browser keep the files
+}
+
+function updatePreview(itemIdx) {
+    const previewGrid = document.getElementById('previewGrid' + itemIdx);
+    if (!previewGrid) return;
+    previewGrid.innerHTML = '';
+
+    if (!itemFiles[itemIdx]) return;
+
+    itemFiles[itemIdx].forEach(function(file, i) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const card = document.createElement('div');
+            card.className = 'preview-card';
+            card.innerHTML =
+                '<div class="image-frame">' +
+                    '<img src="' + e.target.result + '" alt="Preview">' +
+                    (i === 0 ? '<div class="cover-tag"><i class="fa-solid fa-star"></i> Cover</div>' : '') +
+                    '<button type="button" class="remove-image-btn" onclick="removeImage(' + itemIdx + ', ' + i + ')">' +
+                        '<i class="fa-solid fa-xmark"></i>' +
+                    '</button>' +
+                '</div>';
+            previewGrid.appendChild(card);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function removeImage(itemIdx, fileIndex) {
+    if (!itemFiles[itemIdx]) return;
+
+    // Remove the file
+    itemFiles[itemIdx].splice(fileIndex, 1);
+
+    // Update preview
+    updatePreview(itemIdx);
+
+    // Sync files to input
+    syncFilesToInput(itemIdx);
+}
+
+function syncFilesToInput(itemIdx) {
+    const input = document.getElementById('fileInput' + itemIdx);
+    if (!input) return;
+
+    const dt = new DataTransfer();
+    if (itemFiles[itemIdx]) {
+        itemFiles[itemIdx].forEach(function(file) {
+            dt.items.add(file);
+        });
+    }
+    input.files = dt.files;
+}
+
+// Add CSS for remove button
 
 // Mouse glow
 document.addEventListener('mousemove', function(e) {
@@ -366,5 +382,57 @@ document.addEventListener('mousemove', function(e) {
     if (glow) { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; }
 });
 
+// Form validation
+document.getElementById('createPostForm').addEventListener('submit', function(e) {
+    const items = document.querySelectorAll('.item-section');
+
+
+    let allValid = true;
+
+    items.forEach(function(item, index) {
+        const itemNum = index + 1;
+        const nameInput = item.querySelector('input[name^="item_name_"]');
+        const priceInput = item.querySelector('input[name^="item_price_"]');
+        const descInput = item.querySelector('textarea[name^="item_description_"]');
+        const fileInput = item.querySelector('input[type="file"]');
+
+        // Check name
+        if (nameInput && !nameInput.value.trim()) {
+            e.preventDefault();
+            showCustomAlert('Please enter a name for Item ' + itemNum + '.');
+            nameInput.focus();
+            allValid = false;
+            return false;
+        }
+
+        // Check price
+        if (priceInput && (!priceInput.value || parseInt(priceInput.value) <= 0)) {
+            e.preventDefault();
+            showCustomAlert('Please enter a valid price for Item ' + itemNum + '.');
+            priceInput.focus();
+            allValid = false;
+            return false;
+        }
+
+        // Check description
+        if (descInput && !descInput.value.trim()) {
+            e.preventDefault();
+            showCustomAlert('Please enter a description for Item ' + itemNum + '.');
+            descInput.focus();
+            allValid = false;
+            return false;
+        }
+
+        // Check image
+        if (!itemFiles[itemNum - 1] || itemFiles[itemNum - 1].length === 0) {
+            e.preventDefault();
+            showCustomAlert('Please upload at least one image for Item .');
+            allValid = false;
+            return false;
+        }
+    });
+
+    if (!allValid) return false;
+});
 // Add first item on load
 addItem();
