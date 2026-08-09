@@ -1,13 +1,78 @@
 from django import forms
-from .models import DepositRequest, WithdrawRequest
+from django.core.validators import RegexValidator
 from PIL import Image
-import re
 
+from .models import DepositRequest, WithdrawRequest
+
+
+# =========================================================
+# PHONE VALIDATOR
+# =========================================================
+# Myanmar phone number:
+#
+# Must:
+#   - Start with 09
+#   - Contain 8 to 11 digits total
+#
+# Examples:
+#   09123456
+#   091234567
+#   0912345678
+#   09123456789
+#
+# Pattern:
+#   09 + 6 to 9 additional digits
+# =========================================================
+
+phone_validator = RegexValidator(
+    regex=r"^09\d{6,9}$",
+    message=(
+        "Phone number must start with 09 "
+        "and contain 8 to 11 digits."
+    ),
+    code="invalid_phone",
+)
+
+
+# =========================================================
+# DEPOSIT FORM
+# =========================================================
 
 class DepositForm(forms.ModelForm):
+    payment_method = forms.ChoiceField(
+        choices=[
+            ("", "Choose Payment Method"),
+            ("KBZ Pay", "KBZ Pay"),
+            ("Wave Pay", "Wave Pay"),
+            ("AYA Pay", "AYA Pay"),
+            ("CB Pay", "CB Pay"),
+        ],
+        required=True,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select modern-input",
+            }
+        ),
+    )
+
+    sender_phone = forms.CharField(
+        min_length=8,
+        max_length=11,
+        required=True,
+        validators=[phone_validator],
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control modern-input",
+                "placeholder": "09XXXXXXXXX",
+                "inputmode": "numeric",
+                "autocomplete": "tel",
+                "pattern": r"09\d{6,9}",
+                "maxlength": "11",
+            }
+        ),
+    )
 
     class Meta:
-
         model = DepositRequest
 
         fields = [
@@ -21,38 +86,33 @@ class DepositForm(forms.ModelForm):
         ]
 
         widgets = {
-
-            "payment_method": forms.Select(
-                attrs={
-                    "class": "form-select modern-input"
-                }
-            ),
-
             "sender_name": forms.TextInput(
                 attrs={
                     "class": "form-control modern-input",
-                    "placeholder": "Sender Name"
-                }
-            ),
-
-            "sender_phone": forms.TextInput(
-                attrs={
-                    "class": "form-control modern-input",
-                    "placeholder": "09xxxxxxxxx"
+                    "placeholder": "Sender Name",
                 }
             ),
 
             "transaction_id": forms.TextInput(
                 attrs={
                     "class": "form-control modern-input",
-                    "placeholder": "Transaction ID"
+                    "placeholder": "Transaction ID",
                 }
             ),
 
             "amount": forms.NumberInput(
                 attrs={
                     "class": "form-control modern-input",
-                    "placeholder": "Enter deposit amount"
+                    "placeholder": "Enter deposit amount",
+                    "min": "1000",
+                    "step": "1",
+                }
+            ),
+
+            "screenshot": forms.ClearableFileInput(
+                attrs={
+                    "class": "form-control modern-input",
+                    "accept": "image/jpeg,image/png",
                 }
             ),
 
@@ -60,86 +120,40 @@ class DepositForm(forms.ModelForm):
                 attrs={
                     "class": "form-control modern-input",
                     "rows": 4,
-                    "placeholder": "Optional note..."
+                    "placeholder": "Optional note...",
                 }
             ),
         }
-
-    def clean_sender_phone(self):
-
-        phone = self.cleaned_data["sender_phone"]
-
-        if not phone.startswith("09"):
-            raise forms.ValidationError(
-                "Phone number must start with 09."
-            )
-
-        if len(phone) < 9 or len(phone) > 11:
-            raise forms.ValidationError(
-                "Enter a valid Myanmar phone number."
-            )
-
-        return phone
-
-    def clean_amount(self):
-
-        amount = self.cleaned_data["amount"]
-
-        if amount < 1000:
-            raise forms.ValidationError(
-                "Minimum deposit amount is MMK 1,000."
-            )
-
-        return amount
-
-    def clean_screenshot(self):
-
-        image = self.cleaned_data.get("screenshot")
-
-        if not image:
-            raise forms.ValidationError(
-                "Please upload your payment screenshot."
-            )
-
-        if image.size > 5 * 1024 * 1024:
-            raise forms.ValidationError(
-                "Screenshot must be smaller than 5 MB."
-            )
-
-        allowed = [
-            "image/jpeg",
-            "image/png",
-        ]
-
-        if image.content_type not in allowed:
-            raise forms.ValidationError(
-                "Only JPG and PNG images are allowed."
-            )
-
-        # Check image dimensions
-        img = Image.open(image)
-
-        if img.width < 500 or img.height < 500:
-            raise forms.ValidationError(
-                "Image resolution is too low. Please upload a clearer screenshot."
-            )
-
-        return image
-
-    def clean_transaction_id(self):
-
-        tx = self.cleaned_data["transaction_id"]
-
-        if DepositRequest.objects.filter(transaction_id=tx).exists():
-            raise forms.ValidationError(
-                "Transaction ID already exists."
-            )
-
-        return tx
-
-
+# =========================================================
+# WITHDRAW FORM
+# =========================================================
 
 class WithdrawForm(forms.ModelForm):
+
+    # -----------------------------------------------------
+    # RECEIVER PHONE
+    # -----------------------------------------------------
+
+    receiver_phone = forms.CharField(
+        min_length=8,
+        max_length=11,
+        required=True,
+        validators=[phone_validator],
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control modern-input",
+                "placeholder": "09XXXXXXXXX",
+                "inputmode": "numeric",
+                "autocomplete": "tel",
+                "pattern": r"09\d{6,9}",
+                "maxlength": "11",
+            }
+        ),
+    )
+
+    # -----------------------------------------------------
+    # META
+    # -----------------------------------------------------
 
     class Meta:
 
@@ -155,86 +169,145 @@ class WithdrawForm(forms.ModelForm):
 
         widgets = {
 
+            # ---------------------------------------------
+            # PAYMENT METHOD
+            # ---------------------------------------------
+
             "payment_method": forms.Select(
                 attrs={
-                    "class": "form-select"
+                    "class": "form-select modern-input",
                 }
             ),
+
+            # ---------------------------------------------
+            # RECEIVER NAME
+            # ---------------------------------------------
 
             "receiver_name": forms.TextInput(
                 attrs={
-                    "class": "form-control",
-                    "placeholder": "Receiver Name"
+                    "class": "form-control modern-input",
+                    "placeholder": "Receiver Name",
+                    "autocomplete": "name",
                 }
             ),
 
-            "receiver_phone": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "09xxxxxxxxx"
-                }
-            ),
+            # ---------------------------------------------
+            # AMOUNT
+            # ---------------------------------------------
 
             "amount": forms.NumberInput(
                 attrs={
-                    "class": "form-control",
-                    "placeholder": "Minimum MMK 1,000"
+                    "class": "form-control modern-input",
+                    "placeholder": "Minimum MMK 1,000",
+                    "min": "1000",
+                    "step": "1",
+                    "inputmode": "decimal",
                 }
             ),
 
+            # ---------------------------------------------
+            # NOTE
+            # ---------------------------------------------
+
             "note": forms.Textarea(
                 attrs={
-                    "class": "form-control",
+                    "class": "form-control modern-input",
                     "rows": 3,
-                    "placeholder": "Optional note..."
+                    "placeholder": "Optional note...",
                 }
             ),
         }
 
-    def clean_amount(self):
+    # -----------------------------------------------------
+    # INITIALIZE
+    # -----------------------------------------------------
 
-        amount = self.cleaned_data.get("amount")
+    def __init__(self, *args, **kwargs):
 
-        if amount is None:
-            raise forms.ValidationError(
-                "Please enter the withdrawal amount."
-            )
+        super().__init__(*args, **kwargs)
 
-        if amount < 1000:
-            raise forms.ValidationError(
-                "The minimum withdrawal amount is MMK 1,000."
-            )
+        self.fields["payment_method"].empty_label = "Choose Payment Method"
 
-        return amount
+    # -----------------------------------------------------
+    # CLEAN RECEIVER NAME
+    # -----------------------------------------------------
 
     def clean_receiver_name(self):
 
-        name = self.cleaned_data.get("receiver_name")
+        name = self.cleaned_data.get(
+            "receiver_name",
+            ""
+        ).strip()
 
-        if len(name.strip()) < 3:
+        if not name:
+
+            raise forms.ValidationError(
+                "Please enter the receiver name."
+            )
+
+        if len(name) < 3:
+
             raise forms.ValidationError(
                 "Receiver name must contain at least 3 characters."
             )
 
         return name
 
+    # -----------------------------------------------------
+    # CLEAN RECEIVER PHONE
+    # -----------------------------------------------------
+
     def clean_receiver_phone(self):
 
-        phone = self.cleaned_data.get("receiver_phone")
+        phone = self.cleaned_data.get(
+            "receiver_phone",
+            ""
+        ).strip()
+
+        if not phone:
+
+            raise forms.ValidationError(
+                "Please enter the receiver phone number."
+            )
+
+        if not phone.isdigit():
+
+            raise forms.ValidationError(
+                "Phone number must contain digits only."
+            )
 
         if not phone.startswith("09"):
+
             raise forms.ValidationError(
                 "Phone number must start with 09."
             )
 
+        if len(phone) < 8 or len(phone) > 11:
 
-    def clean_receiver_phone(self):
-
-        phone = self.cleaned_data.get("receiver_phone").strip()
-
-        if not re.fullmatch(r"09\d{9}", phone):
             raise forms.ValidationError(
-                "Enter a valid Myanmar phone number (e.g. 09123456789)."
+                "Phone number must contain 8 to 11 digits."
             )
 
         return phone
+
+    # -----------------------------------------------------
+    # CLEAN AMOUNT
+    # -----------------------------------------------------
+
+    def clean_amount(self):
+
+        amount = self.cleaned_data.get("amount")
+
+        if amount is None:
+
+            raise forms.ValidationError(
+                "Please enter the withdrawal amount."
+            )
+
+        if amount < 1000:
+
+            raise forms.ValidationError(
+                "The minimum withdrawal amount is MMK 1,000."
+            )
+
+        return amount

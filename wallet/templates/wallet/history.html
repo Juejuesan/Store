@@ -290,7 +290,7 @@
                 TRANSACTION HISTORY TABLE
         ======================================= -->
 
-        <div class="glass-card">
+        <div class="glass-card transaction-history-box">
 
             <div class="section-title">
 
@@ -304,29 +304,35 @@
 
             </div>
 
-            <div class="table-responsive">
+            <div class="transaction-table-wrapper">
 
                 <table class="table history-table align-middle">
 
-                    <thead>
+                   <colgroup>
 
-                        <tr>
+                       <col class="col-type">
+                       <col class="col-amount">
+                       <col class="col-status">
+                       <col class="col-description">
+                       <col class="col-reference">
+                       <col class="col-date">
 
-                            <th>Type</th>
+                   </colgroup>
 
-                            <th>Amount</th>
+                   <thead>
 
-                            <th>Status</th>
+                       <tr>
 
-                            <th>Description</th>
+                           <th>Type</th>
+                           <th>Amount</th>
+                           <th>Status</th>
+                           <th>Description</th>
+                           <th>Reference</th>
+                           <th>Date</th>
 
-                            <th>Reference</th>
+                       </tr>
 
-                            <th>Date</th>
-
-                        </tr>
-
-                    </thead>
+                   </thead>
 
                     <tbody>
 
@@ -404,7 +410,7 @@
 
                                 {% if transaction.status == "Approved" %}
 
-                                    <span class="badge bg-success">
+                                    <span class="status-badge approved">
 
                                         Approved
 
@@ -412,7 +418,7 @@
 
                                 {% elif transaction.status == "Rejected" %}
 
-                                    <span class="badge bg-danger">
+                                    <span class="status-badge rejected">
 
                                         Rejected
 
@@ -420,7 +426,7 @@
 
                                 {% else %}
 
-                                    <span class="badge bg-warning text-dark">
+                                    <span class="status-badge pending">
 
                                         Pending
 
@@ -445,14 +451,19 @@
                                 {{ transaction.reference_id|default:"-" }}
 
                             </td>
-
                             <!-- Date -->
 
-                            <td>
+                            <td class="transaction-date">
 
-                                {{ transaction.created_at|date:"d M Y H:i" }}
+                               <span>
+                                   {{ transaction.created_at|date:"d M Y" }}
+                               </span>
 
-                            </td>
+                               <small>
+                                   {{ transaction.created_at|date:"h:i A" }}
+                               </small>
+
+                           </td>
 
                         </tr>
 

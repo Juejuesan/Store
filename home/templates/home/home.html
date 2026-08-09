@@ -30,8 +30,59 @@
 
 <body>
 
+{% if messages %}
+
+<div class="message-overlay" id="messageOverlay">
+
+    <div class="message-modal">
+
+        {% for message in messages %}
+
+            {% if message.tags == "success" %}
+
+                <div class="message-icon success">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+
+                <h3>Success</h3>
+
+            {% elif message.tags == "error" %}
+
+                <div class="message-icon error">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+
+                <h3>Please check</h3>
+
+            {% else %}
+
+                <div class="message-icon">
+                    <i class="fa-solid fa-info"></i>
+                </div>
+
+                <h3>Notice</h3>
+
+            {% endif %}
+
+            <p>{{ message }}</p>
+
+        {% endfor %}
+
+        <div class="message-progress">
+            <span></span>
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
 
 {% include "includes/navbar.html" %}
+
+
+
     <!-- ==================================================
          HERO SECTION
     ================================================== -->
@@ -226,12 +277,38 @@
     ================================================== -->
 
 {% include "includes/footer.html" %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const messageOverlay =
+        document.getElementById("messageOverlay");
+
+    if (!messageOverlay) {
+        return;
+    }
+
+    setTimeout(function () {
+
+        messageOverlay.classList.add("message-closing");
+
+        setTimeout(function () {
+
+            messageOverlay.remove();
+
+        }, 250);
+
+    }, 2000);
+
+});
+</script>
     <!-- ==================================================
          JAVASCRIPT SECTION
     ================================================== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/about.js' %}"></script>
     <script src="{% static 'js/header-footer.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 
 </html>

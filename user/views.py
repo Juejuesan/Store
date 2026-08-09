@@ -168,47 +168,38 @@ def login_view(request):
 
     if request.method == "POST":
 
-        form = LoginForm(
-            request.POST
-        )
+        form = LoginForm(request.POST)
 
         if form.is_valid():
 
-            username_or_email = (
-                form.cleaned_data.get(
-                    "username"
-                )
-            )
+            username_or_email = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
 
-            password = (
-                form.cleaned_data.get(
-                    "password"
-                )
-            )
-
-            # Authenticate
             user = authenticate(
                 request,
                 username=username_or_email,
                 password=password
             )
 
-            # Login successful
+            # ==========================================
+            # SUCCESSFUL LOGIN
+            # ==========================================
+
             if user is not None:
 
-                login(
-                    request,
-                    user
-                )
+                login(request, user)
 
                 messages.success(
                     request,
-                    f"Welcome back, {user.username}!"
+                    f"Welcome back, {user.profile.fullName}!"
                 )
 
                 return redirect("home")
 
-            # Login failed
+            # ==========================================
+            # FAILED LOGIN
+            # ==========================================
+
             messages.error(
                 request,
                 "Invalid username/email or password."
@@ -226,7 +217,6 @@ def login_view(request):
         }
     )
 
-
 # ==========================================
 # LOGOUT
 # ==========================================
@@ -240,7 +230,7 @@ def logout_view(request):
         "You have been logged out."
     )
 
-    return redirect("home")
+    return redirect("welcome")
 
 
 # ==========================================

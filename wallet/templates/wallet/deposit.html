@@ -80,13 +80,13 @@ Deposit Wallet
 
                 <h2>
 
-                    MMK
-
                     <strong>
 
                         {{ wallet.balance }}
 
                     </strong>
+
+                    MMK
 
                 </h2>
 
@@ -143,20 +143,21 @@ Deposit Wallet
                         {% csrf_token %}
                                                 <div class="row g-4">
 
-                            <!-- Payment Method -->
+                            <select
+    name="{{ form.payment_method.html_name }}"
+    id="{{ form.payment_method.id_for_label }}"
+    class="form-select modern-input"
+    required
+>
+    <option value="" disabled selected>
+        Choose Payment Method
+    </option>
 
-                            <div class="col-md-6">
-
-                                <label class="form-label">
-
-                                    Payment Method
-
-                                </label>
-
-                                {{ form.payment_method }}
-
-
-                            </div>
+    <option value="KBZ Pay">KBZ Pay</option>
+    <option value="Wave Pay">Wave Pay</option>
+    <option value="AYA Pay">AYA Pay</option>
+    <option value="CB Pay">CB Pay</option>
+</select>
 
                             <!-- Sender Name -->
                             <div class="mb-4">

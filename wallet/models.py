@@ -1,19 +1,9 @@
 from decimal import Decimal
 
-from django.core.exceptions import ValidationError
-from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
-from django.core.validators import RegexValidator
+from django.db import models
 
-
-
-
-
-phone_validator = RegexValidator(
-    regex=r'^09\d{9}$',
-    message="Enter a valid Myanmar phone number (e.g. 09123456789)."
-)
 
 # ==========================================================
 # WALLET
@@ -25,33 +15,62 @@ class Wallet(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name="wallet"
+        related_name="wallet",
     )
 
     balance = models.DecimalField(
         max_digits=15,
         decimal_places=2,
-        default=0
+        default=Decimal("0.00"),
+        validators=[
+            MinValueValidator(
+                Decimal("0.00")
+            )
+        ],
     )
 
     created_at = models.DateTimeField(
-        auto_now_add=True
+        auto_now_add=True,
     )
 
     updated_at = models.DateTimeField(
-        auto_now=True
+        auto_now=True,
     )
 
+    class Meta:
+
+        ordering = ["-created_at"]
+
+        indexes = [
+            models.Index(
+                fields=["created_at"]
+            ),
+        ]
+
     def __str__(self):
+
         return f"{self.user.username} Wallet"
+
+
 # ==========================================================
 # DEPOSIT REQUEST
-# User uploads payment screenshot
-# Admin approves manually
+#
+# User submits:
+#   - Payment method
+#   - Sender information
+#   - Transaction ID
+#   - Amount
+#   - Payment screenshot
+#
+# Admin manually approves/rejects the request.
 # ==========================================================
 
 class DepositRequest(models.Model):
 
+    # ------------------------------------------------------
+    # STATUS
+    # ------------------------------------------------------
+
     STATUS = (
 
         ("Pending", "Pending"),
@@ -59,6 +78,10 @@ class DepositRequest(models.Model):
         ("Rejected", "Rejected"),
 
     )
+
+    # ------------------------------------------------------
+    # PAYMENT METHODS
+    # ------------------------------------------------------
 
     PAYMENT_METHOD = (
 
@@ -69,62 +92,130 @@ class DepositRequest(models.Model):
 
     )
 
+    # ------------------------------------------------------
+    # USER
+    # ------------------------------------------------------
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="deposits"
+        related_name="deposits",
     )
+
+    # ------------------------------------------------------
+    # PAYMENT METHOD
+    # ------------------------------------------------------
 
     payment_method = models.CharField(
         max_length=30,
-        choices=PAYMENT_METHOD
+        choices=PAYMENT_METHOD,
     )
+
+    # ------------------------------------------------------
+    # SENDER NAME
+    # ------------------------------------------------------
+
+    sender_name = models.CharField(
+        max_length=100,
+    )
+
+    # ------------------------------------------------------
+    # SENDER PHONE
+    #
+    # Form validation handles:
+    # 09 + 6 to 9 digits
+    # Total = 8 to 11 digits
+    # ------------------------------------------------------
 
     sender_phone = models.CharField(
         max_length=11,
-        validators = [phone_validator]
+        null=True,
+        blank=True,
     )
+
+    # ------------------------------------------------------
+    # TRANSACTION ID
+    # ------------------------------------------------------
+    # Must be unique so the same payment cannot be
+    # submitted multiple times.
+    # ------------------------------------------------------
 
     transaction_id = models.CharField(
         max_length=100,
-        unique=True
+        unique=True,
     )
+
+    # ------------------------------------------------------
+    # AMOUNT
+    # ------------------------------------------------------
 
     amount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         validators=[
             MinValueValidator(
-                Decimal("1000.00"),
+                Decimal("1000.00")
             )
-        ]
+        ],
     )
+
+    # ------------------------------------------------------
+    # PAYMENT SCREENSHOT
+    # ------------------------------------------------------
 
     screenshot = models.ImageField(
-        upload_to="deposit_ss/"
+        upload_to="deposit_ss/",
     )
 
+    # ------------------------------------------------------
+    # USER NOTE
+    # ------------------------------------------------------
+
     note = models.TextField(
-        blank=True
+        blank=True,
     )
+
+    # ------------------------------------------------------
+    # REQUEST STATUS
+    # ------------------------------------------------------
 
     status = models.CharField(
         max_length=20,
         choices=STATUS,
-        default="Pending"
+        default="Pending",
     )
+
+    # ------------------------------------------------------
+    # ADMIN REMARK
+    # ------------------------------------------------------
 
     admin_remark = models.TextField(
-        blank=True
+        blank=True,
     )
 
+    # ------------------------------------------------------
+    # CREATED
+    # ------------------------------------------------------
+
     created_at = models.DateTimeField(
-        auto_now_add=True
+        auto_now_add=True,
     )
+
+    # ------------------------------------------------------
+    # UPDATED
+    # ------------------------------------------------------
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    # ------------------------------------------------------
+    # APPROVAL INFORMATION
+    # ------------------------------------------------------
 
     approved_at = models.DateTimeField(
         null=True,
-        blank=True
+        blank=True,
     )
 
     approved_by = models.ForeignKey(
@@ -132,12 +223,12 @@ class DepositRequest(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="approved_deposit_requests"
+        related_name="approved_deposit_requests",
     )
 
-    sender_name = models.CharField(
-        max_length=100
-    )
+    # ------------------------------------------------------
+    # META
+    # ------------------------------------------------------
 
     class Meta:
 
@@ -145,23 +236,49 @@ class DepositRequest(models.Model):
 
         indexes = [
 
-            models.Index(fields=["status"]),
+            models.Index(
+                fields=["status"]
+            ),
 
-            models.Index(fields=["transaction_id"]),
+            models.Index(
+                fields=["transaction_id"]
+            ),
 
-            models.Index(fields=["created_at"]),
+            models.Index(
+                fields=["created_at"]
+            ),
+
+            models.Index(
+                fields=["user", "status"]
+            ),
 
         ]
 
+    # ------------------------------------------------------
+    # STRING
+    # ------------------------------------------------------
+
     def __str__(self):
 
-        return f"Deposit #{self.id} - {self.user.username}"
+        return (
+            f"Deposit #{self.id} - "
+            f"{self.user.username}"
+        )
+
+
 # ==========================================================
 # WITHDRAW REQUEST
+#
+# User requests money from their wallet.
+# Admin manually approves/rejects the request.
 # ==========================================================
 
 class WithdrawRequest(models.Model):
 
+    # ------------------------------------------------------
+    # STATUS
+    # ------------------------------------------------------
+
     STATUS = (
 
         ("Pending", "Pending"),
@@ -170,68 +287,124 @@ class WithdrawRequest(models.Model):
 
     )
 
+    # ------------------------------------------------------
+    # PAYMENT METHODS
+    # ------------------------------------------------------
+
     PAYMENT_METHOD = (
 
         ("KBZ Pay", "KBZ Pay"),
         ("Wave Pay", "Wave Pay"),
         ("AYA Pay", "AYA Pay"),
         ("CB Pay", "CB Pay"),
-
         ("Bank Transfer", "Bank Transfer"),
 
     )
 
+    # ------------------------------------------------------
+    # USER
+    # ------------------------------------------------------
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="withdraws"
+        related_name="withdraws",
     )
+
+    # ------------------------------------------------------
+    # PAYMENT METHOD
+    # ------------------------------------------------------
 
     payment_method = models.CharField(
         max_length=30,
-        choices=PAYMENT_METHOD
+        choices=PAYMENT_METHOD,
     )
 
+    # ------------------------------------------------------
+    # RECEIVER NAME
+    # ------------------------------------------------------
+
     receiver_name = models.CharField(
-        max_length=100
+        max_length=100,
     )
+
+    # ------------------------------------------------------
+    # RECEIVER PHONE
+    #
+    # Form validation handles:
+    # 09 + 6 to 9 digits
+    # Total = 8 to 11 digits
+    # ------------------------------------------------------
 
     receiver_phone = models.CharField(
         max_length=11,
-        validators=[phone_validator]
+        null=True,
+        blank=True,
     )
+
+    # ------------------------------------------------------
+    # AMOUNT
+    # ------------------------------------------------------
 
     amount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
         validators=[
             MinValueValidator(
-                Decimal("1000.00"),
+                Decimal("1000.00")
             )
-        ]
+        ],
     )
 
+    # ------------------------------------------------------
+    # USER NOTE
+    # ------------------------------------------------------
+
     note = models.TextField(
-        blank=True
+        blank=True,
     )
+
+    # ------------------------------------------------------
+    # REQUEST STATUS
+    # ------------------------------------------------------
 
     status = models.CharField(
         max_length=20,
         choices=STATUS,
-        default="Pending"
+        default="Pending",
     )
+
+    # ------------------------------------------------------
+    # ADMIN REMARK
+    # ------------------------------------------------------
 
     admin_remark = models.TextField(
-        blank=True
+        blank=True,
     )
 
+    # ------------------------------------------------------
+    # CREATED
+    # ------------------------------------------------------
+
     created_at = models.DateTimeField(
-        auto_now_add=True
+        auto_now_add=True,
     )
+
+    # ------------------------------------------------------
+    # UPDATED
+    # ------------------------------------------------------
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    # ------------------------------------------------------
+    # APPROVAL INFORMATION
+    # ------------------------------------------------------
 
     approved_at = models.DateTimeField(
         null=True,
-        blank=True
+        blank=True,
     )
 
     approved_by = models.ForeignKey(
@@ -239,8 +412,12 @@ class WithdrawRequest(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="approved_withdraw_requests"
+        related_name="approved_withdraw_requests",
     )
+
+    # ------------------------------------------------------
+    # META
+    # ------------------------------------------------------
 
     class Meta:
 
@@ -248,22 +425,53 @@ class WithdrawRequest(models.Model):
 
         indexes = [
 
-            models.Index(fields=["status"]),
+            models.Index(
+                fields=["status"]
+            ),
 
-            models.Index(fields=["created_at"]),
+            models.Index(
+                fields=["created_at"]
+            ),
+
+            models.Index(
+                fields=["user", "status"]
+            ),
 
         ]
 
+    # ------------------------------------------------------
+    # STRING
+    # ------------------------------------------------------
 
     def __str__(self):
 
-        return f"Withdraw #{self.id} - {self.user.username}"
+        return (
+            f"Withdraw #{self.id} - "
+            f"{self.user.username}"
+        )
+
+
 # ==========================================================
-# WALLET HISTORY
-# Every money movement is recorded forever
+# WALLET TRANSACTION
+#
+# Permanent wallet history.
+#
+# Examples:
+#
+# Deposit
+# Withdraw
+# Payment
+# Refund
+#
+# IMPORTANT:
+# Do not delete transaction history after approval.
 # ==========================================================
 
 class WalletTransaction(models.Model):
+
+    # ------------------------------------------------------
+    # TRANSACTION TYPES
+    # ------------------------------------------------------
 
     TRANSACTION_TYPES = (
 
@@ -274,6 +482,10 @@ class WalletTransaction(models.Model):
 
     )
 
+    # ------------------------------------------------------
+    # STATUS
+    # ------------------------------------------------------
+
     STATUS = (
 
         ("Pending", "Pending"),
@@ -282,45 +494,117 @@ class WalletTransaction(models.Model):
 
     )
 
+    # ------------------------------------------------------
+    # WALLET
+    # ------------------------------------------------------
+
     wallet = models.ForeignKey(
         Wallet,
         on_delete=models.CASCADE,
-        related_name="transactions"
+        related_name="transactions",
     )
+
+    # ------------------------------------------------------
+    # TRANSACTION TYPE
+    # ------------------------------------------------------
 
     transaction_type = models.CharField(
         max_length=20,
-        choices=TRANSACTION_TYPES
+        choices=TRANSACTION_TYPES,
     )
+
+    # ------------------------------------------------------
+    # AMOUNT
+    # ------------------------------------------------------
 
     amount = models.DecimalField(
         max_digits=12,
-        decimal_places=2
+        decimal_places=2,
+        validators=[
+            MinValueValidator(
+                Decimal("0.01")
+            )
+        ],
     )
+
+    # ------------------------------------------------------
+    # STATUS
+    # ------------------------------------------------------
 
     status = models.CharField(
         max_length=20,
         choices=STATUS,
-        default="Pending"
+        default="Pending",
     )
+
+    # ------------------------------------------------------
+    # DESCRIPTION
+    # ------------------------------------------------------
 
     description = models.TextField(
-        blank=True
+        blank=True,
     )
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    # ------------------------------------------------------
+    # REFERENCE
+    #
+    # Examples:
+    #
+    # DepositRequest ID
+    # WithdrawRequest ID
+    # Order ID
+    # Refund ID
+    # ------------------------------------------------------
 
     reference_id = models.CharField(
         max_length=100,
-        blank=True
+        blank=True,
     )
+
+    # ------------------------------------------------------
+    # CREATED
+    # ------------------------------------------------------
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    # ------------------------------------------------------
+    # META
+    # ------------------------------------------------------
 
     class Meta:
 
         ordering = ["-created_at"]
 
+        indexes = [
+
+            models.Index(
+                fields=["wallet", "created_at"]
+            ),
+
+            models.Index(
+                fields=["transaction_type"]
+            ),
+
+            models.Index(
+                fields=["status"]
+            ),
+
+            models.Index(
+                fields=["reference_id"]
+            ),
+
+        ]
+
+    # ------------------------------------------------------
+    # STRING
+    # ------------------------------------------------------
+
     def __str__(self):
 
-        return f"{self.transaction_type} - {self.wallet.user.username}"
+        return (
+            f"{self.transaction_type} - "
+            f"{self.wallet.user.username} - "
+            f"{self.amount}"
+        )
