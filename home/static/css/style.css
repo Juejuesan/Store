@@ -2189,3 +2189,53 @@ footer a:hover{
     }
 
 }
+
+/*==================================================
+            IMAGE SLIDER ON HOVER
+==================================================*/
+.post-image-slider {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1;
+    border-radius: 12px;
+}
+
+.post-image-slider img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+}
+
+.product-image-box {
+    position: relative;
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.post-image-slider:hover .slider-dots {
+    opacity: 1;
+}
+
+.slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    transition: background 0.3s;
+}
+
+.slider-dot.active {
+    background: white;
+}
+

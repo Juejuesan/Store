@@ -100,6 +100,17 @@ class Item(models.Model):
             return self.total_quantity > 0
         return self.simple_quantity > 0
 
+    def save(self, *args, **kwargs):
+        # Remove this auto-override or add a flag to skip it
+        if not kwargs.pop('skip_has_sizes', False):  # Allow skipping
+            if self.post:
+                category_supports_sizes = self.post.category.size_type != 'none'
+                is_new_item = self.post.condition == 'new'
+                self.has_sizes = category_supports_sizes and is_new_item
+            else:
+                self.has_sizes = False
+        super().save(*args, **kwargs)
+
 
 class SizeVariant(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='size_variants')
