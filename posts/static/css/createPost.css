@@ -1225,5 +1225,19 @@ body {
     margin-top: 25px;
 }
 
+/* Optional: Add to your stylesheet */
+.custom-alert-limit i {
+    font-size: 18px;
+    flex-shrink: 0;
+}
 
+/* Pulse animation for the alert icon */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.custom-alert-limit i.fa-circle-exclamation {
+    animation: pulse 2s infinite;
+}
 

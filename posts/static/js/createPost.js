@@ -26,6 +26,114 @@ function checkSizeVisibility() {
     if (condition === 'new' && sizeType && sizeType !== 'none') { loadSizes(); }
     else { sizeOptions = []; updateAllSizeCharts(); }
 }
+function showCustomAlert(message) {
+    // Get existing alerts count for stacking
+    const existingAlerts = document.querySelectorAll('.custom-alert-limit');
+    const offsetTop = 20 + (existingAlerts.length * 70); // Stack each alert 70px apart
+
+    // Create alert element
+    const alert = document.createElement('div');
+    alert.className = 'custom-alert custom-alert-limit';
+
+    // Determine icon based on message content
+    let icon = 'fa-circle-exclamation';
+    let bgColor = '#fef2f2';
+    let textColor = '#dc2626';
+    let borderColor = '#dc2626';
+
+    if (message.includes('✅') || message.includes('success')) {
+        icon = 'fa-circle-check';
+        bgColor = '#f0fdf4';
+        textColor = '#16a34a';
+        borderColor = '#22c55e';
+    } else if (message.includes('⚠️') || message.includes('warning')) {
+        icon = 'fa-triangle-exclamation';
+        bgColor = '#fffbeb';
+        textColor = '#d97706';
+        borderColor = '#f59e0b';
+    }
+
+    alert.innerHTML = '<i class="fa-solid ' + icon + '"></i> ' + message;
+
+    // Style for stacked notifications
+    alert.style.cssText = `
+        position: fixed;
+        top: ${offsetTop}px;
+        right: -400px;
+        width: 380px;
+        padding: 16px 20px;
+        background: ${bgColor};
+        color: ${textColor};
+        border-left: 4px solid ${borderColor};
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 14px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        z-index: ${9999 - existingAlerts.length};
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+    `;
+
+    // Add close button
+    const closeBtn = document.createElement('span');
+    closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    closeBtn.style.cssText = `
+        margin-left: auto;
+        opacity: 0.6;
+        font-size: 16px;
+        transition: opacity 0.2s;
+    `;
+    closeBtn.onmouseover = function() { this.style.opacity = '1'; };
+    closeBtn.onmouseout = function() { this.style.opacity = '0.6'; };
+    closeBtn.onclick = function(e) {
+        e.stopPropagation();
+        hideAlert(alert);
+    };
+    alert.appendChild(closeBtn);
+
+    // Add to body
+    document.body.appendChild(alert);
+
+    // Slide in from right
+    setTimeout(function() {
+        alert.style.right = '20px';
+    }, 100);
+
+    // Auto remove after 5 seconds
+    const autoRemove = setTimeout(function() {
+        hideAlert(alert);
+    }, 5000);
+
+    // Click to dismiss (cancel auto-remove)
+    alert.addEventListener('click', function(e) {
+        if (e.target !== closeBtn) {
+            clearTimeout(autoRemove);
+            hideAlert(alert);
+        }
+    });
+
+    function hideAlert(el) {
+        el.style.right = '-400px';
+        el.style.opacity = '0';
+        setTimeout(function() {
+            if (el.parentNode) {
+                el.remove();
+                // Reposition remaining alerts
+                repositionAlerts();
+            }
+        }, 400);
+    }
+
+    function repositionAlerts() {
+        const remainingAlerts = document.querySelectorAll('.custom-alert-limit');
+        remainingAlerts.forEach(function(al, idx) {
+            al.style.top = (20 + (idx * 70)) + 'px';
+        });
+    }
+}
 
 function addItem() {
     const existingItems = document.querySelectorAll('.item-section').length;
@@ -339,6 +447,15 @@ document.getElementById('createPostForm').addEventListener('submit', function(e)
     const form = e.target;
     const items = document.querySelectorAll('.item-section');
 
+    // Check if sizes should be required
+    const condition = document.getElementById('conditionSelect').value;
+    const categorySelect = document.getElementById('categorySelect');
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    const sizeType = selectedOption ? selectedOption.getAttribute('data-size-type') : null;
+    const categorySupportsSizes = sizeType && sizeType !== 'none';
+    const isNewItem = condition === 'new';
+    const shouldHaveSizes = categorySupportsSizes && isNewItem;
+
     // Validate items exist
     if (items.length === 0) {
         showCustomAlert('Please add at least one item.');
@@ -350,24 +467,68 @@ document.getElementById('createPostForm').addEventListener('submit', function(e)
     items.forEach(function(item, index) {
         var id = item.id.replace('item', '');
         var n = item.querySelector('input[name^="item_name_"]');
-        var p = item.querySelector('input[name^="item_price_"]');
         var d = item.querySelector('textarea[name^="item_description_"]');
 
+        // Item name validation
         if (allValid && n && !n.value.trim()) {
             showCustomAlert('Enter a name for Item ' + (index + 1) + '.');
             n.focus();
             allValid = false;
         }
-        if (allValid && p && (!p.value || parseInt(p.value) <= 0)) {
-            showCustomAlert('Enter a valid price for Item ' + (index + 1) + '.');
-            p.focus();
-            allValid = false;
-        }
+
+        // Description validation
         if (allValid && d && !d.value.trim()) {
             showCustomAlert('Enter a description for Item ' + (index + 1) + '.');
             d.focus();
             allValid = false;
         }
+
+        // SIZE VALIDATION - For Brand New items in size-supporting categories
+        if (shouldHaveSizes) {
+            // Check if any sizes are selected
+            if (allValid && (!selectedSizes[id] || selectedSizes[id].length === 0)) {
+                showCustomAlert('Select at least one size for Item ' + (index + 1));
+                allValid = false;
+
+                // Focus/highlight size chart
+                var sizeChart = document.getElementById('sizeChart' + id);
+                if (sizeChart) {
+                    sizeChart.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            // Check each selected size has quantity and price
+            if (allValid && selectedSizes[id] && selectedSizes[id].length > 0) {
+                selectedSizes[id].forEach(function(s, sIdx) {
+                    if (allValid && (!s.quantity || s.quantity <= 0)) {
+                        showCustomAlert('Enter a valid quantity for size "' + s.size + '" in Item ' + (index + 1) + '. Quantity must be greater than 0.');
+                        allValid = false;
+                    }
+                    if (allValid && (!s.price || s.price <= 0)) {
+                        showCustomAlert('Enter a valid price for size "' + s.size + '" in Item ' + (index + 1) + '. Price must be greater than 0.');
+                        allValid = false;
+                    }
+                });
+            }
+        } else {
+            // PRICE & QUANTITY VALIDATION - For items without sizes
+            var p = item.querySelector('input[name^="item_price_"]');
+            var q = item.querySelector('input[name^="simple_quantity_"]');
+
+            if (allValid && p && (!p.value || parseInt(p.value) <= 0)) {
+                showCustomAlert('Enter a valid price for Item ' + (index + 1) + '. Price must be greater than 0.');
+                p.focus();
+                allValid = false;
+            }
+
+            if (allValid && q && (!q.value || parseInt(q.value) <= 0)) {
+                showCustomAlert('Enter a valid quantity for Item ' + (index + 1) + '. Quantity must be greater than 0.');
+                q.focus();
+                allValid = false;
+            }
+        }
+
+        // Image validation
         if (allValid && (!itemFiles[id] || itemFiles[id].length === 0)) {
             showCustomAlert('Upload at least one image for Item ' + (index + 1) + '.');
             allValid = false;
