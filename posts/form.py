@@ -17,7 +17,7 @@ class ItemForm(forms.ModelForm):
 class SizeVariantForm(forms.ModelForm):
     class Meta:
         model = SizeVariant
-        fields = ['size', 'quantity']
+        fields = ['size', 'quantity','price']
 
 class ItemImageForm(forms.ModelForm):
     class Meta:

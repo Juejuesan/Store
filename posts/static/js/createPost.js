@@ -47,7 +47,7 @@ function addItem() {
             '<div class="product-grid">' +
                 '<div class="input-card item-qty-card" id="itemQtyCard' + newIndex + '">' +
                     '<label><i class="fa-solid fa-boxes-stacked"></i> Quantity *</label>' +
-                    '<input type="number" name="item_quantity_' + newIndex + '" placeholder="Enter quantity" value="1" min="1" required>' +
+                    '<input type="number" name="simple_quantity_' + newIndex + '" placeholder="Enter quantity" value="1" min="1" required>' +
                     '<small style="color:#64748b;font-size:12px;">This quantity will be used if no sizes are selected</small>' +
                 '</div>' +
             '</div>' +
@@ -230,13 +230,49 @@ function updateSelectedSizesDisplay(itemIdx) {
     const div = document.getElementById('selectedSizes' + itemIdx);
     if (!div) return;
     const qtyCard = document.getElementById('itemQtyCard' + itemIdx);
+
+    // find main price input and its card inside the item card
+    const priceInput = document.querySelector('#item' + itemIdx + ' input[name="item_price_' + itemIdx + '"]');
+    const priceCard = priceInput ? priceInput.closest('.input-card') : null;
+
+    // helper to enable/disable inputs and manage required attribute
+    function setInputState(input, enabled) {
+        if (!input) return;
+        input.disabled = !enabled;
+        if (!enabled) {
+            input.removeAttribute('required');
+            input.setAttribute('aria-hidden', 'true');
+        } else {
+            input.setAttribute('required', ''); // restore required when re-enabled
+            input.removeAttribute('aria-hidden');
+        }
+    }
+
+    // No sizes selected -> hide sizes block, show main qty & price
     if (!selectedSizes[itemIdx] || selectedSizes[itemIdx].length === 0) {
         div.innerHTML = '<input type="hidden" name="size_count_' + itemIdx + '" value="0">';
         div.style.display = 'none';
-        if (qtyCard) qtyCard.style.display = 'block';
+        if (qtyCard) {
+            qtyCard.style.display = 'block';
+            setInputState(qtyCard.querySelector('input'), true);
+        }
+        if (priceCard) {
+            priceCard.style.display = 'block';
+            setInputState(priceInput, true);
+        }
         return;
     }
-    if (qtyCard) qtyCard.style.display = 'none';
+
+    // Sizes selected -> hide main qty & price, show sizes block
+    if (qtyCard) {
+        qtyCard.style.display = 'none';
+        setInputState(qtyCard.querySelector('input'), false);
+    }
+    if (priceCard) {
+        priceCard.style.display = 'none';
+        setInputState(priceInput, false);
+    }
+
     div.style.display = 'block';
     var html = '<h4><i class="fa-solid fa-circle-check"></i> Selected Sizes</h4><input type="hidden" name="size_count_' + itemIdx + '" value="' + selectedSizes[itemIdx].length + '">';
     selectedSizes[itemIdx].forEach(function(so, j) {
@@ -412,6 +448,8 @@ document.getElementById('createPostForm').addEventListener('submit', function(e)
     return false;
 });
 
+
+
 // ============================================
 // INIT
 // ============================================
@@ -420,3 +458,4 @@ document.addEventListener('mousemove', function(e) {
     if (g) { g.style.left = e.clientX + 'px'; g.style.top = e.clientY + 'px'; }
 });
 addItem();
+
