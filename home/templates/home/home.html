@@ -26,6 +26,8 @@
     ================================================== -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/header-footer.css' %}">
+    <link rel="stylesheet" href="{% static 'css/post.css' %}">
+
 </head>
 
 <body>
@@ -168,87 +170,187 @@
                 </div>
             </div>
 
-            <!-- PRODUCT CARDS - DYNAMIC LOOP -->
-            <div class="row g-4">
-                {% for post in posts %}
-                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-                    <!-- ENTIRE CARD IS CLICKABLE -->
-                    <a href="{% url 'viewdetail' post.id %}" class="text-decoration-none">
-                        <div class="seller-card">
+       <!-- PRODUCT CARDS - DYNAMIC LOOP -->
+<div class="row g-4">
+    {% for post in posts %}
 
-                            <!-- SELLER INFO -->
-                            <div class="seller-top">
-                                <div class="seller-left">
-                                    {% if post.user.profile.profile_pic %}
-                                        <img src="{{ post.user.profile.profile_pic.url }}" class="seller-profile">
-                                    {% else %}
-                                        <i class="fa-solid fa-circle-user nav-profile-icon"></i>
-                                    {% endif %}
-                                    <div>
-                                        <h5>
-                                            {{ post.user.fullName }}
-                                            <i class="fa-solid fa-circle-check verified"></i>
-                                        </h5>
-                                        <span>
-                                            <i class="fa-regular fa-clock"></i>
-                                            {{ post.created_at|timesince }} ago
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
 
-                            <!-- IMAGE SLIDER -->
-                            <div class="product-image-box">
-                                <div class="post-image-slider"
-                                     data-images="{% for item in post.items.all %}{% if item.images.first %}{{ item.images.first.image.url }}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}"
-                                     onmouseenter="startSlide(this)"
-                                     onmouseleave="stopSlide(this)">
+        <a href="{% url 'viewdetail' post.id %}" class="post-card-link">
 
-                                    {% with first_item=post.items.first %}
-                                        {% if first_item.images.first %}
-                                            <img src="{{ first_item.images.first.image.url }}" class="product-image">
-                                        {% else %}
-                                            <img src="{% static 'images/no-image.png' %}" class="product-image">
-                                        {% endif %}
-                                    {% endwith %}
-                                </div>
-                                <span class="product-tag">{{ post.items.count }} items</span>
-                            </div>
+            <div class="seller-card">
 
-                            <!-- PRODUCT INFO -->
-                            <div class="product-body">
-                                <div class="title-price">
-                                    <h4>{{ post.category.name|default:"Product" }}</h4>
-                                    {% with first_item=post.items.first %}
-                                        <span class="price">From {{ first_item.price }} MMK</span>
-                                    {% endwith %}
-                                </div>
-                                <p>{{ post.description|truncatewords:20 }}</p>
+                <!-- =========================
+                     SELLER INFO
+                ========================== -->
+                <div class="seller-top">
 
-                                <div class="product-features">
-                                    <span>
-                                        <i class="fa-solid fa-box"></i>
-                                        {{ post.items.count }} items
-                                    </span>
-                                    <span>
-                                        <i class="fa-solid fa-check-circle"></i>
-                                        {{ post.condition|default:"New" }}
-                                    </span>
-                                </div>
-                            </div>
+                    <div class="seller-left">
+
+                        {% if post.user.profile.profile_pic %}
+
+                            <img
+                                src="{{ post.user.profile.profile_pic.url }}"
+                                class="seller-profile"
+                                alt="{{ post.user.fullName }}"
+                            >
+
+                        {% else %}
+
+                            <i class="fa-solid fa-circle-user nav-profile-icon"></i>
+
+                        {% endif %}
+
+                        <div>
+
+                            <h5>
+                                {{ post.user.fullName }}
+                                <i class="fa-solid fa-circle-check verified"></i>
+                            </h5>
+
+                            <span>
+                                <i class="fa-regular fa-clock"></i>
+                                {{ post.created_at|timesince }} ago
+                            </span>
 
                         </div>
-                    </a>
+
+                    </div>
+
                 </div>
-                {% empty %}
-                <div class="col-12 text-center py-5">
-                    <i class="fa-solid fa-box-open" style="font-size:60px;color:#94a3b8;"></i>
-                    <h3 class="mt-3">No posts available</h3>
-                    <p>Be the first to <a href="{% url 'create_post' %}">create a post</a>!</p>
+
+
+                <!-- =========================
+                     PRODUCT IMAGE
+                ========================== -->
+                <div class="product-image-box">
+
+                    <div
+                        class="post-image-slider"
+                        data-images="{% for item in post.items.all %}{% if item.images.first %}{{ item.images.first.image.url }}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}"
+                        onmouseenter="startSlide(this)"
+                        onmouseleave="stopSlide(this)"
+                    >
+
+                        {% with first_item=post.items.first %}
+
+                            {% if first_item.images.first %}
+
+                                <img
+                                    src="{{ first_item.images.first.image.url }}"
+                                    class="product-image"
+                                    alt="{{ post.category.name|default:'Product' }}"
+                                >
+
+                            {% else %}
+
+                                <img
+                                    src="{% static 'images/no-image.png' %}"
+                                    class="product-image"
+                                    alt="No image"
+                                >
+
+                            {% endif %}
+
+                        {% endwith %}
+
+                    </div>
+
+                    <span class="product-tag">
+                        {{ post.items.count }} items
+                    </span>
+
                 </div>
-                {% endfor %}
+
+
+                <!-- =========================
+                     PRODUCT INFO
+                ========================== -->
+                <div class="product-body">
+
+                    <div class="title-price">
+
+                        <h4>
+                            {{ post.category.name|default:"Product" }}
+                        </h4>
+
+                        {% with first_item=post.items.first %}
+
+                            <span class="price">
+                                From {{ first_item.price }} MMK
+                            </span>
+
+                        {% endwith %}
+
+                    </div>
+
+
+                    <p>
+                        {{ post.description|truncatewords:20 }}
+                    </p>
+
+
+                    <div class="product-features">
+
+                        <span>
+                            <i class="fa-solid fa-box"></i>
+                            {{ post.items.count }} items
+                        </span>
+
+                        <span>
+                            <i class="fa-solid fa-check-circle"></i>
+                            {{ post.condition|default:"New" }}
+                        </span>
+
+                    </div>
+
+                    <!-- =========================
+                         AVAILABLE SIZES
+                    ========================== -->
+                    {% with first_item=post.items.first %}
+                        {% if first_item.has_sizes and first_item.size_variants.all %}
+                        <div class="size-tags mt-2">
+                            {% for variant in first_item.size_variants.all %}
+                                {% if variant.quantity > 0 %}
+                                    <span class="size-tag">{{ variant.size }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% endwith %}
+
+                </div>
+
             </div>
+
+        </a>
+
+    </div>
+
+    {% empty %}
+
+    <div class="col-12 text-center py-5">
+
+        <i
+            class="fa-solid fa-box-open"
+            style="font-size:60px;color:#94a3b8;"
+        ></i>
+
+        <h3 class="mt-3">
+            No posts available
+        </h3>
+
+        <p>
+            Be the first to
+            <a href="{% url 'createPost' %}">
+                create a post
+            </a>!
+        </p>
+
+    </div>
+
+    {% endfor %}
+</div>
         </div>
     </section>
 

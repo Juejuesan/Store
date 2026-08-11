@@ -79,7 +79,14 @@
                         <div class="d-flex gap-2 align-items-center">
                             <div class="qty-selector">
                                 <button class="qty-btn qty-minus">−</button>
-                                <input type="number" class="qty-input" id="qty{{ forloop.counter0 }}" value="1" min="1" max="99" readonly>
+                                <input type="number"
+                                       class="qty-input"
+                                       id="qty{{ forloop.counter0 }}"
+                                       value="1"
+                                       min="1"
+                                       max="{% if item.has_sizes %}1{% else %}{{ item.simple_quantity }}{% endif %}"
+                                       data-default-max="{% if item.has_sizes %}1{% else %}{{ item.simple_quantity }}{% endif %}"
+                                       readonly>
                                 <button class="qty-btn qty-plus">+</button>
                             </div>
                             <button class="add-cart-btn flex-grow-1">
