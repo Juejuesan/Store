@@ -1,0 +1,275 @@
+{% extends "adminpanel/base_admin.html" %}
+{% load static %}
+
+{% block title %}
+    Users | Trusty Shop Admin
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1 class="page-title">
+            Registered Users
+        </h1>
+
+        <p class="page-subtitle">
+            View and manage all registered Trusty Shop users.
+        </p>
+    </div>
+
+    <div>
+        <span class="status pending">
+            {{ total_users }} Users
+        </span>
+    </div>
+
+</div>
+
+
+<div class="table-container">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th style="width:80px;">
+                    Photo
+                </th>
+
+                <th>
+                    Username
+                </th>
+
+                <th>
+                    Full Name
+                </th>
+
+                <th>
+                    Email
+                </th>
+
+                <th>
+                    Phone
+                </th>
+
+                <th>
+                    Gender
+                </th>
+
+                <th>
+                    Status
+                </th>
+
+                <th>
+                    Joined
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        {% for user in users %}
+
+        <tr>
+
+            <!-- ==========================
+                    Profile Photo
+            =========================== -->
+
+            <td>
+
+                {% if user.profile.profile_pic %}
+
+                    <img
+                        src="{{ user.profile.profile_pic.url }}"
+                        alt="{{ user.username }}"
+                        class="table-profile-image"
+                    >
+
+                {% else %}
+
+                    <div class="profile-placeholder">
+
+                        <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+                {% endif %}
+
+            </td>
+
+
+            <!-- ==========================
+                    Username
+            =========================== -->
+
+            <td>
+
+                <strong>
+                    {{ user.username }}
+                </strong>
+
+            </td>
+
+
+            <!-- ==========================
+                    Full Name
+            =========================== -->
+
+            <td>
+
+                {% if user.profile.fullName %}
+
+                    {{ user.profile.fullName }}
+
+                {% else %}
+
+                    <span style="color:#999;">
+                        No name
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+
+            <!-- ==========================
+                    Email
+            =========================== -->
+
+            <td>
+
+                {{ user.email }}
+
+            </td>
+
+
+            <!-- ==========================
+                    Phone
+            =========================== -->
+
+            <td>
+
+                {% if user.profile.phone_number %}
+
+                    {{ user.profile.phone_number }}
+
+                {% else %}
+
+                    <span style="color:#999;">
+                        No phone
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+
+            <!-- ==========================
+                    Gender
+            =========================== -->
+
+            <td>
+
+                {% if user.profile.gender == "M" %}
+
+                    Male
+
+                {% elif user.profile.gender == "F" %}
+
+                    Female
+
+                {% else %}
+
+                    <span style="color:#999;">
+                        Not set
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+
+            <!-- ==========================
+                    Status
+            =========================== -->
+
+            <td>
+
+                {% if user.profile.status == "Approved" %}
+
+                    <span class="status approved">
+                        Approved
+                    </span>
+
+                {% elif user.profile.status == "Banned" %}
+
+                    <span class="status rejected">
+                        Banned
+                    </span>
+
+                {% else %}
+
+                    <span class="status pending">
+                        {{ user.profile.status }}
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+
+            <!-- ==========================
+                    Joined Date
+            =========================== -->
+
+            <td>
+
+                {{ user.date_joined|date:"d M Y" }}
+
+            </td>
+
+        </tr>
+
+
+        {% empty %}
+
+        <tr>
+
+            <td colspan="8" class="empty-state">
+
+                <div class="profile-placeholder"
+                     style="margin:auto;">
+
+                    <i class="fa-solid fa-users"></i>
+
+                </div>
+
+                <h2>
+                    No Users Found
+                </h2>
+
+                <p>
+                    There are currently no registered users.
+                </p>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

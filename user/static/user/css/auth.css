@@ -1760,3 +1760,743 @@ REDUCED MOTION
 select option[value=""] {
     display: none;
 }
+
+/* =========================================================
+RESET OTP PAGE
+TRUSTYSHOP • GLASS • COSMIC
+========================================================= */
+
+.reset-otp-card {
+    position: relative;
+    width: min(94%, 520px);
+    margin: 50px auto;
+    padding: 40px 35px;
+    border-radius: 26px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(8, 30, 60, 0.92),
+        rgba(2, 12, 30, 0.88)
+    );
+
+    border: 1px solid rgba(56, 189, 248, 0.22);
+
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.55),
+        0 0 50px rgba(14, 165, 255, 0.10);
+
+    overflow: hidden;
+}
+
+/* =========================================================
+BORDER
+========================================================= */
+
+.reset-otp-card-border {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    border: 1px solid rgba(56, 189, 248, 0.12);
+}
+
+/* =========================================================
+ICON
+========================================================= */
+
+.reset-otp-icon {
+    width: 74px;
+    height: 74px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 22px;
+
+    color: white;
+    font-size: 28px;
+
+    background: linear-gradient(
+        135deg,
+        var(--auth-blue),
+        var(--auth-purple)
+    );
+
+    box-shadow:
+        0 15px 40px rgba(14, 165, 255, 0.30);
+
+    animation: otpFloat 4s ease-in-out infinite;
+}
+
+@keyframes otpFloat {
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* =========================================================
+HEADER
+========================================================= */
+
+.reset-otp-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.reset-otp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 12px;
+    margin-bottom: 14px;
+
+    border-radius: 999px;
+
+    color: #67dcff;
+
+    border: 1px solid rgba(56, 189, 248, 0.20);
+
+    background: rgba(14, 165, 255, 0.06);
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.reset-otp-header h1 {
+    margin: 0;
+    color: white;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.reset-otp-header p {
+    margin-top: 10px;
+
+    color: var(--auth-muted);
+
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+/* =========================================================
+FIELD
+========================================================= */
+
+.reset-otp-field {
+    margin-bottom: 20px;
+}
+
+.reset-otp-field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #9bc7df;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* =========================================================
+INPUT WRAPPER
+========================================================= */
+
+.reset-otp-input-wrapper {
+    position: relative;
+}
+
+.reset-otp-input-icon {
+    position: absolute;
+
+    top: 50%;
+    left: 16px;
+
+    transform: translateY(-50%);
+
+    color: var(--auth-cyan);
+
+    z-index: 2;
+}
+
+/* =========================================================
+INPUTS
+========================================================= */
+
+.reset-otp-input-wrapper input {
+    width: 100%;
+    height: 58px;
+
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+
+    background: rgba(15, 23, 42, 0.75);
+
+    color: white;
+
+    padding: 0 18px 0 46px;
+
+    font-size: 15px;
+    font-family: inherit;
+
+    outline: none;
+
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+}
+
+.reset-otp-input-wrapper input:focus {
+    border-color: var(--auth-cyan);
+
+    background: rgba(15, 23, 42, 0.95);
+
+    box-shadow:
+        0 0 0 3px rgba(56, 189, 248, 0.08),
+        0 0 25px rgba(14, 165, 255, 0.12);
+}
+
+/* OTP INPUT */
+
+#id_otp {
+    text-align: center;
+    letter-spacing: 6px;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* =========================================================
+ERROR
+========================================================= */
+
+.reset-otp-field-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 8px;
+
+    color: #ff8f8f;
+
+    font-size: 13px;
+}
+
+.reset-otp-field-error i {
+    color: var(--auth-danger);
+}
+
+/* =========================================================
+HINT
+========================================================= */
+
+.reset-otp-hint {
+    display: block;
+    margin-top: 8px;
+
+    color: var(--auth-muted);
+
+    font-size: 12px;
+}
+
+/* =========================================================
+BUTTON
+========================================================= */
+
+.reset-otp-btn {
+    position: relative;
+
+    width: 100%;
+    height: 56px;
+
+    margin-top: 10px;
+
+    border: none;
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    cursor: pointer;
+
+    color: white;
+
+    background: linear-gradient(
+        135deg,
+        var(--auth-blue),
+        var(--auth-purple)
+    );
+
+    box-shadow:
+        0 15px 35px rgba(14, 165, 255, 0.25);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+.reset-otp-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 18px 45px rgba(14, 165, 255, 0.35);
+}
+
+.reset-otp-btn-content {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.reset-otp-btn-shine {
+    position: absolute;
+
+    top: 0;
+    left: -100%;
+
+    width: 60%;
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.25),
+        transparent
+    );
+
+    transform: skewX(-20deg);
+
+    transition: .7s;
+}
+
+.reset-otp-btn:hover .reset-otp-btn-shine {
+    left: 150%;
+}
+
+/* =========================================================
+MESSAGES
+========================================================= */
+
+.reset-otp-messages {
+    margin-top: 18px;
+}
+
+.reset-otp-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    font-size: 13px;
+
+    background: rgba(14, 165, 255, 0.06);
+
+    border: 1px solid rgba(56, 189, 248, 0.15);
+}
+
+.reset-otp-message.success {
+    color: #8ee9b3;
+    border-color: rgba(34, 197, 94, .25);
+    background: rgba(34, 197, 94, .08);
+}
+
+.reset-otp-message.error {
+    color: #ff9d9d;
+    border-color: rgba(239, 68, 68, .25);
+    background: rgba(239, 68, 68, .08);
+}
+
+.reset-otp-message.warning {
+    color: #ffd07a;
+    border-color: rgba(245, 158, 11, .25);
+    background: rgba(245, 158, 11, .08);
+}
+
+/* =========================================================
+FOOTER
+========================================================= */
+
+.reset-otp-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    margin-top: 24px;
+    padding-top: 18px;
+
+    border-top: 1px solid rgba(255,255,255,.07);
+
+    color: var(--auth-muted);
+
+    font-size: 12px;
+}
+
+.reset-otp-footer i {
+    color: var(--auth-cyan);
+}
+
+/* =========================================================
+RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .reset-otp-card {
+        padding: 28px 20px;
+        margin: 20px auto;
+    }
+
+    .reset-otp-header h1 {
+        font-size: 26px;
+    }
+
+    .reset-otp-icon {
+        width: 65px;
+        height: 65px;
+        font-size: 24px;
+    }
+}
+
+
+/* =========================================================
+   RESET PASSWORD PAGE
+   TRUSTYSHOP • COMPACT • GLASS • COSMIC
+========================================================= */
+
+.reset-password-card {
+    position: relative;
+
+    width: min(94%, 560px);
+    max-width: 560px;
+
+    margin: 50px auto;
+    padding: 36px;
+
+    box-sizing: border-box;
+
+    background: linear-gradient(
+        145deg,
+        rgba(7, 25, 52, 0.92),
+        rgba(2, 6, 23, 0.90)
+    );
+
+    border: 1px solid var(--auth-border);
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.55),
+        0 0 50px rgba(14, 165, 255, 0.08);
+
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.reset-password-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+
+.reset-password-header .logo-circle {
+    width: 68px;
+    height: 68px;
+
+    margin: 0 auto 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: linear-gradient(
+        135deg,
+        var(--auth-blue),
+        var(--auth-purple)
+    );
+
+    color: white;
+
+    font-size: 26px;
+
+    box-shadow:
+        0 0 35px rgba(14, 165, 255, 0.35);
+}
+
+
+.reset-password-header h1 {
+    margin: 0;
+
+    color: white;
+
+    font-size: 28px;
+    font-weight: 700;
+}
+
+
+.reset-password-header p {
+    margin: 8px 0 0;
+
+    color: var(--auth-muted);
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   PASSWORD INPUTS
+========================================================= */
+
+.reset-password-card .password-box {
+    position: relative;
+
+    width: 100%;
+
+    margin-bottom: 18px;
+}
+
+
+.reset-password-card .password-box input {
+    display: block;
+
+    width: 100%;
+    min-height: 56px;
+
+    padding: 18px 46px 8px 48px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(148, 163, 184, 0.20);
+
+    border-radius: 14px;
+
+    outline: none;
+
+    background: rgba(15, 23, 42, 0.72);
+
+    color: white;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+
+.reset-password-card .password-box input:focus {
+    border-color: var(--auth-cyan);
+
+    background: rgba(15, 23, 42, 0.90);
+
+    box-shadow:
+        0 0 0 3px rgba(56, 189, 248, 0.08),
+        0 0 25px rgba(14, 165, 255, 0.12);
+}
+
+
+/* =========================================================
+   PASSWORD LABEL
+========================================================= */
+
+.reset-password-card .password-box label {
+    position: absolute;
+
+    left: 48px;
+    top: 18px;
+
+    color: var(--auth-muted);
+
+    font-size: 14px;
+
+    pointer-events: none;
+
+    transition: all 0.20s ease;
+}
+
+
+.reset-password-card .password-box input:focus + label,
+.reset-password-card .password-box input:not(:placeholder-shown) + label {
+    top: 6px;
+
+    font-size: 10px;
+
+    color: var(--auth-cyan);
+}
+
+
+/* =========================================================
+   PASSWORD ICON
+========================================================= */
+
+.reset-password-card .input-icon {
+    position: absolute;
+
+    left: 18px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: rgba(148, 163, 184, 0.75);
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
+
+.reset-password-card .toggle-password {
+    position: absolute;
+
+    right: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 34px;
+    height: 34px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: var(--auth-muted);
+
+    cursor: pointer;
+
+    border-radius: 50%;
+}
+
+
+.reset-password-card .toggle-password:hover {
+    color: var(--auth-cyan);
+
+    background: rgba(56, 189, 248, 0.08);
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.reset-password-card .field-error {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin: -10px 3px 14px;
+
+    color: #ff8585;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+
+.reset-password-card .field-error i {
+    color: var(--auth-danger);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.reset-password-card .auth-btn {
+    width: 100%;
+
+    min-height: 54px;
+
+    margin-top: 4px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .reset-password-card {
+        width: calc(100% - 24px);
+
+        margin: 25px auto;
+
+        padding: 30px 20px;
+
+        border-radius: 22px;
+    }
+
+    .reset-password-header h1 {
+        font-size: 24px;
+    }
+
+    .reset-password-header p {
+        font-size: 13px;
+    }
+}
+
+
+@media (max-width: 400px) {
+
+    .reset-password-card {
+        width: calc(100% - 16px);
+
+        margin: 15px auto;
+
+        padding: 25px 16px;
+    }
+
+    .reset-password-header h1 {
+        font-size: 22px;
+    }
+
+    .reset-password-header p {
+        font-size: 12px;
+    }
+
+    .reset-password-card .password-box input {
+        min-height: 54px;
+    }
+}

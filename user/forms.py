@@ -1,4 +1,3 @@
-
 from django import forms
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
@@ -9,8 +8,6 @@ from .models import Profile
 
 # =========================================================
 # PHONE VALIDATOR
-# 09 + 6 to 9 digits
-# Total length: 8 to 11 digits
 # =========================================================
 
 phone_validator = RegexValidator(
@@ -26,10 +23,6 @@ phone_validator = RegexValidator(
 
 class RegisterForm(forms.ModelForm):
 
-    # -----------------------------------------------------
-    # FULL NAME
-    # -----------------------------------------------------
-
     fullName = forms.CharField(
         max_length=30,
         required=True,
@@ -41,10 +34,6 @@ class RegisterForm(forms.ModelForm):
             }
         ),
     )
-
-    # -----------------------------------------------------
-    # PHONE NUMBER
-    # -----------------------------------------------------
 
     phone_number = forms.CharField(
         min_length=8,
@@ -63,10 +52,6 @@ class RegisterForm(forms.ModelForm):
         ),
     )
 
-    # -----------------------------------------------------
-    # ADDRESS
-    # -----------------------------------------------------
-
     address = forms.CharField(
         max_length=200,
         required=True,
@@ -78,10 +63,6 @@ class RegisterForm(forms.ModelForm):
             }
         ),
     )
-
-    # -----------------------------------------------------
-    # GENDER
-    # -----------------------------------------------------
 
     gender = forms.ChoiceField(
         choices=[
@@ -96,10 +77,6 @@ class RegisterForm(forms.ModelForm):
         ),
     )
 
-    # -----------------------------------------------------
-    # PROFILE PICTURE
-    # -----------------------------------------------------
-
     profile_pic = forms.ImageField(
         required=False,
         widget=forms.FileInput(
@@ -109,10 +86,6 @@ class RegisterForm(forms.ModelForm):
             }
         ),
     )
-
-    # -----------------------------------------------------
-    # PASSWORD
-    # -----------------------------------------------------
 
     password = forms.CharField(
         required=True,
@@ -125,10 +98,6 @@ class RegisterForm(forms.ModelForm):
             }
         ),
     )
-
-    # -----------------------------------------------------
-    # CONFIRM PASSWORD
-    # -----------------------------------------------------
 
     confirm_password = forms.CharField(
         required=True,
@@ -159,7 +128,6 @@ class RegisterForm(forms.ModelForm):
                     "autocomplete": "username",
                 }
             ),
-
             "email": forms.EmailInput(
                 attrs={
                     "class": "form-input",
@@ -169,33 +137,19 @@ class RegisterForm(forms.ModelForm):
             ),
         }
 
-    # =====================================================
-    # USERNAME VALIDATION
-    # =====================================================
-
     def clean_username(self):
-
         username = self.cleaned_data.get("username")
 
-        if not username:
-            return username
-
-        if User.objects.filter(
+        if username and User.objects.filter(
             username__iexact=username
         ).exists():
-
             raise forms.ValidationError(
                 "Username is already taken."
             )
 
         return username
 
-    # =====================================================
-    # EMAIL VALIDATION
-    # =====================================================
-
     def clean_email(self):
-
         email = self.cleaned_data.get("email")
 
         if not email:
@@ -204,7 +158,6 @@ class RegisterForm(forms.ModelForm):
         if User.objects.filter(
             email__iexact=email
         ).exists():
-
             raise forms.ValidationError(
                 "Email is already registered."
             )
@@ -216,107 +169,77 @@ class RegisterForm(forms.ModelForm):
 
         return email
 
-    # =====================================================
-    # PHONE VALIDATION
-    # =====================================================
-
     def clean_phone_number(self):
-
         phone = self.cleaned_data.get("phone_number")
 
         if not phone:
             return phone
 
-        # Remove accidental spaces around the number.
         phone = phone.strip()
 
-        # Only digits are allowed.
         if not phone.isdigit():
-
             raise forms.ValidationError(
                 "Phone number must contain digits only."
             )
 
-        # Must start with 09.
         if not phone.startswith("09"):
-
             raise forms.ValidationError(
                 "Phone number must start with 09."
             )
 
-        # Must contain 8 to 11 digits.
         if not 8 <= len(phone) <= 11:
-
             raise forms.ValidationError(
                 "Phone number must contain 8 to 11 digits."
             )
 
-        # Prevent duplicate phone numbers.
         if Profile.objects.filter(
             phone_number=phone
         ).exists():
-
             raise forms.ValidationError(
                 "This phone number is already registered."
             )
 
         return phone
 
-    # =====================================================
-    # PASSWORD VALIDATION
-    # =====================================================
-
     def clean_password(self):
-
         password = self.cleaned_data.get("password")
 
         if not password:
             return password
 
         if len(password) < 8:
-
             raise forms.ValidationError(
                 "Password must be at least 8 characters."
             )
 
         if len(password) > 20:
-
             raise forms.ValidationError(
                 "Password cannot exceed 20 characters."
             )
 
-        special_chars = r'[@_!#$%^&*()<>?/\|}{~:]'
+        special_chars = r"@_!#$%^&*()<>?/\|}{~:"
 
         if not any(
             char in special_chars
             for char in password
         ):
-
             raise forms.ValidationError(
                 "Password must contain at least one special character."
             )
 
         return password
 
-    # =====================================================
-    # PASSWORD CONFIRMATION
-    # =====================================================
-
     def clean(self):
-
         cleaned_data = super().clean()
 
         password = cleaned_data.get("password")
-        confirm_password = cleaned_data.get(
-            "confirm_password"
-        )
+        confirm_password = cleaned_data.get("confirm_password")
 
         if (
             password
             and confirm_password
             and password != confirm_password
         ):
-
             self.add_error(
                 "confirm_password",
                 "Passwords do not match."
@@ -357,7 +280,11 @@ class LoginForm(forms.Form):
 
     remember_me = forms.BooleanField(
         required=False,
-        widget=forms.CheckboxInput(),
+        widget=forms.CheckboxInput(
+            attrs={
+                "id": "id_remember_me",
+            }
+        ),
     )
 
 
@@ -368,9 +295,7 @@ class LoginForm(forms.Form):
 class ProfilePicForm(forms.ModelForm):
 
     class Meta:
-
         model = Profile
-
         fields = [
             "profile_pic",
         ]
@@ -383,8 +308,8 @@ class ProfilePicForm(forms.ModelForm):
 class EmailVerificationForm(forms.Form):
 
     code = forms.CharField(
-        max_length=6,
         min_length=6,
+        max_length=6,
         required=True,
         widget=forms.TextInput(
             attrs={
@@ -398,22 +323,165 @@ class EmailVerificationForm(forms.Form):
     )
 
     def clean_code(self):
-
         code = self.cleaned_data.get("code")
 
-        if not code:
-            return code
-
-        if not code.isdigit():
-
+        if code and not code.isdigit():
             raise forms.ValidationError(
                 "Verification code must contain numbers only."
             )
 
-        if len(code) != 6:
+        return code
 
+
+# =========================================================
+# FORGOT PASSWORD FORM
+# =========================================================
+
+class ForgotPasswordForm(forms.Form):
+
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-input",
+                "placeholder": " ",
+                "autocomplete": "email",
+            }
+        ),
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+
+        if email:
+            email = email.strip().lower()
+
+        return email
+
+
+# =========================================================
+# PASSWORD RESET OTP VERIFICATION FORM
+# =========================================================
+
+class OTPVerificationForm(forms.Form):
+
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-input",
+                "placeholder": " ",
+                "autocomplete": "email",
+            }
+        ),
+    )
+
+    otp = forms.CharField(
+        min_length=6,
+        max_length=6,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-input",
+                "placeholder": "Enter 6-digit OTP",
+                "inputmode": "numeric",
+                "maxlength": "6",
+                "autocomplete": "one-time-code",
+            }
+        ),
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+
+        if email:
+            email = email.strip().lower()
+
+        return email
+
+    def clean_otp(self):
+        otp = self.cleaned_data.get("otp")
+
+        if otp and not otp.isdigit():
             raise forms.ValidationError(
-                "Verification code must contain exactly 6 digits."
+                "OTP must contain numbers only."
             )
 
-        return code
+        return otp
+
+
+# =========================================================
+# RESET PASSWORD FORM
+# =========================================================
+
+class ResetPasswordForm(forms.Form):
+
+    new_password = forms.CharField(
+        required=True,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-input",
+                "placeholder": " ",
+                "id": "id_new_password",
+                "autocomplete": "new-password",
+            }
+        ),
+    )
+
+    confirm_password = forms.CharField(
+        required=True,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-input",
+                "placeholder": " ",
+                "id": "id_confirm_password",
+                "autocomplete": "new-password",
+            }
+        ),
+    )
+
+    def clean_new_password(self):
+        password = self.cleaned_data.get("new_password")
+
+        if not password:
+            return password
+
+        if len(password) < 8:
+            raise forms.ValidationError(
+                "Password must be at least 8 characters."
+            )
+
+        if len(password) > 20:
+            raise forms.ValidationError(
+                "Password cannot exceed 20 characters."
+            )
+
+        special_chars = r"@_!#$%^&*()<>?/\|}{~:"
+
+        if not any(
+            char in special_chars
+            for char in password
+        ):
+            raise forms.ValidationError(
+                "Password must contain at least one special character."
+            )
+
+        return password
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        password = cleaned_data.get("new_password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if (
+            password
+            and confirm_password
+            and password != confirm_password
+        ):
+            self.add_error(
+                "confirm_password",
+                "Passwords do not match."
+            )
+
+        return cleaned_data

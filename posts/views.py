@@ -117,7 +117,7 @@ def create_post(request):
     else:
         post_form = PostForm()
 
-    return render(request, 'createPost.html', {
+    return render(request, 'posts/createPost.html', {
         'post_form': post_form,
         'categories': categories,
     })

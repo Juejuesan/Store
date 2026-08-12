@@ -1,0 +1,199 @@
+{% extends "user/base.html" %}
+{% load static %}
+
+{% block title %}
+Verify Reset OTP | TrustyShop
+{% endblock %}
+
+{% block content %}
+
+<div class="reset-otp-page">
+
+    <div class="reset-otp-card">
+
+        <span class="reset-otp-card-border"></span>
+
+        <!-- ICON -->
+        <div class="reset-otp-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+
+        <!-- HEADER -->
+        <div class="reset-otp-header">
+
+            <span class="reset-otp-badge">
+                <i class="fa-solid fa-lock"></i>
+                PASSWORD RECOVERY
+            </span>
+
+            <h1>
+                Verify OTP
+            </h1>
+
+            <p>
+                Enter the 6-digit OTP sent to your email
+                to continue resetting your password.
+            </p>
+
+        </div>
+
+
+        <!-- FORM -->
+        <form
+            method="POST"
+            class="reset-otp-form"
+            id="resetOtpForm"
+            autocomplete="off"
+        >
+
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+
+            <!-- EMAIL -->
+            <div class="reset-otp-field">
+
+                <label for="{{ form.email.id_for_label }}">
+                    Email Address
+                </label>
+
+                <div class="reset-otp-input-wrapper">
+
+                    <i class="fa-solid fa-envelope reset-otp-input-icon"></i>
+
+                    {{ form.email }}
+
+                </div>
+
+                {% if form.email.errors %}
+
+                    <div class="reset-otp-field-error">
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- OTP -->
+            <div class="reset-otp-field">
+
+                <label for="{{ form.otp.id_for_label }}">
+                    Verification Code
+                </label>
+
+                <div class="reset-otp-input-wrapper">
+
+                    <i class="fa-solid fa-key reset-otp-input-icon"></i>
+
+                    {{ form.otp }}
+
+                </div>
+
+                {% if form.otp.errors %}
+
+                    <div class="reset-otp-field-error">
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                        {% for error in form.otp.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+                <small class="reset-otp-hint">
+                    OTP is valid for 5 minutes.
+                </small>
+
+            </div>
+
+
+            <!-- BUTTON -->
+            <button
+                type="submit"
+                class="reset-otp-btn"
+                id="resetOtpBtn"
+            >
+
+                <span class="reset-otp-btn-shine"></span>
+
+                <span class="reset-otp-btn-content">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <span>
+                        Verify OTP
+                    </span>
+
+                </span>
+
+            </button>
+
+        </form>
+
+
+        <!-- MESSAGES -->
+        {% if messages %}
+
+            <div class="reset-otp-messages">
+
+                {% for message in messages %}
+
+                    <div
+                        class="reset-otp-message {{ message.tags }}"
+                    >
+
+                        {% if message.tags == "success" %}
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                        {% elif message.tags == "warning" %}
+
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        {% else %}
+
+                            <i class="fa-solid fa-circle-exclamation"></i>
+
+                        {% endif %}
+
+                        <span>
+                            {{ message }}
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- FOOTER -->
+        <div class="reset-otp-footer">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            <span>
+                Your verification code is secure.
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

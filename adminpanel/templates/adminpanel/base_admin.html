@@ -138,22 +138,21 @@
 
                 </li>
 
-                <li>
+                <li class="{% if request.resolver_match.url_name == 'users' %}active{% endif %}">
 
-                    <a href="#">
+    <a href="{% url 'users' %}">
 
-                        <i class="fa-solid fa-users"></i>
+        <i class="fa-solid fa-users"></i>
 
-                        <span>
+        <span>
 
-                            Users
+            Users
 
-                        </span>
+        </span>
 
-                    </a>
+    </a>
 
-                </li>
-
+</li>
                 <li>
 
                     <a href="#">

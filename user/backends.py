@@ -1,6 +1,3 @@
-
-# user/backends.py
-
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
 from django.db.models import Q
@@ -20,7 +17,6 @@ class EmailOrUsernameModelBackend(ModelBackend):
     ):
 
         if not username or not password:
-
             return None
 
         try:
@@ -34,19 +30,16 @@ class EmailOrUsernameModelBackend(ModelBackend):
 
             return None
 
-        if (
-            user.check_password(password)
-            and self.user_can_authenticate(user)
-        ):
+        # User inactive ဖြစ်ရင် login မဝင်စေ
+        if not self.user_can_authenticate(user):
+            return None
 
+        # Password hash ကို Django နဲ့စစ်
+        if user.check_password(password):
             return user
 
         return None
 
-    def user_can_authenticate(
-        self,
-        user
-    ):
+    def user_can_authenticate(self, user):
 
         return user.is_active
-
