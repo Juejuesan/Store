@@ -1,10 +1,10 @@
+
 from django.db import models
 from django.contrib.auth.models import User
 from posts.models import Post
 
 
 class Notification(models.Model):
-
     NOTIFICATION_TYPES = [
         ("new_post", "New Post"),
         ("approved", "Approved"),
@@ -12,13 +12,9 @@ class Notification(models.Model):
         ("deposit_request", "Deposit Request"),
         ("deposit_approved", "Deposit Approved"),
         ("deposit_rejected", "Deposit Rejected"),
+        ("withdraw_approved", "Withdraw Approved"),
+        ("withdraw_rejected", "Withdraw Rejected"),
     ]
-
-    target_url = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True
-    )
 
     user = models.ForeignKey(
         User,
@@ -39,7 +35,7 @@ class Notification(models.Model):
     )
 
     notification_type = models.CharField(
-        max_length=20,
+        max_length=30,
         choices=NOTIFICATION_TYPES
     )
 
@@ -54,7 +50,7 @@ class Notification(models.Model):
     target_url = models.CharField(
         max_length=255,
         blank=True,
-        null=True,
+        null=True
     )
 
     class Meta:

@@ -373,21 +373,38 @@ Dashboard | TrustyShop
              ACTIONS
         ================================== -->
 
-        <div class="dashboard-actions">
+<div class="dashboard-actions">
 
-            <a
-                href="{% url 'user:logout' %}"
-                class="dashboard-btn logout-btn">
+    <!-- MY POSTS -->
 
-                <i class="fa-solid fa-right-from-bracket"></i>
+    <a
+        href="{% url 'my_posts' %}"
+        class="dashboard-btn">
 
-                <span>
-                    Log Out
-                </span>
+        <i class="fa-solid fa-box-open"></i>
 
-            </a>
+        <span>
+            My Posts
+        </span>
 
-        </div>
+    </a>
+
+
+    <!-- LOGOUT -->
+
+    <a
+        href="{% url 'user:logout' %}"
+        class="dashboard-btn logout-btn">
+
+        <i class="fa-solid fa-right-from-bracket"></i>
+
+        <span>
+            Log Out
+        </span>
+
+    </a>
+
+</div>
 
 
         <!-- =================================

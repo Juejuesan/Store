@@ -1,4 +1,6 @@
 from django.contrib.auth.decorators import login_required
+
+
 from django.shortcuts import render, get_object_or_404
 
 from posts.models import Post
@@ -28,9 +30,10 @@ def viewdetail(request, post_id):
 
     return render(request, 'home/viewdetail.html', context)
 
+
 def createPost(request):
     return render(request, "posts/createPost.html")
 
+
 def welcome(request):
     return render(request, "welcome/welcome.html")
-

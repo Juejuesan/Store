@@ -49,7 +49,6 @@ def wallet_dashboard(request):
 
 @login_required
 def deposit_request(request):
-
     wallet = get_object_or_404(
         Wallet,
         user=request.user,
@@ -124,7 +123,6 @@ def deposit_request(request):
 
 @login_required
 def withdraw_request(request):
-
     wallet = get_object_or_404(
         Wallet,
         user=request.user,
@@ -141,7 +139,6 @@ def withdraw_request(request):
 
             # Check wallet balance
             if amount > wallet.balance:
-
                 messages.error(
                     request,
                     f"Insufficient wallet balance. Your current balance is MMK {wallet.balance:,.0f}, but you requested MMK {amount:,.0f}.",
@@ -212,7 +209,6 @@ def withdraw_request(request):
 
 @login_required
 def transaction_history(request):
-
     wallet = get_object_or_404(
         Wallet,
         user=request.user,

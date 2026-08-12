@@ -1,10 +1,11 @@
 from django.db import models
+
+
 from django.contrib.auth.models import User
 from django.utils import timezone
 
 
 class Profile(models.Model):
-
     GENDER_CHOICES = [
         ("M", "Male"),
         ("F", "Female"),
@@ -68,13 +69,13 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s Profile"
 
+    # =========================================================
 
-# =========================================================
+
 # PASSWORD RESET OTP
 # =========================================================
 
 class PasswordResetOTP(models.Model):
-
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

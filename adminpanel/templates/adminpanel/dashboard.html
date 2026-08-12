@@ -1,119 +1,327 @@
 {% extends "adminpanel/base_admin.html" %}
+
+{% block title %}
+    Dashboard | Trusty Shop Admin
+{% endblock %}
+
+
 {% block content %}
-<h1 class="page-title">
-    Dashboard
-</h1>
 
+<div class="dashboard-page">
 
-<div class="cards">
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
 
+    <div class="dashboard-header">
 
-   <!-- TOTAL USERS -->
-<!-- TOTAL USERS -->
+        <div>
+            <h1 class="page-title">
+                Dashboard
+            </h1>
 
-<div class="card"
-     onclick="window.location.href='{% url 'users' %}'"
-     style="cursor: pointer;">
-
-    <h4>
-        Total Users
-    </h4>
-
-    <h2 class="counter"
-        data-target="{{ total_users }}">
-        0
-    </h2>
-
-    <i class="fa-solid fa-users"></i>
-
-</div>
-
-
-    <!-- TOTAL SELLERS -->
-
-    <div class="card">
-
-        <h4>
-            Total Sellers
-        </h4>
-
-
-        <h2 class="counter"
-            data-target="{{ total_sellers }}">
-            0
-        </h2>
-
-
-        <i class="fa-solid fa-store"></i>
+            <p class="page-subtitle">
+                Welcome back, Admin. Here's what's happening today.
+            </p>
+        </div>
 
     </div>
 
 
+    <!-- =====================================================
+         DASHBOARD SUMMARY CARDS
+    ====================================================== -->
+
+    <div class="cards">
 
 
+        <!-- ================= TOTAL USERS ================= -->
 
-<!-- PENDING POSTS -->
+        <div
+            class="card clickable-card"
+            onclick="window.location.href='{% url 'users' %}'"
+        >
 
-<div class="card clickable-card"
-     onclick="window.location.href='{% url 'posts' %}'">
+            <div class="card-content">
 
-    <h4>
-        Pending Posts
-    </h4>
+                <h4>
+                    Total Users
+                </h4>
 
-    <h2 class="counter"
-        data-target="{{ pending_posts }}">
-        0
-    </h2>
+                <h2
+                    class="counter"
+                    data-target="{{ total_users }}"
+                >
+                    0
+                </h2>
 
-    <i class="fa-solid fa-box-open"></i>
+            </div>
 
-</div>
+            <div class="card-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
 
-    <!-- PENDING ORDERS -->
-
-    <div class="card">
-
-        <h4>
-            Pending Orders
-        </h4>
-
-
-        <h2 class="counter"
-            data-target="{{ pending_orders }}">
-            0
-        </h2>
+        </div>
 
 
-        <i class="fa-solid fa-truck-fast"></i>
+        <!-- ================= TOTAL SELLERS ================= -->
+
+        <div class="card">
+
+            <div class="card-content">
+
+                <h4>
+                    Total Sellers
+                </h4>
+
+                <h2
+                    class="counter"
+                    data-target="{{ total_sellers }}"
+                >
+                    0
+                </h2>
+
+            </div>
+
+            <div class="card-icon">
+                <i class="fa-solid fa-store"></i>
+            </div>
+
+        </div>
+
+
+        <!-- ================= PENDING POSTS ================= -->
+
+        <div
+            class="card clickable-card"
+            onclick="window.location.href='{% url 'posts' %}'"
+        >
+
+            <div class="card-content">
+
+                <h4>
+                    Pending Posts
+                </h4>
+
+                <h2
+                    class="counter"
+                    data-target="{{ pending_posts }}"
+                >
+                    0
+                </h2>
+
+            </div>
+
+            <div class="card-icon">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+
+        </div>
+
+
+        <!-- ================= PENDING ORDERS ================= -->
+
+        <div class="card">
+
+            <div class="card-content">
+
+                <h4>
+                    Pending Orders
+                </h4>
+
+                <h2
+                    class="counter"
+                    data-target="{{ pending_orders }}"
+                >
+                    0
+                </h2>
+
+            </div>
+
+            <div class="card-icon">
+                <i class="fa-solid fa-truck-fast"></i>
+            </div>
+
+        </div>
+
+
+        <!-- ================= TOTAL REVENUE ================= -->
+
+        <div class="card">
+
+            <div class="card-content">
+
+                <h4>
+                    Total Revenue
+                </h4>
+
+                <h2 class="revenue-value">
+                    {{ total_revenue }}
+                    <span>MMK</span>
+                </h2>
+
+            </div>
+
+            <div class="card-icon">
+                <i class="fa-solid fa-sack-dollar"></i>
+            </div>
+
+        </div>
+
 
     </div>
 
 
+    <!-- =====================================================
+         RECENT ADMIN ACTIVITIES
+    ====================================================== -->
+
+    <div class="content-card recent-activities">
 
 
+        <!-- ================= ACTIVITY HEADER ================= -->
 
-    <!-- TOTAL REVENUE -->
+        <div class="activity-header">
 
-    <div class="card">
+            <div class="activity-heading">
 
-        <h4>
-            Total Revenue
-        </h4>
+                <h2>
+                    Recent Activities
+                </h2>
+
+                <p>
+                    Latest actions performed by administrators.
+                </p>
+
+            </div>
+
+            <div class="activity-header-icon">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+
+        </div>
 
 
-        <h2>
-            {{ total_revenue }} MMK
-        </h2>
+        <!-- ================= ACTIVITY LIST ================= -->
+
+        <div class="activity-list">
 
 
-        <i class="fa-solid fa-sack-dollar"></i>
+            {% for activity in recent_activities %}
+
+
+                <div class="activity-item">
+
+
+                    <!-- ================= ICON ================= -->
+
+                    <div class="activity-icon">
+
+
+                        {% if activity.action == "ban_user" %}
+
+                            <i class="fa-solid fa-ban"></i>
+
+
+                        {% elif activity.action == "unban_user" %}
+
+                            <i class="fa-solid fa-unlock"></i>
+
+
+                        {% elif activity.action == "approve_deposit" %}
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+
+                        {% elif activity.action == "reject_deposit" %}
+
+                            <i class="fa-solid fa-circle-xmark"></i>
+
+
+                        {% elif activity.action == "approve_withdraw" %}
+
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+
+
+                        {% elif activity.action == "reject_withdraw" %}
+
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+
+
+                        {% elif activity.action == "approve_post" %}
+
+                            <i class="fa-solid fa-check"></i>
+
+
+                        {% elif activity.action == "reject_post" %}
+
+                            <i class="fa-solid fa-xmark"></i>
+
+
+                        {% else %}
+
+                            <i class="fa-solid fa-clock"></i>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                    <!-- ================= ACTIVITY INFO ================= -->
+
+                    <div class="activity-info">
+
+
+                        <strong>
+                            {{ activity.message }}
+                        </strong>
+
+
+                        <span>
+                            {{ activity.created_at|timesince }} ago
+                        </span>
+
+
+                    </div>
+
+
+                </div>
+
+
+            {% empty %}
+
+
+                <!-- ================= EMPTY STATE ================= -->
+
+                <div class="activity-empty">
+
+                    <div class="activity-empty-icon">
+
+                        <i class="fa-regular fa-clock"></i>
+
+                    </div>
+
+                    <h3>
+                        No Recent Activities
+                    </h3>
+
+                    <p>
+                        Admin actions will appear here.
+                    </p>
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
 
     </div>
 
 
-
 </div>
-
 
 {% endblock %}
