@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'notifications',
     'wallet.apps.WalletConfig',
     'wishlist',
+    'cart',
 ]
 
 MIDDLEWARE = [

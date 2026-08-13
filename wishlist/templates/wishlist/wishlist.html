@@ -1,3 +1,4 @@
+
 {% extends "base1.html" %}
 {% load static %}
 
@@ -9,9 +10,9 @@
 
 <div class="container py-5">
 
-    <!-- ========================================================= -->
-    <!-- PAGE HEADER -->
-    <!-- ========================================================= -->
+    <!-- =========================================================
+         PAGE HEADER
+    ========================================================== -->
 
     <div class="mb-5">
 
@@ -30,9 +31,9 @@
     </div>
 
 
-    <!-- ========================================================= -->
-    <!-- WISHLIST PRODUCTS -->
-    <!-- ========================================================= -->
+    <!-- =========================================================
+         WISHLIST PRODUCTS
+    ========================================================== -->
 
     <div class="row g-4">
 
@@ -45,73 +46,67 @@
                     <div class="card h-100">
 
 
-                        <!-- ================================================= -->
-                        <!-- PRODUCT CLICK AREA -->
-                        <!-- Clicking the product goes to View Detail -->
-                        <!-- ================================================= -->
+                        <!-- =================================================
+                             PRODUCT IMAGE
+                             NOT CLICKABLE
+                        ================================================= -->
 
-                        <a
-                            href="{% url 'viewdetail' wishlist.post.id %}"
-                            class="text-decoration-none text-dark"
-                        >
+                        {% with image=item.images.first %}
 
-                            <!-- PRODUCT IMAGE -->
+                            {% if image %}
 
-                            {% with image=item.images.first %}
+                                <img
+                                    src="{{ image.image.url }}"
+                                    class="card-img-top"
+                                    alt="{{ item.name }}"
+                                >
 
-                                {% if image %}
+                            {% else %}
 
-                                    <img
-                                        src="{{ image.image.url }}"
-                                        class="card-img-top"
-                                        alt="{{ item.name }}"
-                                    >
+                                <img
+                                    src="{% static 'images/no-image.png' %}"
+                                    class="card-img-top"
+                                    alt="No image"
+                                >
 
-                                {% else %}
+                            {% endif %}
 
-                                    <img
-                                        src="{% static 'images/no-image.png' %}"
-                                        class="card-img-top"
-                                        alt="No image"
-                                    >
-
-                                {% endif %}
-
-                            {% endwith %}
+                        {% endwith %}
 
 
-                            <!-- PRODUCT INFORMATION -->
+                        <!-- =================================================
+                             PRODUCT INFORMATION
+                             NOT CLICKABLE
+                        ================================================= -->
 
-                            <div class="card-body">
+                        <div class="card-body">
 
-                                <!-- PRODUCT NAME -->
+                            <!-- PRODUCT NAME -->
 
-                                <h5>
-                                    {{ item.name }}
-                                </h5>
-
-
-                                <!-- PRICE -->
-
-                                <p>
-                                    MMK {{ item.price }}
-                                </p>
+                            <h5>
+                                {{ item.name }}
+                            </h5>
 
 
-                                <!-- CONDITION -->
+                            <!-- PRICE -->
 
-                                <small>
-                                    {{ wishlist.post.get_condition_display }}
-                                </small>
-
-                            </div>
-
-                        </a>
+                            <p>
+                                MMK {{ item.price }}
+                            </p>
 
 
-                        <!-- ================================================= -->
-                        <!-- REMOVE FROM WISHLIST -->
-                        <!-- ================================================= -->
+                            <!-- CONDITION -->
+
+                            <small>
+                                {{ wishlist.post.get_condition_display }}
+                            </small>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             REMOVE FROM WISHLIST
+                        ================================================= -->
 
                         <div class="card-body pt-0">
 
@@ -138,9 +133,9 @@
 
         {% empty %}
 
-            <!-- ========================================================= -->
-            <!-- EMPTY WISHLIST -->
-            <!-- ========================================================= -->
+            <!-- =========================================================
+                 EMPTY WISHLIST
+            ========================================================== -->
 
             <div class="text-center py-5">
 

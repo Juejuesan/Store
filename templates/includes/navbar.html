@@ -10,7 +10,7 @@
              SHOP LOGO
         ====================================================== -->
 
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="{% url 'home' %}">
 
             <span class="logo-circle">
                 <i class="fa-solid fa-bag-shopping"></i>
@@ -100,12 +100,7 @@
                             Noti
 
 
-                            <!-- =====================================
-                                 NOTIFICATION BADGE
-
-                                 Always exists in the DOM.
-                                 JavaScript controls visibility.
-                            ====================================== -->
+                            <!-- NOTIFICATION BADGE -->
 
                             <span
                                 id="notificationBadge"
@@ -163,16 +158,14 @@
                     {% if request.user.is_authenticated %}
 
                         <a
-                            class="nav-link cart-link {% if request.path == '#' %}active{% endif %}"
-                            href="#">
+                            class="nav-link cart-link {% if request.path == '/cart/' %}active{% endif %}"
+                            href="{% url 'cart:view_cart' %}">
 
                             <i class="fa-solid fa-cart-shopping"></i>
 
                             Cart
 
-                            <span class="cart-count">
-                                3
-                            </span>
+                            <span class="cart-count" id="cartBadge">0</span>
 
                         </a>
 
@@ -185,10 +178,6 @@
                             <i class="fa-solid fa-cart-shopping"></i>
 
                             Cart
-
-                            <span class="cart-count">
-                                3
-                            </span>
 
                         </a>
 
@@ -269,18 +258,7 @@
 
 
 <!-- =============================================================
-     NOTIFICATION COUNT JAVASCRIPT
-
-     IMPORTANT:
-     This script ONLY updates the notification badge.
-
-     It does NOT:
-     - modify forms
-     - modify buttons
-     - modify inputs
-     - prevent clicks
-     - prevent submit
-     - add event listeners to CreatePost
+     NOTIFICATION + CART COUNT JAVASCRIPT
 ============================================================== -->
 <script>
 
@@ -299,9 +277,7 @@
             "/notifications/count/",
             {
                 method: "GET",
-
                 credentials: "same-origin",
-
                 headers: {
                     "X-Requested-With": "XMLHttpRequest"
                 }
@@ -311,9 +287,7 @@
         .then(function (response) {
 
             if (!response.ok) {
-                throw new Error(
-                    "Notification count request failed."
-                );
+                throw new Error("Notification count request failed.");
             }
 
             return response.json();
@@ -322,99 +296,115 @@
 
         .then(function (data) {
 
-            const badge =
-                document.getElementById(
-                    "notificationBadge"
-                );
-
+            const badge = document.getElementById("notificationBadge");
 
             if (!badge) {
                 return;
             }
 
-
-            const count =
-                Number(data.count || 0);
-
-
-            // =================================================
-            // SHOW BADGE
-            // =================================================
+            const count = Number(data.count || 0);
 
             if (count > 0) {
-
                 badge.textContent = count;
-
                 badge.style.display = "flex";
-
-            }
-
-
-            // =================================================
-            // HIDE BADGE
-            // =================================================
-
-            else {
-
+            } else {
                 badge.textContent = "";
-
                 badge.style.display = "none";
-
             }
 
         })
 
         .catch(function (error) {
-
-            console.error(
-                "Notification count error:",
-                error
-            );
-
+            console.error("Notification count error:", error);
         });
 
     }
 
 
     // =========================================================
-    // MAKE FUNCTION AVAILABLE GLOBALLY
-    // notification.js can call this
+    // LOAD CART COUNT
     // =========================================================
 
-    window.loadNotificationCount =
-        loadNotificationCount;
+    function loadCartCount() {
+
+        fetch(
+            "/cart/count/",
+            {
+                method: "GET",
+                credentials: "same-origin",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            }
+        )
+
+        .then(function (response) {
+
+            if (!response.ok) {
+                throw new Error("Cart count request failed.");
+            }
+
+            return response.json();
+
+        })
+
+        .then(function (data) {
+
+            const cartBadge = document.getElementById("cartBadge");
+
+            if (!cartBadge) {
+                return;
+            }
+
+            const count = Number(data.cart_count || 0);
+
+            cartBadge.textContent = count;
+            cartBadge.style.display = "inline-block";
+
+        })
+
+        .catch(function (error) {
+            console.error("Cart count error:", error);
+        });
+
+    }
+
+
+    // =========================================================
+    // MAKE FUNCTIONS AVAILABLE GLOBALLY
+    // =========================================================
+
+    window.loadNotificationCount = loadNotificationCount;
+    window.loadCartCount = loadCartCount;
 
 
     // =========================================================
     // INITIAL LOAD
     // =========================================================
 
-    if (
-        document.readyState === "loading"
-    ) {
+    if (document.readyState === "loading") {
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            loadNotificationCount
-        );
+        document.addEventListener("DOMContentLoaded", function () {
+            loadNotificationCount();
+            loadCartCount();
+        });
 
     } else {
 
         loadNotificationCount();
+        loadCartCount();
 
     }
 
 
     // =========================================================
-    // AUTO REFRESH EVERY 5 SECONDS
+    // AUTO REFRESH NOTIFICATION COUNT EVERY 5 SECONDS
     // =========================================================
 
-    window.notificationCountInterval =
-        setInterval(
-            loadNotificationCount,
-            5000
-        );
-
+    window.notificationCountInterval = setInterval(
+        loadNotificationCount,
+        5000
+    );
 
 })();
 

@@ -29,10 +29,8 @@ urlpatterns = [
     path('adminpanel/', include('adminpanel.urls')),
     path("notifications/",include("notifications.urls")),
     path("wallet/", include("wallet.urls")),
-path(
-    "wishlist/",
-    include("wishlist.urls"),
-),
+    path('cart/', include('cart.urls')),
+    path("wishlist/",include("wishlist.urls")),
 
 ]
 

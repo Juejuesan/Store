@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 
-from home.models import Post
+from posts.models import Post
 
 
 class Wishlist(models.Model):

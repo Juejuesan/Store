@@ -19,12 +19,44 @@
 <div class="pd-page">
 <div class="container py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <button class="wishlist-btn">
-            <i class="fa-regular fa-heart"></i> <span>Wishlist</span>
-        </button>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
 
+    {% if user.is_authenticated %}
+
+        <button
+            type="button"
+            class="wishlist-btn {% if post.id in wishlist_post_ids %}liked{% endif %}"
+            id="wishlistBtn"
+            data-post-id="{{ post.id }}"
+            data-add-url="{% url 'wishlist:add' post.id %}"
+            data-remove-url="{% url 'wishlist:remove' post.id %}"
+            data-wishlisted="{% if post.id in wishlist_post_ids %}true{% else %}false{% endif %}"
+        >
+
+            <i
+                id="wishlistIcon"
+                class="{% if post.id in wishlist_post_ids %}fa-solid{% else %}fa-regular{% endif %} fa-heart"
+            ></i>
+
+            <span id="wishlistText">
+                Wishlist
+            </span>
+
+        </button>
+
+    {% else %}
+
+        <a
+            href="{% url 'login' %}"
+            class="wishlist-btn text-decoration-none"
+        >
+            <i class="fa-regular fa-heart"></i>
+            <span>Wishlist</span>
+        </a>
+
+    {% endif %}
+
+</div>
     <div class="post-header mb-4">
         <h3>{{ post.description|truncatechars:60 }}</h3>
         <p class="text-muted">
@@ -36,7 +68,9 @@
 
     <div class="item-viewer" id="itemViewer">
         {% for item in post.items.all %}
-        <div class="item-slide" id="itemSlide{{ forloop.counter0 }}" style="display: {% if forloop.first %}block{% else %}none{% endif %};">
+        <div class="item-slide" id="itemSlide{{ forloop.counter0 }}"
+             data-item-id="{{ item.id }}"
+             style="display: {% if forloop.first %}block{% else %}none{% endif %};">
             <div class="row g-4">
                 <div class="col-md-6">
                     <div class="main-image-box">
@@ -60,25 +94,30 @@
                         <label class="fw-bold mb-2">Select Size:</label>
                         <div class="size-buttons" id="sizeButtons{{ forloop.counter0 }}">
                             {% for variant in item.size_variants.all %}
-                                <button class="size-btn {% if variant.quantity == 0 %}sold-out{% endif %}"
+                                <button type="button"
+                                        class="size-btn {% if variant.quantity == 0 %}sold-out{% endif %}"
                                         data-size="{{ variant.size }}"
                                         data-price="{{ variant.price }}"
                                         data-quantity="{{ variant.quantity }}"
+                                        data-variant-id="{{ variant.id }}"
                                         {% if variant.quantity == 0 %}disabled{% endif %}>
                                     {{ variant.size }}
                                 </button>
                             {% endfor %}
                         </div>
+                        <input type="hidden" name="size_variant_id" id="sizeVariantId{{ forloop.counter0 }}" value="">
                         <small class="size-info text-muted mt-2" id="sizeInfo{{ forloop.counter0 }}">Select a size to see price and stock</small>
                     </div>
                     {% else %}
-                        <p class="mt-3"><strong>Stock:</strong> {{ item.simple_quantity }} available</p>
+                        <p class="mt-3 stock-display" data-stock="{{ item.simple_quantity }}">
+                            <strong>Stock:</strong> {{ item.simple_quantity }} available
+                        </p>
                     {% endif %}
 
                     <div class="mt-4">
                         <div class="d-flex gap-2 align-items-center">
                             <div class="qty-selector">
-                                <button class="qty-btn qty-minus">−</button>
+                                <button type="button" class="qty-btn qty-minus">−</button>
                                 <input type="number"
                                        class="qty-input"
                                        id="qty{{ forloop.counter0 }}"
@@ -87,10 +126,14 @@
                                        max="{% if item.has_sizes %}1{% else %}{{ item.simple_quantity }}{% endif %}"
                                        data-default-max="{% if item.has_sizes %}1{% else %}{{ item.simple_quantity }}{% endif %}"
                                        readonly>
-                                <button class="qty-btn qty-plus">+</button>
+                                <button type="button" class="qty-btn qty-plus">+</button>
                             </div>
-                            <button class="add-cart-btn flex-grow-1">
-                                <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                            <button type="button"
+                                    class="add-cart-btn flex-grow-1 add-to-cart-btn"
+                                    data-item-id="{{ item.id }}"
+                                    data-slide-index="{{ forloop.counter0 }}">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Add to Cart
                             </button>
                         </div>
                     </div>
@@ -117,5 +160,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'js/viewdetail.js' %}"></script>
+
 </body>
 </html>
