@@ -98,4 +98,24 @@ urlpatterns = [
         views.reset_password,
         name="reset_password",
     ),
+
+# =====================================================
+# EDIT PROFILE
+# =====================================================
+
+path(
+    "edit-profile/",
+    views.edit_profile,
+    name="edit_profile",
+),
+
+# =====================================================
+# DELETE PROFILE PHOTO
+# =====================================================
+
+path(
+    "delete-profile-pic/",
+    views.delete_profile_pic,
+    name="delete_profile_pic",
+),
 ]

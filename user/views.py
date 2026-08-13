@@ -1,3 +1,13 @@
+from .forms import (
+    RegisterForm,
+    LoginForm,
+    ProfilePicForm,
+    EmailVerificationForm,
+    ForgotPasswordForm,
+    OTPVerificationForm,
+    ResetPasswordForm,
+)
+from posts.models import Post
 import os
 import random
 
@@ -22,6 +32,7 @@ from .forms import (
     RegisterForm,
     LoginForm,
     ProfilePicForm,
+    ProfileEditForm,
     EmailVerificationForm,
     ForgotPasswordForm,
     OTPVerificationForm,
@@ -303,17 +314,78 @@ def logout_view(request):
 
 
 # =========================================================
-# DASHBOARD
+# USER DASHBOARD
 # =========================================================
 
 @login_required
 def dashboard(request):
+
+    # Get current user's Profile
+    profile = request.user.profile
+
+    # Get posts created by this user's Profile
+    user_posts = Post.objects.filter(
+        user=profile
+    ).order_by("-created_at")
+
+    # Count user's posts
+    post_count = user_posts.count()
+
+    context = {
+        "user_posts": user_posts,
+        "post_count": post_count,
+    }
+
     return render(
         request,
-        "user/dashboard.html"
+        "user/dashboard.html",
+        context
     )
 
+# =========================================================
+# EDIT PROFILE
+# =========================================================
 
+@login_required
+def edit_profile(request):
+
+    profile = request.user.profile
+
+    if request.method == "POST":
+
+        form = ProfileEditForm(
+            request.POST,
+            request.FILES,
+            instance=profile,
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                "Your profile has been updated successfully!"
+            )
+
+            return redirect(
+                "user:dashboard"
+            )
+
+    else:
+
+        form = ProfileEditForm(
+            instance=profile
+        )
+
+    return render(
+        request,
+        "user/edit_profile.html",
+        {
+            "form": form,
+            "profile": profile,
+        }
+    )
 # =========================================================
 # UPDATE PROFILE PICTURE
 # =========================================================
@@ -1132,3 +1204,43 @@ def reset_password(request):
         "user:login"
     )
 
+# =========================================================
+# DELETE PROFILE PHOTO
+# =========================================================
+
+@login_required
+def delete_profile_pic(request):
+
+    if request.method == "POST":
+
+        profile = request.user.profile
+
+        if profile.profile_pic:
+
+            try:
+
+                old_path = profile.profile_pic.path
+
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+
+            except (
+                ValueError,
+                OSError,
+            ):
+
+                pass
+
+            profile.profile_pic = None
+            profile.save(
+                update_fields=["profile_pic"]
+            )
+
+            messages.success(
+                request,
+                "Profile picture deleted successfully!"
+            )
+
+    return redirect(
+        "user:edit_profile"
+    )
