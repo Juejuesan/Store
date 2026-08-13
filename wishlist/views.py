@@ -9,7 +9,6 @@ from .models import Wishlist
 # ==========================================================
 # WISHLIST PAGE
 # ==========================================================
-
 @login_required
 def wishlist(request):
 
@@ -19,6 +18,10 @@ def wishlist(request):
         "post",
         "post__user",
         "post__category",
+    ).prefetch_related(
+        "post__items",
+        "post__items__images",
+        "post__items__size_variants",
     )
 
     return render(
@@ -28,8 +31,6 @@ def wishlist(request):
             "wishlist_items": wishlist_items,
         },
     )
-
-
 # ==========================================================
 # ADD TO WISHLIST
 # ==========================================================
