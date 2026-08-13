@@ -11,6 +11,9 @@
 </head>
 <body>
 
+<!-- ALERT OVERLAY -->
+<div id="alertOverlay" class="alert-overlay"></div>
+
 <div id="mouseGlow"></div>
 <div class="bg-circle bg1"></div>
 <div class="bg-circle bg2"></div>
@@ -34,13 +37,30 @@
         <div class="hero-card"><i class="fa-solid fa-store"></i></div>
     </div>
 </div>
+<div id="alertContainer">
 
+    {% if messages %}
+        {% for message in messages %}
+            <div class="custom-alert success-alert">
+                <div class="alert-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+
+                <div class="alert-content">
+                    <strong>Success</strong>
+                    <span>{{ message }}</span>
+                </div>
+
+                <button type="button" class="alert-close" onclick="closeAlert(this)">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+</div>
 <div class="glass-card">
-{% if messages %}
-    {% for message in messages %}
-        <div class="custom-alert"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
-    {% endfor %}
-{% endif %}
+
 
 <form method="POST" enctype="multipart/form-data" id="createPostForm">
 {% csrf_token %}
@@ -114,7 +134,7 @@
 
 <div class="submit-area">
     <button type="submit" id="publishBtn" class="publish-btn">
-        <i class="fa-solid fa-paper-plane"></i> Publish Product
+         Publish Product
     </button>
 </div>
 

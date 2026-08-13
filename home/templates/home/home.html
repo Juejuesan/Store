@@ -1,397 +1,889 @@
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
 
 <head>
-    <!-- ==================================================
-         HEAD SECTION
-    ================================================== -->
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Trusty Shop | Home</title>
 
-    <!-- ==================================================
-         BOOTSTRAP CSS
-    ================================================== -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- ==================================================
-         FONT AWESOME ICONS
+         BOOTSTRAP
     ================================================== -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+
+    <!-- ==================================================
+         FONT AWESOME
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
 
     <!-- ==================================================
          CUSTOM CSS
     ================================================== -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/header-footer.css' %}">
-    <link rel="stylesheet" href="{% static 'css/post.css' %}">
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/header-footer.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/post.css' %}"
+    >
 
 </head>
 
+
 <body>
+
+
+<!-- =========================================================
+     DJANGO MESSAGE ALERT
+
+     ONE OVERLAY ONLY
+
+     Normal messages:
+     - success
+     - error
+     - info
+     - warning
+
+     Special:
+     - post-pending
+
+     IMPORTANT:
+     We do NOT create another overlay for post-pending.
+========================================================= -->
 
 {% if messages %}
 
-<div class="message-overlay" id="messageOverlay">
+    {% for message in messages %}
 
-    <div class="message-modal">
+        <div
+            class="message-overlay"
+            id="messageOverlay"
+            data-message-type="{% if 'post-pending' in message.tags %}pending{% else %}normal{% endif %}"
+        >
 
-        {% for message in messages %}
+            <div
+                class="
+                    message-modal
+                    {% if 'post-pending' in message.tags %}
+                        post-pending-modal
+                    {% endif %}
+                "
+            >
 
-            {% if message.tags == "success" %}
 
-                <div class="message-icon success">
-                    <i class="fa-solid fa-check"></i>
-                </div>
+                {% if 'post-pending' in message.tags %}
 
-                <h3>Success</h3>
+                    <!-- =================================================
+                         POST PENDING
+                    ================================================== -->
 
-            {% elif message.tags == "error" %}
+                    <div class="post-pending-icon">
 
-                <div class="message-icon error">
-                    <i class="fa-solid fa-xmark"></i>
-                </div>
+                        <i class="fa-solid fa-clock"></i>
 
-                <h3>Please check</h3>
+                    </div>
 
-            {% else %}
 
-                <div class="message-icon">
-                    <i class="fa-solid fa-info"></i>
-                </div>
+                    <div class="post-pending-badge">
 
-                <h3>Notice</h3>
+                        <i class="fa-solid fa-shield-halved"></i>
 
-            {% endif %}
+                        ADMIN REVIEW
 
-            <p>{{ message }}</p>
+                    </div>
 
-        {% endfor %}
 
-        <div class="message-progress">
-            <span></span>
+                    <h3>
+                        Post Submitted!
+                    </h3>
+
+
+                    <p>
+                        {{ message }}
+                    </p>
+
+
+                    <div class="post-pending-info">
+
+                        <div>
+
+                            <i class="fa-solid fa-clock"></i>
+
+                            <span>
+                                Your post is currently waiting for admin approval.
+                            </span>
+
+                        </div>
+
+
+                        <div>
+
+                            <i class="fa-solid fa-eye"></i>
+
+                            <span>
+                                Once approved, your product will appear in the marketplace.
+                            </span>
+
+                        </div>
+
+
+                        <div>
+
+                            <i class="fa-solid fa-bell"></i>
+
+                            <span>
+                                You will be notified when the review is completed.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="post-pending-btn"
+                        onclick="closeSuccessAlert()"
+                    >
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Got it
+
+                    </button>
+
+
+                    <div class="message-progress pending-progress">
+
+                        <span></span>
+
+                    </div>
+
+
+                {% elif 'success' in message.tags %}
+
+                    <!-- =================================================
+                         SUCCESS
+                    ================================================== -->
+
+                    <div class="message-icon success">
+
+                        <i class="fa-solid fa-check"></i>
+
+                    </div>
+
+
+                    <h3>
+                        Success
+                    </h3>
+
+
+                    <p>
+                        {{ message }}
+                    </p>
+
+
+                    <div class="message-progress">
+
+                        <span></span>
+
+                    </div>
+
+
+                {% elif 'error' in message.tags %}
+
+                    <!-- =================================================
+                         ERROR
+                    ================================================== -->
+
+                    <div class="message-icon error">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                    </div>
+
+
+                    <h3>
+                        Please check
+                    </h3>
+
+
+                    <p>
+                        {{ message }}
+                    </p>
+
+
+                    <div class="message-progress error-progress">
+
+                        <span></span>
+
+                    </div>
+
+
+                {% elif 'warning' in message.tags %}
+
+                    <!-- =================================================
+                         WARNING
+                    ================================================== -->
+
+                    <div class="message-icon warning">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    </div>
+
+
+                    <h3>
+                        Warning
+                    </h3>
+
+
+                    <p>
+                        {{ message }}
+                    </p>
+
+
+                    <div class="message-progress warning-progress">
+
+                        <span></span>
+
+                    </div>
+
+
+                {% else %}
+
+                    <!-- =================================================
+                         INFO
+                    ================================================== -->
+
+                    <div class="message-icon info">
+
+                        <i class="fa-solid fa-info"></i>
+
+                    </div>
+
+
+                    <h3>
+                        Notice
+                    </h3>
+
+
+                    <p>
+                        {{ message }}
+                    </p>
+
+
+                    <div class="message-progress info-progress">
+
+                        <span></span>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
         </div>
 
-    </div>
-
-</div>
+    {% endfor %}
 
 {% endif %}
 
 
+
+<!-- ==================================================
+     NAVBAR
+================================================== -->
+
 {% include "includes/navbar.html" %}
-    <!-- ==================================================
-         HERO SECTION
-    ================================================== -->
-    <section class="hero">
-        <!-- FLOATING BACKGROUND -->
-        <div class="floating-background">
-            <div class="bubble"></div>
-            <div class="bubble"></div>
-            <div class="bubble"></div>
 
-            <!-- FLOATING SHOP ICONS -->
-            <div class="floating-item">🛍️</div>
-            <div class="floating-item">👟</div>
-            <div class="floating-item">⌚</div>
-            <div class="floating-item">🎧</div>
-            <div class="floating-item">📱</div>
+
+
+<!-- ==================================================
+     HERO
+================================================== -->
+
+<section class="hero">
+
+    <div class="floating-background">
+
+        <div class="bubble"></div>
+
+        <div class="bubble"></div>
+
+        <div class="bubble"></div>
+
+
+        <div class="floating-item">
+            🛍️
         </div>
 
-        <!-- HERO CONTENT -->
-        <div class="container hero-content">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <!-- HERO TITLE -->
-                    <h1>
-                        Shop Smart with
-                        <span>Trusty Shop</span>
-                    </h1>
+        <div class="floating-item">
+            👟
+        </div>
 
-                    <!-- HERO DESCRIPTION -->
-                    <p>
-                        Discover amazing products with trusted quality,
-                        beautiful designs, and affordable prices.
-                    </p>
+        <div class="floating-item">
+            ⌚
+        </div>
 
-                    <!-- SEARCH BAR -->
-                    <div class="modern-search">
-                        <div class="search-icon">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </div>
-                        <input type="text" placeholder="Search products..." id="searchInput">
-                        <button>Search</button>
+        <div class="floating-item">
+            🎧
+        </div>
+
+        <div class="floating-item">
+            📱
+        </div>
+
+    </div>
+
+
+    <div class="container hero-content">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-6">
+
+                <h1>
+
+                    Shop Smart with
+
+                    <span>
+                        Trusty Shop
+                    </span>
+
+                </h1>
+
+
+                <p>
+
+                    Discover amazing products with trusted quality,
+                    beautiful designs, and affordable prices.
+
+                </p>
+
+
+                <!-- SEARCH -->
+
+                <form
+                    method="GET"
+                    action="{% url 'home' %}"
+                    class="modern-search"
+                >
+
+                    <div class="search-icon">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
                     </div>
 
-                    <!-- TRENDING SEARCH -->
-                    <div class="search-suggestions">
-                        <span>🔥 Trending:</span>
-                        <button>Shoes</button>
-                        <button>Watch</button>
-                        <button>Laptop</button>
-                        <button>Perfume</button>
-                    </div>
+
+                    <input
+                        type="text"
+                        name="q"
+                        id="searchInput"
+                        placeholder="Search products..."
+                        value="{{ search_query|default:'' }}"
+                        autocomplete="off"
+                    >
+
+
+                    <button type="submit">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        Search
+
+                    </button>
+
+                </form>
+
+
+                <!-- TRENDING -->
+
+                <div class="search-suggestions">
+
+                    <span>
+                        🔥 Trending:
+                    </span>
+
+
+                    <button
+                        type="button"
+                        onclick="searchProduct('Shoes')"
+                    >
+                        Shoes
+                    </button>
+
+
+                    <button
+                        type="button"
+                        onclick="searchProduct('Watch')"
+                    >
+                        Watch
+                    </button>
+
+
+                    <button
+                        type="button"
+                        onclick="searchProduct('Laptop')"
+                    >
+                        Laptop
+                    </button>
+
+
+                    <button
+                        type="button"
+                        onclick="searchProduct('Perfume')"
+                    >
+                        Perfume
+                    </button>
+
                 </div>
+
             </div>
+
         </div>
-    </section>
 
-    <!-- ==================================================
-         SELLER POSTS SECTION
-    ================================================== -->
-    <div id="marketParticles"></div>
-    <div id="mouseGlow"></div>
+    </div>
 
-    <section class="seller-posts py-5">
-        <div class="container">
-            <!-- SECTION TITLE -->
-            <div class="section-title mb-5">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <div>
-                        <span class="section-badge">
-                            <i class="fa-solid fa-store"></i>
-                            Trusted Marketplace
-                        </span>
+</section>
+
+
+
+<!-- ==================================================
+     BACKGROUND EFFECTS
+================================================== -->
+
+<div id="marketParticles"></div>
+
+<div id="mouseGlow"></div>
+
+
+
+<!-- ==================================================
+     SELLER POSTS
+================================================== -->
+
+<section
+    id="searchResults"
+    class="seller-posts py-5"
+>
+
+    <div class="container">
+
+
+        <!-- ==================================================
+             SECTION HEADER
+        ================================================== -->
+
+        <div class="section-title mb-5">
+
+            <div
+                class="d-flex justify-content-between align-items-center flex-wrap gap-3"
+            >
+
+                <div>
+
+                    <span class="section-badge">
+
+                        <i class="fa-solid fa-store"></i>
+
+                        Trusted Marketplace
+
+                    </span>
+
+
+                    {% if search_query %}
+
+                        <h2 class="mt-3 mb-2">
+                            Search Results
+                        </h2>
+
+
+                        <p class="mb-0">
+
+                            Showing products matching
+
+                            <strong>
+                                "{{ search_query }}"
+                            </strong>
+
+                        </p>
+
+                    {% else %}
+
                         <h2 class="mt-3 mb-2">
                             Latest Seller Products
                         </h2>
+
+
                         <p class="mb-0">
-                            Discover quality products posted by verified sellers.
+
+                            Discover quality products posted
+                            by verified sellers.
+
                         </p>
-                    </div>
-                    <div>
-                        <a href="{% url 'createPost' %}" class="create-post-btn">
-                            <i class="fa-solid fa-plus"></i>
-                            Create Post
-                        </a>
-                    </div>
+
+                    {% endif %}
+
                 </div>
+
+
+                <div>
+
+                    <a
+                        href="{% url 'createPost' %}"
+                        class="create-post-btn"
+                    >
+
+                        <i class="fa-solid fa-plus"></i>
+
+                        Create Post
+
+                    </a>
+
+                </div>
+
             </div>
 
-       <!-- PRODUCT CARDS - DYNAMIC LOOP -->
-<div class="row g-4">
-    {% for post in posts %}
+        </div>
 
-    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
 
-        <a href="{% url 'viewdetail' post.id %}" class="post-card-link">
 
-            <div class="seller-card">
+        <!-- ==================================================
+             PRODUCT CARDS
+        ================================================== -->
 
-                <!-- =========================
-                     SELLER INFO
-                ========================== -->
-                <div class="seller-top">
+        <div class="row g-4">
 
-                    <div class="seller-left">
+            {% for post in posts %}
 
-                        {% if post.user.profile.profile_pic %}
+                <div
+                    class="col-xl-4 col-lg-4 col-md-6 col-sm-12"
+                >
 
-                            <img
-                                src="{{ post.user.profile.profile_pic.url }}"
-                                class="seller-profile"
-                                alt="{{ post.user.fullName }}"
-                            >
+                    <a
+                        href="{% url 'viewdetail' post.id %}"
+                        class="post-card-link"
+                    >
 
-                        {% else %}
+                        <div class="seller-card">
 
-                            <i class="fa-solid fa-circle-user nav-profile-icon"></i>
 
-                        {% endif %}
+                            <!-- ==================================================
+                                 SELLER
+                            ================================================== -->
 
-                        <div>
+                            <div class="seller-top">
 
-                            <h5>
-                                {{ post.user.fullName }}
-                                <i class="fa-solid fa-circle-check verified"></i>
-                            </h5>
+                                <div class="seller-left">
 
-                            <span>
-                                <i class="fa-regular fa-clock"></i>
-                                {{ post.created_at|timesince }} ago
-                            </span>
+
+                                    {% if post.user.profile.profile_pic %}
+
+                                        <img
+                                            src="{{ post.user.profile.profile_pic.url }}"
+                                            class="seller-profile"
+                                            alt="{{ post.user.fullName }}"
+                                        >
+
+                                    {% else %}
+
+                                        <i
+                                            class="fa-solid fa-circle-user nav-profile-icon"
+                                        ></i>
+
+                                    {% endif %}
+
+
+                                    <div>
+
+                                        <h5>
+
+                                            {{ post.user.fullName }}
+
+                                            <i
+                                                class="fa-solid fa-circle-check verified"
+                                            ></i>
+
+                                        </h5>
+
+
+                                        <span>
+
+                                            <i
+                                                class="fa-regular fa-clock"
+                                            ></i>
+
+                                            {{ post.created_at|timesince }}
+                                            ago
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- ==================================================
+                                 PRODUCT IMAGE
+                            ================================================== -->
+
+                            <div class="product-image-box">
+
+                                <div
+                                    class="post-image-slider"
+                                    data-images="{% for item in post.items.all %}{% if item.images.first %}{{ item.images.first.image.url }}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}"
+                                    onmouseenter="startSlide(this)"
+                                    onmouseleave="stopSlide(this)"
+                                >
+
+                                    {% with first_item=post.items.first %}
+
+                                        {% if first_item.images.first %}
+
+                                            <img
+                                                src="{{ first_item.images.first.image.url }}"
+                                                class="product-image"
+                                                alt="{{ post.category.name|default:'Product' }}"
+                                            >
+
+                                        {% else %}
+
+                                            <img
+                                                src="{% static 'images/no-image.png' %}"
+                                                class="product-image"
+                                                alt="No image"
+                                            >
+
+                                        {% endif %}
+
+                                    {% endwith %}
+
+                                </div>
+
+
+                                <span class="product-tag">
+
+                                    {{ post.items.count }}
+                                    items
+
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- ==================================================
+                                 PRODUCT BODY
+                            ================================================== -->
+
+                            <div class="product-body">
+
+                                <div class="title-price">
+
+                                    <h4>
+
+                                        {{ post.category.name|default:"Product" }}
+
+                                    </h4>
+
+
+                                    {% with first_item=post.items.first %}
+
+                                        {% if first_item %}
+
+                                            <span class="price">
+
+                                                From
+                                                {{ first_item.price }}
+                                                MMK
+
+                                            </span>
+
+                                        {% endif %}
+
+                                    {% endwith %}
+
+                                </div>
+
+
+                                <p>
+
+                                    {{ post.description|truncatewords:20 }}
+
+                                </p>
+
+
+                                <!-- FEATURES -->
+
+                                <div class="product-features">
+
+                                    <span>
+
+                                        <i class="fa-solid fa-box"></i>
+
+                                        {{ post.items.count }}
+                                        items
+
+                                    </span>
+
+
+                                    <span>
+
+                                        <i
+                                            class="fa-solid fa-check-circle"
+                                        ></i>
+
+                                        {{ post.condition|default:"New" }}
+
+                                    </span>
+
+                                </div>
+
+
+
+                                <!-- SIZES -->
+
+                                {% with first_item=post.items.first %}
+
+                                    {% if first_item.has_sizes and first_item.size_variants.all %}
+
+                                        <div class="size-tags mt-2">
+
+                                            {% for variant in first_item.size_variants.all %}
+
+                                                {% if variant.quantity > 0 %}
+
+                                                    <span class="size-tag">
+
+                                                        {{ variant.size }}
+
+                                                    </span>
+
+                                                {% endif %}
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endwith %}
+
+                            </div>
 
                         </div>
 
-                    </div>
+                    </a>
 
                 </div>
 
 
-                <!-- =========================
-                     PRODUCT IMAGE
-                ========================== -->
-                <div class="product-image-box">
+            {% empty %}
 
-                    <div
-                        class="post-image-slider"
-                        data-images="{% for item in post.items.all %}{% if item.images.first %}{{ item.images.first.image.url }}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}"
-                        onmouseenter="startSlide(this)"
-                        onmouseleave="stopSlide(this)"
-                    >
+                <div class="col-12 text-center py-5">
 
-                        {% with first_item=post.items.first %}
-
-                            {% if first_item.images.first %}
-
-                                <img
-                                    src="{{ first_item.images.first.image.url }}"
-                                    class="product-image"
-                                    alt="{{ post.category.name|default:'Product' }}"
-                                >
-
-                            {% else %}
-
-                                <img
-                                    src="{% static 'images/no-image.png' %}"
-                                    class="product-image"
-                                    alt="No image"
-                                >
-
-                            {% endif %}
-
-                        {% endwith %}
-
-                    </div>
-
-                    <span class="product-tag">
-                        {{ post.items.count }} items
-                    </span>
-
-                </div>
+                    <i
+                        class="fa-solid fa-box-open"
+                        style="font-size:60px;color:#94a3b8;"
+                    ></i>
 
 
-                <!-- =========================
-                     PRODUCT INFO
-                ========================== -->
-                <div class="product-body">
-
-                    <div class="title-price">
-
-                        <h4>
-                            {{ post.category.name|default:"Product" }}
-                        </h4>
-
-                        {% with first_item=post.items.first %}
-
-                            <span class="price">
-                                From {{ first_item.price }} MMK
-                            </span>
-
-                        {% endwith %}
-
-                    </div>
+                    <h3 class="mt-3">
+                        No posts available
+                    </h3>
 
 
                     <p>
-                        {{ post.description|truncatewords:20 }}
+
+                        Be the first to
+
+                        <a href="{% url 'createPost' %}">
+                            create a post
+                        </a>!
+
                     </p>
-
-
-                    <div class="product-features">
-
-                        <span>
-                            <i class="fa-solid fa-box"></i>
-                            {{ post.items.count }} items
-                        </span>
-
-                        <span>
-                            <i class="fa-solid fa-check-circle"></i>
-                            {{ post.condition|default:"New" }}
-                        </span>
-
-                    </div>
-
-                    <!-- =========================
-                         AVAILABLE SIZES
-                    ========================== -->
-                    {% with first_item=post.items.first %}
-                        {% if first_item.has_sizes and first_item.size_variants.all %}
-                        <div class="size-tags mt-2">
-                            {% for variant in first_item.size_variants.all %}
-                                {% if variant.quantity > 0 %}
-                                    <span class="size-tag">{{ variant.size }}</span>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    {% endwith %}
 
                 </div>
 
-            </div>
+            {% endfor %}
 
-        </a>
-
-    </div>
-
-    {% empty %}
-
-    <div class="col-12 text-center py-5">
-
-        <i
-            class="fa-solid fa-box-open"
-            style="font-size:60px;color:#94a3b8;"
-        ></i>
-
-        <h3 class="mt-3">
-            No posts available
-        </h3>
-
-        <p>
-            Be the first to
-            <a href="{% url 'createPost' %}">
-                create a post
-            </a>!
-        </p>
-
-    </div>
-
-    {% endfor %}
-</div>
         </div>
-    </section>
 
-    <!-- ==================================================
-         FOOTER SECTION
-    ================================================== -->
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     FOOTER
+================================================== -->
 
 {% include "includes/footer.html" %}
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
 
-    const messageOverlay =
-        document.getElementById("messageOverlay");
 
-    if (!messageOverlay) {
-        return;
-    }
+<!-- ==================================================
+     BOOTSTRAP JS
+================================================== -->
 
-    setTimeout(function () {
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
 
-        messageOverlay.classList.add("message-closing");
 
-        setTimeout(function () {
 
-            messageOverlay.remove();
+<!-- ==================================================
+     CUSTOM JS
+================================================== -->
 
-        }, 250);
+<script src="{% static 'js/about.js' %}"></script>
 
-    }, 2000);
+<script src="{% static 'js/header-footer.js' %}"></script>
 
-});
-</script>
-    <!-- ==================================================
-         JAVASCRIPT SECTION
-    ================================================== -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/about.js' %}"></script>
-    <script src="{% static 'js/header-footer.js' %}"></script>
-    <script src="{% static 'js/home-slider.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/home-slider.js' %}"></script>
+
+<script src="{% static 'js/script.js' %}"></script>
+
+
+
 </body>
 
 </html>

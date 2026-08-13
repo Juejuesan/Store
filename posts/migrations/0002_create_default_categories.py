@@ -190,6 +190,7 @@ def create_categories(apps, schema_editor):
             'size_type': 'none',
             'size_label': None,
         },
+
     ]
 
     for category_data in categories_data:
