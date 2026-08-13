@@ -1241,3 +1241,243 @@ body {
     animation: pulse 2s infinite;
 }
 
+
+
+/*something*/
+
+/* =========================================================
+   CENTER ERROR ALERT
+   Keeps existing page design unchanged
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   WHITE TRANSPARENT BACKGROUND OVERLAY
+   --------------------------------------------------------- */
+
+.alert-overlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(255, 255, 255, 0.72);
+
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+
+    z-index: 9998;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+
+/* Overlay visible */
+
+.alert-overlay.active {
+    opacity: 1;
+    visibility: visible;
+
+    pointer-events: auto;
+}
+
+
+/* ---------------------------------------------------------
+   CENTER ALERT BOX
+   --------------------------------------------------------- */
+
+.center-error-alert {
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%) scale(0.92);
+
+    width: min(430px, calc(100% - 40px));
+
+    padding: 36px 35px 32px;
+
+    background: #ffffff;
+
+    border-radius: 22px;
+
+    border: 1px solid rgba(220, 38, 38, 0.15);
+
+    box-shadow:
+        0 25px 70px rgba(15, 23, 42, 0.22),
+        0 8px 25px rgba(220, 38, 38, 0.08);
+
+    text-align: center;
+
+    opacity: 0;
+
+    z-index: 9999;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* Alert visible */
+
+.center-error-alert.show {
+    opacity: 1;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1);
+}
+
+
+/* ---------------------------------------------------------
+   CLOSE BUTTON
+   --------------------------------------------------------- */
+
+.alert-close-btn {
+    position: absolute;
+
+    top: 15px;
+    right: 15px;
+
+    width: 36px;
+    height: 36px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f1f5f9;
+
+    color: #64748b;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.alert-close-btn:hover {
+    background: #fee2e2;
+
+    color: #dc2626;
+
+    transform: rotate(90deg);
+}
+
+
+.alert-close-btn:active {
+    transform: scale(0.92);
+}
+
+
+/* ---------------------------------------------------------
+   ERROR ICON
+   --------------------------------------------------------- */
+
+.center-error-alert .alert-icon {
+    width: 68px;
+    height: 68px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: #fef2f2;
+
+    color: #dc2626;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 30px;
+
+    box-shadow:
+        0 8px 25px rgba(220, 38, 38, 0.12);
+}
+
+
+/* ---------------------------------------------------------
+   TITLE
+   --------------------------------------------------------- */
+
+.center-error-alert h3 {
+    margin: 0 0 10px;
+
+    color: #1e293b;
+
+    font-size: 21px;
+
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+/* ---------------------------------------------------------
+   MESSAGE
+   --------------------------------------------------------- */
+
+.center-error-alert p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 576px) {
+
+    .center-error-alert {
+        width: calc(100% - 30px);
+
+        padding:
+            32px
+            25px
+            28px;
+
+        border-radius: 18px;
+    }
+
+    .center-error-alert .alert-icon {
+        width: 60px;
+        height: 60px;
+
+        font-size: 26px;
+    }
+
+    .center-error-alert h3 {
+        font-size: 19px;
+    }
+
+    .center-error-alert p {
+        font-size: 14px;
+    }
+}
+

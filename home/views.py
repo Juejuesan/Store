@@ -1,19 +1,44 @@
 from django.contrib.auth.decorators import login_required
 
-
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Q
 
 from posts.models import Post
 from wishlist.models import Wishlist
 
+
 @login_required(login_url='welcome')
 def home(request):
-    posts = Post.objects.filter(status="approved").order_by('-created_at')
+    search_query = request.GET.get('q', '').strip()
 
-    return render(request, "home/home.html", {"posts": posts})
+    posts = Post.objects.filter(
+        status='approved'
+    ).select_related(
+        'category',
+        'user',
+        'user__user',
+    ).prefetch_related(
+        'items',
+        'items__images',
+        'items__size_variants',
+    )
+
+    # Search item name or category name
+    if search_query:
+        posts = posts.filter(
+            Q(items__name__icontains=search_query) |
+            Q(category__name__icontains=search_query)
+        ).distinct()
+
+    context = {
+        'posts': posts,
+        'search_query': search_query,
+    }
+
+    return render(request, 'home/home.html', context)
+
 
 def viewdetail(request, post_id):
-
     # Get the main post
     post = get_object_or_404(
         Post,
@@ -51,6 +76,7 @@ def viewdetail(request, post_id):
         "home/viewdetail.html",
         context
     )
+
 
 def createPost(request):
     return render(request, "posts/createPost.html")

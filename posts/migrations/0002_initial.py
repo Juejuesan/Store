@@ -158,7 +158,8 @@ def create_categories(apps, schema_editor):
         {
             'name': 'Scarves',
             'size_type': 'none',
-            'size_label': None,
+
+'size_label': None,
         },
         {
             'name': 'Belts',
@@ -190,6 +191,7 @@ def create_categories(apps, schema_editor):
             'size_type': 'none',
             'size_label': None,
         },
+
     ]
 
     for category_data in categories_data:

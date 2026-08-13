@@ -26,114 +26,6 @@ function checkSizeVisibility() {
     if (condition === 'new' && sizeType && sizeType !== 'none') { loadSizes(); }
     else { sizeOptions = []; updateAllSizeCharts(); }
 }
-function showCustomAlert(message) {
-    // Get existing alerts count for stacking
-    const existingAlerts = document.querySelectorAll('.custom-alert-limit');
-    const offsetTop = 20 + (existingAlerts.length * 70); // Stack each alert 70px apart
-
-    // Create alert element
-    const alert = document.createElement('div');
-    alert.className = 'custom-alert custom-alert-limit';
-
-    // Determine icon based on message content
-    let icon = 'fa-circle-exclamation';
-    let bgColor = '#fef2f2';
-    let textColor = '#dc2626';
-    let borderColor = '#dc2626';
-
-    if (message.includes('✅') || message.includes('success')) {
-        icon = 'fa-circle-check';
-        bgColor = '#f0fdf4';
-        textColor = '#16a34a';
-        borderColor = '#22c55e';
-    } else if (message.includes('⚠️') || message.includes('warning')) {
-        icon = 'fa-triangle-exclamation';
-        bgColor = '#fffbeb';
-        textColor = '#d97706';
-        borderColor = '#f59e0b';
-    }
-
-    alert.innerHTML = '<i class="fa-solid ' + icon + '"></i> ' + message;
-
-    // Style for stacked notifications
-    alert.style.cssText = `
-        position: fixed;
-        top: ${offsetTop}px;
-        right: -400px;
-        width: 380px;
-        padding: 16px 20px;
-        background: ${bgColor};
-        color: ${textColor};
-        border-left: 4px solid ${borderColor};
-        border-radius: 10px;
-        font-weight: 500;
-        font-size: 14px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        z-index: ${9999 - existingAlerts.length};
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        cursor: pointer;
-    `;
-
-    // Add close button
-    const closeBtn = document.createElement('span');
-    closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-    closeBtn.style.cssText = `
-        margin-left: auto;
-        opacity: 0.6;
-        font-size: 16px;
-        transition: opacity 0.2s;
-    `;
-    closeBtn.onmouseover = function() { this.style.opacity = '1'; };
-    closeBtn.onmouseout = function() { this.style.opacity = '0.6'; };
-    closeBtn.onclick = function(e) {
-        e.stopPropagation();
-        hideAlert(alert);
-    };
-    alert.appendChild(closeBtn);
-
-    // Add to body
-    document.body.appendChild(alert);
-
-    // Slide in from right
-    setTimeout(function() {
-        alert.style.right = '20px';
-    }, 100);
-
-    // Auto remove after 5 seconds
-    const autoRemove = setTimeout(function() {
-        hideAlert(alert);
-    }, 5000);
-
-    // Click to dismiss (cancel auto-remove)
-    alert.addEventListener('click', function(e) {
-        if (e.target !== closeBtn) {
-            clearTimeout(autoRemove);
-            hideAlert(alert);
-        }
-    });
-
-    function hideAlert(el) {
-        el.style.right = '-400px';
-        el.style.opacity = '0';
-        setTimeout(function() {
-            if (el.parentNode) {
-                el.remove();
-                // Reposition remaining alerts
-                repositionAlerts();
-            }
-        }, 400);
-    }
-
-    function repositionAlerts() {
-        const remainingAlerts = document.querySelectorAll('.custom-alert-limit');
-        remainingAlerts.forEach(function(al, idx) {
-            al.style.top = (20 + (idx * 70)) + 'px';
-        });
-    }
-}
 
 function addItem() {
     const existingItems = document.querySelectorAll('.item-section').length;
@@ -422,21 +314,7 @@ function toggleSizeChart(itemIdx) {
 // ============================================
 // ALERT
 // ============================================
-function showCustomAlert(message) {
-    const existing = document.querySelector('.custom-alert-limit');
-    if (existing) existing.remove();
-    const alert = document.createElement('div');
-    alert.className = 'custom-alert custom-alert-limit';
-    alert.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> ' + message;
-    alert.style.cssText = 'display:flex;align-items:center;gap:10px;padding:14px 20px;background:#fef2f2;color:#dc2626;border-left:4px solid #dc2626;border-radius:10px;font-weight:600;margin-bottom:15px;';
-    document.getElementById('createPostForm').insertBefore(alert, document.getElementById('createPostForm').firstChild);
-    window.scrollTo({top:0,behavior:'smooth'});
-    setTimeout(function(){
-        alert.style.opacity='0';
-        alert.style.transition='opacity .3s';
-        setTimeout(function(){alert.remove();},300);
-    },5000);
-}
+
 
 // ============================================
 // FORM SUBMISSION WITH AJAX (OPTION B)
@@ -576,7 +454,7 @@ for (const [key, value] of formData.entries()) {
     })
     .then(function(response) {
         if (!response.ok) {
-            throw new Error('Upload failed with status: ' + response.status);
+            throw new Error('Enter a description for post ');
         }
         // Check if response is JSON or HTML
         const contentType = response.headers.get('content-type');
@@ -606,7 +484,7 @@ for (const [key, value] of formData.entries()) {
         // Re-enable submit button
         if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Submit Post';
+            submitBtn.innerHTML = 'Publish Product';
         }
     });
 
@@ -624,3 +502,141 @@ document.addEventListener('mousemove', function(e) {
 });
 addItem();
 
+
+
+
+
+
+
+// function showAlert(message, type = "error") {
+//
+//     const container = document.getElementById("alertContainer");
+//
+//     if (!container) {
+//         return;
+//     }
+//
+//     container.innerHTML = "";
+//
+//     let messages = [];
+//
+//     if (Array.isArray(message)) {
+//         messages = message;
+//     } else {
+//         messages = [message];
+//     }
+//
+//     const alert = document.createElement("div");
+//
+//     alert.className =
+//         type === "success"
+//             ? "custom-alert success-alert"
+//             : "custom-alert error-alert";
+//
+//     const icon =
+//         type === "success"
+//             ? "fa-circle-check"
+//             : "fa-circle-exclamation";
+//
+//     const title =
+//         type === "success"
+//             ? "Success"
+//             : "Please check your information";
+//
+//     alert.innerHTML = `
+//         <div class="alert-icon">
+//             <i class="fa-solid ${icon}"></i>
+//         </div>
+//
+//         <div class="alert-content">
+//             <strong>${title}</strong>
+//
+//             <div class="alert-messages">
+//                 ${messages.map(msg => `<div>${msg}</div>`).join("")}
+//             </div>
+//         </div>
+//
+//         <button type="button"
+//                 class="alert-close"
+//                 onclick="closeAlert(this)">
+//             <i class="fa-solid fa-xmark"></i>
+//         </button>
+//     `;
+//
+//     container.appendChild(alert);
+// }
+
+
+// ============================================
+// CENTER ERROR ALERT
+// ============================================
+
+function showCustomAlert(message) {
+
+    // Remove existing alert
+    const existingAlert = document.querySelector('.center-error-alert');
+
+    if (existingAlert) {
+        existingAlert.remove();
+    }
+
+    // Get overlay
+    const overlay = document.getElementById('alertOverlay');
+
+    // Show white transparent background
+    if (overlay) {
+        overlay.classList.add('active');
+    }
+
+    // Create alert
+    const alert = document.createElement('div');
+
+    alert.className = 'center-error-alert';
+
+    alert.innerHTML = `
+        <button type="button"
+                class="alert-close-btn"
+                onclick="closeAlert(this)"
+                aria-label="Close alert">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="alert-icon">
+            <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+
+        <h3>Please check your information</h3>
+
+        <p>${message}</p>
+    `;
+
+    document.body.appendChild(alert);
+
+    // Animate alert
+    requestAnimationFrame(function () {
+        alert.classList.add('show');
+    });
+}
+
+// ============================================
+// CLOSE CENTER ALERT
+// ============================================
+
+function closeAlert(button) {
+
+    const alert = button.closest('.center-error-alert');
+    const overlay = document.getElementById('alertOverlay');
+
+    if (alert) {
+        alert.classList.remove('show');
+
+        setTimeout(function () {
+            alert.remove();
+        }, 200);
+    }
+
+    // Hide overlay
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
+}
