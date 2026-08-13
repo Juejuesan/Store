@@ -102,14 +102,14 @@ document.addEventListener('click', function(e) {
 
         // Check if product is in stock
         if (maxStock <= 0) {
-            toastr.error('This item is out of stock!');
+            alert('This item is out of stock!');
             return;
         }
 
         // Check if size is required but not selected
         var hasSizeButtons = s.querySelectorAll('.size-btn').length > 0;
         if (hasSizeButtons && !sz) {
-            toastr.warning('Please select a size first!');
+            alert('Please select a size first!');
             return;
         }
 
@@ -141,7 +141,7 @@ document.addEventListener('click', function(e) {
         })
         .then(function(data) {
             if (data.success) {
-                toastr.success(data.message);
+                alert(data.message);
 
                 // Update cart badge
                 if (data.cart_count !== undefined) {
@@ -209,12 +209,12 @@ document.addEventListener('click', function(e) {
                 }
 
             } else {
-                toastr.error(data.message);
+                alert(data.message);
             }
         })
         .catch(function(error) {
             console.error('Error:', error);
-            toastr.error('An error occurred. Please try again.');
+            alert('An error occurred. Please try again.');
         })
         .finally(function() {
             // Restore button
@@ -331,3 +331,4 @@ document.addEventListener('DOMContentLoaded', function() {
     updateNav();
     initializeAllSlides();
 });
+

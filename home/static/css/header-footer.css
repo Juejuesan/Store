@@ -659,4 +659,24 @@ footer a:hover{
         0 15px 35px rgba(21, 101, 192, 0.4);
 }
 
+.cart-link {
+    position: relative;
+}
+
+.cart-count {
+    display: inline-block;
+    min-width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    background: #dc3545;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 0 5px;
+    margin-left: 3px;
+    vertical-align: middle;
+}
+
 

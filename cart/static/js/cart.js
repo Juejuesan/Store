@@ -25,18 +25,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (prevBtn && nextBtn) {
-        prevBtn.addEventListener('click', () => {
+        prevBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             if (currentSlide > 0) showSlide(currentSlide - 1);
         });
 
-        nextBtn.addEventListener('click', () => {
+        nextBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
         });
     }
 
     // ============ SIZE SELECTION ============
     document.querySelectorAll('.size-btn').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+
             const slide = this.closest('.item-slide');
             const slideIndex = slide.id.replace('itemSlide', '');
 
@@ -58,9 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 sizeInfo.textContent = `Size ${this.dataset.size}: ${this.dataset.price} MMK (${this.dataset.quantity} available)`;
             }
 
-            // Highlight selected
-            slide.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('selected'));
-            this.classList.add('selected');
+            // Highlight selected - use 'active' class to match your HTML
+            slide.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
 
             // Enable add to cart
             const addBtn = slide.querySelector('.add-to-cart-btn');
@@ -77,14 +81,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const plusBtn = selector.querySelector('.qty-plus');
 
         if (minusBtn) {
-            minusBtn.addEventListener('click', function() {
+            minusBtn.addEventListener('click', function(e) {
+                e.preventDefault();
                 let value = parseInt(input.value);
                 if (value > 1) input.value = value - 1;
             });
         }
 
         if (plusBtn) {
-            plusBtn.addEventListener('click', function() {
+            plusBtn.addEventListener('click', function(e) {
+                e.preventDefault();
                 let value = parseInt(input.value);
                 let max = parseInt(input.dataset.defaultMax);
                 if (value < max) input.value = value + 1;
@@ -94,7 +100,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ============ ADD TO CART (AJAX) ============
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+
             const slideIndex = this.dataset.slideIndex;
             const itemId = this.dataset.itemId;
             const slide = document.getElementById('itemSlide' + slideIndex);
@@ -107,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sizeVariantId = sizeVariantInput.value;
 
                 if (!sizeVariantId) {
-                    toastr.warning('Please select a size first');
+                    alert('Please select a size first');
                     return;
                 }
             }
@@ -142,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    toastr.success(data.message);
+                    alert(data.message);
 
                     // Update cart badge if exists
                     if (data.cart_count !== undefined) {
@@ -172,29 +180,32 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (newQty <= 0) {
                                 selectedSizeBtn.disabled = true;
                                 selectedSizeBtn.classList.add('sold-out');
+                                selectedSizeBtn.classList.remove('active');
                             }
                         }
 
                         // Reset size selection
                         sizeVariantInput.value = '';
-                        slide.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('selected'));
-
-                        // Disable add to cart button
+                        slide.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
                         this.disabled = true;
 
                     } else {
                         // For non-sized items - update simple quantity display
-                        const stockText = slide.querySelector('p strong');
-                        if (stockText && stockText.textContent.includes('Stock:')) {
-                            const currentStock = parseInt(stockText.nextSibling.textContent);
+                        const stockDisplay = slide.querySelector('.stock-display');
+                        if (stockDisplay) {
+                            const currentStock = parseInt(stockDisplay.dataset.stock);
                             const newStock = currentStock - quantity;
+                            stockDisplay.dataset.stock = newStock;
 
-                            if (newStock > 0) {
-                                stockText.nextSibling.textContent = ` ${newStock} available`;
-                            } else {
-                                stockText.nextSibling.textContent = ` Out of stock`;
-                                this.disabled = true;
-                                this.innerHTML = '<i class="fa-solid fa-cart-shopping"></i> Out of Stock';
+                            const stockStrong = stockDisplay.querySelector('strong');
+                            if (stockStrong) {
+                                if (newStock > 0) {
+                                    stockStrong.nextSibling.textContent = ` ${newStock} available`;
+                                } else {
+                                    stockStrong.nextSibling.textContent = ` Out of stock`;
+                                    this.disabled = true;
+                                    this.innerHTML = '<i class="fa-solid fa-cart-shopping"></i> Out of Stock';
+                                }
                             }
 
                             // Update max quantity
@@ -211,21 +222,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                 } else {
-                    toastr.error(data.message);
+                    alert(data.message);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                toastr.error('An error occurred. Please try again.');
+                alert('An error occurred. Please try again.');
             })
             .finally(() => {
-                // Restore button if not disabled due to out of stock
-                if (!this.disabled || this.innerHTML.includes('Out of Stock')) {
-                    // Keep disabled if out of stock
-                } else {
+                // Restore button
+                if (!this.innerHTML.includes('Out of Stock')) {
                     this.disabled = false;
+                    this.innerHTML = originalText;
                 }
-                this.innerHTML = originalText;
             });
         });
     });
@@ -261,14 +270,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateCartBadge(count) {
-    const cartBadge = document.getElementById('cartBadge');
-    if (cartBadge) {
-        cartBadge.textContent = count;
-        if (count > 0) {
-            cartBadge.style.display = 'inline-block';
-        } else {
-            cartBadge.style.display = 'none';
+        const cartBadge = document.getElementById('cartBadge');
+        if (cartBadge) {
+            cartBadge.textContent = count;
+            if (count > 0) {
+                cartBadge.style.display = 'inline-block';
+            } else {
+                cartBadge.style.display = 'none';
+            }
         }
     }
-}
 });
+
+// Function to load cart count on page load
+function loadCartCount() {
+    fetch('/cart/count/')  // You need to create this endpoint
+    .then(response => response.json())
+    .then(data => {
+        updateCartBadge(data.cart_count);
+    })
+    .catch(error => {
+        console.error('Error loading cart count:', error);
+    });
+}
+
+// Call on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadCartCount();
+});
+

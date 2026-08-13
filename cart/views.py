@@ -38,26 +38,23 @@ def view_cart(request):
 
 @login_required
 def add_to_cart(request, item_id):
-    """Add item to cart with hold and merge if same item exists"""
     if request.method != 'POST':
         return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
 
-    profile = request.user.profile
-    size_variant_id = request.POST.get('size_variant_id')
-    quantity = int(request.POST.get('quantity', 1))
-
-    # Get or create open cart
-    cart, created = Cart.objects.get_or_create(
-        user=profile,
-        status='open'
-    )
-
     try:
+        profile = request.user.profile
+        size_variant_id = request.POST.get('size_variant_id')
+        quantity = int(request.POST.get('quantity', 1))
+
+        cart, created = Cart.objects.get_or_create(
+            user=profile,
+            status='open'
+        )
+
         with transaction.atomic():
             item = Item.objects.get(id=item_id)
             size_variant = None
 
-            # Check if item has sizes
             if item.has_sizes:
                 if size_variant_id:
                     size_variant = SizeVariant.objects.get(id=size_variant_id)
@@ -67,94 +64,62 @@ def add_to_cart(request, item_id):
                         'message': 'Please select a size'
                     })
 
-            # Set unit price based on variant
             if size_variant:
                 unit_price = size_variant.price
+
+                # CHECK STOCK
+                if size_variant.quantity < quantity:
+                    return JsonResponse({
+                        'success': False,
+                        'message': f'Insufficient stock. Only {size_variant.quantity} available'
+                    })
+
+                # REDUCE STOCK
+                size_variant.quantity -= quantity
+                size_variant.save()
+
             else:
                 unit_price = item.price
 
-            # CHECK FOR EXISTING ITEM (MERGE LOGIC)
-            existing_item = CartItem.objects.filter(
+                # CHECK STOCK
+                if item.simple_quantity < quantity:
+                    return JsonResponse({
+                        'success': False,
+                        'message': f'Insufficient stock. Only {item.simple_quantity} available'
+                    })
+
+                # REDUCE STOCK
+                item.simple_quantity -= quantity
+                item.save(skip_has_sizes=True)
+
+            # CREATE CART ITEM
+            cart_item = CartItem(
                 cart=cart,
                 item=item,
                 size_variant=size_variant,
+                unit_price=unit_price,
+                quantity=quantity,
+                item_name=item.name,
                 status='taken'
-            ).first()
+            )
 
-            if existing_item:
-                # MERGE: Item already in cart, add more quantity
-                new_quantity = existing_item.quantity + quantity
+            cart_item.save()
+            cart_item.create_hold()
 
-                # Check available stock (considering current hold)
-                available = existing_item.get_available_stock()
+            return JsonResponse({
+                'success': True,
+                'message': 'Added to cart successfully!',
+                'cart_count': cart.total_items()
+            })
 
-                if available >= quantity:
-                    # Update quantity
-                    existing_item.quantity = new_quantity
-                    existing_item.save()
-
-                    # Update hold quantity (but DON'T change expiry time)
-                    hold = existing_item.active_hold
-                    if hold:
-                        hold.quantity = new_quantity
-                        hold.save()
-
-                    return JsonResponse({
-                        'success': True,
-                        'message': f'Merged! Quantity now {new_quantity}',
-                        'cart_count': cart.total_items
-                    })
-                else:
-                    return JsonResponse({
-                        'success': False,
-                        'message': f'Only {available} more available'
-                    })
-
-            else:
-                # NEW ITEM: Create fresh cart item
-                cart_item = CartItem(
-                    cart=cart,
-                    item=item,
-                    size_variant=size_variant,
-                    unit_price=unit_price,
-                    quantity=quantity,
-                    item_name=item.name,
-                    status='taken'
-                )
-
-                # Validate stock availability
-                available = cart_item.get_available_stock()
-                if available < quantity:
-                    return JsonResponse({
-                        'success': False,
-                        'message': f'Insufficient stock. Only {available} available'
-                    })
-
-                cart_item.save()
-                cart_item.create_hold()
-
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Added to cart successfully!',
-                    'cart_count': cart.total_items
-                })
-
-    except Item.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'message': 'Item not found'
-        }, status=404)
-    except SizeVariant.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'message': 'Size variant not found'
-        }, status=404)
     except Exception as e:
+        print(f"Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return JsonResponse({
             'success': False,
             'message': f'Error: {str(e)}'
         }, status=500)
-
 
 @login_required
 def update_cart_item(request, cart_item_id):
@@ -279,3 +244,17 @@ def checkout(request):
         messages.error(request, f"Checkout error: {str(e)}")
 
     return redirect('cart:view_cart')  # FIXED
+
+
+@login_required
+def cart_count(request):
+    """Return cart count for navbar badge"""
+    profile = request.user.profile
+    cart = Cart.objects.filter(user=profile, status='open').first()
+
+    if cart:
+        count = cart.total_items()
+    else:
+        count = 0
+
+    return JsonResponse({'cart_count': count})

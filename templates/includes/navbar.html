@@ -117,6 +117,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     </nav>
 
 <script>
+// Load notification count
 function loadNotificationCount(){
     fetch("/notifications/count/")
     .then(response=>response.json())
@@ -127,7 +128,6 @@ function loadNotificationCount(){
                 badge.innerHTML=data.count;
                 badge.style.display="inline-block";
             } else {
-                // Create badge if it doesn't exist
                 const notiLink = document.querySelector('a[href="{% url 'notifications' %}"]');
                 if(notiLink && data.count > 0) {
                     const newBadge = document.createElement('span');
@@ -145,5 +145,29 @@ function loadNotificationCount(){
     });
 }
 
+// Load cart count
+function loadCartCount() {
+    fetch('/cart/count/')
+    .then(response => response.json())
+    .then(data => {
+        const cartBadge = document.getElementById('cartBadge');
+        if (cartBadge) {
+            cartBadge.textContent = data.cart_count;
+            // Always show the badge
+            cartBadge.style.display = 'inline-block';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading cart count:', error);
+    });
+}
+
+// Load both on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadNotificationCount();
+    loadCartCount();
+});
+
+// Refresh notification count every 5 seconds
 setInterval(loadNotificationCount, 5000);
 </script>

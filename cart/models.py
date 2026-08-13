@@ -20,11 +20,9 @@ class Cart(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def subtotal(self):
-        """Calculate subtotal for all taken cart items"""
         return sum(line.line_total for line in self.lines.filter(status='taken'))
 
     def total_items(self):
-        """Count total quantity of taken items"""
         return sum(line.quantity for line in self.lines.filter(status='taken'))
 
     def __str__(self):
@@ -33,10 +31,10 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     STATUS_CHOICES = [
-        ('taken', 'Taken'),  # Currently in cart with valid hold
-        ('released', 'Released'),  # Hold expired, stock returned
-        ('purchased', 'Purchased'),  # Purchased successfully
-        ('cancelled', 'Cancelled'),  # Manually cancelled
+        ('taken', 'Taken'),
+        ('released', 'Released'),
+        ('purchased', 'Purchased'),
+        ('cancelled', 'Cancelled'),
     ]
 
     cart = models.ForeignKey(Cart, related_name='lines', on_delete=models.CASCADE)
@@ -53,7 +51,6 @@ class CartItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('cart', 'item', 'size_variant')
         indexes = [
             models.Index(fields=['status']),
         ]
@@ -70,27 +67,34 @@ class CartItem(models.Model):
 
     @property
     def active_hold(self):
-        """Get the current taken hold for this cart item"""
         return self.holds.filter(status='taken').first()
 
     def get_available_stock(self):
         """Calculate available stock considering taken holds"""
         if self.size_variant:
             total_stock = self.size_variant.quantity
-            taken_holds = StockHold.objects.filter(
+            taken_holds_query = StockHold.objects.filter(
                 size_variant=self.size_variant,
                 status='taken'
-            ).exclude(cart_item=self).aggregate(
+            )
+            if self.pk:
+                taken_holds_query = taken_holds_query.exclude(cart_item=self)
+
+            taken_holds = taken_holds_query.aggregate(
                 total=models.Sum('quantity')
             )['total'] or 0
             return total_stock - taken_holds
         else:
             total_stock = self.item.simple_quantity
-            taken_holds = StockHold.objects.filter(
+            taken_holds_query = StockHold.objects.filter(
                 item=self.item,
                 size_variant__isnull=True,
                 status='taken'
-            ).exclude(cart_item=self).aggregate(
+            )
+            if self.pk:
+                taken_holds_query = taken_holds_query.exclude(cart_item=self)
+
+            taken_holds = taken_holds_query.aggregate(
                 total=models.Sum('quantity')
             )['total'] or 0
             return total_stock - taken_holds
@@ -124,6 +128,15 @@ class CartItem(models.Model):
             hold.status = 'released'
             hold.released_at = timezone.now()
             hold.save()
+
+            # RESTORE STOCK
+            if self.size_variant:
+                self.size_variant.quantity += self.quantity
+                self.size_variant.save()
+            else:
+                self.item.simple_quantity += self.quantity
+                self.item.save(skip_has_sizes=True)
+
             self.status = 'released'
             self.save()
 
@@ -132,7 +145,7 @@ class CartItem(models.Model):
         hold = self.active_hold
         if hold:
             hold.status = 'purchased'
-            hold.consumed_at = timezone.now()
+            hold.purchased_at = timezone.now()  # FIXED: changed from consumed_at
             hold.save()
             self.status = 'purchased'
             self.save()
@@ -145,9 +158,9 @@ class CartItem(models.Model):
 
 class StockHold(models.Model):
     STATUS_CHOICES = [
-        ('taken', 'Taken'),  # Currently holding stock
-        ('released', 'Released'),  # Hold expired/cancelled, stock returned
-        ('purchased', 'Purchased'),  # Stock permanently removed (purchased)
+        ('taken', 'Taken'),
+        ('released', 'Released'),
+        ('purchased', 'Purchased'),
     ]
 
     cart_item = models.ForeignKey(CartItem, related_name='holds', on_delete=models.CASCADE)
@@ -160,7 +173,7 @@ class StockHold(models.Model):
     expires_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     released_at = models.DateTimeField(null=True, blank=True)
-    purchased_at = models.DateTimeField(null=True, blank=True)  # Renamed from consumed_at
+    purchased_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         indexes = [
@@ -178,7 +191,16 @@ class StockHold(models.Model):
             self.status = 'released'
             self.released_at = timezone.now()
             self.save()
-            # Also update cart item status
+
+            # RESTORE STOCK
+            if self.size_variant:
+                self.size_variant.quantity += self.quantity
+                self.size_variant.save()
+            else:
+                self.item.simple_quantity += self.quantity
+                self.item.save(skip_has_sizes=True)
+
+            # Update cart item status
             if self.cart_item.status == 'taken':
                 self.cart_item.status = 'released'
                 self.cart_item.save()
