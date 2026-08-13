@@ -100,6 +100,21 @@ class Item(models.Model):
             return self.total_quantity > 0
         return self.simple_quantity > 0
 
+    def get_available_quantity(self):
+        from cart.models import StockHold
+        from django.db.models import Sum
+
+        if self.has_sizes:
+            return None  # Use size variants instead
+
+        taken = StockHold.objects.filter(
+            item=self,
+            size_variant__isnull=True,
+            status='taken'
+        ).aggregate(total=Sum('quantity'))['total'] or 0
+
+        return self.simple_quantity - taken
+
     def save(self, *args, **kwargs):
         # Remove this auto-override or add a flag to skip it
         if not kwargs.pop('skip_has_sizes', False):  # Allow skipping
@@ -124,6 +139,17 @@ class SizeVariant(models.Model):
 
     def __str__(self):
         return f"{self.item.name} - Size {self.size} (Qty: {self.quantity}, Price: {self.price})"
+
+    def get_available_quantity(self):
+        from cart.models import StockHold
+        from django.db.models import Sum
+
+        taken = StockHold.objects.filter(
+            size_variant=self,
+            status='taken'
+        ).aggregate(total=Sum('quantity'))['total'] or 0
+
+        return self.quantity - taken
 
 
 class ItemImage(models.Model):

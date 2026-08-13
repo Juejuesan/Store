@@ -380,7 +380,7 @@ def deposit_requests(request):
 
     return render(
         request,
-        "adminpanel/deposit_requests.html",
+        "adminpanel/wallet.html",
         context
     )
 

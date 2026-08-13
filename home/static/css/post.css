@@ -616,3 +616,21 @@
     font-weight: 600;
     border: 1px solid #bbdefb;
 }
+
+.product-image-box {
+    position: relative;
+    overflow: hidden;
+}
+
+.post-image-slider {
+    display: flex;
+    transition: transform 0.3s ease;
+    height: 250px;
+}
+
+.post-image-slider img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
