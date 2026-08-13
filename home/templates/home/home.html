@@ -882,6 +882,44 @@
 
 <script src="{% static 'js/script.js' %}"></script>
 
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchQuery = "{{ search_query|escapejs }}";
+    const searchResults = document.getElementById("searchResults");
+
+    if (searchQuery && searchResults) {
+
+        setTimeout(function () {
+
+            searchResults.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }, 100);
+
+    }
+
+});
+
+
+function searchProduct(category) {
+
+    const searchInput = document.getElementById("searchInput");
+
+    if (!searchInput) {
+        return;
+    }
+
+    // Put category name into search box
+    searchInput.value = category;
+
+    // Submit the existing search form
+    searchInput.closest("form").submit();
+}
+</script>
 
 
 </body>
