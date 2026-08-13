@@ -1,445 +1,1589 @@
-{% extends 'user/base.html' %}
+<!DOCTYPE html>
 {% load static %}
 
-{% block title %}
-Dashboard | TrustyShop
-{% endblock %}
+<html lang="en">
 
-{% block content %}
+<head>
 
+    <meta charset="UTF-8">
 
-<!-- =========================================
-     UNIVERSE BACKGROUND
-========================================= -->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<div class="universe">
+    <title>
+        {{ request.user.profile.fullName|default:request.user.username }}
+        | Trusty Shop
+    </title>
 
-    <span class="planet planet-1"></span>
-    <span class="planet planet-2"></span>
-    <span class="planet planet-3"></span>
 
-    <span class="glow glow-1"></span>
-    <span class="glow glow-2"></span>
+    <!-- =====================================================
+         BOOTSTRAP
+    ====================================================== -->
 
-    <div id="stars"></div>
-    <div id="particles"></div>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-</div>
 
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
 
-<!-- =========================================
-     DASHBOARD
-========================================= -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
 
-<section class="dashboard-page">
 
-    <div class="dashboard-card">
+    <!-- =====================================================
+         HEADER / FOOTER CSS
+    ====================================================== -->
 
-        <!-- Decorative Border -->
+    <link
+        rel="stylesheet"
+        href="{% static 'css/header-footer.css' %}"
+    >
 
-        <span class="card-border"></span>
 
+    <style>
 
-        <!-- =================================
-             HEADER
-        ================================== -->
+        /* =====================================================
+           PAGE
+        ===================================================== */
 
-        <div class="dashboard-header">
+        body {
+            background: #f5f8ff;
+            color: #172033;
+            font-family: Arial, sans-serif;
+        }
 
-            <div class="dashboard-brand">
+        .dashboard-page {
+            padding-top: 110px;
+            padding-bottom: 70px;
+        }
 
-                <div class="dashboard-brand-icon">
 
-                    <i class="fa-solid fa-store"></i>
+        /* =====================================================
+           PROFILE CARD
+        ===================================================== */
 
-                </div>
+        .profile-card {
+            position: relative;
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: visible;
+            border: 1px solid #e7edfa;
+            box-shadow: 0 12px 40px rgba(37, 99, 235, 0.08);
+        }
 
-                <div>
 
-                    <h1>
-                        TrustyShop
-                    </h1>
+        /* =====================================================
+           PROFILE COVER
+        ===================================================== */
 
-                    <p>
-                        My Account
-                    </p>
+        .profile-cover {
+            position: relative;
+            height: 180px;
 
-                </div>
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #38bdf8
+                );
 
-            </div>
+            border-radius: 24px 24px 0 0;
+            overflow: hidden;
+        }
 
+        .profile-cover::after {
+            content: "";
 
-            <div class="online-status">
+            position: absolute;
 
-                <span class="status-dot"></span>
+            width: 250px;
+            height: 250px;
 
-                <span>
-                    Online
-                </span>
+            right: -70px;
+            top: -100px;
 
-            </div>
+            border-radius: 50%;
 
-        </div>
+            background: rgba(255, 255, 255, 0.12);
+        }
 
 
-        <!-- =================================
-             PROFILE
-        ================================== -->
+        /* =====================================================
+           PROFILE INFO
+        ===================================================== */
 
-        <div class="profile-section">
+        .profile-info {
+            position: relative;
+            padding: 0 35px 30px;
+        }
 
-            <div class="profile-image-wrapper">
 
-                {% if request.user.profile.profile_pic %}
+        /* =====================================================
+           PROFILE PHOTO
+        ===================================================== */
 
-                    <img
-                        src="{{ request.user.profile.profile_pic.url }}"
-                        alt="Profile Picture"
-                        class="dashboard-avatar">
+        .profile-photo-wrapper {
+            position: relative;
 
-                {% else %}
+            width: 130px;
+            height: 130px;
 
-                    <div class="dashboard-avatar default-avatar">
+            margin-top: -65px;
 
-                        <i class="fa-solid fa-user"></i>
+            z-index: 5;
+        }
 
-                    </div>
+        .profile-photo {
+            width: 130px;
+            height: 130px;
 
-                {% endif %}
+            object-fit: cover;
 
+            border-radius: 50%;
 
-                <!-- Online indicator -->
+            border: 6px solid #ffffff;
 
-                <span class="avatar-online"></span>
+            background: #eef4ff;
 
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.15);
+        }
 
-                <!-- Camera -->
+        .profile-default {
+            width: 130px;
+            height: 130px;
 
-                <label
-                    for="profile-picture-input"
-                    class="avatar-camera">
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-                    <i class="fa-solid fa-camera"></i>
+            border-radius: 50%;
 
-                </label>
+            border: 6px solid #ffffff;
 
-            </div>
+            background: #eef4ff;
 
+            color: #2563eb;
 
-            <div class="profile-info">
+            font-size: 55px;
 
-                <h2>
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.15);
+        }
 
-                    {% if request.user.profile.fullName %}
 
-                        {{ request.user.profile.fullName }}
+        /* =====================================================
+           PROFILE DETAILS
+        ===================================================== */
 
-                    {% else %}
+        .profile-details {
+            margin-top: 15px;
+        }
 
-                        {{ request.user.username }}
+        .profile-name {
+            margin-bottom: 5px;
 
-                    {% endif %}
+            font-size: 28px;
+            font-weight: 800;
+        }
 
-                </h2>
+        .profile-username {
+            color: #718096;
+            font-size: 15px;
+        }
 
-                <p class="username">
+        .verified-icon {
+            margin-left: 5px;
 
-                    @{{ request.user.username }}
+            color: #2563eb;
+            font-size: 17px;
+        }
 
-                </p>
 
-                <div class="account-badge">
+        /* =====================================================
+           PROFILE ACTIONS
+        ===================================================== */
 
-                    <i class="fa-solid fa-circle-check"></i>
+        .profile-actions {
+            display: flex;
+            flex-wrap: wrap;
 
-                    Verified Account
+            gap: 12px;
 
-                </div>
+            margin-top: 20px;
+        }
 
-            </div>
+        .dashboard-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
 
-        </div>
+            gap: 8px;
 
+            padding: 11px 20px;
 
-        <!-- =================================
-             CHANGE PROFILE FORM
-        ================================== -->
+            border: none;
+            border-radius: 12px;
 
-        <form
-            method="POST"
-            action="{% url 'user:update_profile_pic' %}"
-            enctype="multipart/form-data"
-            id="profile-picture-form">
+            font-weight: 700;
 
-            {% csrf_token %}
+            text-decoration: none;
 
-            <input
-                type="file"
-                name="profile_pic"
-                id="profile-picture-input"
-                accept="image/*"
-                hidden>
+            transition: 0.25s ease;
+        }
 
-        </form>
 
+        /* CREATE POST */
 
-        <!-- =================================
-             ACCOUNT INFORMATION
-        ================================== -->
+        .create-btn {
+            background: #2563eb;
+            color: #ffffff;
+        }
 
-        <div class="dashboard-section-title">
+        .create-btn:hover {
+            background: #1d4ed8;
+            color: #ffffff;
 
-            <div class="section-icon">
+            transform: translateY(-2px);
+        }
 
-                <i class="fa-solid fa-user"></i>
 
-            </div>
+        /* EDIT / SECONDARY BUTTON */
 
-            <div>
+        .edit-btn {
+            background: #edf4ff;
+            color: #2563eb;
+        }
 
-                <h3>
-                    Personal Information
-                </h3>
+        .edit-btn:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
 
-                <p>
-                    Your TrustyShop account details
-                </p>
+            transform: translateY(-2px);
+        }
 
-            </div>
 
-        </div>
+        /* =====================================================
+           CHANGE PROFILE PHOTO
+        ===================================================== */
 
+        .profile-photo-form {
+            display: inline-flex;
+        }
 
-        <div class="profile-details">
+        .photo-upload-label {
+            cursor: pointer;
+        }
 
+        .photo-upload-input {
+            display: none;
+        }
 
-            <!-- EMAIL -->
 
-            <div class="detail-card">
+        /* =====================================================
+           SETTINGS WRAPPER
+        ===================================================== */
 
-                <div class="detail-icon email-icon">
+        .settings-wrapper {
+            position: absolute;
 
-                    <i class="fa-solid fa-envelope"></i>
+            right: 30px;
+            top: 205px;
 
-                </div>
+            z-index: 1000;
+        }
 
-                <div class="detail-content">
 
-                    <span>
-                        Email Address
-                    </span>
+        /* =====================================================
+           SETTINGS BUTTON
+        ===================================================== */
 
-                    <strong>
-                        {{ request.user.email|default:"Not Provided" }}
-                    </strong>
+        .settings-btn {
+            width: 46px;
+            height: 46px;
 
-                </div>
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-            </div>
+            border: none;
+            border-radius: 50%;
 
+            background: #f1f5f9;
+            color: #334155;
 
-            <!-- PHONE -->
+            font-size: 19px;
 
-            <div class="detail-card">
+            cursor: pointer;
 
-                <div class="detail-icon phone-icon">
+            transition: 0.25s ease;
+        }
 
-                    <i class="fa-solid fa-phone"></i>
+        .settings-btn:hover {
+            background: #2563eb;
+            color: #ffffff;
 
-                </div>
+            transform: rotate(25deg);
+        }
 
-                <div class="detail-content">
 
-                    <span>
-                        Phone Number
-                    </span>
+        /* =====================================================
+           SETTINGS MENU
+        ===================================================== */
 
-                    <strong>
-                        {{ request.user.profile.phone_number|default:"Not Provided" }}
-                    </strong>
+        .settings-menu {
+            position: absolute;
 
-                </div>
+            top: 58px;
+            right: 0;
 
-            </div>
+            width: 310px;
 
+            padding: 10px;
 
-            <!-- GENDER -->
+            background: rgba(255, 255, 255, 0.98);
 
-            <div class="detail-card">
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
 
-                <div class="detail-icon gender-icon">
+            box-shadow:
+                0 20px 50px rgba(15, 23, 42, 0.16);
 
-                    <i class="fa-solid fa-venus-mars"></i>
+            opacity: 0;
+            visibility: hidden;
 
-                </div>
+            transform:
+                translateY(-8px)
+                scale(0.97);
 
-                <div class="detail-content">
+            transition: 0.2s ease;
+        }
 
-                    <span>
-                        Gender
-                    </span>
+        .settings-menu.show {
+            opacity: 1;
+            visibility: visible;
 
-                    <strong>
+            transform:
+                translateY(0)
+                scale(1);
+        }
 
-                        {% if request.user.profile.gender == 'M' %}
 
-                            Male
+        /* =====================================================
+           SETTINGS HEADER
+        ===================================================== */
 
-                        {% elif request.user.profile.gender == 'F' %}
+        .settings-menu-header {
+            padding: 12px 13px 15px;
 
-                            Female
+            margin-bottom: 5px;
+
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .settings-menu-header strong {
+            display: block;
+
+            font-size: 15px;
+        }
+
+        .settings-menu-header small {
+            color: #94a3b8;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           SETTINGS ITEM
+        ===================================================== */
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 11px;
+
+            border-radius: 12px;
+
+            color: #172033;
+
+            text-decoration: none;
+
+            transition: 0.2s ease;
+        }
+
+        .settings-item:hover {
+            background: #f5f8ff;
+
+            transform: translateX(2px);
+        }
+
+        .settings-item > span:last-child {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .settings-item strong {
+            font-size: 14px;
+        }
+
+        .settings-item small {
+            margin-top: 2px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           SETTINGS ICON
+        ===================================================== */
+
+        .settings-icon {
+            width: 38px;
+            height: 38px;
+
+            min-width: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+        }
+
+        .settings-icon.blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .settings-icon.pink {
+            background: #fce7f3;
+            color: #db2777;
+        }
+
+        .settings-icon.green {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .settings-icon.orange {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        .settings-icon.purple {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .settings-icon.red {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+
+        /* =====================================================
+           SETTINGS DIVIDER
+        ===================================================== */
+
+        .settings-divider {
+            height: 1px;
+
+            margin: 7px 5px;
+
+            background: #eef2f7;
+        }
+
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        .logout-item {
+            color: #dc2626;
+        }
+
+        .logout-item:hover {
+            background: #fff1f2;
+        }
+
+
+        /* =====================================================
+           PROFILE STATS
+        ===================================================== */
+
+        .profile-stats {
+            display: flex;
+
+            gap: 35px;
+
+            margin-top: 25px;
+        }
+
+        .stat-item {
+            text-align: left;
+        }
+
+        .stat-number {
+            display: block;
+
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .stat-label {
+            color: #718096;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           POSTS SECTION
+        ===================================================== */
+
+        .posts-section {
+            margin-top: 45px;
+        }
+
+        .section-title {
+            margin-bottom: 0;
+
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .section-subtitle {
+            color: #718096;
+        }
+
+
+        /* =====================================================
+           POST CARD
+        ===================================================== */
+
+        .user-post-card {
+            height: 100%;
+
+            overflow: hidden;
+
+            background: #ffffff;
+
+            border: 1px solid #e7edfa;
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 25px rgba(37, 99, 235, 0.06);
+
+            transition: 0.25s ease;
+        }
+
+        .user-post-card:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 15px 35px rgba(37, 99, 235, 0.12);
+        }
+
+
+        /* =====================================================
+           POST IMAGE
+        ===================================================== */
+
+        .post-image-wrapper {
+            height: 220px;
+
+            overflow: hidden;
+
+            background: #f1f5f9;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            transition: 0.3s ease;
+        }
+
+        .user-post-card:hover .post-image {
+            transform: scale(1.05);
+        }
+
+
+        /* =====================================================
+           POST CONTENT
+        ===================================================== */
+
+        .post-content {
+            padding: 20px;
+        }
+
+        .post-title {
+            margin-bottom: 8px;
+
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .post-description {
+            color: #64748b;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           POST META
+        ===================================================== */
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin-top: 15px;
+        }
+
+        .post-status {
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: #dcfce7;
+            color: #15803d;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .view-post-btn {
+            color: #2563eb;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .view-post-btn:hover {
+            color: #1d4ed8;
+        }
+
+
+        /* =====================================================
+           EMPTY POSTS
+        ===================================================== */
+
+        .empty-posts {
+            padding: 60px 20px;
+
+            text-align: center;
+
+            background: #ffffff;
+
+            border: 1px dashed #cbd5e1;
+            border-radius: 20px;
+        }
+
+        .empty-icon {
+            color: #94a3b8;
+
+            font-size: 55px;
+        }
+
+        .empty-posts h4 {
+            margin-top: 18px;
+
+            font-weight: 800;
+        }
+
+        .empty-posts p {
+            color: #718096;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 768px) {
+
+            .dashboard-page {
+                padding-top: 90px;
+            }
+
+            .profile-cover {
+                height: 140px;
+            }
+
+            .profile-info {
+                padding: 0 20px 25px;
+            }
+
+            .profile-photo-wrapper {
+                width: 105px;
+                height: 105px;
+            }
+
+            .profile-photo,
+            .profile-default {
+                width: 105px;
+                height: 105px;
+            }
+
+            .profile-name {
+                font-size: 23px;
+            }
+
+            .settings-wrapper {
+                right: 20px;
+                top: 160px;
+            }
+
+            .settings-menu {
+                right: -10px;
+                width: 290px;
+            }
+
+            .profile-stats {
+                gap: 20px;
+            }
+
+            .profile-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    {% include "includes/navbar.html" %}
+
+
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+
+    <div class="dashboard-page">
+
+        <div class="container">
+
+
+            <!-- =================================================
+                 PROFILE CARD
+            ================================================== -->
+
+            <div class="profile-card">
+
+
+                <!-- =================================================
+                     COVER
+                ================================================== -->
+
+                <div class="profile-cover"></div>
+
+
+                <!-- =================================================
+                     PROFILE INFORMATION
+                ================================================== -->
+
+                <div class="profile-info">
+
+
+                    <!-- =================================================
+                         PROFILE PHOTO
+                    ================================================== -->
+
+                    <div class="profile-photo-wrapper">
+
+                        {% if request.user.profile.profile_pic %}
+
+                            <img
+                                src="{{ request.user.profile.profile_pic.url }}"
+                                alt="{{ request.user.profile.fullName|default:request.user.username }}"
+                                class="profile-photo"
+                            >
 
                         {% else %}
 
-                            Not Set
+                            <div class="profile-default">
+
+                                <i class="fa-solid fa-user"></i>
+
+                            </div>
 
                         {% endif %}
 
-                    </strong>
+                    </div>
+
+
+                    <!-- =================================================
+                         PROFILE DETAILS
+                    ================================================== -->
+
+                    <div class="profile-details">
+
+
+                        <!-- NAME -->
+
+                        <div class="profile-name">
+
+                            {{ request.user.profile.fullName|default:request.user.username }}
+
+                            {% if request.user.profile.email_verified %}
+
+                                <i
+                                    class="fa-solid fa-circle-check verified-icon"
+                                    title="Verified"
+                                ></i>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- USERNAME -->
+
+                        <div class="profile-username">
+
+                            @{{ request.user.username }}
+
+                        </div>
+
+
+                        <!-- =================================================
+                             STATS
+                        ================================================== -->
+
+                        <div class="profile-stats">
+
+
+                            <!-- POSTS -->
+
+                            <div class="stat-item">
+
+                                <span class="stat-number">
+                                    {{ post_count }}
+                                </span>
+
+                                <span class="stat-label">
+                                    Posts
+                                </span>
+
+                            </div>
+
+
+                            <!-- WISHLIST -->
+
+                            <div class="stat-item">
+
+                                <span class="stat-number">
+                                    0
+                                </span>
+
+                                <span class="stat-label">
+                                    Wishlist
+                                </span>
+
+                            </div>
+
+
+                            <!-- ORDERS -->
+
+                            <div class="stat-item">
+
+                                <span class="stat-number">
+                                    0
+                                </span>
+
+                                <span class="stat-label">
+                                    Orders
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             PROFILE ACTIONS
+                        ================================================== -->
+
+                        <div class="profile-actions">
+
+
+                            <!-- CREATE POST -->
+
+                            <a
+                                href="{% url 'createPost' %}"
+                                class="dashboard-btn create-btn"
+                            >
+
+                                <i class="fa-solid fa-plus"></i>
+
+                                Create Post
+
+                            </a>
+
+
+                            <!-- EDIT PROFILE -->
+
+                            <a
+                                href="{% url 'user:edit_profile' %}"
+                                class="dashboard-btn edit-btn"
+                            >
+
+                                <i class="fa-solid fa-user-pen"></i>
+
+                                Edit Profile
+
+                            </a>
+
+
+                            <!-- =================================================
+                                 CHANGE PROFILE PHOTO
+                            ================================================== -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'user:update_profile_pic' %}"
+                                enctype="multipart/form-data"
+                                class="profile-photo-form"
+                            >
+
+                                {% csrf_token %}
+
+
+                                <!--
+                                    IMPORTANT:
+
+                                    Clicking this label opens
+                                    Windows File Explorer.
+                                -->
+
+                                <label
+                                    for="profilePicInput"
+                                    class="dashboard-btn edit-btn photo-upload-label"
+                                >
+
+                                    <i class="fa-solid fa-camera"></i>
+
+                                    Change Photo
+
+                                </label>
+
+
+                                <!-- HIDDEN FILE INPUT -->
+
+                                <input
+                                    type="file"
+                                    name="profile_pic"
+                                    id="profilePicInput"
+                                    class="photo-upload-input"
+                                    accept="image/*"
+                                >
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SETTINGS
+                    ================================================== -->
+
+                    <div class="settings-wrapper">
+
+
+                        <!-- SETTINGS BUTTON -->
+
+                        <button
+                            type="button"
+                            class="settings-btn"
+                            id="settingsBtn"
+                            title="Settings"
+                            aria-label="Open account settings"
+                            aria-expanded="false"
+                        >
+
+                            <i class="fa-solid fa-gear"></i>
+
+                        </button>
+
+
+                        <!-- =================================================
+                             SETTINGS MENU
+                        ================================================== -->
+
+                        <div
+                            class="settings-menu"
+                            id="settingsMenu"
+                        >
+
+
+                            <!-- HEADER -->
+
+                            <div class="settings-menu-header">
+
+                                <strong>
+                                    Account Settings
+                                </strong>
+
+                                <small>
+                                    Manage your Trusty Shop account
+                                </small>
+
+                            </div>
+
+
+                            <!-- EDIT PROFILE -->
+
+                            <a
+                                href="{% url 'user:edit_profile' %}"
+                                class="settings-item"
+                            >
+
+                                <span class="settings-icon blue">
+
+                                    <i class="fa-solid fa-user-pen"></i>
+
+                                </span>
+
+                                <span>
+
+                                    <strong>
+                                        Edit Profile
+                                    </strong>
+
+                                    <small>
+                                        Update your personal information
+                                    </small>
+
+                                </span>
+
+                            </a>
+
+<!-- WISHLIST -->
+
+<a
+    href="{% url 'wishlist:wishlist' %}"
+    class="settings-item"
+>
+
+    <span class="settings-icon pink">
+
+        <i class="fa-solid fa-heart"></i>
+
+    </span>
+
+    <span>
+
+        <strong>
+            Wishlist
+        </strong>
+
+        <small>
+            Your saved products
+        </small>
+
+    </span>
+
+</a>
+
+
+                            <!-- WALLET -->
+
+                            <a
+                                href="{% url 'wallet:dashboard' %}"
+                                class="settings-item"
+                            >
+
+                                <span class="settings-icon green">
+
+                                    <i class="fa-solid fa-wallet"></i>
+
+                                </span>
+
+                                <span>
+
+                                    <strong>
+                                        Top Up / Wallet
+                                    </strong>
+
+                                    <small>
+                                        Manage your balance
+                                    </small>
+
+                                </span>
+
+                            </a>
+
+
+                            <!-- ORDERS -->
+
+                            <a
+                                href="#"
+                                class="settings-item"
+                            >
+
+                                <span class="settings-icon orange">
+
+                                    <i class="fa-solid fa-box"></i>
+
+                                </span>
+
+                                <span>
+
+                                    <strong>
+                                        My Orders
+                                    </strong>
+
+                                    <small>
+                                        Track your purchases
+                                    </small>
+
+                                </span>
+
+                            </a>
+
+
+                            <!-- NOTIFICATIONS -->
+
+                            <a
+                                href="{% url 'notifications' %}"
+                                class="settings-item"
+                            >
+
+                                <span class="settings-icon purple">
+
+                                    <i class="fa-solid fa-bell"></i>
+
+                                </span>
+
+                                <span>
+
+                                    <strong>
+                                        Notifications
+                                    </strong>
+
+                                    <small>
+                                        View your notifications
+                                    </small>
+
+                                </span>
+
+                            </a>
+
+
+                            <!-- DIVIDER -->
+
+                            <div class="settings-divider"></div>
+
+
+                            <!-- LOGOUT -->
+
+                            <a
+                                href="{% url 'user:logout' %}"
+                                class="settings-item logout-item"
+                            >
+
+                                <span class="settings-icon red">
+
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                                </span>
+
+                                <span>
+
+                                    <strong>
+                                        Logout
+                                    </strong>
+
+                                    <small>
+                                        Sign out of your account
+                                    </small>
+
+                                </span>
+
+                            </a>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- ADDRESS -->
+            <!-- =================================================
+                 MY POSTS
+            ================================================== -->
 
-            <div class="detail-card address-card">
-
-                <div class="detail-icon location-icon">
-
-                    <i class="fa-solid fa-location-dot"></i>
-
-                </div>
-
-                <div class="detail-content">
-
-                    <span>
-                        Address
-                    </span>
-
-                    <strong>
-                        {{ request.user.profile.address|default:"Not Provided" }}
-                    </strong>
-
-                </div>
-
-            </div>
-
-        </div>
+            <section class="posts-section">
 
 
-        <!-- =================================
-             ACCOUNT STATUS
-        ================================== -->
+                <!-- SECTION HEADER -->
 
-        <div class="account-status">
+                <div class="mb-4">
 
-            <div class="status-left">
+                    <h2 class="section-title mb-1">
+                        My Posts
+                    </h2>
 
-                <div class="status-icon">
-
-                    <i class="fa-solid fa-shield-halved"></i>
-
-                </div>
-
-                <div>
-
-                    <h4>
-                        Account Status
-                    </h4>
-
-                    <p>
-                        Your account is currently active
+                    <p class="section-subtitle mb-0">
+                        Products you have posted on Trusty Shop.
                     </p>
 
                 </div>
 
-            </div>
+
+                <!-- =================================================
+                     POST GRID
+                ================================================== -->
+
+                <div class="row g-4">
 
 
-            <div class="status-badge">
-
-                <span></span>
-
-                {{ request.user.profile.status }}
-
-            </div>
-
-        </div>
+                    {% for post in user_posts %}
 
 
-        <!-- =================================
-             ACTIONS
-        ================================== -->
+                        <!-- POST -->
 
-        <div class="dashboard-actions">
+                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
 
-            <a
-                href="{% url 'user:logout' %}"
-                class="dashboard-btn logout-btn">
-
-                <i class="fa-solid fa-right-from-bracket"></i>
-
-                <span>
-                    Log Out
-                </span>
-
-            </a>
-
-        </div>
+                            <div class="user-post-card">
 
 
-        <!-- =================================
-             FOOTER
-        ================================== -->
+                                <!-- POST IMAGE -->
 
-        <div class="dashboard-footer">
+                                <div class="post-image-wrapper">
 
-            <i class="fa-solid fa-lock"></i>
+                                    {% with first_item=post.items.first %}
 
-            <span>
-                Your account information is securely protected
-            </span>
+                                        {% if first_item and first_item.images.first %}
+
+                                            <img
+                                                src="{{ first_item.images.first.image.url }}"
+                                                class="post-image"
+                                                alt="{{ first_item.name|default:'Product image' }}"
+                                            >
+
+                                        {% else %}
+
+                                            <img
+                                                src="{% static 'images/no-image.png' %}"
+                                                class="post-image"
+                                                alt="No image"
+                                            >
+
+                                        {% endif %}
+
+                                    {% endwith %}
+
+                                </div>
+
+
+                                <!-- POST CONTENT -->
+
+                                <div class="post-content">
+
+
+                                    <!-- TITLE -->
+
+                                    <div class="post-title">
+
+                                        {{ post.category.name|default:"Product" }}
+
+                                    </div>
+
+
+                                    <!-- DESCRIPTION -->
+
+                                    <p class="post-description">
+
+                                        {{ post.description|truncatewords:18 }}
+
+                                    </p>
+
+
+                                    <!-- META -->
+
+                                    <div class="post-meta">
+
+
+                                        <!-- STATUS -->
+
+                                        <span class="post-status">
+
+                                            {{ post.status|title }}
+
+                                        </span>
+
+
+                                        <!-- VIEW -->
+
+                                        <a
+                                            href="{% url 'viewdetail' post.id %}"
+                                            class="view-post-btn"
+                                        >
+
+                                            View Post
+
+                                            <i class="fa-solid fa-arrow-right"></i>
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    {% empty %}
+
+
+                        <!-- EMPTY -->
+
+                        <div class="col-12">
+
+                            <div class="empty-posts">
+
+
+                                <div class="empty-icon">
+
+                                    <i class="fa-solid fa-box-open"></i>
+
+                                </div>
+
+
+                                <h4>
+                                    You haven't created any posts yet.
+                                </h4>
+
+
+                                <p>
+                                    Start selling your products on Trusty Shop.
+                                </p>
+
+
+                                <a
+                                    href="{% url 'createPost' %}"
+                                    class="dashboard-btn create-btn"
+                                >
+
+                                    <i class="fa-solid fa-plus"></i>
+
+                                    Create Your First Post
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                    {% endfor %}
+
+                </div>
+
+            </section>
 
         </div>
 
     </div>
 
-</section>
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    {% include "includes/footer.html" %}
 
 
-<!-- =========================================
-     PROFILE IMAGE JAVASCRIPT
-========================================= -->
+    <!-- =====================================================
+         BOOTSTRAP JS
+    ====================================================== -->
 
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const input =
-        document.getElementById("profile-picture-input");
-
-    const form =
-        document.getElementById("profile-picture-form");
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
 
 
-    if (input && form) {
+    <script>
 
-        input.addEventListener("change", function () {
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
 
-            if (this.files && this.files.length > 0) {
 
-                form.submit();
+                /* =================================================
+                   PROFILE PHOTO UPLOAD
+                ================================================= */
+
+                const profilePicInput =
+                    document.getElementById("profilePicInput");
+
+
+                if (profilePicInput) {
+
+                    profilePicInput.addEventListener(
+                        "change",
+                        function () {
+
+                            /*
+                             * User selected an image.
+                             * Submit the form automatically.
+                             */
+
+                            if (this.files && this.files.length > 0) {
+
+                                this.form.submit();
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                /* =================================================
+                   SETTINGS
+                ================================================= */
+
+                const settingsBtn =
+                    document.getElementById("settingsBtn");
+
+                const settingsMenu =
+                    document.getElementById("settingsMenu");
+
+
+                if (!settingsBtn || !settingsMenu) {
+
+                    return;
+
+                }
+
+
+                /* =================================================
+                   OPEN / CLOSE SETTINGS
+                ================================================= */
+
+                settingsBtn.addEventListener(
+                    "click",
+                    function (event) {
+
+                        event.stopPropagation();
+
+                        const isOpen =
+                            settingsMenu.classList.toggle("show");
+
+                        settingsBtn.setAttribute(
+                            "aria-expanded",
+                            isOpen
+                        );
+
+                    }
+                );
+
+
+                /* =================================================
+                   PREVENT MENU CLICK FROM CLOSING
+                ================================================= */
+
+                settingsMenu.addEventListener(
+                    "click",
+                    function (event) {
+
+                        event.stopPropagation();
+
+                    }
+                );
+
+
+                /* =================================================
+                   CLICK OUTSIDE = CLOSE
+                ================================================= */
+
+                document.addEventListener(
+                    "click",
+                    function () {
+
+                        settingsMenu.classList.remove("show");
+
+                        settingsBtn.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+                    }
+                );
+
+
+                /* =================================================
+                   ESC KEY = CLOSE
+                ================================================= */
+
+                document.addEventListener(
+                    "keydown",
+                    function (event) {
+
+                        if (event.key === "Escape") {
+
+                            settingsMenu.classList.remove("show");
+
+                            settingsBtn.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                        }
+
+                    }
+                );
 
             }
+        );
 
-        });
+    </script>
 
-    }
+</body>
 
-});
-
-</script>
-
-{% endblock %}
+</html>

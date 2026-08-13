@@ -8,115 +8,302 @@
 {% block content %}
 
 <div class="page-header">
+
+    <!-- ==========================
+         PAGE HEADER
+    =========================== -->
     <div>
-        <h1 class="page-title">Pending Posts</h1>
-        <p class="page-subtitle">Review and manage seller product submissions.</p>
+        <h1 class="page-title">
+            Pending Posts
+        </h1>
+
+        <p class="page-subtitle">
+            Review and manage seller product submissions.
+        </p>
     </div>
+
 </div>
 
+
+<!-- ==========================
+     PENDING POSTS TABLE
+=========================== -->
+
 <div class="table-container">
+
     <table>
+
+        <!-- ==========================
+             TABLE HEADER
+        =========================== -->
+
         <thead>
             <tr>
-                <th style="width:70px;">Photo</th>
-                <th style="width:100px;">Seller</th>
-                <th>Post Description</th>
-                <th style="width:100px;">Category</th>
-                <th style="width:80px;">Items</th>
-                <th style="width:100px;">Condition</th>
-                <th style="width:100px;">Status</th>
-                <th style="width:150px;">Action</th>
+
+                <th style="width: 70px;">
+                    Photo
+                </th>
+
+                <th style="width: 100px;">
+                    Seller
+                </th>
+
+                <th>
+                    Post Description
+                </th>
+
+                <th style="width: 100px;">
+                    Category
+                </th>
+
+                <th style="width: 80px;">
+                    Items
+                </th>
+
+                <th style="width: 100px;">
+                    Condition
+                </th>
+
+                <th style="width: 100px;">
+                    Status
+                </th>
+
+                <th style="width: 150px;">
+                    Action
+                </th>
+
             </tr>
         </thead>
 
+
+        <!-- ==========================
+             TABLE BODY
+        =========================== -->
+
         <tbody>
+
             {% for post in pending_posts %}
+
             <tr>
-                <!-- First Item's First Image -->
+
+                <!-- ==========================
+                     PRODUCT PHOTO
+                =========================== -->
+
                 <td>
+
                     {% with first_item=post.items.first %}
+
                         {% if first_item %}
+
                             {% with first_image=first_item.images.first %}
+
                                 {% if first_image %}
-                                    <img src="{{ first_image.image.url }}" class="table-product-image">
+
+                                    <img
+                                        src="{{ first_image.image.url }}"
+                                        alt="{{ first_item.name }}"
+                                        class="table-product-image"
+                                    >
+
                                 {% else %}
-                                    <div style="width:50px; height:50px; background:#e2e8f0; display:flex; align-items:center; justify-content:center; border-radius:8px;">
-                                        <i class="fa-solid fa-image" style="color:#94a3b8;"></i>
+
+                                    <div class="table-placeholder">
+                                        <i class="fa-solid fa-image"></i>
                                     </div>
+
                                 {% endif %}
+
                             {% endwith %}
+
                         {% else %}
-                            <div style="width:50px; height:50px; background:#e2e8f0; display:flex; align-items:center; justify-content:center; border-radius:8px;">
-                                <i class="fa-solid fa-box" style="color:#94a3b8;"></i>
+
+                            <div class="table-placeholder">
+                                <i class="fa-solid fa-box"></i>
                             </div>
+
                         {% endif %}
+
                     {% endwith %}
+
                 </td>
 
-                <!-- Seller -->
+
+                <!-- ==========================
+                     SELLER
+                =========================== -->
+
                 <td>
-                    <strong>{{ post.user.fullName }}</strong>
+                    <strong>
+                        {{ post.user.fullName }}
+                    </strong>
                 </td>
 
-                <!-- Post Description -->
+
+                <!-- ==========================
+                     POST DESCRIPTION
+                =========================== -->
+
                 <td>
+
                     <div class="product-info">
-                        <h4>{{ post.description|truncatechars:50 }}</h4>
-                        <small style="color:#64748b;">{{ post.created_at|date:"M d, Y" }}</small>
+
+                        <h4>
+                            {{ post.description|truncatechars:50 }}
+                        </h4>
+
+                        <small>
+                            {{ post.created_at|date:"M d, Y" }}
+                        </small>
+
                     </div>
+
                 </td>
 
-                <!-- Category -->
+
+                <!-- ==========================
+                     CATEGORY
+                =========================== -->
+
                 <td>
-                    <span class="badge">{{ post.category.name }}</span>
+
+                    <span class="badge">
+                        {{ post.category.name }}
+                    </span>
+
                 </td>
 
-                <!-- Items Count -->
+
+                <!-- ==========================
+                     ITEMS COUNT
+                =========================== -->
+
                 <td>
-                    <strong>{{ post.items.count }}</strong>
+
+                    <strong>
+                        {{ post.items.count }}
+                    </strong>
+
                 </td>
 
-                <!-- Condition -->
+
+                <!-- ==========================
+                     CONDITION
+                =========================== -->
+
                 <td>
-                    {% if post.condition == 'new' %}
-                        <span class="status approved">New</span>
+
+                    {% if post.condition == "new" %}
+
+                        <span class="status approved">
+                            New
+                        </span>
+
                     {% else %}
-                        <span class="status rejected">Used</span>
+
+                        <span class="status rejected">
+                            Used
+                        </span>
+
                     {% endif %}
+
                 </td>
 
-                <!-- Status -->
+
+                <!-- ==========================
+                     STATUS
+                =========================== -->
+
                 <td>
-                    <span class="status pending">{{ post.status|title }}</span>
+
+                    <span class="status pending">
+                        {{ post.status|title }}
+                    </span>
+
                 </td>
 
-                <!-- Action -->
+
+                <!-- ==========================
+                     ACTIONS
+                =========================== -->
+
                 <td>
+
                     <div class="action-buttons">
-                        <a href="{% url 'post_detail' post.id %}" class="btn btn-view">
+
+                        <!-- View -->
+                        <a
+                            href="{% url 'post_detail' post.id %}"
+                            class="btn btn-view"
+                            title="View Post"
+                        >
                             <i class="fa-solid fa-eye"></i>
                         </a>
-                        <a href="{% url 'approve_post' post.id %}" class="btn btn-approve">
+
+
+                        <!-- Approve -->
+                        <a
+                            href="{% url 'approve_post' post.id %}"
+                            class="btn btn-approve"
+                            title="Approve Post"
+                        >
                             <i class="fa-solid fa-check"></i>
                         </a>
-                        <a href="{% url 'reject_post' post.id %}" class="btn btn-reject">
+
+
+                        <!-- Reject -->
+                        <a
+                            href="{% url 'reject_post' post.id %}"
+                            class="btn btn-reject"
+                            title="Reject Post"
+                        >
                             <i class="fa-solid fa-xmark"></i>
                         </a>
+
                     </div>
+
                 </td>
+
             </tr>
 
+
+            <!-- ==========================
+                 EMPTY STATE
+            =========================== -->
+
             {% empty %}
+
             <tr>
-                <td colspan="8" class="empty-state">
-                    <img src="{% static 'images/empty.png' %}" width="120">
-                    <h2>No Pending Posts</h2>
-                    <p>Every submitted product has already been reviewed.</p>
+
+                <td
+                    colspan="8"
+                    class="empty-state"
+                >
+
+                    <img
+                        src="{% static 'images/empty.png' %}"
+                        alt="No pending posts"
+                        width="120"
+                    >
+
+                    <h2>
+                        No Pending Posts
+                    </h2>
+
+                    <p>
+                        Every submitted product has already been reviewed.
+                    </p>
+
                 </td>
+
             </tr>
+
             {% endfor %}
+
         </tbody>
+
     </table>
+
 </div>
 
 {% endblock %}

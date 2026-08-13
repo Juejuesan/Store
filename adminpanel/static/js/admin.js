@@ -1,556 +1,421 @@
 /* ==========================================================
-        TRUSTY SHOP ADMIN PANEL JAVASCRIPT
+   TRUSTY SHOP ADMIN PANEL JAVASCRIPT
 ========================================================== */
-
 
 document.addEventListener("DOMContentLoaded", () => {
 
-
-
-    /* =====================================
-            Loader
-    ===================================== */
-
+    /* ==========================================================
+       LOADER
+    ========================================================== */
 
     const loader = document.getElementById("loader");
 
+    if (loader) {
+        window.addEventListener("load", () => {
 
-    if(loader){
-
-        window.addEventListener("load",()=>{
-
-
-            setTimeout(()=>{
-
-
-                loader.style.opacity="0";
-
-                loader.style.visibility="hidden";
-
-
-            },1200);
-
+            setTimeout(() => {
+                loader.style.opacity = "0";
+                loader.style.visibility = "hidden";
+            }, 1200);
 
         });
-
     }
 
 
-
-
-
-
-
-    /* =====================================
-            Live Clock
-    ===================================== */
-
+    /* ==========================================================
+       LIVE CLOCK
+    ========================================================== */
 
     const clock = document.getElementById("liveClock");
 
+    function updateClock() {
 
-    function updateClock(){
-
-
-        if(clock){
-
-
-            const now = new Date();
-
-
-            const options={
-
-                hour:"2-digit",
-
-                minute:"2-digit",
-
-                second:"2-digit"
-
-            };
-
-
-            clock.innerHTML =
-            now.toLocaleTimeString([],options);
-
-
+        if (!clock) {
+            return;
         }
 
+        const now = new Date();
 
+        const options = {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        };
+
+        clock.textContent = now.toLocaleTimeString(
+            [],
+            options
+        );
     }
-
 
     updateClock();
 
-
-    setInterval(updateClock,1000);
-
+    setInterval(updateClock, 1000);
 
 
+    /* ==========================================================
+       THEME TOGGLE
+    ========================================================== */
 
+    const themeBtn = document.getElementById("themeToggle");
 
+    if (themeBtn) {
 
-
-
-
-    /* =====================================
-            Theme Toggle
-    ===================================== */
-
-
-    const themeBtn =
-    document.getElementById("themeToggle");
-
-
-
-    if(themeBtn){
-
-
-        themeBtn.addEventListener("click",()=>{
-
+        themeBtn.addEventListener("click", () => {
 
             document.body.classList.toggle("dark");
 
+            const isDarkMode =
+                document.body.classList.contains("dark");
 
-
-            if(document.body.classList.contains("dark")){
-
-
-                themeBtn.innerHTML =
-                '<i class="fa-solid fa-sun"></i>';
-
-
-            }
-
-            else{
-
+            if (isDarkMode) {
 
                 themeBtn.innerHTML =
-                '<i class="fa-solid fa-moon"></i>';
+                    '<i class="fa-solid fa-sun"></i>';
 
+                themeBtn.setAttribute(
+                    "title",
+                    "Switch to Light Mode"
+                );
 
+            } else {
+
+                themeBtn.innerHTML =
+                    '<i class="fa-solid fa-moon"></i>';
+
+                themeBtn.setAttribute(
+                    "title",
+                    "Switch to Dark Mode"
+                );
             }
-
-
 
         });
-
 
     }
 
 
-
-
-
-
-
-
-
-    /* =====================================
-            Sidebar Toggle
-    ===================================== */
-
+    /* ==========================================================
+       SIDEBAR TOGGLE
+    ========================================================== */
 
     const sidebar =
-    document.querySelector(".sidebar");
-
+        document.querySelector(".sidebar");
 
     const toggleBtn =
-    document.getElementById("toggle-btn");
+        document.getElementById("toggle-btn");
 
+    if (toggleBtn && sidebar) {
 
-
-    if(toggleBtn && sidebar){
-
-
-        toggleBtn.addEventListener("click",()=>{
-
+        toggleBtn.addEventListener("click", () => {
 
             sidebar.classList.toggle("active");
 
-
         });
-
 
     }
 
 
+    /* ==========================================================
+       NOTIFICATION PANEL
+    ========================================================== */
+
+    const notificationBell =
+        document.getElementById("notificationBell");
+
+    const notificationPanel =
+        document.getElementById("notificationPanel");
+
+    const closeNotification =
+        document.getElementById("closeNotification");
 
 
+    /* Open notification panel */
+
+    if (notificationBell && notificationPanel) {
+
+        notificationBell.addEventListener("click", () => {
+
+            notificationPanel.classList.add("active");
+
+        });
+
+    }
 
 
+    /* Close notification panel */
+
+    if (closeNotification && notificationPanel) {
+
+        closeNotification.addEventListener("click", () => {
+
+            notificationPanel.classList.remove("active");
+
+        });
+
+    }
 
 
-/* =====================================
-        Notification Panel
-===================================== */
-
-
-const bell =
-document.getElementById("notificationBell");
-
-
-const panel =
-document.getElementById("notificationPanel");
-
-
-const close =
-document.getElementById("closeNotification");
-
-
-if (bell && panel) {
-
-    bell.addEventListener("click", () => {
-
-        panel.classList.add("active");
-
-    });
-
-}
-
-
-if (close && panel) {
-
-    close.addEventListener("click", () => {
-
-        panel.classList.remove("active");
-
-    });
-
-}
-    /* =====================================
-            Card Hover Animation
-    ===================================== */
-
+    /* ==========================================================
+       CARD HOVER ANIMATION
+    ========================================================== */
 
     const cards =
-    document.querySelectorAll(".card");
+        document.querySelectorAll(".card");
 
+    cards.forEach((card) => {
 
-
-    cards.forEach(card=>{
-
-
-        card.addEventListener("mouseenter",()=>{
-
+        card.addEventListener("mouseenter", () => {
 
             card.style.transform =
-            "translateY(-12px) scale(1.02)";
-
+                "translateY(-12px) scale(1.02)";
 
         });
 
 
-
-        card.addEventListener("mouseleave",()=>{
-
+        card.addEventListener("mouseleave", () => {
 
             card.style.transform =
-            "translateY(0px) scale(1)";
-
+                "translateY(0) scale(1)";
 
         });
-
 
     });
 
 
-
-
-
-
-
-
-
-    /* =====================================
-            Animated Counter
-    ===================================== */
-
+    /* ==========================================================
+       ANIMATED COUNTERS
+    ========================================================== */
 
     const counters =
-    document.querySelectorAll(".counter");
+        document.querySelectorAll(".counter");
+
+    counters.forEach((counter) => {
+
+        const target =
+            Number(counter.getAttribute("data-target"));
+
+        let current = 0;
+
+        counter.textContent = "0";
 
 
+        function updateCounter() {
 
-    counters.forEach(counter=>{
+            const increment = target / 80;
 
+            if (current < target) {
 
-        counter.innerText="0";
+                current += increment;
 
+                counter.textContent =
+                    Math.ceil(current);
 
+                setTimeout(updateCounter, 25);
 
-        function updateCounter(){
+            } else {
 
-
-            const target =
-            +counter.getAttribute("data-target");
-
-
-
-            const current =
-            +counter.innerText;
-
-
-
-            const increment =
-            target / 80;
-
-
-
-            if(current < target){
-
-
-                counter.innerText =
-                Math.ceil(current + increment);
-
-
-
-                setTimeout(updateCounter,25);
-
+                counter.textContent = target;
 
             }
-
-
-            else{
-
-
-                counter.innerText = target;
-
-
-            }
-
 
         }
-
 
 
         updateCounter();
 
-
-
     });
 
 
+    /* ==========================================================
+       GLOBAL TABLE SEARCH
+    ========================================================== */
 
+    const searchInput =
+        document.querySelector(".search-box input");
 
+    if (searchInput) {
 
+        searchInput.addEventListener("input", () => {
 
-
-
-
-    /* =====================================
-            Search Filter
-    ===================================== */
-
-
-    const search =
-    document.querySelector(".search-box input");
-
-
-
-    if(search){
-
-
-        search.addEventListener("keyup",()=>{
-
-
-            const value =
-            search.value.toLowerCase();
-
-
+            const searchValue =
+                searchInput.value.toLowerCase().trim();
 
             const rows =
-            document.querySelectorAll("tbody tr");
+                document.querySelectorAll("tbody tr");
 
+            rows.forEach((row) => {
 
-
-            rows.forEach(row=>{
-
+                const rowText =
+                    row.innerText.toLowerCase();
 
                 row.style.display =
-
-                row.innerText
-                .toLowerCase()
-                .includes(value)
-
-                ? ""
-
-                : "none";
-
+                    rowText.includes(searchValue)
+                        ? ""
+                        : "none";
 
             });
 
-
         });
-
 
     }
 
 
+    /* ==========================================================
+       WALLET SEARCH
+    ========================================================== */
+
+    function setupTableSearch(inputId, tableId) {
+
+        const input =
+            document.getElementById(inputId);
+
+        const table =
+            document.getElementById(tableId);
+
+        if (!input || !table) {
+            return;
+        }
 
 
+        const rows =
+            table.querySelectorAll("tr");
 
 
+        input.addEventListener("input", () => {
+
+            const searchValue =
+                input.value.toLowerCase().trim();
 
 
+            rows.forEach((row) => {
 
-    /* =====================================
-            Sidebar Menu
-            Django controls navigation
-    ===================================== */
+                const rowText =
+                    row.innerText.toLowerCase();
 
+                row.style.display =
+                    rowText.includes(searchValue)
+                        ? ""
+                        : "none";
+
+            });
+
+        });
+
+    }
+
+
+    /* Deposit search */
+
+    setupTableSearch(
+        "walletSearch",
+        "walletTable"
+    );
+
+
+    /* Withdraw search */
+
+    setupTableSearch(
+        "withdrawSearch",
+        "withdrawTable"
+    );
+
+
+    /* ==========================================================
+       SIDEBAR MENU
+       Django controls navigation.
+    ========================================================== */
 
     const menuLinks =
-    document.querySelectorAll(".menu a");
+        document.querySelectorAll(".menu a");
 
+    menuLinks.forEach((link) => {
 
-
-    menuLinks.forEach(link=>{
-
-
-        link.addEventListener("click",(e)=>{
-
+        link.addEventListener("click", (event) => {
 
             const url =
-            link.getAttribute("href");
+                link.getAttribute("href");
 
-
-
-            if(url === "#"){
-
-
-                e.preventDefault();
-
-
+            if (url === "#") {
+                event.preventDefault();
             }
 
-
         });
-
 
     });
 
 
+    /* ==========================================================
+       FLOATING BACKGROUND
+    ========================================================== */
 
-
-
-
-
-
-
-    /* =====================================
-            Floating Background
-    ===================================== */
-
-
-    document.addEventListener("mousemove",(e)=>{
-
+    document.addEventListener("mousemove", (event) => {
 
         const circles =
-        document.querySelectorAll(".circle");
+            document.querySelectorAll(".circle");
 
+        circles.forEach((circle, index) => {
 
+            const speed =
+                (index + 1) * 0.01;
 
-        circles.forEach((circle,index)=>{
+            const x =
+                (window.innerWidth - event.pageX) * speed;
 
-
-            let speed =
-            (index+1)*0.01;
-
-
-
-            let x =
-            (window.innerWidth-e.pageX)*speed;
-
-
-
-            let y =
-            (window.innerHeight-e.pageY)*speed;
-
-
+            const y =
+                (window.innerHeight - event.pageY) * speed;
 
             circle.style.transform =
-            `translate(${x}px,${y}px)`;
-
+                `translate(${x}px, ${y}px)`;
 
         });
-
 
     });
 
 
-
-
-
-
-
-
-
-    /* =====================================
-            Ripple Effect
-    ===================================== */
-
+    /* ==========================================================
+       RIPPLE EFFECT
+    ========================================================== */
 
     const buttons =
-    document.querySelectorAll(".btn");
+        document.querySelectorAll(".btn");
 
+    buttons.forEach((button) => {
 
+        button.addEventListener("click", function (event) {
 
-    buttons.forEach(btn=>{
-
-
-        btn.addEventListener("click",function(e){
-
-
-
-            let ripple =
-            document.createElement("span");
-
-
+            const ripple =
+                document.createElement("span");
 
             ripple.classList.add("ripple");
-
-
 
             this.appendChild(ripple);
 
 
+            const rect =
+                this.getBoundingClientRect();
 
-            let x =
-            e.clientX - this.offsetLeft;
+            const x =
+                event.clientX - rect.left;
 
-
-
-            let y =
-            e.clientY - this.offsetTop;
-
+            const y =
+                event.clientY - rect.top;
 
 
             ripple.style.left =
-            x+"px";
-
-
+                `${x}px`;
 
             ripple.style.top =
-            y+"px";
+                `${y}px`;
 
 
-
-            setTimeout(()=>{
-
+            setTimeout(() => {
 
                 ripple.remove();
 
-
-            },600);
-
-
+            }, 600);
 
         });
 
-
-
     });
-
-
 
 });

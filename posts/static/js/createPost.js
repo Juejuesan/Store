@@ -539,7 +539,11 @@ document.getElementById('createPostForm').addEventListener('submit', function(e)
 
     // Build FormData from the form (this captures all non-file form fields)
     const formData = new FormData(form);
+console.log("POST DATA:");
 
+for (const [key, value] of formData.entries()) {
+    console.log(key, value);
+}
     // Append files from itemFiles to FormData
     // The files are stored in itemFiles with keys matching item indices
     Object.keys(itemFiles).forEach(function(itemIdx) {

@@ -1,4 +1,13 @@
-
+from .forms import (
+    RegisterForm,
+    LoginForm,
+    ProfilePicForm,
+    EmailVerificationForm,
+    ForgotPasswordForm,
+    OTPVerificationForm,
+    ResetPasswordForm,
+)
+from posts.models import Post
 import os
 import random
 
@@ -23,6 +32,7 @@ from .forms import (
     RegisterForm,
     LoginForm,
     ProfilePicForm,
+    ProfileEditForm,
     EmailVerificationForm,
     ForgotPasswordForm,
     OTPVerificationForm,
@@ -34,16 +44,14 @@ from .models import (
     PasswordResetOTP,
 )
 
-
 User = get_user_model()
-
 
 # =========================================================
 # REGISTER
 # =========================================================
 
-def register_view(request):
 
+def register_view(request):
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -113,7 +121,7 @@ def register_view(request):
                     None
                 )
 
-            # =====================================================
+                # =====================================================
             # SEND VERIFICATION EMAIL
             # =====================================================
 
@@ -121,20 +129,20 @@ def register_view(request):
 
                 subject="TrustyShop Email Verification",
 
-                message=f"""
-Hello {form.cleaned_data["username"]},
+                message=f""" 
+Hello {form.cleaned_data["username"]}, 
 
-Welcome to TrustyShop!
+Welcome to TrustyShop! 
 
-Your verification code is:
+Your verification code is: 
 
-{verification_code}
+{verification_code} 
 
-Please enter this 6-digit code to complete
-your TrustyShop registration.
+Please enter this 6-digit code to complete 
+your TrustyShop registration. 
 
-Thank you,
-TrustyShop Team
+Thank you, 
+TrustyShop Team 
 """,
 
                 from_email=settings.DEFAULT_FROM_EMAIL,
@@ -162,7 +170,6 @@ TrustyShop Team
             for field, errors in form.errors.items():
 
                 for error in errors:
-
                     messages.error(
                         request,
                         error
@@ -186,7 +193,6 @@ TrustyShop Team
 # =========================================================
 
 def login_view(request):
-
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -241,7 +247,7 @@ def login_view(request):
 
                     request.session.set_expiry(0)
 
-                # =================================================
+                    # =================================================
                 # GET PROFILE
                 # =================================================
 
@@ -268,7 +274,7 @@ def login_view(request):
                     "home"
                 )
 
-            # =================================================
+                # =================================================
             # FAILED LOGIN
             # =================================================
 
@@ -295,7 +301,6 @@ def login_view(request):
 # =========================================================
 
 def logout_view(request):
-
     logout(request)
 
     messages.info(
@@ -309,25 +314,84 @@ def logout_view(request):
 
 
 # =========================================================
-# DASHBOARD
+# USER DASHBOARD
 # =========================================================
 
 @login_required
 def dashboard(request):
 
+    # Get current user's Profile
+    profile = request.user.profile
+
+    # Get posts created by this user's Profile
+    user_posts = Post.objects.filter(
+        user=profile
+    ).order_by("-created_at")
+
+    # Count user's posts
+    post_count = user_posts.count()
+
+    context = {
+        "user_posts": user_posts,
+        "post_count": post_count,
+    }
+
     return render(
         request,
-        "user/dashboard.html"
+        "user/dashboard.html",
+        context
     )
 
+# =========================================================
+# EDIT PROFILE
+# =========================================================
 
+@login_required
+def edit_profile(request):
+
+    profile = request.user.profile
+
+    if request.method == "POST":
+
+        form = ProfileEditForm(
+            request.POST,
+            request.FILES,
+            instance=profile,
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                "Your profile has been updated successfully!"
+            )
+
+            return redirect(
+                "user:dashboard"
+            )
+
+    else:
+
+        form = ProfileEditForm(
+            instance=profile
+        )
+
+    return render(
+        request,
+        "user/edit_profile.html",
+        {
+            "form": form,
+            "profile": profile,
+        }
+    )
 # =========================================================
 # UPDATE PROFILE PICTURE
 # =========================================================
 
 @login_required
 def update_profile_pic(request):
-
     if request.method == "POST":
 
         form = ProfilePicForm(
@@ -345,11 +409,11 @@ def update_profile_pic(request):
             # =================================================
 
             if (
-                profile.profile_pic
-                and profile.profile_pic.name
-                and not profile.profile_pic.name.endswith(
-                    "default.jpg"
-                )
+                    profile.profile_pic
+                    and profile.profile_pic.name
+                    and not profile.profile_pic.name.endswith(
+                "default.jpg"
+            )
             ):
 
                 try:
@@ -357,17 +421,16 @@ def update_profile_pic(request):
                     old_path = profile.profile_pic.path
 
                     if os.path.exists(old_path):
-
                         os.remove(old_path)
 
                 except (
-                    ValueError,
-                    OSError,
+                        ValueError,
+                        OSError,
                 ):
 
                     pass
 
-            # =================================================
+                    # =================================================
             # SAVE NEW PROFILE PICTURE
             # =================================================
 
@@ -396,7 +459,6 @@ def update_profile_pic(request):
 # =========================================================
 
 def verify_email(request):
-
     # =========================================================
     # GET PENDING REGISTRATION
     # =========================================================
@@ -406,7 +468,6 @@ def verify_email(request):
     )
 
     if not pending:
-
         messages.error(
             request,
             "Your registration session has expired. "
@@ -417,7 +478,7 @@ def verify_email(request):
             "user:register"
         )
 
-    # =========================================================
+        # =========================================================
     # POST
     # =========================================================
 
@@ -501,9 +562,8 @@ def verify_email(request):
                     try:
 
                         if default_storage.exists(
-                            temp_pic_path
+                                temp_pic_path
                         ):
-
                             profile.profile_pic = (
                                 temp_pic_path
                             )
@@ -512,7 +572,7 @@ def verify_email(request):
 
                         pass
 
-                # =============================================
+                        # =============================================
                 # EMAIL VERIFIED
                 # =============================================
 
@@ -559,7 +619,7 @@ def verify_email(request):
                     "home"
                 )
 
-            # =================================================
+                # =================================================
             # WRONG CODE
             # =================================================
 
@@ -589,7 +649,6 @@ def verify_email(request):
 # =========================================================
 
 def forgot_password(request):
-
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -616,7 +675,6 @@ def forgot_password(request):
             # =================================================
 
             if user:
-
                 # =================================================
                 # DELETE PREVIOUS UNUSED OTP
                 # =================================================
@@ -644,8 +702,8 @@ def forgot_password(request):
                 now = timezone.now()
 
                 expires_at = (
-                    now
-                    + timedelta(minutes=5)
+                        now
+                        + timedelta(minutes=5)
                 )
 
                 # =================================================
@@ -671,21 +729,21 @@ def forgot_password(request):
                         "TrustyShop Password Reset OTP"
                     ),
 
-                    message=f"""
-Hello {user.username},
+                    message=f""" 
+Hello {user.username}, 
 
-We received a request to reset your TrustyShop password.
+We received a request to reset your TrustyShop password. 
 
-Your password reset OTP is:
+Your password reset OTP is: 
 
-{otp}
+{otp} 
 
-This OTP will expire in 5 minutes.
+This OTP will expire in 5 minutes. 
 
-If you did not request a password reset,
-please ignore this email.
+If you did not request a password reset, 
+please ignore this email. 
 
-TrustyShop Team
+TrustyShop Team 
 """,
 
                     from_email=(
@@ -707,7 +765,7 @@ TrustyShop Team
                     "password_reset_email"
                 ] = user.email
 
-            # =================================================
+                # =================================================
             # SAME MESSAGE FOR SECURITY
             # =================================================
 
@@ -739,7 +797,6 @@ TrustyShop Team
 # =========================================================
 
 def verify_reset_otp(request):
-
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -748,7 +805,6 @@ def verify_reset_otp(request):
     )
 
     if not email:
-
         messages.error(
             request,
             "Password reset session expired. "
@@ -778,8 +834,8 @@ def verify_reset_otp(request):
             # =================================================
 
             if (
-                submitted_email.lower()
-                != email.lower()
+                    submitted_email.lower()
+                    != email.lower()
             ):
 
                 form.add_error(
@@ -796,7 +852,6 @@ def verify_reset_otp(request):
                 ).first()
 
                 if not user:
-
                     messages.error(
                         request,
                         "Account not found."
@@ -806,7 +861,7 @@ def verify_reset_otp(request):
                         "user:forgot_password"
                     )
 
-                # =================================================
+                    # =================================================
                 # GET LATEST UNUSED OTP
                 # =================================================
 
@@ -832,7 +887,7 @@ def verify_reset_otp(request):
                         "Please request a new OTP."
                     )
 
-                # =================================================
+                    # =================================================
                 # OTP EXPIRED
                 # =================================================
 
@@ -846,7 +901,7 @@ def verify_reset_otp(request):
                         "Please request a new OTP."
                     )
 
-                # =================================================
+                    # =================================================
                 # OTP INCORRECT
                 # =================================================
 
@@ -857,7 +912,7 @@ def verify_reset_otp(request):
                         "Incorrect OTP."
                     )
 
-                # =================================================
+                    # =================================================
                 # OTP CORRECT
                 # =================================================
 
@@ -902,18 +957,16 @@ def verify_reset_otp(request):
 # =========================================================
 
 def reset_password(request):
-
     if request.user.is_authenticated:
         return redirect("home")
 
-    # =========================================================
+        # =========================================================
     # CHECK OTP VERIFICATION
     # =========================================================
 
     if not request.session.get(
-        "password_reset_verified"
+            "password_reset_verified"
     ):
-
         messages.error(
             request,
             "Please verify your OTP first."
@@ -923,7 +976,7 @@ def reset_password(request):
             "user:forgot_password"
         )
 
-    # =========================================================
+        # =========================================================
     # GET SESSION DATA
     # =========================================================
 
@@ -936,7 +989,6 @@ def reset_password(request):
     )
 
     if not user_id or not otp_id:
-
         messages.error(
             request,
             "Password reset session expired."
@@ -946,7 +998,7 @@ def reset_password(request):
             "user:forgot_password"
         )
 
-    # =========================================================
+        # =========================================================
     # GET USER
     # =========================================================
 
@@ -968,7 +1020,7 @@ def reset_password(request):
             "user:forgot_password"
         )
 
-    # =========================================================
+        # =========================================================
     # GET OTP
     # =========================================================
 
@@ -991,12 +1043,11 @@ def reset_password(request):
             "user:forgot_password"
         )
 
-    # =========================================================
+        # =========================================================
     # CHECK OTP EXPIRATION AGAIN
     # =========================================================
 
     if reset_otp.is_expired():
-
         reset_otp.delete()
 
         request.session.pop(
@@ -1024,12 +1075,11 @@ def reset_password(request):
             "user:forgot_password"
         )
 
-    # =========================================================
+        # =========================================================
     # GET RESET PASSWORD PAGE
     # =========================================================
 
     if request.method == "GET":
-
         form = ResetPasswordForm()
 
         return render(
@@ -1040,7 +1090,7 @@ def reset_password(request):
             }
         )
 
-    # =========================================================
+        # =========================================================
     # POST RESET PASSWORD
     # =========================================================
 
@@ -1049,7 +1099,6 @@ def reset_password(request):
     )
 
     if not form.is_valid():
-
         return render(
             request,
             "user/reset_password.html",
@@ -1083,9 +1132,8 @@ def reset_password(request):
     user.refresh_from_db()
 
     if not user.check_password(
-        new_password
+            new_password
     ):
-
         messages.error(
             request,
             "Password could not be saved. "
@@ -1100,7 +1148,7 @@ def reset_password(request):
             }
         )
 
-    # =========================================================
+        # =========================================================
     # MARK OTP AS USED
     # =========================================================
 
@@ -1156,3 +1204,43 @@ def reset_password(request):
         "user:login"
     )
 
+# =========================================================
+# DELETE PROFILE PHOTO
+# =========================================================
+
+@login_required
+def delete_profile_pic(request):
+
+    if request.method == "POST":
+
+        profile = request.user.profile
+
+        if profile.profile_pic:
+
+            try:
+
+                old_path = profile.profile_pic.path
+
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+
+            except (
+                ValueError,
+                OSError,
+            ):
+
+                pass
+
+            profile.profile_pic = None
+            profile.save(
+                update_fields=["profile_pic"]
+            )
+
+            messages.success(
+                request,
+                "Profile picture deleted successfully!"
+            )
+
+    return redirect(
+        "user:edit_profile"
+    )

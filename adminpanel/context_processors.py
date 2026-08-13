@@ -2,9 +2,7 @@ from notifications.models import Notification
 
 
 def admin_notifications(request):
-
     if not request.user.is_authenticated or not request.user.is_staff:
-
         return {
             "admin_notifications": [],
             "notification_count": 0,

@@ -1,19 +1,663 @@
-{% extends 'base.html' %}
-
 {% load static %}
 
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
 
-<link rel="stylesheet" href="{% static 'css/notification.css' %}">
+<head>
 
-<div class="notifications-page">
+    <meta charset="UTF-8">
 
-    <!-- Page Header -->
-    <div class="page-header">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-        <div class="page-title-area">
+    <title>Notifications | Trusty Shop</title>
 
-            <div class="page-icon">
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        /* ==========================================
+           PAGE
+        ========================================== */
+
+        body {
+            margin: 0;
+            padding: 90px 20px 50px;
+
+            min-height: 100vh;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eff6ff,
+                    #f8fafc,
+                    #e0f2fe
+                );
+        }
+
+
+        /* ==========================================
+           MAIN CONTAINER
+        ========================================== */
+
+        .notification-wrapper {
+            max-width: 850px;
+            margin: 30px auto;
+        }
+
+
+        /* ==========================================
+           HEADER
+        ========================================== */
+
+        .notification-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .notification-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .notification-title-icon {
+
+            width: 50px;
+            height: 50px;
+
+            border-radius: 16px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: white;
+
+            font-size: 22px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #42a5f5,
+                    #1565c0
+                );
+
+            box-shadow:
+                0 10px 25px
+                rgba(21, 101, 192, .25);
+        }
+
+
+        .notification-title h1 {
+
+            margin: 0;
+
+            color: #0f172a;
+
+            font-size: 28px;
+
+            font-weight: 800;
+        }
+
+
+        .notification-title p {
+
+            margin: 3px 0 0;
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+
+        /* ==========================================
+           CLEAR ALL BUTTON
+        ========================================== */
+
+        .clear-all-btn {
+
+            border: none;
+
+            padding: 11px 18px;
+
+            border-radius: 12px;
+
+            background: white;
+
+            color: #dc2626;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 5px 20px
+                rgba(15, 23, 42, .08);
+
+            transition: .25s;
+        }
+
+
+        .clear-all-btn:hover {
+
+            background: #fee2e2;
+
+            transform: translateY(-2px);
+        }
+
+
+        .clear-all-btn i {
+
+            margin-right: 6px;
+        }
+
+
+        /* ==========================================
+           SELECT MODE HEADER
+        ========================================== */
+
+        .select-mode-header {
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 14px 18px;
+
+            margin-bottom: 15px;
+
+            border-radius: 15px;
+
+            background: white;
+
+            box-shadow:
+                0 5px 20px
+                rgba(15, 23, 42, .08);
+        }
+
+
+        .select-mode-header.active {
+
+            display: flex;
+        }
+
+
+        .select-mode-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .select-mode-left span {
+
+            font-weight: 700;
+
+            color: #1e293b;
+        }
+
+
+        .select-all-btn {
+
+            border: none;
+
+            background: transparent;
+
+            color: #2563eb;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .delete-selected-btn {
+
+            border: none;
+
+            padding: 9px 15px;
+
+            border-radius: 10px;
+
+            background: #fee2e2;
+
+            color: #dc2626;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .25s;
+        }
+
+
+        .delete-selected-btn:hover {
+
+            background: #fecaca;
+        }
+
+
+        .delete-selected-btn:disabled {
+
+            opacity: .45;
+
+            cursor: not-allowed;
+        }
+
+
+        /* ==========================================
+           NOTIFICATION LIST
+        ========================================== */
+
+        .notification-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+        }
+
+
+        /* ==========================================
+           NOTIFICATION CARD
+        ========================================== */
+
+        .notification-card {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            padding: 18px;
+
+            border-radius: 18px;
+
+            background: rgba(255, 255, 255, .9);
+
+            border: 2px solid transparent;
+
+            box-shadow:
+                0 8px 25px
+                rgba(15, 23, 42, .07);
+
+            cursor: pointer;
+
+            user-select: none;
+
+            -webkit-user-select: none;
+
+            transition:
+                .25s ease;
+
+            /* Prevent mobile browser long-press menu */
+            -webkit-touch-callout: none;
+        }
+
+
+        .notification-card:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(15, 23, 42, .12);
+        }
+
+
+        /* ==========================================
+           UNREAD
+        ========================================== */
+
+        .notification-card.unread {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eff6ff,
+                    #ffffff
+                );
+
+            border-color: #bfdbfe;
+        }
+
+
+        /* ==========================================
+           ICON
+        ========================================== */
+
+        .notification-icon {
+
+            width: 48px;
+
+            height: 48px;
+
+            min-width: 48px;
+
+            border-radius: 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #60a5fa,
+                    #2563eb
+                );
+        }
+
+
+        .notification-card.unread
+        .notification-icon {
+
+            box-shadow:
+                0 5px 15px
+                rgba(37, 99, 235, .25);
+        }
+
+
+        /* ==========================================
+           CONTENT
+        ========================================== */
+
+        .notification-content {
+
+            flex: 1;
+
+            min-width: 0;
+        }
+
+
+        .notification-message {
+
+            margin: 0;
+
+            color: #1e293b;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            line-height: 1.5;
+        }
+
+
+        .notification-time {
+
+            display: block;
+
+            margin-top: 5px;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+        }
+
+
+        /* ==========================================
+           UNREAD DOT
+        ========================================== */
+
+        .unread-dot {
+
+            width: 9px;
+
+            height: 9px;
+
+            min-width: 9px;
+
+            border-radius: 50%;
+
+            background: #2563eb;
+
+            box-shadow:
+                0 0 0 4px #dbeafe;
+        }
+
+
+        /* ==========================================
+           CHECKBOX
+        ========================================== */
+
+        .notification-checkbox {
+
+            width: 20px;
+
+            height: 20px;
+
+            display: none;
+
+            cursor: pointer;
+
+            accent-color: #2563eb;
+
+            flex-shrink: 0;
+        }
+
+
+        .select-mode
+        .notification-checkbox {
+
+            display: block;
+        }
+
+
+        .select-mode
+        .notification-card {
+
+            padding-left: 15px;
+        }
+
+
+        .notification-card.selected {
+
+            border-color: #2563eb;
+
+            background: #eff6ff;
+
+            transform: scale(.99);
+
+            box-shadow:
+                0 8px 25px
+                rgba(37, 99, 235, .15);
+        }
+
+
+        /* ==========================================
+           LONG PRESS FEEDBACK
+        ========================================== */
+
+        .notification-card.long-pressing {
+
+            transform: scale(.98);
+
+            background: #dbeafe;
+
+            border-color: #60a5fa;
+
+            transition: .15s;
+        }
+
+
+        /* ==========================================
+           EMPTY STATE
+        ========================================== */
+
+        .empty-notification {
+
+            padding: 70px 20px;
+
+            text-align: center;
+
+            border-radius: 20px;
+
+            background: rgba(255,255,255,.85);
+
+            box-shadow:
+                0 8px 25px
+                rgba(15,23,42,.06);
+        }
+
+
+        .empty-notification i {
+
+            font-size: 55px;
+
+            color: #94a3b8;
+
+            margin-bottom: 15px;
+        }
+
+
+        .empty-notification h3 {
+
+            color: #334155;
+
+            font-weight: 800;
+
+            margin-bottom: 5px;
+        }
+
+
+        .empty-notification p {
+
+            color: #94a3b8;
+
+            margin: 0;
+        }
+
+
+        /* ==========================================
+           MOBILE
+        ========================================== */
+
+        @media(max-width: 600px) {
+
+            body {
+
+                padding-left: 12px;
+
+                padding-right: 12px;
+            }
+
+
+            .notification-header {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+
+            .clear-all-btn {
+
+                width: 100%;
+            }
+
+
+            .notification-card {
+
+                padding: 14px;
+            }
+
+
+            .notification-title h1 {
+
+                font-size: 23px;
+            }
+
+
+            .select-mode-header {
+
+                flex-wrap: wrap;
+            }
+
+
+            .select-mode-left {
+
+                width: 100%;
+            }
+
+
+            .delete-selected-btn {
+
+                flex: 1;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="notification-wrapper">
+
+
+    <!-- ==========================================
+         NORMAL HEADER
+    ========================================== -->
+
+    <div
+        class="notification-header"
+        id="normalNotificationHeader"
+    >
+
+        <div class="notification-title">
+
+            <div class="notification-title-icon">
 
                 <i class="fa-solid fa-bell"></i>
 
@@ -24,7 +668,7 @@
                 <h1>Notifications</h1>
 
                 <p>
-                    Stay updated with everything happening in your TrustyShop account.
+                    Stay updated with your Trusty Shop activity.
                 </p>
 
             </div>
@@ -32,136 +676,169 @@
         </div>
 
 
-        <div class="notification-count">
+        <button
+            type="button"
+            class="clear-all-btn"
+            id="clearAllBtn"
+        >
 
-            <i class="fa-solid fa-envelope"></i>
+            <i class="fa-solid fa-trash-can"></i>
 
-            {{ notifications|length }} Notifications
+            Clear All
 
-        </div>
+        </button>
 
     </div>
 
 
-    <!-- Notification List -->
+    <!-- ==========================================
+         SELECT MODE HEADER
+    ========================================== -->
 
-    <div class="notifications-list">
+    <div
+        class="select-mode-header"
+        id="selectModeHeader"
+    >
+
+        <div class="select-mode-left">
+
+            <i class="fa-solid fa-check-double"></i>
+
+            <span id="selectedCount">
+                0 selected
+            </span>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="select-all-btn"
+            id="selectAllBtn"
+        >
+            Select All
+        </button>
+
+
+        <button
+            type="button"
+            class="delete-selected-btn"
+            id="deleteSelectedBtn"
+            disabled
+        >
+
+            <i class="fa-solid fa-trash"></i>
+
+            Delete Selected
+
+        </button>
+
+    </div>
+
+
+    <!-- ==========================================
+         NOTIFICATION LIST
+    ========================================== -->
+
+    <div
+        class="notification-list"
+        id="notificationList"
+    >
 
         {% for notification in notifications %}
 
-        <div class="notification-card {% if not notification.is_read %}unread{% endif %}">
+            <div
+                class="notification-card {% if not notification.is_read %}unread{% endif %}"
+                data-id="{{ notification.id }}"
+            >
+
+                <!-- CHECKBOX -->
+
+                <input
+                    type="checkbox"
+                    class="notification-checkbox"
+                    value="{{ notification.id }}"
+                >
 
 
-            <!-- Icon -->
+                <!-- ICON -->
 
-            <div class="notification-icon
-                {% if notification.notification_type == 'approved' %}
-                    approved
-                {% elif notification.notification_type == 'rejected' %}
-                    rejected
-                {% else %}
-                    pending
-                {% endif %}
-            ">
+                <div class="notification-icon">
 
-                {% if notification.notification_type == "approved" %}
+                    {% if notification.notification_type == "approved" %}
 
-                    <i class="fa-solid fa-check"></i>
+                        <i class="fa-solid fa-circle-check"></i>
 
-                {% elif notification.notification_type == "rejected" %}
+                    {% elif notification.notification_type == "rejected" %}
 
-                    <i class="fa-solid fa-xmark"></i>
+                        <i class="fa-solid fa-circle-xmark"></i>
 
-                {% else %}
+                    {% elif notification.notification_type == "deposit_approved" %}
 
-                    <i class="fa-solid fa-clock"></i>
+                        <i class="fa-solid fa-wallet"></i>
 
-                {% endif %}
+                    {% elif notification.notification_type == "deposit_rejected" %}
 
-            </div>
+                        <i class="fa-solid fa-wallet"></i>
 
+                    {% else %}
 
-            <!-- Content -->
-
-            <div class="notification-body">
-
-                <div class="notification-top">
-
-                    <h3>
-                        {{ notification.message }}
-                    </h3>
-
-
-                    {% if not notification.is_read %}
-
-                    <span class="new-badge">
-
-                        NEW
-
-                    </span>
+                        <i class="fa-solid fa-bell"></i>
 
                     {% endif %}
 
                 </div>
 
 
-                <div class="notification-meta">
+                <!-- CONTENT -->
 
-                    <span>
+                <div class="notification-content">
 
-                        <i class="fa-regular fa-calendar"></i>
+                    <p class="notification-message">
+                        {{ notification.message }}
+                    </p>
 
-                        {{ notification.created_at|date:"M d, Y" }}
-
-                    </span>
-
-
-                    <span>
+                    <span class="notification-time">
 
                         <i class="fa-regular fa-clock"></i>
 
-                        {{ notification.created_at|date:"h:i A" }}
+                        {{ notification.created_at|timesince }}
+                        ago
 
                     </span>
 
                 </div>
 
+
+                <!-- UNREAD DOT -->
+
+                {% if not notification.is_read %}
+
+                    <span
+                        class="unread-dot"
+                        title="Unread"
+                    ></span>
+
+                {% endif %}
+
             </div>
-
-
-            <!-- Arrow -->
-
-            <div class="notification-arrow">
-
-                <i class="fa-solid fa-chevron-right"></i>
-
-            </div>
-
-
-        </div>
-
 
         {% empty %}
 
-
-        <!-- Empty State -->
-
-        <div class="empty-notifications">
-
-            <div class="empty-icon">
+            <div
+                class="empty-notification"
+                id="emptyNotification"
+            >
 
                 <i class="fa-regular fa-bell-slash"></i>
 
+                <h3>No notifications</h3>
+
+                <p>
+                    You're all caught up!
+                </p>
+
             </div>
-
-            <h2>You're all caught up!</h2>
-
-            <p>
-                You don't have any new notifications right now.
-            </p>
-
-        </div>
-
 
         {% endfor %}
 
@@ -169,4 +846,14 @@
 
 </div>
 
-{% endblock %}
+
+<!-- ==========================================
+     NOTIFICATION JAVASCRIPT
+========================================== -->
+
+<script src="{% static 'notifications/js/notification.js' %}"></script>
+
+
+</body>
+
+</html>

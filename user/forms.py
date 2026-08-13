@@ -1,7 +1,9 @@
+
+from .models import Profile
 from django import forms
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
-
+from .models import Profile
 from .emailValidator import check_email_with_abstract
 from .models import Profile
 
@@ -485,3 +487,51 @@ class ResetPasswordForm(forms.Form):
             )
 
         return cleaned_data
+
+    # =========================================================
+    # PROFILE EDIT FORM
+    # =========================================================
+
+
+class ProfileEditForm(forms.ModelForm):
+
+        class Meta:
+            model = Profile
+
+            fields = [
+                "fullName",
+                "phone_number",
+                "address",
+                "gender",
+            ]
+
+            widgets = {
+                "fullName": forms.TextInput(
+                    attrs={
+                        "class": "form-control",
+                        "placeholder": "Enter your full name",
+                    }
+                ),
+
+                "phone_number": forms.TextInput(
+                    attrs={
+                        "class": "form-control",
+                        "placeholder": "Enter your phone number",
+                    }
+                ),
+
+                "address": forms.Textarea(
+                    attrs={
+                        "class": "form-control",
+                        "placeholder": "Enter your address",
+                        "rows": 3,
+                    }
+                ),
+
+                "gender": forms.Select(
+                    attrs={
+                        "class": "form-control",
+                    }
+                ),
+            }
+
