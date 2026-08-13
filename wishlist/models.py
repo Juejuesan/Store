@@ -1,13 +1,16 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 
-from posts.models import Post
+from home.models import Post
 
 
 class Wishlist(models.Model):
+    """
+    Stores products that a user has added to their wishlist.
+    """
 
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="wishlist_items",
     )
@@ -19,23 +22,18 @@ class Wishlist(models.Model):
     )
 
     created_at = models.DateTimeField(
-        auto_now_add=True,
+        auto_now_add=True
     )
 
     class Meta:
-
         ordering = ["-created_at"]
 
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "post"],
-                name="unique_user_wishlist_post",
+                name="unique_user_post_wishlist",
             ),
         ]
 
     def __str__(self):
-
-        return (
-            f"{self.user.username} - "
-            f"{self.post}"
-        )
+        return f"{self.user} → {self.post}"
