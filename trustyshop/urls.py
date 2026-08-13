@@ -29,6 +29,8 @@ urlpatterns = [
     path('adminpanel/', include('adminpanel.urls')),
     path("notifications/",include("notifications.urls")),
     path("wallet/", include("wallet.urls")),
+    path('cart/', include('cart.urls')),
+
 ]
 
 if settings.DEBUG:
