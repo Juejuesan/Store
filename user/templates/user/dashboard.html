@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 {% load static %}
 
@@ -39,7 +40,10 @@
 
 
     <!-- =====================================================
-         HEADER / FOOTER CSS
+         SHARED HEADER / FOOTER CSS
+         
+         IMPORTANT:
+         This is the SAME CSS used by Home.
     ====================================================== -->
 
     <link
@@ -48,21 +52,24 @@
     >
 
 
+    <!-- =====================================================
+         DASHBOARD CSS
+    ====================================================== -->
+
     <style>
 
         /* =====================================================
-           PAGE
+           DASHBOARD PAGE
+           
+           Do NOT style navbar here.
+           Navbar is controlled by header-footer.css.
         ===================================================== */
 
-        body {
+        .dashboard-page {
+            padding-bottom: 70px;
             background: #f5f8ff;
             color: #172033;
             font-family: Arial, sans-serif;
-        }
-
-        .dashboard-page {
-            padding-top: 110px;
-            padding-bottom: 70px;
         }
 
 
@@ -70,13 +77,19 @@
            PROFILE CARD
         ===================================================== */
 
-        .profile-card {
-            position: relative;
+        .dashboard-page .profile-card {
+            position: reive;
+
             background: #ffffff;
+
             border-radius: 24px;
+
             overflow: visible;
+
             border: 1px solid #e7edfa;
-            box-shadow: 0 12px 40px rgba(37, 99, 235, 0.08);
+
+            box-shadow:
+                0 12px 40px rgba(37, 99, 235, 0.08);
         }
 
 
@@ -84,8 +97,9 @@
            PROFILE COVER
         ===================================================== */
 
-        .profile-cover {
-            position: relative;
+        .dashboard-page .profile-cover {
+            position: reive;
+
             height: 180px;
 
             background:
@@ -96,10 +110,12 @@
                 );
 
             border-radius: 24px 24px 0 0;
+
             overflow: hidden;
         }
 
-        .profile-cover::after {
+
+        .dashboard-page .profile-cover::after {
             content: "";
 
             position: absolute;
@@ -112,17 +128,22 @@
 
             border-radius: 50%;
 
-            background: rgba(255, 255, 255, 0.12);
+            background:
+                rgba(255, 255, 255, 0.12);
         }
 
 
         /* =====================================================
-           PROFILE INFO
+           PROFILE INFORMATION
         ===================================================== */
 
-        .profile-info {
-            position: relative;
-            padding: 0 35px 30px;
+        .dashboard-page .profile-info {
+            position: reive;
+
+            padding:
+                0
+                35px
+                30px;
         }
 
 
@@ -130,8 +151,8 @@
            PROFILE PHOTO
         ===================================================== */
 
-        .profile-photo-wrapper {
-            position: relative;
+        .dashboard-page .profile-photo-wrapper {
+            position: reive;
 
             width: 130px;
             height: 130px;
@@ -141,7 +162,8 @@
             z-index: 5;
         }
 
-        .profile-photo {
+
+        .dashboard-page .profile-photo {
             width: 130px;
             height: 130px;
 
@@ -157,11 +179,13 @@
                 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
-        .profile-default {
+
+        .dashboard-page .profile-default {
             width: 130px;
             height: 130px;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -181,29 +205,39 @@
 
 
         /* =====================================================
-           PROFILE DETAILS
+           DASHBOARD PROFILE DETAILS
+           
+           IMPORTANT:
+           We use dashboard-profile-name instead of
+           .profile-name so it cannot override the navbar.
         ===================================================== */
 
-        .profile-details {
+        .dashboard-page .profile-details {
             margin-top: 15px;
         }
 
-        .profile-name {
+
+        .dashboard-page .dashboard-profile-name {
             margin-bottom: 5px;
 
             font-size: 28px;
+
             font-weight: 800;
         }
 
-        .profile-username {
+
+        .dashboard-page .profile-username {
             color: #718096;
+
             font-size: 15px;
         }
 
-        .verified-icon {
+
+        .dashboard-page .verified-icon {
             margin-left: 5px;
 
             color: #2563eb;
+
             font-size: 17px;
         }
 
@@ -212,8 +246,9 @@
            PROFILE ACTIONS
         ===================================================== */
 
-        .profile-actions {
+        .dashboard-page .profile-actions {
             display: flex;
+
             flex-wrap: wrap;
 
             gap: 12px;
@@ -221,69 +256,90 @@
             margin-top: 20px;
         }
 
-        .dashboard-btn {
+
+        .dashboard-page .dashboard-btn {
             display: inline-flex;
+
             align-items: center;
+
             justify-content: center;
 
             gap: 8px;
 
-            padding: 11px 20px;
+            padding:
+                11px
+                20px;
 
             border: none;
+
             border-radius: 12px;
 
             font-weight: 700;
 
             text-decoration: none;
 
-            transition: 0.25s ease;
-        }
-
-
-        /* CREATE POST */
-
-        .create-btn {
-            background: #2563eb;
-            color: #ffffff;
-        }
-
-        .create-btn:hover {
-            background: #1d4ed8;
-            color: #ffffff;
-
-            transform: translateY(-2px);
-        }
-
-
-        /* EDIT / SECONDARY BUTTON */
-
-        .edit-btn {
-            background: #edf4ff;
-            color: #2563eb;
-        }
-
-        .edit-btn:hover {
-            background: #dbeafe;
-            color: #1d4ed8;
-
-            transform: translateY(-2px);
+            transition:
+                0.25s ease;
         }
 
 
         /* =====================================================
-           CHANGE PROFILE PHOTO
+           CREATE BUTTON
         ===================================================== */
 
-        .profile-photo-form {
+        .dashboard-page .create-btn {
+            background: #2563eb;
+
+            color: #ffffff;
+        }
+
+
+        .dashboard-page .create-btn:hover {
+            background: #1d4ed8;
+
+            color: #ffffff;
+
+            transform:
+                transeY(-2px);
+        }
+
+
+        /* =====================================================
+           EDIT BUTTON
+        ===================================================== */
+
+        .dashboard-page .edit-btn {
+            background: #edf4ff;
+
+            color: #2563eb;
+        }
+
+
+        .dashboard-page .edit-btn:hover {
+            background: #dbeafe;
+
+            color: #1d4ed8;
+
+            transform:
+                transeY(-2px);
+        }
+
+
+        /* =====================================================
+           CHANGE PHOTO
+        ===================================================== */
+
+        .dashboard-page .profile-photo-form {
             display: inline-flex;
         }
 
-        .photo-upload-label {
+
+        .dashboard-page .photo-upload-label {
             cursor: pointer;
         }
 
-        .photo-upload-input {
+
+        .dashboard-page .photo-upload-input {
             display: none;
         }
 
@@ -292,10 +348,11 @@
            SETTINGS WRAPPER
         ===================================================== */
 
-        .settings-wrapper {
+        .dashboard-page .settings-wrapper {
             position: absolute;
 
             right: 30px;
+
             top: 205px;
 
             z-index: 1000;
@@ -306,32 +363,40 @@
            SETTINGS BUTTON
         ===================================================== */
 
-        .settings-btn {
+        .dashboard-page .settings-btn {
             width: 46px;
             height: 46px;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
             border: none;
+
             border-radius: 50%;
 
             background: #f1f5f9;
+
             color: #334155;
 
             font-size: 19px;
 
             cursor: pointer;
 
-            transition: 0.25s ease;
+            transition:
+                0.25s ease;
         }
 
-        .settings-btn:hover {
+
+        .dashboard-page .settings-btn:hover {
             background: #2563eb;
+
             color: #ffffff;
 
-            transform: rotate(25deg);
+            transform:
+                rotate(25deg);
         }
 
 
@@ -339,40 +404,48 @@
            SETTINGS MENU
         ===================================================== */
 
-        .settings-menu {
+        .dashboard-page .settings-menu {
             position: absolute;
 
             top: 58px;
+
             right: 0;
 
             width: 310px;
 
             padding: 10px;
 
-            background: rgba(255, 255, 255, 0.98);
+            background:
+                rgba(255, 255, 255, 0.98);
 
-            border: 1px solid #e2e8f0;
+            border:
+                1px solid #e2e8f0;
+
             border-radius: 18px;
 
             box-shadow:
                 0 20px 50px rgba(15, 23, 42, 0.16);
 
             opacity: 0;
+
             visibility: hidden;
 
             transform:
-                translateY(-8px)
+                transeY(-8px)
                 scale(0.97);
 
-            transition: 0.2s ease;
+            transition:
+                0.2s ease;
         }
 
-        .settings-menu.show {
+
+        .dashboard-page .settings-menu.show {
             opacity: 1;
+
             visibility: visible;
 
             transform:
-                translateY(0)
+                transeY(0)
                 scale(1);
         }
 
@@ -381,21 +454,27 @@
            SETTINGS HEADER
         ===================================================== */
 
-        .settings-menu-header {
-            padding: 12px 13px 15px;
+        .dashboard-page .settings-menu-header {
+            padding:
+                12px
+                13px
+                15px;
 
             margin-bottom: 5px;
 
-            border-bottom: 1px solid #eef2f7;
+            border-bottom:
+                1px solid #eef2f7;
         }
 
-        .settings-menu-header strong {
+
+        .dashboard-page .settings-menu-header strong {
             display: block;
 
             font-size: 15px;
         }
 
-        .settings-menu-header small {
+
+        .dashboard-page .settings-menu-header small {
             color: #94a3b8;
 
             font-size: 12px;
@@ -406,8 +485,9 @@
            SETTINGS ITEM
         ===================================================== */
 
-        .settings-item {
+        .dashboard-page .settings-item {
             display: flex;
+
             align-items: center;
 
             gap: 12px;
@@ -420,25 +500,32 @@
 
             text-decoration: none;
 
-            transition: 0.2s ease;
+            transition:
+                0.2s ease;
         }
 
-        .settings-item:hover {
+
+        .dashboard-page .settings-item:hover {
             background: #f5f8ff;
 
-            transform: translateX(2px);
+            transform:
+                transeX(2px);
         }
 
-        .settings-item > span:last-child {
+
+        .dashboard-page .settings-item > span:last-child {
             display: flex;
+
             flex-direction: column;
         }
 
-        .settings-item strong {
+
+        .dashboard-page .settings-item strong {
             font-size: 14px;
         }
 
-        .settings-item small {
+
+        .dashboard-page .settings-item small {
             margin-top: 2px;
 
             color: #94a3b8;
@@ -451,14 +538,16 @@
            SETTINGS ICON
         ===================================================== */
 
-        .settings-icon {
+        .dashboard-page .settings-icon {
             width: 38px;
             height: 38px;
 
             min-width: 38px;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
             border-radius: 10px;
@@ -466,33 +555,45 @@
             font-size: 15px;
         }
 
-        .settings-icon.blue {
+
+        .dashboard-page .settings-icon.blue {
             background: #dbeafe;
+
             color: #2563eb;
         }
 
-        .settings-icon.pink {
+
+        .dashboard-page .settings-icon.pink {
             background: #fce7f3;
+
             color: #db2777;
         }
 
-        .settings-icon.green {
+
+        .dashboard-page .settings-icon.green {
             background: #dcfce7;
+
             color: #16a34a;
         }
 
-        .settings-icon.orange {
+
+        .dashboard-page .settings-icon.orange {
             background: #ffedd5;
+
             color: #ea580c;
         }
 
-        .settings-icon.purple {
+
+        .dashboard-page .settings-icon.purple {
             background: #ede9fe;
+
             color: #7c3aed;
         }
 
-        .settings-icon.red {
+
+        .dashboard-page .settings-icon.red {
             background: #fee2e2;
+
             color: #dc2626;
         }
 
@@ -501,10 +602,12 @@
            SETTINGS DIVIDER
         ===================================================== */
 
-        .settings-divider {
+        .dashboard-page .settings-divider {
             height: 1px;
 
-            margin: 7px 5px;
+            margin:
+                7px
+                5px;
 
             background: #eef2f7;
         }
@@ -514,11 +617,12 @@
            LOGOUT
         ===================================================== */
 
-        .logout-item {
+        .dashboard-page .logout-item {
             color: #dc2626;
         }
 
-        .logout-item:hover {
+
+        .dashboard-page .logout-item:hover {
             background: #fff1f2;
         }
 
@@ -527,7 +631,7 @@
            PROFILE STATS
         ===================================================== */
 
-        .profile-stats {
+        .dashboard-page .profile-stats {
             display: flex;
 
             gap: 35px;
@@ -535,18 +639,22 @@
             margin-top: 25px;
         }
 
-        .stat-item {
+
+        .dashboard-page .stat-item {
             text-align: left;
         }
 
-        .stat-number {
+
+        .dashboard-page .stat-number {
             display: block;
 
             font-size: 21px;
+
             font-weight: 800;
         }
 
-        .stat-label {
+
+        .dashboard-page .stat-label {
             color: #718096;
 
             font-size: 13px;
@@ -557,18 +665,21 @@
            POSTS SECTION
         ===================================================== */
 
-        .posts-section {
+        .dashboard-page .posts-section {
             margin-top: 45px;
         }
 
-        .section-title {
+
+        .dashboard-page .section-title {
             margin-bottom: 0;
 
             font-size: 24px;
+
             font-weight: 800;
         }
 
-        .section-subtitle {
+
+        .dashboard-page .section-subtitle {
             color: #718096;
         }
 
@@ -577,24 +688,29 @@
            POST CARD
         ===================================================== */
 
-        .user-post-card {
+        .dashboard-page .user-post-card {
             height: 100%;
 
             overflow: hidden;
 
             background: #ffffff;
 
-            border: 1px solid #e7edfa;
+            border:
+                1px solid #e7edfa;
+
             border-radius: 18px;
 
             box-shadow:
                 0 8px 25px rgba(37, 99, 235, 0.06);
 
-            transition: 0.25s ease;
+            transition:
+                0.25s ease;
         }
 
-        .user-post-card:hover {
-            transform: translateY(-5px);
+
+        .dashboard-page .user-post-card:hover {
+            transform:
+                transeY(-5px);
 
             box-shadow:
                 0 15px 35px rgba(37, 99, 235, 0.12);
@@ -605,7 +721,7 @@
            POST IMAGE
         ===================================================== */
 
-        .post-image-wrapper {
+        .dashboard-page .post-image-wrapper {
             height: 220px;
 
             overflow: hidden;
@@ -613,17 +729,22 @@
             background: #f1f5f9;
         }
 
-        .post-image {
+
+        .dashboard-page .post-image {
             width: 100%;
+
             height: 100%;
 
             object-fit: cover;
 
-            transition: 0.3s ease;
+            transition:
+                0.3s ease;
         }
 
-        .user-post-card:hover .post-image {
-            transform: scale(1.05);
+
+        .dashboard-page .user-post-card:hover .post-image {
+            transform:
+                scale(1.05);
         }
 
 
@@ -631,21 +752,25 @@
            POST CONTENT
         ===================================================== */
 
-        .post-content {
+        .dashboard-page .post-content {
             padding: 20px;
         }
 
-        .post-title {
+
+        .dashboard-page .post-title {
             margin-bottom: 8px;
 
             font-size: 18px;
+
             font-weight: 800;
         }
 
-        .post-description {
+
+        .dashboard-page .post-description {
             color: #64748b;
 
             font-size: 14px;
+
             line-height: 1.6;
         }
 
@@ -654,9 +779,11 @@
            POST META
         ===================================================== */
 
-        .post-meta {
+        .dashboard-page .post-meta {
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
 
             gap: 10px;
@@ -664,28 +791,36 @@
             margin-top: 15px;
         }
 
-        .post-status {
-            padding: 5px 10px;
+
+        .dashboard-page .post-status {
+            padding:
+                5px
+                10px;
 
             border-radius: 20px;
 
             background: #dcfce7;
+
             color: #15803d;
 
             font-size: 12px;
+
             font-weight: 700;
         }
 
-        .view-post-btn {
+
+        .dashboard-page .view-post-btn {
             color: #2563eb;
 
             font-size: 14px;
+
             font-weight: 700;
 
             text-decoration: none;
         }
 
-        .view-post-btn:hover {
+
+        .dashboard-page .view-post-btn:hover {
             color: #1d4ed8;
         }
 
@@ -694,30 +829,37 @@
            EMPTY POSTS
         ===================================================== */
 
-        .empty-posts {
-            padding: 60px 20px;
+        .dashboard-page .empty-posts {
+            padding:
+                60px
+                20px;
 
             text-align: center;
 
             background: #ffffff;
 
-            border: 1px dashed #cbd5e1;
+            border:
+                1px dashed #cbd5e1;
+
             border-radius: 20px;
         }
 
-        .empty-icon {
+
+        .dashboard-page .empty-icon {
             color: #94a3b8;
 
             font-size: 55px;
         }
 
-        .empty-posts h4 {
+
+        .dashboard-page .empty-posts h4 {
             margin-top: 18px;
 
             font-weight: 800;
         }
 
-        .empty-posts p {
+
+        .dashboard-page .empty-posts p {
             color: #718096;
         }
 
@@ -728,49 +870,61 @@
 
         @media (max-width: 768px) {
 
-            .dashboard-page {
-                padding-top: 90px;
-            }
-
-            .profile-cover {
+            .dashboard-page .profile-cover {
                 height: 140px;
             }
 
-            .profile-info {
-                padding: 0 20px 25px;
+
+            .dashboard-page .profile-info {
+                padding:
+                    0
+                    20px
+                    25px;
             }
 
-            .profile-photo-wrapper {
+
+            .dashboard-page .profile-photo-wrapper {
                 width: 105px;
+
                 height: 105px;
             }
 
-            .profile-photo,
-            .profile-default {
+
+            .dashboard-page .profile-photo,
+            .dashboard-page .profile-default {
                 width: 105px;
+
                 height: 105px;
             }
 
-            .profile-name {
+
+            .dashboard-page .dashboard-profile-name {
                 font-size: 23px;
             }
 
-            .settings-wrapper {
+
+            .dashboard-page .settings-wrapper {
                 right: 20px;
+
                 top: 160px;
             }
 
-            .settings-menu {
+
+            .dashboard-page .settings-menu {
                 right: -10px;
+
                 width: 290px;
             }
 
-            .profile-stats {
+
+            .dashboard-page .profile-stats {
                 gap: 20px;
             }
 
-            .profile-actions {
+
+            .dashboard-page .profile-actions {
                 flex-direction: column;
+
                 align-items: flex-start;
             }
 
@@ -785,17 +939,20 @@
 
 
     <!-- =====================================================
-         NAVBAR
+         SHARED NAVBAR
+
+         IMPORTANT:
+         This is EXACTLY the same navbar used by Home.
     ====================================================== -->
 
     {% include "includes/navbar.html" %}
 
 
     <!-- =====================================================
-         DASHBOARD
+         DASHBOARD PAGE
     ====================================================== -->
 
-    <div class="dashboard-page">
+    <main class="dashboard-page">
 
         <div class="container">
 
@@ -807,16 +964,12 @@
             <div class="profile-card">
 
 
-                <!-- =================================================
-                     COVER
-                ================================================== -->
+                <!-- COVER -->
 
                 <div class="profile-cover"></div>
 
 
-                <!-- =================================================
-                     PROFILE INFORMATION
-                ================================================== -->
+                <!-- PROFILE INFORMATION -->
 
                 <div class="profile-info">
 
@@ -855,9 +1008,15 @@
                     <div class="profile-details">
 
 
-                        <!-- NAME -->
+                        <!-- =================================================
+                             NAME
 
-                        <div class="profile-name">
+                             IMPORTANT:
+                             dashboard-profile-name
+                             prevents navbar conflict.
+                        ================================================== -->
+
+                        <div class="dashboard-profile-name">
 
                             {{ request.user.profile.fullName|default:request.user.username }}
 
@@ -933,6 +1092,7 @@
 
                             </div>
 
+
                         </div>
 
 
@@ -971,9 +1131,7 @@
                             </a>
 
 
-                            <!-- =================================================
-                                 CHANGE PROFILE PHOTO
-                            ================================================== -->
+                            <!-- CHANGE PHOTO -->
 
                             <form
                                 method="POST"
@@ -984,13 +1142,6 @@
 
                                 {% csrf_token %}
 
-
-                                <!--
-                                    IMPORTANT:
-
-                                    Clicking this label opens
-                                    Windows File Explorer.
-                                -->
 
                                 <label
                                     for="profilePicInput"
@@ -1004,8 +1155,6 @@
                                 </label>
 
 
-                                <!-- HIDDEN FILE INPUT -->
-
                                 <input
                                     type="file"
                                     name="profile_pic"
@@ -1015,6 +1164,7 @@
                                 >
 
                             </form>
+
 
                         </div>
 
@@ -1044,9 +1194,7 @@
                         </button>
 
 
-                        <!-- =================================================
-                             SETTINGS MENU
-                        ================================================== -->
+                        <!-- SETTINGS MENU -->
 
                         <div
                             class="settings-menu"
@@ -1096,32 +1244,33 @@
 
                             </a>
 
-<!-- WISHLIST -->
 
-<a
-    href="{% url 'wishlist:wishlist' %}"
-    class="settings-item"
->
+                            <!-- WISHLIST -->
 
-    <span class="settings-icon pink">
+                            <a
+                                href="{% url 'wishlist:wishlist' %}"
+                                class="settings-item"
+                            >
 
-        <i class="fa-solid fa-heart"></i>
+                                <span class="settings-icon pink">
 
-    </span>
+                                    <i class="fa-solid fa-heart"></i>
 
-    <span>
+                                </span>
 
-        <strong>
-            Wishlist
-        </strong>
+                                <span>
 
-        <small>
-            Your saved products
-        </small>
+                                    <strong>
+                                        Wishlist
+                                    </strong>
 
-    </span>
+                                    <small>
+                                        Your saved products
+                                    </small>
 
-</a>
+                                </span>
+
+                            </a>
 
 
                             <!-- WALLET -->
@@ -1240,9 +1389,11 @@
 
                             </a>
 
+
                         </div>
 
                     </div>
+
 
                 </div>
 
@@ -1281,9 +1432,11 @@
                     {% for post in user_posts %}
 
 
-                        <!-- POST -->
+                        <!-- POST CARD -->
 
-                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                        <div
+                            class="col-xl-4 col-lg-4 col-md-6 col-sm-12"
+                        >
 
                             <div class="user-post-card">
 
@@ -1367,6 +1520,7 @@
 
                                         </a>
 
+
                                     </div>
 
                                 </div>
@@ -1379,7 +1533,7 @@
                     {% empty %}
 
 
-                        <!-- EMPTY -->
+                        <!-- EMPTY POSTS -->
 
                         <div class="col-12">
 
@@ -1414,6 +1568,7 @@
 
                                 </a>
 
+
                             </div>
 
                         </div>
@@ -1421,17 +1576,21 @@
 
                     {% endfor %}
 
+
                 </div>
 
             </section>
 
+
         </div>
 
-    </div>
+    </main>
 
 
     <!-- =====================================================
-         FOOTER
+         SHARED FOOTER
+         
+         Same footer used by Home.
     ====================================================== -->
 
     {% include "includes/footer.html" %}
@@ -1446,6 +1605,22 @@
     ></script>
 
 
+    <!-- =====================================================
+         SHARED HEADER / FOOTER JS
+
+         IMPORTANT:
+         Load ONLY ONCE.
+    ====================================================== -->
+
+    <script
+        src="{% static 'js/header-footer.js' %}"
+    ></script>
+
+
+    <!-- =====================================================
+         DASHBOARD JS
+    ====================================================== -->
+
     <script>
 
         document.addEventListener(
@@ -1458,7 +1633,9 @@
                 ================================================= */
 
                 const profilePicInput =
-                    document.getElementById("profilePicInput");
+                    document.getElementById(
+                        "profilePicInput"
+                    );
 
 
                 if (profilePicInput) {
@@ -1467,12 +1644,10 @@
                         "change",
                         function () {
 
-                            /*
-                             * User selected an image.
-                             * Submit the form automatically.
-                             */
-
-                            if (this.files && this.files.length > 0) {
+                            if (
+                                this.files &&
+                                this.files.length > 0
+                            ) {
 
                                 this.form.submit();
 
@@ -1489,13 +1664,20 @@
                 ================================================= */
 
                 const settingsBtn =
-                    document.getElementById("settingsBtn");
+                    document.getElementById(
+                        "settingsBtn"
+                    );
 
                 const settingsMenu =
-                    document.getElementById("settingsMenu");
+                    document.getElementById(
+                        "settingsMenu"
+                    );
 
 
-                if (!settingsBtn || !settingsMenu) {
+                if (
+                    !settingsBtn ||
+                    !settingsMenu
+                ) {
 
                     return;
 
@@ -1512,8 +1694,12 @@
 
                         event.stopPropagation();
 
+
                         const isOpen =
-                            settingsMenu.classList.toggle("show");
+                            settingsMenu.classList.toggle(
+                                "show"
+                            );
+
 
                         settingsBtn.setAttribute(
                             "aria-expanded",
@@ -1546,7 +1732,10 @@
                     "click",
                     function () {
 
-                        settingsMenu.classList.remove("show");
+                        settingsMenu.classList.remove(
+                            "show"
+                        );
+
 
                         settingsBtn.setAttribute(
                             "aria-expanded",
@@ -1565,9 +1754,14 @@
                     "keydown",
                     function (event) {
 
-                        if (event.key === "Escape") {
+                        if (
+                            event.key === "Escape"
+                        ) {
 
-                            settingsMenu.classList.remove("show");
+                            settingsMenu.classList.remove(
+                                "show"
+                            );
+
 
                             settingsBtn.setAttribute(
                                 "aria-expanded",
@@ -1583,6 +1777,7 @@
         );
 
     </script>
+
 
 </body>
 

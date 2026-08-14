@@ -862,7 +862,7 @@ def verify_reset_otp(request):
                     )
 
                     # =================================================
-                # GET LATEST UNUSED OTP
+                # GET EST UNUSED OTP
                 # =================================================
 
                 reset_otp = (

@@ -53,7 +53,7 @@ body {
             PAGE
 ==================================================*/
 .create-page {
-    position: relative;
+    position: reive;
     min-height: 100vh;
     padding: 70px 0;
     overflow: hidden;
@@ -64,7 +64,7 @@ body {
     max-width: 1000px;
     width: 92%;
     margin: auto;
-    position: relative;
+    position: reive;
     z-index: 2;
 }
 
@@ -106,9 +106,9 @@ body {
 }
 
 @keyframes floatCircle {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-25px); }
-    100% { transform: translateY(0); }
+    0% { transform: transeY(0); }
+    50% { transform: transeY(-25px); }
+    100% { transform: transeY(0); }
 }
 
 /*==================================================
@@ -121,7 +121,7 @@ body {
     border-radius: 50%;
     background: radial-gradient(rgba(37,99,235,.18), transparent 70%);
     pointer-events: none;
-    transform: translate(-50%, -50%);
+    transform: transe(-50%, -50%);
     z-index: 1;
 }
 
@@ -193,7 +193,7 @@ body {
 }
 
 .feature:hover {
-    transform: translateY(-6px);
+    transform: transeY(-6px);
     box-shadow: var(--shadow-primary);
 }
 
@@ -229,7 +229,7 @@ body {
     color: #fff;
     font-size: 60px;
     box-shadow: 0 35px 70px rgba(37,99,235,.30);
-    position: relative;
+    position: reive;
     overflow: hidden;
 }
 
@@ -260,7 +260,7 @@ body {
 }
 
 @keyframes floatIcon {
-    0% { transform: translateY(0); }
+    0% { transform: transeY(0); }
     50% { transform: translateY(-12px); }
     100% { transform: translateY(0); }
 }

@@ -1,23 +1,106 @@
-from django.shortcuts import (
-    render,
-    redirect,
-    get_object_or_404
-)
-
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from unicodedata import category
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 
 from .form import PostForm
 from .models import (
     Category,
-    Post,
     Item,
+    ItemImage,
+    Post,
     SizeVariant,
-    ItemImage
 )
+
+
+# =========================================================
+# HELPERS
+# =========================================================
+
+def is_ajax(request):
+    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
+
+
+def json_error(request, errors, status=400):
+    return JsonResponse(
+        {
+            "success": False,
+            "errors": errors,
+        },
+        status=status,
+    )
+
+
+def render_create_post_error(
+    request,
+    post_form,
+    categories,
+    errors,
+):
+    return render(
+        request,
+        "posts/createPost.html",
+        {
+            "post_form": post_form,
+            "categories": categories,
+            "post_form_errors": errors,
+            "show_post_form_error": True,
+        },
+    )
+
+
+def get_item_indexes(request):
+    """
+    Find item indexes from fields such as:
+
+        item_name_0
+        item_name_1
+        item_name_2
+    """
+
+    indexes = set()
+
+    for key in request.POST.keys():
+
+        if key.startswith("item_name_"):
+
+            index = key.replace("item_name_", "", 1)
+
+            if index.isdigit():
+                indexes.add(int(index))
+
+    return sorted(indexes)
+
+
+def get_item_images(request, item_index):
+    """
+    Get all uploaded images belonging to one item.
+    """
+
+    images = []
+
+    for key, files in request.FILES.lists():
+
+        if (
+            key == f"images_{item_index}"
+            or key.startswith(f"images_{item_index}")
+        ):
+            images.extend(files)
+
+    return images
+
+
+def get_integer(value, default=None):
+    """
+    Safely convert a value to integer.
+    """
+
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
 
 
 # =========================================================
@@ -29,222 +112,156 @@ def create_post(request):
 
     # -----------------------------------------------------
     # BAN CHECK
-    # Banned users cannot create posts
     # -----------------------------------------------------
 
     if request.user.profile.status == "Banned":
+
         messages.error(
             request,
-            "Your account has been banned from creating posts."
+            "Your account has been banned from creating posts.",
         )
 
         return redirect("home")
 
     categories = Category.objects.all()
 
-    # =========================================================
-    # GET REQUEST
-    # =========================================================
+    # =====================================================
+    # GET
+    # =====================================================
 
     if request.method == "GET":
 
-        post_form = PostForm()
-
         return render(
             request,
             "posts/createPost.html",
             {
-                "post_form": post_form,
+                "post_form": PostForm(),
                 "categories": categories,
-            }
+            },
         )
 
-    # =========================================================
-    # POST REQUEST
-    # =========================================================
-
-    # -----------------------------------------------------
-    # SECOND BAN CHECK
-    # Protect against direct POST requests
-    # -----------------------------------------------------
-
-    if request.user.profile.status == "Banned":
-        messages.error(
-            request,
-            "Your account has been banned from creating posts."
-        )
-
-        return redirect("home")
+    # =====================================================
+    # POST
+    # =====================================================
 
     post_form = PostForm(request.POST)
 
-    # =========================================================
-    # CHECK POST FORM
-    # =========================================================
+    # -----------------------------------------------------
+    # FORM VALIDATION
+    # -----------------------------------------------------
 
     if not post_form.is_valid():
 
-        error_messages = []
+        errors = []
 
-        for field, errors in post_form.errors.items():
+        for field, field_errors in post_form.errors.items():
 
-            for error in errors:
+            for error in field_errors:
 
                 if field == "__all__":
 
-                    error_messages.append(str(error))
+                    errors.append(str(error))
+                    continue
+
+                if field in post_form.fields:
+
+                    field_name = (
+                        post_form.fields[field].label
+                        or field.replace("_", " ").title()
+                    )
 
                 else:
 
-                    if field in post_form.fields:
+                    field_name = field.replace(
+                        "_",
+                        " ",
+                    ).title()
 
-                        field_name = (
-                            post_form
-                            .fields[field]
-                            .label
-                            or field.replace("_", " ").title()
-                        )
+                errors.append(
+                    f"{field_name}: {error}"
+                )
 
-                    else:
+        if not errors:
 
-                        field_name = (
-                            field
-                            .replace("_", " ")
-                            .title()
-                        )
-
-                    error_messages.append(
-                        f"{field_name}: {error}"
-                    )
-
-        if not error_messages:
-
-            error_messages.append(
+            errors.append(
                 "Please check the post information and try again."
             )
 
-        # -----------------------------------------------------
-        # AJAX RESPONSE
-        # -----------------------------------------------------
+        if is_ajax(request):
 
-        if request.headers.get(
-            "X-Requested-With"
-        ) == "XMLHttpRequest":
-
-            return JsonResponse(
-                {
-                    "success": False,
-                    "errors": error_messages,
-                },
-                status=400
+            return json_error(
+                request,
+                errors,
             )
 
-        # -----------------------------------------------------
-        # NORMAL RESPONSE
-        # -----------------------------------------------------
-
-        return render(
+        return render_create_post_error(
             request,
-            "posts/createPost.html",
-            {
-                "post_form": post_form,
-                "categories": categories,
-                "post_form_errors": error_messages,
-                "show_post_form_error": True,
-            }
+            post_form,
+            categories,
+            errors,
         )
 
-    # =========================================================
-    # FIND ITEM INDEXES
-    # =========================================================
+    # -----------------------------------------------------
+    # FIND ITEMS
+    # -----------------------------------------------------
 
-    item_indexes = []
-
-    for key in request.POST.keys():
-
-        if key.startswith("item_name_"):
-
-            idx = key.replace(
-                "item_name_",
-                ""
-            )
-
-            if idx not in item_indexes:
-                item_indexes.append(idx)
-
-    # ---------------------------------------------------------
-    # NO ITEMS
-    # ---------------------------------------------------------
+    item_indexes = get_item_indexes(request)
 
     if not item_indexes:
 
-        error_message = (
-            "Please add at least one item to your post."
-        )
+        error = "Please add at least one item to your post."
 
-        if request.headers.get(
-            "X-Requested-With"
-        ) == "XMLHttpRequest":
+        if is_ajax(request):
 
-            return JsonResponse(
-                {
-                    "success": False,
-                    "errors": [error_message],
-                },
-                status=400
+            return json_error(
+                request,
+                [error],
             )
 
-        return render(
+        return render_create_post_error(
             request,
-            "posts/createPost.html",
-            {
-                "post_form": post_form,
-                "categories": categories,
-                "post_form_errors": [error_message],
-                "show_post_form_error": True,
-            }
+            post_form,
+            categories,
+            [error],
         )
 
-    # =========================================================
-    # PREPARE CATEGORY / CONDITION
-    # =========================================================
+    # =====================================================
+    # CATEGORY / CONDITION
+    # =====================================================
 
-    category = post_form.cleaned_data.get("category")
-    condition = post_form.cleaned_data.get("condition")
+    selected_category = post_form.cleaned_data.get("category")
+    selected_condition = post_form.cleaned_data.get("condition")
 
     category_supports_sizes = (
-        category is not None
-        and category.size_type != "none"
+        selected_category is not None
+        and selected_category.size_type != "none"
     )
 
-    is_new_post = (
-        condition == "new"
-    )
+    is_new_post = selected_condition == "new"
 
     should_have_sizes = (
         category_supports_sizes
         and is_new_post
     )
 
-    # =========================================================
-    # VALIDATE EVERY ITEM
-    # BEFORE CREATING DATABASE RECORDS
-    # =========================================================
+    # =====================================================
+    # VALIDATE ITEMS
+    # =====================================================
 
     validation_errors = []
 
-    for position, i in enumerate(
+    for position, item_index in enumerate(
         item_indexes,
-        start=1
+        start=1,
     ):
 
-        # -----------------------------------------------------
+        # -------------------------------------------------
         # ITEM NAME
-        # -----------------------------------------------------
+        # -------------------------------------------------
 
         item_name = request.POST.get(
-            f"item_name_{i}",
-            ""
+            f"item_name_{item_index}",
+            "",
         ).strip()
 
         if not item_name:
@@ -253,13 +270,13 @@ def create_post(request):
                 f"Enter a name for Item {position}."
             )
 
-        # -----------------------------------------------------
+        # -------------------------------------------------
         # ITEM DESCRIPTION
-        # -----------------------------------------------------
+        # -------------------------------------------------
 
         item_description = request.POST.get(
-            f"item_description_{i}",
-            ""
+            f"item_description_{item_index}",
+            "",
         ).strip()
 
         if not item_description:
@@ -268,20 +285,14 @@ def create_post(request):
                 f"Enter a description for Item {position}."
             )
 
-        # -----------------------------------------------------
-        # IMAGE VALIDATION
-        # -----------------------------------------------------
+        # -------------------------------------------------
+        # IMAGES
+        # -------------------------------------------------
 
-        item_images = []
-
-        for key, files in request.FILES.lists():
-
-            if (
-                key == f"images_{i}"
-                or key.startswith(f"images_{i}")
-            ):
-
-                item_images.extend(files)
+        item_images = get_item_images(
+            request,
+            item_index,
+        )
 
         if not item_images:
 
@@ -289,28 +300,21 @@ def create_post(request):
                 f"Upload at least one image for Item {position}."
             )
 
-        # -----------------------------------------------------
+        # -------------------------------------------------
         # SIZE COUNT
-        # -----------------------------------------------------
+        # -------------------------------------------------
 
-        size_count_raw = request.POST.get(
-            f"size_count_{i}",
-            "0"
+        size_count = get_integer(
+            request.POST.get(
+                f"size_count_{item_index}",
+                0,
+            ),
+            default=0,
         )
 
-        try:
-
-            size_count = int(
-                size_count_raw or 0
-            )
-
-        except (TypeError, ValueError):
-
-            size_count = 0
-
-        # =====================================================
-        # SIZE-BASED ITEM
-        # =====================================================
+        # =================================================
+        # SIZE ITEM
+        # =================================================
 
         if should_have_sizes:
 
@@ -320,178 +324,161 @@ def create_post(request):
                     f"Select at least one size for Item {position}."
                 )
 
-            for j in range(size_count):
+            for size_index in range(size_count):
 
                 size = request.POST.get(
-                    f"size_{i}_{j}",
-                    ""
+                    f"size_{item_index}_{size_index}",
+                    "",
                 ).strip()
 
                 quantity_raw = request.POST.get(
-                    f"quantity_{i}_{j}",
-                    ""
+                    f"quantity_{item_index}_{size_index}",
+                    "",
                 )
 
                 price_raw = request.POST.get(
-                    f"size_price_{i}_{j}",
-                    ""
+                    f"size_price_{item_index}_{size_index}",
+                    "",
                 )
 
-                # -------------------------------------------------
-                # SIZE NAME
-                # -------------------------------------------------
+                # -----------------------------------------
+                # SIZE
+                # -----------------------------------------
 
                 if not size:
 
                     validation_errors.append(
-                        f"Size information is missing for Item {position}."
-                    )
-
-                # -------------------------------------------------
-                # QUANTITY
-                # -------------------------------------------------
-
-                try:
-
-                    quantity = int(
-                        quantity_raw
-                    )
-
-                    if quantity <= 0:
-
-                        validation_errors.append(
-                            f'Enter a quantity greater than 0 '
-                            f'for size "{size}" in Item {position}.'
-                        )
-
-                except (TypeError, ValueError):
-
-                    validation_errors.append(
-                        f'Enter a valid quantity '
-                        f'for size "{size}" in Item {position}.'
-                    )
-
-                # -------------------------------------------------
-                # SIZE PRICE
-                # -------------------------------------------------
-
-                try:
-
-                    size_price = int(
-                        price_raw
-                    )
-
-                    if size_price <= 0:
-
-                        validation_errors.append(
-                            f'Enter a price greater than 0 '
-                            f'for size "{size}" in Item {position}.'
-                        )
-
-                except (TypeError, ValueError):
-
-                    validation_errors.append(
-                        f'Enter a valid price '
-                        f'for size "{size}" in Item {position}.'
-                    )
-
-        # =====================================================
-        # SIMPLE ITEM WITHOUT SIZES
-        # =====================================================
-
-        else:
-
-            raw_price = request.POST.get(
-                f"item_price_{i}",
-                ""
-            )
-
-            raw_quantity = request.POST.get(
-                f"simple_quantity_{i}",
-                ""
-            )
-
-            # -------------------------------------------------
-            # PRICE
-            # -------------------------------------------------
-
-            try:
-
-                item_price = int(
-                    raw_price
-                )
-
-                if item_price <= 0:
-
-                    validation_errors.append(
-                        f"Enter a price greater than 0 "
+                        f"Size information is missing "
                         f"for Item {position}."
                     )
 
-            except (TypeError, ValueError):
+                # -----------------------------------------
+                # QUANTITY
+                # -----------------------------------------
+
+                quantity = get_integer(
+                    quantity_raw,
+                )
+
+                if quantity is None:
+
+                    validation_errors.append(
+                        f"Enter a valid quantity "
+                        f'for size "{size}" '
+                        f"in Item {position}."
+                    )
+
+                elif quantity <= 0:
+
+                    validation_errors.append(
+                        f"Enter a quantity greater than 0 "
+                        f'for size "{size}" '
+                        f"in Item {position}."
+                    )
+
+                # -----------------------------------------
+                # PRICE
+                # -----------------------------------------
+
+                size_price = get_integer(
+                    price_raw,
+                )
+
+                if size_price is None:
+
+                    validation_errors.append(
+                        f"Enter a valid price "
+                        f'for size "{size}" '
+                        f"in Item {position}."
+                    )
+
+                elif size_price <= 0:
+
+                    validation_errors.append(
+                        f"Enter a price greater than 0 "
+                        f'for size "{size}" '
+                        f"in Item {position}."
+                    )
+
+        # =================================================
+        # SIMPLE ITEM
+        # =================================================
+
+        else:
+
+            item_price = get_integer(
+                request.POST.get(
+                    f"item_price_{item_index}",
+                    "",
+                ),
+            )
+
+            simple_quantity = get_integer(
+                request.POST.get(
+                    f"simple_quantity_{item_index}",
+                    "",
+                ),
+            )
+
+            # ---------------------------------------------
+            # PRICE
+            # ---------------------------------------------
+
+            if item_price is None:
 
                 validation_errors.append(
                     f"Enter a valid price "
                     f"for Item {position}."
                 )
 
-            # -------------------------------------------------
-            # QUANTITY
-            # -------------------------------------------------
+            elif item_price <= 0:
 
-            try:
-
-                simple_quantity = int(
-                    raw_quantity
+                validation_errors.append(
+                    f"Enter a price greater than 0 "
+                    f"for Item {position}."
                 )
 
-                if simple_quantity <= 0:
+            # ---------------------------------------------
+            # QUANTITY
+            # ---------------------------------------------
 
-                    validation_errors.append(
-                        f"Enter a quantity greater than 0 "
-                        f"for Item {position}."
-                    )
-
-            except (TypeError, ValueError):
+            if simple_quantity is None:
 
                 validation_errors.append(
                     f"Enter a valid quantity "
                     f"for Item {position}."
                 )
 
-    # =========================================================
+            elif simple_quantity <= 0:
+
+                validation_errors.append(
+                    f"Enter a quantity greater than 0 "
+                    f"for Item {position}."
+                )
+
+    # =====================================================
     # RETURN VALIDATION ERRORS
-    # =========================================================
+    # =====================================================
 
     if validation_errors:
 
-        if request.headers.get(
-            "X-Requested-With"
-        ) == "XMLHttpRequest":
+        if is_ajax(request):
 
-            return JsonResponse(
-                {
-                    "success": False,
-                    "errors": validation_errors,
-                },
-                status=400
+            return json_error(
+                request,
+                validation_errors,
             )
 
-        return render(
+        return render_create_post_error(
             request,
-            "posts/createPost.html",
-            {
-                "post_form": post_form,
-                "categories": categories,
-                "post_form_errors": validation_errors,
-                "show_post_form_error": True,
-            }
+            post_form,
+            categories,
+            validation_errors,
         )
 
-    # =========================================================
-    # EVERYTHING IS VALID
-    # NOW CREATE THE POST
-    # =========================================================
+    # =====================================================
+    # CREATE DATABASE RECORDS
+    # =====================================================
 
     try:
 
@@ -502,10 +489,11 @@ def create_post(request):
             # -------------------------------------------------
 
             post = post_form.save(
-                commit=False
+                commit=False,
             )
 
             post.user = request.user.profile
+            post.status = "pending"
 
             post.save()
 
@@ -513,62 +501,53 @@ def create_post(request):
             # CREATE ITEMS
             # -------------------------------------------------
 
-            for i in item_indexes:
+            for item_index in item_indexes:
 
                 item_name = request.POST.get(
-                    f"item_name_{i}",
-                    ""
+                    f"item_name_{item_index}",
+                    "",
                 ).strip()
 
                 item_description = request.POST.get(
-                    f"item_description_{i}",
-                    ""
+                    f"item_description_{item_index}",
+                    "",
                 ).strip()
 
-                # -------------------------------------------------
-                # SIZE COUNT
-                # -------------------------------------------------
-
-                try:
-
-                    size_count = int(
-                        request.POST.get(
-                            f"size_count_{i}",
-                            0
-                        ) or 0
-                    )
-
-                except (TypeError, ValueError):
-
-                    size_count = 0
+                size_count = get_integer(
+                    request.POST.get(
+                        f"size_count_{item_index}",
+                        0,
+                    ),
+                    default=0,
+                )
 
                 has_sizes_for_item = (
                     should_have_sizes
                     and size_count > 0
                 )
 
-                # -------------------------------------------------
-                # PRICE / QUANTITY
-                # -------------------------------------------------
+                # =================================================
+                # SIMPLE ITEM
+                # =================================================
 
-                if has_sizes_for_item:
-
-                    item_price = 0
-                    simple_quantity = 0
-
-                else:
+                if not has_sizes_for_item:
 
                     item_price = int(
                         request.POST.get(
-                            f"item_price_{i}"
+                            f"item_price_{item_index}",
                         )
                     )
 
                     simple_quantity = int(
                         request.POST.get(
-                            f"simple_quantity_{i}"
+                            f"simple_quantity_{item_index}",
                         )
                     )
+
+                else:
+
+                    item_price = 0
+                    simple_quantity = 0
 
                 # -------------------------------------------------
                 # CREATE ITEM
@@ -588,23 +567,24 @@ def create_post(request):
 
                 if has_sizes_for_item:
 
-                    created_variant_prices = []
+                    variant_prices = []
 
-                    for j in range(size_count):
+                    for size_index in range(size_count):
 
                         size = request.POST.get(
-                            f"size_{i}_{j}"
-                        )
+                            f"size_{item_index}_{size_index}",
+                            "",
+                        ).strip()
 
                         quantity = int(
                             request.POST.get(
-                                f"quantity_{i}_{j}"
+                                f"quantity_{item_index}_{size_index}",
                             )
                         )
 
                         size_price = int(
                             request.POST.get(
-                                f"size_price_{i}_{j}"
+                                f"size_price_{item_index}_{size_index}",
                             )
                         )
 
@@ -615,53 +595,47 @@ def create_post(request):
                             price=size_price,
                         )
 
-                        created_variant_prices.append(
+                        variant_prices.append(
                             size_price
                         )
 
-                    # -------------------------------------------------
-                    # SET ITEM PRICE TO LOWEST SIZE PRICE
-                    # -------------------------------------------------
+                    # ---------------------------------------------
+                    # ITEM PRICE = LOWEST SIZE PRICE
+                    # ---------------------------------------------
 
-                    if created_variant_prices:
+                    if variant_prices:
 
-                        min_price = min(
-                            created_variant_prices
+                        item.price = min(
+                            variant_prices
                         )
 
-                        item.price = min_price
-
                         item.save(
-                            skip_has_sizes=True
+                            skip_has_sizes=True,
                         )
 
                 # =================================================
                 # CREATE ITEM IMAGES
                 # =================================================
 
-                for key, files in request.FILES.lists():
+                for image in get_item_images(
+                    request,
+                    item_index,
+                ):
 
-                    if (
-                        key == f"images_{i}"
-                        or key.startswith(f"images_{i}")
-                    ):
+                    ItemImage.objects.create(
+                        item=item,
+                        image=image,
+                    )
 
-                        for image in files:
-
-                            ItemImage.objects.create(
-                                item=item,
-                                image=image
-                            )
-
-    # =========================================================
+    # =====================================================
     # DATABASE ERROR
-    # =========================================================
+    # =====================================================
 
     except Exception as error:
 
         print(
             "CREATE POST ERROR:",
-            error
+            error,
         )
 
         error_message = (
@@ -669,32 +643,24 @@ def create_post(request):
             "Please check your information and try again."
         )
 
-        if request.headers.get(
-            "X-Requested-With"
-        ) == "XMLHttpRequest":
+        if is_ajax(request):
 
-            return JsonResponse(
-                {
-                    "success": False,
-                    "errors": [error_message],
-                },
-                status=500
+            return json_error(
+                request,
+                [error_message],
+                status=500,
             )
 
-        return render(
+        return render_create_post_error(
             request,
-            "posts/createPost.html",
-            {
-                "post_form": post_form,
-                "categories": categories,
-                "post_form_errors": [error_message],
-                "show_post_form_error": True,
-            }
+            post_form,
+            categories,
+            [error_message],
         )
 
-    # =========================================================
+    # =====================================================
     # SUCCESS
-    # =========================================================
+    # =====================================================
 
     success_message = (
         "Your post has been submitted successfully "
@@ -704,28 +670,26 @@ def create_post(request):
     messages.success(
         request,
         success_message,
-        extra_tags="post-pending"
+        extra_tags="post-pending",
     )
 
-    # =========================================================
+    # -----------------------------------------------------
     # AJAX SUCCESS
-    # =========================================================
+    # -----------------------------------------------------
 
-    if request.headers.get(
-        "X-Requested-With"
-    ) == "XMLHttpRequest":
+    if is_ajax(request):
 
         return JsonResponse(
             {
                 "success": True,
                 "message": success_message,
-                "redirect_url": "/home/",
+                "redirect_url": reverse("home"),
             }
         )
 
-    # =========================================================
+    # -----------------------------------------------------
     # NORMAL SUCCESS
-    # =========================================================
+    # -----------------------------------------------------
 
     return redirect("home")
 
@@ -737,12 +701,12 @@ def create_post(request):
 @login_required
 def get_category_sizes(
     request,
-    category_id
+    category_id,
 ):
 
     category = get_object_or_404(
         Category,
-        id=category_id
+        id=category_id,
     )
 
     return JsonResponse(
@@ -766,14 +730,18 @@ def get_category_sizes(
 @login_required
 def my_posts(request):
 
-    posts = Post.objects.filter(
-        user=request.user.profile
-    ).order_by("-created_at")
+    posts = (
+        Post.objects
+        .filter(
+            user=request.user.profile,
+        )
+        .order_by("-created_at")
+    )
 
     return render(
         request,
         "posts/my_posts.html",
         {
             "posts": posts,
-        }
+        },
     )

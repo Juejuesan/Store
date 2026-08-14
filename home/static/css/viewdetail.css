@@ -18,7 +18,7 @@
 .pd-page .qty-btn:hover{background:#e2e8f0}
 .pd-page .qty-input{width:50px;height:44px;border:none;text-align:center;font-size:16px;font-weight:600;color:#0f172a;background:#fff}
 .pd-page .add-cart-btn{padding:12px 24px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s ease;font-family:inherit}
-.pd-page .add-cart-btn:hover{background:#1d4ed8;transform:translateY(-2px);box-shadow:0 8px 25px rgba(37,99,235,.3)}
+.pd-page .add-cart-btn:hover{background:#1d4ed8;transform:transeY(-2px);box-shadow:0 8px 25px rgba(37,99,235,.3)}
 /* =========================================================
    WISHLIST BUTTON
 ========================================================= */

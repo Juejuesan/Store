@@ -393,7 +393,7 @@ card.addEventListener(
     perspective(1000px)
     rotateX(${rotateX}deg)
     rotateY(${rotateY}deg)
-    translateY(-10px)
+    transeY(-10px)
     `;
 
 

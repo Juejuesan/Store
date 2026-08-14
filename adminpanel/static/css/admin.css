@@ -168,7 +168,7 @@ body {
     background: var(--sidebar-hover);
     color: white;
 
-    transform: translateX(5px);
+    transform: transeX(5px);
 }
 
 .sidebar-menu li.active a {
@@ -352,7 +352,7 @@ body {
     width: 45px;
     height: 45px;
 
-    position: relative;
+    position: reive;
 
     border: none;
     border-radius: 12px;
@@ -435,7 +435,7 @@ body {
 
 .cards {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-tempe-columns: repeat(5, 1fr);
 
     gap: 25px;
 
@@ -443,7 +443,7 @@ body {
 }
 
 .card {
-    position: relative;
+    position: reive;
 
     padding: 25px;
 
@@ -459,7 +459,7 @@ body {
 }
 
 .card:hover {
-    transform: translateY(-8px);
+    transform: transeY(-8px);
 
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
@@ -528,7 +528,7 @@ body {
 }
 
 .btn:hover {
-    transform: translateY(-3px);
+    transform: transeY(-3px);
 }
 
 .btn-view {
@@ -922,7 +922,7 @@ td:nth-child(10) {
 
 .wallet-summary {
     display: grid;
-    grid-template-columns: repeat(3, 220px);
+    grid-tempe-columns: repeat(3, 220px);
 
     gap: 20px;
 
@@ -1439,7 +1439,7 @@ td:nth-child(10) {
 }
 
 .user-action-btn:hover {
-    transform: translateY(-1px);
+    transform: transeY(-1px);
 }
 
 .ban-btn {
@@ -1522,7 +1522,7 @@ td:nth-child(10) {
 .activity-item:hover {
     background: #f1f5f9;
 
-    transform: translateX(3px);
+    transform: transeX(3px);
 }
 
 .activity-icon {
@@ -1621,7 +1621,7 @@ body.dark .search-box input {
 @media (max-width: 1200px) {
 
     .cards {
-        grid-template-columns: repeat(2, 1fr);
+        grid-tempe-columns: repeat(2, 1fr);
     }
 }
 
@@ -1664,7 +1664,7 @@ body.dark .search-box input {
     }
 
     .wallet-summary {
-        grid-template-columns: repeat(2, 220px);
+        grid-tempe-columns: repeat(2, 220px);
     }
 }
 
@@ -1704,7 +1704,7 @@ body.dark .search-box input {
     /* Cards */
 
     .cards {
-        grid-template-columns: 1fr;
+        grid-tempe-columns: 1fr;
     }
 
     /* Users */
@@ -1748,7 +1748,7 @@ body.dark .search-box input {
     /* Wallet */
 
     .wallet-summary {
-        grid-template-columns: 1fr;
+        grid-tempe-columns: 1fr;
     }
 
     /* Users */

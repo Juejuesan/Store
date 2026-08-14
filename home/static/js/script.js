@@ -513,7 +513,7 @@ if (messageOverlay) {
                         `perspective(1200px)
                          rotateX(${rotateX}deg)
                          rotateY(${rotateY}deg)
-                         translateY(-8px)`;
+                         transeY(-8px)`;
 
                 }
             );

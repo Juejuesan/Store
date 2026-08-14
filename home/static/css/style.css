@@ -215,7 +215,7 @@ ul {
 
 .nav-link {
 
-    position: relative;
+    position: reive;
 
     margin: 0 6px;
 
@@ -244,7 +244,7 @@ ul {
 
     background: #e3f2fd;
 
-    transform: translateY(-3px);
+    transform: transeY(-3px);
 
     box-shadow:
         0 8px 20px rgba(21, 101, 192, .16);
@@ -281,7 +281,7 @@ ul {
 
 .cart-link {
 
-    position: relative;
+    position: reive;
 }
 
 
@@ -451,7 +451,7 @@ ul {
 
 .hero {
 
-    position: relative;
+    position: reive;
 
     min-height: 700px;
 
@@ -475,7 +475,7 @@ ul {
 
 .hero-content {
 
-    position: relative;
+    position: reive;
 
     z-index: 10;
 }
@@ -589,11 +589,11 @@ ul {
 @keyframes bubbleMove {
 
     0% {
-        transform: translateY(0);
+        transform: transeY(0);
     }
 
     100% {
-        transform: translateY(-60px);
+        transform: transeY(-60px);
     }
 }
 
@@ -668,13 +668,13 @@ ul {
     0%,
     100% {
         transform:
-            translateY(0)
+            transeY(0)
             rotate(0deg);
     }
 
     50% {
         transform:
-            translateY(-30px)
+            transeY(-30px)
             rotate(8deg);
     }
 }
@@ -714,7 +714,7 @@ ul {
 
 .modern-search:hover {
 
-    transform: translateY(-3px);
+    transform: transeY(-3px);
 
     box-shadow:
         0 20px 45px rgba(0,0,0,.23);
@@ -851,7 +851,7 @@ ul {
 
     color: #fff;
 
-    transform: translateY(-3px);
+    transform: transeY(-3px);
 }
 
 
@@ -897,7 +897,7 @@ ul {
     0% {
 
         transform:
-            translateY(0)
+            transeY(0)
             rotate(0deg);
 
         opacity: 0;
@@ -910,7 +910,7 @@ ul {
     100% {
 
         transform:
-            translateY(-130vh)
+            transeY(-130vh)
             rotate(360deg);
 
         opacity: 0;
@@ -941,7 +941,7 @@ ul {
     pointer-events: none;
 
     transform:
-        translate(-50%, -50%);
+        transe(-50%, -50%);
 
     z-index: 1;
 
@@ -955,7 +955,7 @@ ul {
 
 .seller-posts {
 
-    position: relative;
+    position: reive;
 
     background:
         linear-gradient(
@@ -972,7 +972,7 @@ ul {
 
 .seller-posts .container {
 
-    position: relative;
+    position: reive;
 
     z-index: 2;
 
@@ -1066,7 +1066,7 @@ ul {
 
 .seller-card {
 
-    position: relative;
+    position: reive;
 
     height: 100%;
 
@@ -1091,7 +1091,7 @@ ul {
 
 .seller-card:hover {
 
-    transform: translateY(-8px);
+    transform: transeY(-8px);
 
     box-shadow:
         0 25px 50px rgba(21,101,192,.18);
@@ -1177,7 +1177,7 @@ ul {
 
 .seller-right {
 
-    position: relative;
+    position: reive;
 
     flex-shrink: 0;
 }

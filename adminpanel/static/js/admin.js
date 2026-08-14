@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
         card.addEventListener("mouseenter", () => {
 
             card.style.transform =
-                "translateY(-12px) scale(1.02)";
+                "transeY(-12px) scale(1.02)";
 
         });
 
@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
         card.addEventListener("mouseleave", () => {
 
             card.style.transform =
-                "translateY(0) scale(1)";
+                "transeY(0) scale(1)";
 
         });
 
@@ -365,7 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 (window.innerHeight - event.pageY) * speed;
 
             circle.style.transform =
-                `translate(${x}px, ${y}px)`;
+                `transe(${x}px, ${y}px)`;
 
         });
 
