@@ -1,4 +1,4 @@
-// cart.js - Handles both Add to Cart and Cart View functionality
+// cart.js - Complete Cart Functionality (Add to Cart + Cart View)
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
         });
 
-        // Initialize first slide
         showSlide(0);
     }
 
@@ -52,29 +51,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const slideIndex = slide.id.replace('itemSlide', '');
 
-            // Update hidden input
             const variantInput = document.getElementById('sizeVariantId' + slideIndex);
             if (variantInput) {
                 variantInput.value = this.dataset.variantId;
             }
 
-            // Update price
             const priceDisplay = document.getElementById('itemPrice' + slideIndex);
             if (priceDisplay) {
                 priceDisplay.textContent = this.dataset.price + ' MMK';
             }
 
-            // Update size info
             const sizeInfo = document.getElementById('sizeInfo' + slideIndex);
             if (sizeInfo) {
                 sizeInfo.textContent = `Size ${this.dataset.size}: ${this.dataset.price} MMK (${this.dataset.quantity} available)`;
             }
 
-            // Highlight selected
             slide.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
             this.classList.add('active');
 
-            // Enable add to cart
             const addBtn = slide.querySelector('.add-to-cart-btn');
             if (addBtn) {
                 addBtn.disabled = false;
@@ -117,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!slide) return;
 
-            // Get selected size variant
             let sizeVariantId = null;
             const sizeVariantInput = document.getElementById('sizeVariantId' + slideIndex);
 
@@ -130,30 +123,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // Get quantity
             const quantityInput = document.getElementById('qty' + slideIndex);
             const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
 
-            // Disable button and show loading
             const originalText = this.innerHTML;
             this.disabled = true;
             this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
 
-            // Prepare data
             const formData = new FormData();
             formData.append('quantity', quantity);
             if (sizeVariantId) {
                 formData.append('size_variant_id', sizeVariantId);
             }
 
-            // Get CSRF token
             const csrftoken = getCookie('csrftoken');
 
-            // Send AJAX request
             fetch(`/cart/add/${itemId}/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrftoken,
+                    'Accept': 'application/json',
                 },
                 body: formData,
             })
@@ -162,14 +151,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.success) {
                     showToast(data.message, 'success');
 
-                    // Update cart badge
                     if (data.cart_count !== undefined) {
                         updateCartBadge(data.cart_count);
                     }
 
-                    // Update stock display
+                    // Set flag for item detail refresh
+                    sessionStorage.setItem('refreshItemDetail', 'true');
+
                     if (sizeVariantInput && sizeVariantId) {
-                        // For sized items
                         const selectedSizeBtn = slide.querySelector(`.size-btn[data-variant-id="${sizeVariantId}"]`);
                         if (selectedSizeBtn) {
                             const currentQty = parseInt(selectedSizeBtn.dataset.quantity);
@@ -192,13 +181,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         }
 
-                        // Reset size selection
                         sizeVariantInput.value = '';
                         slide.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
                         this.disabled = true;
 
                     } else {
-                        // For non-sized items
                         const stockDisplay = slide.querySelector('.stock-display');
                         if (stockDisplay) {
                             const currentStock = parseInt(stockDisplay.dataset.stock);
@@ -223,7 +210,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
 
-                    // Reset quantity
                     if (quantityInput) {
                         quantityInput.value = 1;
                     }
@@ -263,141 +249,216 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============ CART VIEW FUNCTIONALITY (Cart Page) ============
 
     // Quantity Controls (Increase/Decrease)
-    // Quantity Controls (Increase/Decrease) - UPDATED
-document.querySelectorAll('.qty-btn').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
+    document.querySelectorAll('.qty-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
 
-        const form = this.closest('.qty-form');
-        if (!form) return;
+            const form = this.closest('.qty-form');
+            if (!form) return;
 
-        const url = form.action;
-        const csrftoken = getCookie('csrftoken');
-        const row = this.closest('.cart-item-row'); // ADD THIS LINE
+            const url = form.action;
+            const csrftoken = getCookie('csrftoken');
+            const row = this.closest('.cart-item-row');
 
-        // Show loading state
-        const originalText = this.innerHTML;
-        this.disabled = true;
-        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            const originalText = this.innerHTML;
+            this.disabled = true;
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
-        // Submit form via AJAX
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrftoken,
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json', // ADD THIS LINE
-            },
-            body: new FormData(form),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json(); // ALWAYS expect JSON
-        })
-        .then(data => {
-            if (data.success) {
-                updateCartUI(data, row); // CHANGE: Use updateCartUI instead of updateCartItemRow
-            } else {
-                showToast(data.message || 'Error updating quantity', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('An error occurred. Please try again.', 'error');
-        })
-        .finally(() => {
-            this.disabled = false;
-            this.innerHTML = originalText;
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+                body: new FormData(form),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Set flag for item detail refresh
+                    sessionStorage.setItem('refreshItemDetail', 'true');
+                    updateCartUI(data, row);
+                } else {
+                    showToast(data.message || 'Error updating quantity', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred. Please try again.', 'error');
+            })
+            .finally(() => {
+                this.disabled = false;
+                this.innerHTML = originalText;
+            });
         });
     });
-});
 
-    // Remove Item
-    // Remove Item - UPDATED FOR AJAX
-document.querySelectorAll('.remove-form').forEach(form => {
-    form.addEventListener('submit', function(e) {
-        e.preventDefault(); // ADD: Prevent default form submission
+    // Update Cart UI
+    function updateCartUI(data, row) {
+        if (!row) return;
 
-        if (!confirm('Remove this item from cart?')) {
-            return;
-        }
+        if (data.removed) {
+            row.remove();
 
-        const url = form.action;
-        const csrftoken = getCookie('csrftoken');
-        const row = this.closest('.cart-item-row');
-        const removeBtn = form.querySelector('.remove-btn');
-
-        // Show loading state
-        if (removeBtn) {
-            removeBtn.disabled = true;
-            removeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-        }
-
-        // Submit via AJAX
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrftoken,
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json',
-            },
-            body: new FormData(form),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            const remainingRows = document.querySelectorAll('.cart-item-row');
+            if (remainingRows.length === 0) {
+                window.location.reload();
             }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                // Remove row from UI
-                if (row) {
-                    row.remove();
-                }
+        } else {
+            const quantityDisplay = row.querySelector('.quantity-display');
+            if (quantityDisplay && data.new_quantity !== undefined) {
+                quantityDisplay.textContent = data.new_quantity;
+            }
 
-                // Update cart total
-                if (data.cart_total !== undefined) {
-                    updateCartTotal(data.cart_total);
-                }
+            const subtotalElement = row.querySelector('.subtotal');
+            if (subtotalElement && data.new_subtotal !== undefined) {
+                subtotalElement.textContent = data.new_subtotal + ' MMK';
+            }
+        }
 
-                // Update remaining balance
-                if (data.remaining_balance !== undefined) {
-                    updateRemainingBalance(data.remaining_balance);
-                }
+        if (data.cart_total !== undefined) {
+            updateCartTotal(data.cart_total);
+        }
 
-                // Update cart count badge
-                if (data.cart_count !== undefined) {
-                    updateCartBadge(data.cart_count);
-                }
+        if (data.remaining_balance !== undefined) {
+            updateRemainingBalance(data.remaining_balance);
+        }
 
-                showToast(data.message || 'Item removed', 'success');
+        if (data.cart_count !== undefined) {
+            updateCartBadge(data.cart_count);
+        }
 
-                // Check if cart is empty
-                const remainingRows = document.querySelectorAll('.cart-item-row');
-                if (remainingRows.length === 0) {
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
-                }
+        if (data.message) {
+            showToast(data.message, 'success');
+        }
+    }
+
+    function updateCartTotal(cartTotal) {
+        const cartTotalElements = document.querySelectorAll('.cart-total');
+        cartTotalElements.forEach(el => {
+            el.textContent = cartTotal + ' MMK';
+        });
+
+        const purchaseBtn = document.getElementById('purchaseBtn');
+        if (purchaseBtn) {
+            purchaseBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Purchase (${cartTotal} MMK)`;
+        }
+
+        const walletCartTotal = document.querySelector('.wallet-cart-total');
+        if (walletCartTotal) {
+            walletCartTotal.textContent = cartTotal + ' MMK';
+        }
+    }
+
+    function updateRemainingBalance(remainingBalance) {
+        const remainingElements = document.querySelectorAll('.remaining-balance');
+        remainingElements.forEach(el => {
+            el.textContent = remainingBalance + ' MMK';
+
+            if (remainingBalance >= 0) {
+                el.classList.remove('text-danger');
+                el.classList.add('text-success');
             } else {
-                showToast(data.message || 'Error removing item', 'error');
+                el.classList.remove('text-success');
+                el.classList.add('text-danger');
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('An error occurred. Please try again.', 'error');
-        })
-        .finally(() => {
+        });
+
+        const purchaseBtn = document.getElementById('purchaseBtn');
+        if (purchaseBtn) {
+            if (remainingBalance < 0) {
+                purchaseBtn.disabled = true;
+            } else {
+                purchaseBtn.disabled = false;
+            }
+        }
+    }
+
+    // Remove Item (AJAX)
+    document.querySelectorAll('.remove-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!confirm('Remove this item from cart?')) {
+                return;
+            }
+
+            const url = form.action;
+            const csrftoken = getCookie('csrftoken');
+            const row = this.closest('.cart-item-row');
+            const removeBtn = form.querySelector('.remove-btn');
+
             if (removeBtn) {
-                removeBtn.disabled = false;
-                removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                removeBtn.disabled = true;
+                removeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+                body: new FormData(form),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Set flag for item detail refresh
+                    sessionStorage.setItem('refreshItemDetail', 'true');
+
+                    if (row) {
+                        row.remove();
+                    }
+
+                    if (data.cart_total !== undefined) {
+                        updateCartTotal(data.cart_total);
+                    }
+
+                    if (data.remaining_balance !== undefined) {
+                        updateRemainingBalance(data.remaining_balance);
+                    }
+
+                    if (data.cart_count !== undefined) {
+                        updateCartBadge(data.cart_count);
+                    }
+
+                    showToast(data.message || 'Item removed', 'success');
+
+                    const remainingRows = document.querySelectorAll('.cart-item-row');
+                    if (remainingRows.length === 0) {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                } else {
+                    showToast(data.message || 'Error removing item', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred. Please try again.', 'error');
+            })
+            .finally(() => {
+                if (removeBtn) {
+                    removeBtn.disabled = false;
+                    removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                }
+            });
         });
     });
-});
 
     // Purchase Button
     const purchaseBtn = document.getElementById('purchaseBtn');
@@ -491,101 +552,26 @@ document.querySelectorAll('.remove-form').forEach(form => {
         }
     }, 30000);
 
-    // Update Cart UI - ENHANCED VERSION
-function updateCartUI(data, row) {
-    if (!row) return;
-
-    // If item was removed
-    if (data.removed) {
-        row.remove();
-
-        // Check if cart is empty
-        const remainingRows = document.querySelectorAll('.cart-item-row');
-        if (remainingRows.length === 0) {
-            // Reload to show empty cart message
-            window.location.reload();
-        }
-    } else {
-        // Update quantity display
-        const quantityDisplay = row.querySelector('.quantity-display');
-        if (quantityDisplay && data.new_quantity !== undefined) {
-            quantityDisplay.textContent = data.new_quantity;
-        }
-
-        // Update subtotal
-        const subtotalElement = row.querySelector('.subtotal');
-        if (subtotalElement && data.new_subtotal !== undefined) {
-            subtotalElement.textContent = data.new_subtotal + ' MMK';
-        }
-    }
-
-    // Update cart total everywhere
-    if (data.cart_total !== undefined) {
-        updateCartTotal(data.cart_total);
-    }
-
-    // Update remaining balance
-    if (data.remaining_balance !== undefined) {
-        updateRemainingBalance(data.remaining_balance);
-    }
-
-    // Update cart count badge
-    if (data.cart_count !== undefined) {
-        updateCartBadge(data.cart_count);
-    }
-
-    // Show success message
-    if (data.message) {
-        showToast(data.message, 'success');
-    }
-}
-
-// ADD THESE NEW FUNCTIONS
-function updateCartTotal(cartTotal) {
-    // Update all cart total elements
-    const cartTotalElements = document.querySelectorAll('.cart-total');
-    cartTotalElements.forEach(el => {
-        el.textContent = cartTotal + ' MMK';
-    });
-
-    // Update purchase button text
-    const purchaseBtn = document.getElementById('purchaseBtn');
-    if (purchaseBtn) {
-        purchaseBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Purchase (${cartTotal} MMK)`;
-    }
-
-    // Update wallet display cart total if exists
-    const walletCartTotal = document.querySelector('.wallet-cart-total');
-    if (walletCartTotal) {
-        walletCartTotal.textContent = cartTotal + ' MMK';
-    }
-}
-
-function updateRemainingBalance(remainingBalance) {
-    const remainingElements = document.querySelectorAll('.remaining-balance');
-    remainingElements.forEach(el => {
-        el.textContent = remainingBalance + ' MMK';
-
-        // Update color based on balance
-        if (remainingBalance >= 0) {
-            el.classList.remove('text-danger');
-            el.classList.add('text-success');
-        } else {
-            el.classList.remove('text-success');
-            el.classList.add('text-danger');
+    // ============ REFRESH ON BACK NAVIGATION ============
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            const needsRefresh = sessionStorage.getItem('refreshItemDetail');
+            if (needsRefresh === 'true') {
+                sessionStorage.removeItem('refreshItemDetail');
+                window.location.reload();
+            }
         }
     });
 
-    // Update purchase button state
-    const purchaseBtn = document.getElementById('purchaseBtn');
-    if (purchaseBtn) {
-        if (remainingBalance < 0) {
-            purchaseBtn.disabled = true;
-        } else {
-            purchaseBtn.disabled = false;
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            const needsRefresh = sessionStorage.getItem('refreshItemDetail');
+            if (needsRefresh === 'true') {
+                sessionStorage.removeItem('refreshItemDetail');
+                window.location.reload();
+            }
         }
-    }
-}
+    });
 
     // ============ HELPER FUNCTIONS ============
 

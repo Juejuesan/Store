@@ -19,7 +19,8 @@
     color: #007bff;
 }
 
-.size-btn.selected {
+.size-btn.selected,
+.size-btn.active {
     background: #007bff;
     color: white;
     border-color: #007bff;
@@ -150,14 +151,41 @@
 }
 
 .cart-count {
-    display: none; /* Hide by default */
+    display: none;
 }
 
 .cart-count.show {
-    display: inline-block; /* Show when there are items */
+    display: inline-block;
 }
 
-/* Wallet Balance Display */
+/* =====================================================
+   CART PAGE - FIXED IMAGE SIZE
+===================================================== */
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.cart-item-placeholder {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    border-radius: 8px;
+    font-size: 30px;
+    flex-shrink: 0;
+}
+
+/* =====================================================
+   WALLET BALANCE DISPLAY
+===================================================== */
+
 .wallet-info {
     margin-top: 20px;
 }
@@ -179,12 +207,10 @@
     font-weight: bold;
 }
 
-/* Cart Item Image */
-.cart-item-image {
-    border-radius: 4px;
-}
+/* =====================================================
+   PURCHASE SUMMARY IN MODAL
+===================================================== */
 
-/* Purchase Summary in Modal */
 .purchase-summary {
     background: #f8f9fa;
     padding: 15px;
@@ -192,7 +218,9 @@
     margin: 15px 0;
 }
 
-/* In cart.css */
+/* =====================================================
+   QUANTITY CONTROLS (Cart Page)
+===================================================== */
 
 .quantity-controls {
     display: flex;
@@ -225,4 +253,25 @@
 .qty-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 768px) {
+    .cart-item-image,
+    .cart-item-placeholder {
+        width: 60px;
+        height: 60px;
+    }
+
+    .quantity-controls {
+        gap: 5px;
+    }
+
+    .qty-btn {
+        width: 28px;
+        height: 28px;
+    }
 }

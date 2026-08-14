@@ -87,53 +87,94 @@ def add_to_cart(request, item_id):
                         'message': 'Please select a size'
                     })
 
+            # CHECK IF ITEM ALREADY EXISTS IN CART
+            existing_cart_item = None
+
+            if size_variant:
+                # For sized items - check same item + same size variant
+                existing_cart_item = CartItem.objects.filter(
+                    cart=cart,
+                    item=item,
+                    size_variant=size_variant,
+                    status='taken'
+                ).first()
+            else:
+                # For non-sized items - check same item
+                existing_cart_item = CartItem.objects.filter(
+                    cart=cart,
+                    item=item,
+                    size_variant__isnull=True,
+                    status='taken'
+                ).first()
+
+            # Determine unit price
             if size_variant:
                 unit_price = size_variant.price
+            else:
+                unit_price = item.price
 
-                # CHECK STOCK
+            # CHECK STOCK
+            if size_variant:
                 if size_variant.quantity < quantity:
                     return JsonResponse({
                         'success': False,
                         'message': f'Insufficient stock. Only {size_variant.quantity} available'
                     })
-
-                # REDUCE STOCK
-                size_variant.quantity -= quantity
-                size_variant.save()
-
             else:
-                unit_price = item.price
-
-                # CHECK STOCK
                 if item.simple_quantity < quantity:
                     return JsonResponse({
                         'success': False,
                         'message': f'Insufficient stock. Only {item.simple_quantity} available'
                     })
 
-                # REDUCE STOCK
+            # REDUCE STOCK
+            if size_variant:
+                size_variant.quantity -= quantity
+                size_variant.save()
+            else:
                 item.simple_quantity -= quantity
                 item.save(skip_has_sizes=True)
 
-            # CREATE CART ITEM
-            cart_item = CartItem(
-                cart=cart,
-                item=item,
-                size_variant=size_variant,
-                unit_price=unit_price,
-                quantity=quantity,
-                item_name=item.name,
-                status='taken'
-            )
+            if existing_cart_item:
+                # MERGE WITH EXISTING CART ITEM
+                existing_cart_item.quantity += quantity
+                existing_cart_item.save()
 
-            cart_item.save()
-            cart_item.create_hold()
+                # Update hold quantity
+                hold = existing_cart_item.active_hold
+                if hold:
+                    hold.quantity = existing_cart_item.quantity
+                    hold.save()
 
-            return JsonResponse({
-                'success': True,
-                'message': 'Added to cart successfully!',
-                'cart_count': cart.total_items()
-            })
+                return JsonResponse({
+                    'success': True,
+                    'message': f'Updated quantity to {existing_cart_item.quantity} in cart!',
+                    'cart_count': cart.total_items(),
+                    'merged': True,
+                    'new_quantity': existing_cart_item.quantity
+                })
+
+            else:
+                # CREATE NEW CART ITEM
+                cart_item = CartItem(
+                    cart=cart,
+                    item=item,
+                    size_variant=size_variant,
+                    unit_price=unit_price,
+                    quantity=quantity,
+                    item_name=item.name,
+                    status='taken'
+                )
+
+                cart_item.save()
+                cart_item.create_hold()
+
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Added to cart successfully!',
+                    'cart_count': cart.total_items(),
+                    'merged': False
+                })
 
     except Item.DoesNotExist:
         return JsonResponse({
@@ -153,7 +194,6 @@ def add_to_cart(request, item_id):
             'success': False,
             'message': f'Error: {str(e)}'
         }, status=500)
-
 
 @login_required
 def increase_quantity(request, cart_item_id):
@@ -256,15 +296,21 @@ def decrease_quantity(request, cart_item_id):
                 wallet = Wallet.objects.get(user=request.user)
                 remaining_balance = wallet.balance - cart_total
 
-                return JsonResponse({
-                    'success': True,
-                    'message': f'{cart_item.item_name} removed from cart',
-                    'cart_item_id': cart_item.id,
-                    'removed': True,
-                    'cart_total': cart_total,
-                    'remaining_balance': remaining_balance,
-                    'cart_count': cart.total_items()
-                })
+                # Check if AJAX request
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': True,
+                        'message': f'{cart_item.item_name} removed from cart',
+                        'cart_item_id': cart_item.id,
+                        'removed': True,
+                        'cart_total': cart_total,
+                        'remaining_balance': remaining_balance,
+                        'cart_count': cart.total_items()
+                    })
+
+                # For non-AJAX requests
+                messages.success(request, f'{cart_item.item_name} removed from cart')
+                return redirect('cart:view_cart')
 
             # Update cart item quantity
             cart_item.quantity -= 1
@@ -280,11 +326,9 @@ def decrease_quantity(request, cart_item_id):
             if cart_item.size_variant:
                 cart_item.size_variant.quantity += 1
                 cart_item.size_variant.save()
-                new_available_stock = cart_item.size_variant.quantity
             else:
                 cart_item.item.simple_quantity += 1
                 cart_item.item.save(skip_has_sizes=True)
-                new_available_stock = cart_item.item.simple_quantity
 
             # Calculate updated cart total
             cart = cart_item.cart
@@ -294,24 +338,32 @@ def decrease_quantity(request, cart_item_id):
             wallet = Wallet.objects.get(user=request.user)
             remaining_balance = wallet.balance - cart_total
 
-            return JsonResponse({
-                'success': True,
-                'message': f'Quantity decreased to {cart_item.quantity}',
-                'cart_item_id': cart_item.id,
-                'new_quantity': cart_item.quantity,
-                'new_subtotal': cart_item.line_total,
-                'cart_total': cart_total,
-                'remaining_balance': remaining_balance,
-                'new_available_stock': new_available_stock,
-                'removed': False
-            })
+            # Check if AJAX request
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'message': f'Quantity decreased to {cart_item.quantity}',
+                    'cart_item_id': cart_item.id,
+                    'new_quantity': cart_item.quantity,
+                    'new_subtotal': cart_item.line_total,
+                    'cart_total': cart_total,
+                    'remaining_balance': remaining_balance,
+                    'removed': False
+                })
+
+            # For non-AJAX requests
+            messages.success(request, f'Quantity decreased to {cart_item.quantity}')
+            return redirect('cart:view_cart')
 
     except Exception as e:
         print(f"Error: {str(e)}")
-        return JsonResponse({
-            'success': False,
-            'message': f'Error: {str(e)}'
-        }, status=500)
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': False,
+                'message': f'Error: {str(e)}'
+            }, status=500)
+        messages.error(request, f"Error: {str(e)}")
+        return redirect('cart:view_cart')
 
 
 @login_required
@@ -392,7 +444,75 @@ def increase_quantity(request, cart_item_id):
 
     cart_item = get_object_or_404(
         CartItem.objects.select_for_update().select_related('item', 'size_variant', 'cart'),
-        id=cart_item_id,
-        cart__user=request.user.profile,  # Add this to ensure ownership
-        cart__status='open'  # Ensure cart is still open
+        id=cart_item_id
     )
+
+    try:
+        with transaction.atomic():
+            # Check available stock
+            if cart_item.size_variant:
+                available_stock = cart_item.size_variant.quantity
+            else:
+                available_stock = cart_item.item.simple_quantity
+
+            if available_stock < 1:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False,
+                        'message': 'Insufficient stock. No more available'
+                    })
+                messages.error(request, 'Insufficient stock. No more available')
+                return redirect('cart:view_cart')
+
+            # Update cart item quantity
+            cart_item.quantity += 1
+            cart_item.save()
+
+            # Update hold quantity
+            hold = cart_item.active_hold
+            if hold:
+                hold.quantity = cart_item.quantity
+                hold.save()
+
+            # Reduce stock from inventory
+            if cart_item.size_variant:
+                cart_item.size_variant.quantity -= 1
+                cart_item.size_variant.save()
+            else:
+                cart_item.item.simple_quantity -= 1
+                cart_item.item.save(skip_has_sizes=True)
+
+            # Calculate updated cart total
+            cart = cart_item.cart
+            cart_total = cart.subtotal()
+
+            # Get wallet balance for remaining calculation
+            wallet = Wallet.objects.get(user=request.user)
+            remaining_balance = wallet.balance - cart_total
+
+            # Check if AJAX request
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'message': f'Quantity increased to {cart_item.quantity}',
+                    'cart_item_id': cart_item.id,
+                    'new_quantity': cart_item.quantity,
+                    'new_subtotal': cart_item.line_total,
+                    'cart_total': cart_total,
+                    'remaining_balance': remaining_balance,
+                    'removed': False
+                })
+
+            # For non-AJAX requests
+            messages.success(request, f'Quantity increased to {cart_item.quantity}')
+            return redirect('cart:view_cart')
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': False,
+                'message': f'Error: {str(e)}'
+            }, status=500)
+        messages.error(request, f"Error: {str(e)}")
+        return redirect('cart:view_cart')

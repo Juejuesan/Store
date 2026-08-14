@@ -54,6 +54,33 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 2500);
     }
 
+    /* ============ REFRESH ON BACK FROM CART ============ */
+    const needsRefresh = sessionStorage.getItem('refreshItemDetail');
+    if (needsRefresh === 'true') {
+        sessionStorage.removeItem('refreshItemDetail');
+        window.location.reload();
+    }
+
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            const refreshFlag = sessionStorage.getItem('refreshItemDetail');
+            if (refreshFlag === 'true') {
+                sessionStorage.removeItem('refreshItemDetail');
+                window.location.reload();
+            }
+        }
+    });
+
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            const refreshFlag = sessionStorage.getItem('refreshItemDetail');
+            if (refreshFlag === 'true') {
+                sessionStorage.removeItem('refreshItemDetail');
+                window.location.reload();
+            }
+        }
+    });
+
     /* ============ NAVBAR SCROLL ============ */
     const navbar = document.querySelector(".cute-navbar");
     const handleNavbarScroll = () => {
@@ -183,7 +210,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const sizeButtons = slide.querySelectorAll(".size-btn");
         const quantityInput = slide.querySelector(".qty-input");
 
-        // If no size buttons, handle non-sized items
         if (!sizeButtons.length) {
             if (quantityInput) {
                 const defaultMax = parseInt(quantityInput.dataset.defaultMax) || 0;
@@ -194,17 +220,14 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Find first available size (not sold out, not disabled)
         const availableSizes = Array.from(sizeButtons).filter(btn => {
             const stock = parseInt(btn.dataset.quantity) || 0;
             return stock > 0 && !btn.disabled;
         });
 
         if (availableSizes.length > 0) {
-            // Click the first available size
             availableSizes[0].click();
         } else {
-            // All sizes out of stock
             if (quantityInput) {
                 quantityInput.value = 1;
                 quantityInput.max = 0;
@@ -225,7 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
         currentItemIndex = index;
         updateItemNavigation();
 
-        // Auto select first size for new slide
         autoSelectFirstSize(itemSlides[currentItemIndex]);
 
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -377,13 +399,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Button loading state
             button.dataset.busy = "true";
             const originalHTML = button.innerHTML;
             button.disabled = true;
             button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
 
-            // Create form data
             const formData = new FormData();
             formData.append("quantity", quantity);
             if (sizeVariantId) {
@@ -415,22 +435,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     throw new Error(data.message || "Unable to add item to cart.");
                 }
 
-                /* ============ SUCCESS ============ */
                 button.innerHTML = '<i class="fa-solid fa-check"></i> Added';
                 button.classList.add("cart-added");
 
-                // Update cart count
                 updateCartCount(data.cart_count);
-
-                // Animate cart
                 animateCart();
-
-                // Show toast
                 showCartToast(data.message || "Added to cart successfully!");
 
-                /* ============ REDUCE STOCK DISPLAY ============ */
                 if (selectedSize && sizeVariantId) {
-                    // For sized items
                     const currentQty = parseInt(selectedSize.dataset.quantity) || 0;
                     const newQty = currentQty - quantity;
                     selectedSize.dataset.quantity = newQty;
@@ -450,15 +462,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         selectedSize.classList.remove("selected", "active");
                     }
 
-                    // Reset size selection and auto-select next available
                     if (sizeVariantInput) sizeVariantInput.value = '';
                     slide.querySelectorAll(".size-btn").forEach(btn => btn.classList.remove("selected", "active"));
 
-                    // Auto-select next available size
                     autoSelectFirstSize(slide);
 
                 } else {
-                    // For non-sized items
                     const stockDisplay = slide.querySelector(".stock-display");
                     if (stockDisplay) {
                         const currentStock = parseInt(stockDisplay.dataset.stock) || 0;
@@ -481,7 +490,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
 
-                // Reset quantity
                 if (quantityInput) {
                     quantityInput.value = '1';
                 }
@@ -623,137 +631,128 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ============ WISHLIST FUNCTIONALITY ============
-document.querySelectorAll('.wishlist-btn').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
+    /* ============ WISHLIST FUNCTIONALITY ============ */
+    document.querySelectorAll('.wishlist-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
 
-        const postId = this.dataset.postId;
-        const isWishlisted = this.classList.contains('wishlisted');
+            const postId = this.dataset.postId;
+            const isWishlisted = this.classList.contains('wishlisted');
 
-        if (isWishlisted) {
-            removeFromWishlist(postId, this);
-        } else {
-            addToWishlist(postId, this);
-        }
+            if (isWishlisted) {
+                removeFromWishlist(postId, this);
+            } else {
+                addToWishlist(postId, this);
+            }
+        });
     });
-});
 
-function addToWishlist(postId, button) {
-    const csrftoken = getCookie('csrftoken');
+    function addToWishlist(postId, button) {
+        const csrftoken = getCookie('csrftoken');
+        const originalContent = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
-    // Show loading state
-    const originalContent = button.innerHTML;
-    button.disabled = true;
-    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-
-    fetch(`/wishlist/add/${postId}/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': csrftoken,
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update button appearance
-            button.classList.add('wishlisted');
-            button.innerHTML = '<i class="fa-solid fa-heart"></i> Wishlisted';
-            button.style.color = '#dc3545';
-            button.style.borderColor = '#dc3545';
-
-            showToast('Added to wishlist', 'success');
-        } else {
-            showToast(data.message || 'Error adding to wishlist', 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('An error occurred. Please try again.', 'error');
-    })
-    .finally(() => {
-        button.disabled = false;
-    });
-}
-
-function removeFromWishlist(postId, button) {
-    const csrftoken = getCookie('csrftoken');
-
-    // Show loading state
-    const originalContent = button.innerHTML;
-    button.disabled = true;
-    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-
-    fetch(`/wishlist/remove/${postId}/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': csrftoken,
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update button appearance
-            button.classList.remove('wishlisted');
-            button.innerHTML = '<i class="fa-regular fa-heart"></i> Wishlist';
-            button.style.color = '';
-            button.style.borderColor = '';
-
-            showToast('Removed from wishlist', 'success');
-        } else {
-            showToast(data.message || 'Error removing from wishlist', 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('An error occurred. Please try again.', 'error');
-    })
-    .finally(() => {
-        button.disabled = false;
-    });
-}
-
-// Add showToast function if you don't have it
-function showToast(message, type) {
-    let toastContainer = document.getElementById('toastContainer');
-    if (!toastContainer) {
-        toastContainer = document.createElement('div');
-        toastContainer.id = 'toastContainer';
-        toastContainer.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        `;
-        document.body.appendChild(toastContainer);
+        fetch(`/wishlist/add/${postId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.classList.add('wishlisted');
+                button.innerHTML = '<i class="fa-solid fa-heart"></i> Wishlisted';
+                button.style.color = '#dc3545';
+                button.style.borderColor = '#dc3545';
+                showToast('Added to wishlist', 'success');
+            } else {
+                showToast(data.message || 'Error adding to wishlist', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('An error occurred. Please try again.', 'error');
+        })
+        .finally(() => {
+            button.disabled = false;
+        });
     }
 
-    const toast = document.createElement('div');
-    toast.style.cssText = `
-        padding: 15px 20px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        color: white;
-        font-weight: 500;
-        animation: slideIn 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        ${type === 'success' ? 'background: #28a745;' : 'background: #dc3545;'}
-    `;
-    toast.textContent = message;
+    function removeFromWishlist(postId, button) {
+        const csrftoken = getCookie('csrftoken');
+        const originalContent = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
-    toastContainer.appendChild(toast);
+        fetch(`/wishlist/remove/${postId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.classList.remove('wishlisted');
+                button.innerHTML = '<i class="fa-regular fa-heart"></i> Wishlist';
+                button.style.color = '';
+                button.style.borderColor = '';
+                showToast('Removed from wishlist', 'success');
+            } else {
+                showToast(data.message || 'Error removing from wishlist', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('An error occurred. Please try again.', 'error');
+        })
+        .finally(() => {
+            button.disabled = false;
+        });
+    }
 
-    setTimeout(() => {
-        toast.style.animation = 'slideOut 0.3s ease';
+    function showToast(message, type) {
+        let toastContainer = document.getElementById('toastContainer');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toastContainer';
+            toastContainer.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+            `;
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            ${type === 'success' ? 'background: #28a745;' : 'background: #dc3545;'}
+        `;
+        toast.textContent = message;
+
+        toastContainer.appendChild(toast);
+
         setTimeout(() => {
-            toast.remove();
-        }, 300);
-    }, 3000);
-}
+            toast.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
+    }
 
     /* ============ PREVENT IMAGE DRAGGING ============ */
     document.querySelectorAll("img").forEach((image) => {
