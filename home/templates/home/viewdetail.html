@@ -19,12 +19,44 @@
 <div class="pd-page">
 <div class="container py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <button class="wishlist-btn">
-            <i class="fa-regular fa-heart"></i> <span>Wishlist</span>
-        </button>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
 
+    {% if user.is_authenticated %}
+
+        <button
+            type="button"
+            class="wishlist-btn {% if post.id in wishlist_post_ids %}liked{% endif %}"
+            id="wishlistBtn"
+            data-post-id="{{ post.id }}"
+            data-add-url="{% url 'wishlist:add' post.id %}"
+            data-remove-url="{% url 'wishlist:remove' post.id %}"
+            data-wishlisted="{% if post.id in wishlist_post_ids %}true{% else %}false{% endif %}"
+        >
+
+            <i
+                id="wishlistIcon"
+                class="{% if post.id in wishlist_post_ids %}fa-solid{% else %}fa-regular{% endif %} fa-heart"
+            ></i>
+
+            <span id="wishlistText">
+                Wishlist
+            </span>
+
+        </button>
+
+    {% else %}
+
+        <a
+            href="{% url 'login' %}"
+            class="wishlist-btn text-decoration-none"
+        >
+            <i class="fa-regular fa-heart"></i>
+            <span>Wishlist</span>
+        </a>
+
+    {% endif %}
+
+</div>
     <div class="post-header mb-4">
         <h3>{{ post.description|truncatechars:60 }}</h3>
         <p class="text-muted">

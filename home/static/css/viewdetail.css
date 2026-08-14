@@ -19,10 +19,71 @@
 .pd-page .qty-input{width:50px;height:44px;border:none;text-align:center;font-size:16px;font-weight:600;color:#0f172a;background:#fff}
 .pd-page .add-cart-btn{padding:12px 24px;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s ease;font-family:inherit}
 .pd-page .add-cart-btn:hover{background:#1d4ed8;transform:translateY(-2px);box-shadow:0 8px 25px rgba(37,99,235,.3)}
-.pd-page .wishlist-btn{background:#fff;border:2px solid #e2e8f0;padding:10px 20px;border-radius:12px;cursor:pointer;font-weight:600;color:#64748b;transition:all .3s ease;font-family:inherit;font-size:14px}
-.pd-page .wishlist-btn:hover{border-color:#ef4444;color:#ef4444}
-.pd-page .wishlist-btn.liked{background:#ef4444;color:#fff;border-color:#ef4444}
-.pd-page .item-navigation{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:30px;padding:20px 0}
+/* =========================================================
+   WISHLIST BUTTON
+========================================================= */
+
+.pd-page .wishlist-btn{
+    background:#fff;
+    border:2px solid #e2e8f0;
+    padding:10px 20px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    color:#64748b;
+    transition:all .3s ease;
+    font-family:inherit;
+    font-size:14px;
+}
+
+
+/* =========================================================
+   HOVER
+   Do NOT fill or change heart on hover
+========================================================= */
+
+.pd-page .wishlist-btn:hover{
+    background:#fff;
+    border-color:#e2e8f0;
+    color:#64748b;
+}
+
+
+/* =========================================================
+   WISHLIST ACTIVE / CLICKED
+========================================================= */
+
+.pd-page .wishlist-btn.liked{
+    background:#ef4444;
+    color:#fff;
+    border-color:#ef4444;
+}
+
+
+/* =========================================================
+   HEART ANIMATION
+========================================================= */
+
+.pd-page .wishlist-btn.liked i{
+    animation:wishlistHeartPop .3s ease;
+}
+
+
+@keyframes wishlistHeartPop{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.35);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}.pd-page .item-navigation{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:30px;padding:20px 0}
 .pd-page .nav-btn{padding:12px 24px;border:2px solid #e2e8f0;background:#fff;border-radius:12px;cursor:pointer;font-weight:600;color:#334155;transition:all .3s ease;font-family:inherit;font-size:14px}
 .pd-page .nav-btn:hover:not(:disabled){border-color:#2563eb;color:#2563eb;background:#f0f8ff}
 .pd-page .nav-btn:disabled{opacity:.4;cursor:not-allowed}

@@ -34,7 +34,6 @@ def wishlist(request):
 # ==========================================================
 # ADD TO WISHLIST
 # ==========================================================
-
 @login_required
 def add_to_wishlist(request, post_id):
 
@@ -49,18 +48,23 @@ def add_to_wishlist(request, post_id):
         post=post,
     )
 
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        from django.http import JsonResponse
+
+        return JsonResponse({
+            "success": True,
+            "wishlisted": True,
+        })
+
     return redirect(
         request.META.get(
             "HTTP_REFERER",
             "wishlist:wishlist",
         )
     )
-
-
 # ==========================================================
 # REMOVE FROM WISHLIST
 # ==========================================================
-
 @login_required
 def remove_from_wishlist(request, post_id):
 
@@ -68,6 +72,14 @@ def remove_from_wishlist(request, post_id):
         user=request.user,
         post_id=post_id,
     ).delete()
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        from django.http import JsonResponse
+
+        return JsonResponse({
+            "success": True,
+            "wishlisted": False,
+        })
 
     return redirect(
         request.META.get(
