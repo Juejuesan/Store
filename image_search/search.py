@@ -8,18 +8,17 @@ def search_similar_images(image, top_k=10):
     """
     Find visually similar products.
 
-    Returns:
+    Each Item is returned only once.
 
+    Returns:
         [
-            (Item, similarity_score, ItemImage),
+            (item, similarity_score, best_matching_image),
             ...
         ]
-
-    Only the best matching image for each Item is returned.
     """
 
     # =====================================================
-    # Generate query embedding
+    # 1. Generate embedding for uploaded/search image
     # =====================================================
 
     query_embedding = get_image_embedding(image)
@@ -32,30 +31,28 @@ def search_similar_images(image, top_k=10):
 
     query_embedding = query_embedding.float()
 
-    # Normalize query embedding
+    # Normalize query
     query_embedding = (
         query_embedding /
         query_embedding.norm(p=2)
     )
 
     # =====================================================
-    # Get images with embeddings
+    # 2. Get images that have embeddings
     # =====================================================
 
-    item_images = (
-        ItemImage.objects
-        .select_related("item")
-        .exclude(embedding__isnull=True)
-    )
+    item_images = ItemImage.objects.exclude(
+        embedding__isnull=True
+    ).select_related("item")
 
     # =====================================================
-    # Store best image for each Item
+    # 3. Store the BEST image for each Item
     # =====================================================
 
     best_results = {}
 
     # =====================================================
-    # Compare images
+    # 4. Compare query against every product image
     # =====================================================
 
     for item_image in item_images:
@@ -65,6 +62,7 @@ def search_similar_images(image, top_k=10):
 
         try:
 
+            # Convert stored list → tensor
             product_embedding = torch.tensor(
                 item_image.embedding,
                 dtype=torch.float32
@@ -76,9 +74,9 @@ def search_similar_images(image, top_k=10):
                 product_embedding.norm(p=2)
             )
 
-            # =================================================
+            # ---------------------------------------------
             # Cosine similarity
-            # =================================================
+            # ---------------------------------------------
 
             similarity = torch.dot(
                 query_embedding,
@@ -89,9 +87,9 @@ def search_similar_images(image, top_k=10):
 
             item_id = item_image.item_id
 
-            # =================================================
-            # Keep only the best image for this Item
-            # =================================================
+            # ---------------------------------------------
+            # Keep only the BEST image for each Item
+            # ---------------------------------------------
 
             if (
                 item_id not in best_results
@@ -112,7 +110,7 @@ def search_similar_images(image, top_k=10):
             )
 
     # =====================================================
-    # Convert dictionary to list
+    # 5. Convert dictionary → list
     # =====================================================
 
     results = list(
@@ -120,7 +118,7 @@ def search_similar_images(image, top_k=10):
     )
 
     # =====================================================
-    # Highest similarity first
+    # 6. Highest similarity first
     # =====================================================
 
     results.sort(
@@ -129,7 +127,7 @@ def search_similar_images(image, top_k=10):
     )
 
     # =====================================================
-    # Return top products
+    # 7. Return top products
     # =====================================================
 
     return results[:top_k]
