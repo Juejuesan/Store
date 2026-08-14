@@ -1,0 +1,541 @@
+
+
+<!DOCTYPE html>{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Image Search | TrustyShop</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f9ff;
+            margin: 0;
+            padding: 40px;
+            color: #222;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+
+        /* =====================================================
+           PAGE TITLE
+        ===================================================== */
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0d47a1;
+        }
+
+
+        /* =====================================================
+           SEARCH BOX
+        ===================================================== */
+
+        .search-box {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.08);
+
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .search-box h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #1565c0;
+        }
+
+        .search-box p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .search-box input[type="file"] {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            max-width: 100%;
+        }
+
+
+        /* =====================================================
+           BUTTON
+        ===================================================== */
+
+        button {
+            border: none;
+            padding: 13px 28px;
+
+            border-radius: 10px;
+
+            background: #1565c0;
+            color: white;
+
+            cursor: pointer;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        button:hover {
+            background: #0d47a1;
+            transform: translateY(-2px);
+        }
+
+
+        /* =====================================================
+           RESULTS TITLE
+        ===================================================== */
+
+        .results-title {
+            margin-bottom: 20px;
+            color: #0d47a1;
+        }
+
+
+        /* =====================================================
+           RESULTS GRID
+        ===================================================== */
+
+        .results {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fill, minmax(220px, 1fr));
+
+            gap: 22px;
+        }
+
+
+        /* =====================================================
+           PRODUCT CARD
+        ===================================================== */
+
+        .product-card {
+            background: white;
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.08);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+
+        /* =====================================================
+           PRODUCT IMAGE
+        ===================================================== */
+
+        .product-image-wrapper {
+            width: 100%;
+            height: 240px;
+
+            background: #eef3f8;
+
+            overflow: hidden;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+        }
+
+
+        /* =====================================================
+           PRODUCT INFO
+        ===================================================== */
+
+        .product-info {
+            padding: 17px;
+        }
+
+        .product-info h3 {
+            margin: 0 0 8px;
+
+            color: #1565c0;
+
+            font-size: 18px;
+        }
+
+        .description {
+            color: #666;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+            margin-bottom: 12px;
+        }
+
+
+        /* =====================================================
+           PRICE
+        ===================================================== */
+
+        .price {
+            font-size: 17px;
+
+            font-weight: bold;
+
+            color: #222;
+
+            margin-bottom: 10px;
+        }
+
+
+        /* =====================================================
+           SIMILARITY SCORE
+        ===================================================== */
+
+        .score {
+            color: #1565c0;
+
+            font-weight: bold;
+
+            font-size: 14px;
+
+            margin: 0;
+        }
+
+
+        /* =====================================================
+           NO RESULTS
+        ===================================================== */
+
+        .no-results {
+            background: white;
+
+            padding: 40px;
+
+            border-radius: 18px;
+
+            text-align: center;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.08);
+
+            margin-top: 20px;
+        }
+
+        .no-results h2 {
+            color: #1565c0;
+
+            margin-bottom: 10px;
+        }
+
+        .no-results p {
+            color: #666;
+        }
+
+
+        /* =====================================================
+           SEARCH ERROR
+        ===================================================== */
+
+        .search-error {
+            background: #fff0f0;
+
+            border: 1px solid #ffcaca;
+
+            color: #c62828;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            margin-bottom: 25px;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 768px) {
+
+            body {
+                padding: 20px;
+            }
+
+            .search-box {
+                padding: 22px;
+            }
+
+            .results {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+                gap: 15px;
+            }
+
+            .product-image-wrapper {
+                height: 200px;
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            .results {
+                grid-template-columns: 1fr;
+            }
+
+            .product-image-wrapper {
+                height: 240px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- =====================================================
+         PAGE TITLE
+    ====================================================== -->
+
+    <h1>
+        🔍 Search by Image
+    </h1>
+
+
+    <!-- =====================================================
+         SEARCH BOX
+    ====================================================== -->
+
+    <div class="search-box">
+
+        <h2>
+            Find Similar Products
+        </h2>
+
+        <p>
+            Upload a product image and TrustyShop will find
+            visually similar products.
+        </p>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+            <input
+                type="file"
+                name="image"
+                accept="image/*"
+                required
+            >
+
+
+            <br>
+
+
+            <button type="submit">
+                🔍 Search Similar Products
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEARCH ERROR
+    ====================================================== -->
+
+    {% if error %}
+
+        <div class="search-error">
+
+            {{ error }}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         SEARCHED
+         Only show results/no-results AFTER a search
+    ====================================================== -->
+
+    {% if searched %}
+
+
+        <!-- =================================================
+             RESULTS FOUND
+        ================================================== -->
+
+        {% if results %}
+
+
+            <h2 class="results-title">
+                Similar Products
+            </h2>
+
+
+            <div class="results">
+
+
+                {% for item, score, image in results %}
+
+
+                    <div class="product-card">
+
+
+                        <!-- =================================
+                             PRODUCT IMAGE
+                        ================================== -->
+
+                        <div class="product-image-wrapper">
+
+                            <img
+                                src="{{ image.image.url }}"
+                                alt="{{ item.name }}"
+                            >
+
+                        </div>
+
+
+                        <!-- =================================
+                             PRODUCT INFORMATION
+                        ================================== -->
+
+                        <div class="product-info">
+
+
+                            <h3>
+                                {{ item.name }}
+                            </h3>
+
+
+                            <p class="description">
+
+                                {{ item.description }}
+
+                            </p>
+
+
+                            <p class="price">
+
+                                Price:
+                                {{ item.price }}
+
+                            </p>
+
+
+                            <p class="score">
+
+                                Similarity:
+                                {{ score|floatformat:3 }}
+
+                            </p>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        <!-- =================================================
+             NO RESULTS
+        ================================================== -->
+
+        {% else %}
+
+
+            <div class="no-results">
+
+                <h2>
+                    No similar products found
+                </h2>
+
+                <p>
+                    Try uploading another product image.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+
+</html>

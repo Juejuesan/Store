@@ -29,6 +29,10 @@ urlpatterns = [
     path('adminpanel/', include('adminpanel.urls')),
     path("notifications/",include("notifications.urls")),
     path("wallet/", include("wallet.urls")),
+    path(
+        "image-search/",
+        include("image_search.urls")
+    ),
 ]
 
 if settings.DEBUG:
