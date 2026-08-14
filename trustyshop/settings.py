@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'wallet.apps.WalletConfig',
     'wishlist',
     'cart',
+    'image_search',
 ]
 
 MIDDLEWARE = [
