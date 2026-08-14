@@ -315,7 +315,101 @@
 
     </div>
 </section>
+{% if user.is_authenticated and not user.profile.terms_accepted %}
 
+<div class="terms-overlay" id="termsOverlay">
+
+    <div class="terms-modal">
+
+        <div class="terms-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+
+        <h2>
+            Welcome to TrustyShop
+        </h2>
+
+        <p class="terms-subtitle">
+            Before you continue, please review and accept
+            our Terms & Policies.
+        </p>
+
+        <div class="terms-content">
+
+            <h3>
+                <i class="fa-solid fa-file-contract"></i>
+                Terms of Use
+            </h3>
+
+            <p>
+                By using TrustyShop, you agree to use the
+                platform responsibly and provide accurate
+                information when creating listings or
+                interacting with other users.
+            </p>
+
+            <h3>
+                <i class="fa-solid fa-user-shield"></i>
+                Privacy Policy
+            </h3>
+
+            <p>
+                We respect your privacy and protect the
+                information associated with your TrustyShop
+                account.
+            </p>
+
+            <h3>
+                <i class="fa-solid fa-handshake"></i>
+                Safe Marketplace
+            </h3>
+
+            <p>
+                Please communicate honestly, avoid fraudulent
+                activity, and report suspicious behavior.
+            </p>
+
+        </div>
+
+        <div class="terms-check">
+
+            <input
+                type="checkbox"
+                id="termsCheckbox"
+            >
+
+            <label for="termsCheckbox">
+                I have read and agree to the TrustyShop
+                Terms & Policies.
+            </label>
+
+        </div>
+
+        <form
+            method="POST"
+            action="{% url 'user:accept_terms_policy' %}"
+            id="termsForm"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="terms-agree-btn"
+                id="agreeButton"
+                disabled
+            >
+                <i class="fa-solid fa-check"></i>
+                Agree & Continue
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endif %}
 
 <!-- FOOTER -->
 {% include "includes/footer.html" %}
