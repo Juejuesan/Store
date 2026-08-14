@@ -10,8 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/header-footer.css' %}">
-        <link rel="stylesheet" href="{% static 'css/cart.css' %}">
-
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
 </head>
 <body>
 
@@ -22,15 +21,16 @@
 
     {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
     {% endif %}
 
     {% if cart_items %}
         <div class="table-responsive">
-            <table class="table">
+            <table class="table cart-table">
                 <thead>
                     <tr>
                         <th>Item</th>
@@ -42,10 +42,26 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="cartItemsBody">
                     {% for item in cart_items %}
-                    <tr>
-                        <td>{{ item.item_name }}</td>
+                    <tr class="cart-item-row" data-cart-item-id="{{ item.id }}">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                {% with first_image=item.item.images.first %}
+                                    {% if first_image %}
+                                    <img src="{{ first_image.image.url }}" alt="{{ item.item_name }}" class="cart-item-image me-3">
+                                    {% else %}
+                                    <div class="cart-item-placeholder me-3">📦</div>
+                                    {% endif %}
+                                {% endwith %}
+                                <div>
+                                    <div class="item-name">{{ item.item_name }}</div>
+                                    {% if item.item.post %}
+                                    <small class="text-muted">{{ item.item.post.category.name }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
                         <td>
                             {% if item.size_variant %}
                                 <span class="badge bg-primary">{{ item.size_variant.size }}</span>
@@ -53,25 +69,47 @@
                                 <span class="badge bg-secondary">One Size</span>
                             {% endif %}
                         </td>
-                        <td>{{ item.unit_price }} MMK</td>
-                        <td>{{ item.quantity }}</td>
-                        <td><strong>{{ item.line_total }} MMK</strong></td>
+                        <td>
+                            <span class="unit-price">{{ item.unit_price }}</span> MMK
+                        </td>
+                        <td>
+                            <div class="quantity-controls">
+                                <form method="POST" action="{% url 'cart:decrease_quantity' item.id %}" class="qty-form d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary qty-btn qty-decrease">
+                                        <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                </form>
+
+                                <span class="quantity-display">{{ item.quantity }}</span>
+
+                                <form method="POST" action="{% url 'cart:increase_quantity' item.id %}" class="qty-form d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary qty-btn qty-increase">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                        <td>
+                            <strong class="subtotal">{{ item.line_total }} MMK</strong>
+                        </td>
                         <td>
                             {% if item.active_hold %}
                                 {% if item.active_hold.is_expired %}
                                     <span class="text-danger">Expired</span>
                                 {% else %}
-                                    <span class="text-warning">
+                                    <span class="text-warning hold-timer" data-expires="{{ item.active_hold.expires_at|date:'c' }}">
                                         <i class="fa-regular fa-clock"></i>
-                                        {{ item.active_hold.expires_at|timeuntil }}
+                                        <span class="countdown">{{ item.active_hold.expires_at|timeuntil }}</span>
                                     </span>
                                 {% endif %}
                             {% endif %}
                         </td>
                         <td>
-                            <form method="POST" action="{% url 'cart:remove_from_cart' item.id %}">
+                            <form method="POST" action="{% url 'cart:remove_from_cart' item.id %}" class="remove-form">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-danger">
+                                <button type="submit" class="btn btn-sm btn-danger remove-btn">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </form>
@@ -82,23 +120,63 @@
                 <tfoot>
                     <tr>
                         <td colspan="4" class="text-end"><strong>Total:</strong></td>
-                        <td><strong class="text-success">{{ cart.subtotal }} MMK</strong></td>
+                        <td><strong class="text-success cart-total">{{ cart_total }} MMK</strong></td>
                         <td colspan="2"></td>
                     </tr>
                 </tfoot>
             </table>
         </div>
 
+        <!-- Wallet Balance Display -->
+        <div class="wallet-info mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="wallet-balance-box">
+                                <h6>Wallet Balance</h6>
+                                <h4>{{ wallet_balance }} MMK</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="wallet-balance-box">
+                                <h6>Cart Total</h6>
+                                <h4 class="wallet-cart-total">{{ cart_total }} MMK</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="wallet-balance-box">
+                                <h6>Remaining Balance</h6>
+                                <h4 class="remaining-balance {% if has_sufficient_balance %}text-success{% else %}text-danger{% endif %}">
+                                    {{ remaining_balance }} MMK
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mt-4">
             <a href="{% url 'home' %}" class="btn btn-outline-secondary">
                 <i class="fa-solid fa-arrow-left"></i> Continue Shopping
             </a>
-            <a href="{% url 'cart:checkout' %}" class="btn btn-success btn-lg">
-                <i class="fa-solid fa-lock"></i> Purchase ({{ cart.subtotal }} MMK)
-            </a>
+
+            <button type="button" id="purchaseBtn" class="btn btn-success btn-lg" {% if not has_sufficient_balance %}disabled{% endif %}>
+                <i class="fa-solid fa-lock"></i> Purchase (<span class="cart-total">{{ cart_total }}</span> MMK)
+            </button>
         </div>
+
+        {% if not has_sufficient_balance %}
+        <div class="alert alert-danger mt-3" id="insufficientBalanceAlert">
+            <i class="fa-solid fa-exclamation-circle"></i>
+            Insufficient balance. You need <span class="cart-total">{{ cart_total }}</span> MMK but only have {{ wallet_balance }} MMK.
+            <a href="{% url 'wallet:deposit' %}" class="alert-link">Deposit now</a>
+        </div>
+        {% endif %}
+
     {% else %}
-        <div class="text-center py-5">
+        <div class="text-center py-5" id="emptyCart">
             <i class="fa-solid fa-cart-shopping fa-4x text-muted mb-3"></i>
             <h3>Your cart is empty</h3>
             <p class="text-muted">Browse items and add them to your cart!</p>
@@ -108,6 +186,52 @@
         </div>
     {% endif %}
 </div>
+
+<!-- Purchase Confirmation Modal -->
+{% if cart_items and has_sufficient_balance %}
+<div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="purchaseModalLabel">Confirm Purchase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to purchase these items?</p>
+                <div class="purchase-summary">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Cart Total:</span>
+                        <strong class="cart-total">{{ cart_total }} MMK</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Wallet Balance:</span>
+                        <span>{{ wallet_balance }} MMK</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Remaining Balance After Purchase:</span>
+                        <strong class="remaining-balance text-success">{{ remaining_balance }} MMK</strong>
+                    </div>
+                </div>
+                <div class="alert alert-info mt-3 mb-0">
+                    <small>
+                        <i class="fa-solid fa-info-circle"></i>
+                        You can cancel your order within 30 minutes after purchase.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{% url 'order:purchase_cart' %}" id="purchaseForm">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success" id="confirmPurchaseBtn">
+                        <i class="fa-solid fa-check"></i> Confirm Purchase
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% include "includes/footer.html" %}
 

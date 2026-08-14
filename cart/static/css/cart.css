@@ -156,3 +156,73 @@
 .cart-count.show {
     display: inline-block; /* Show when there are items */
 }
+
+/* Wallet Balance Display */
+.wallet-info {
+    margin-top: 20px;
+}
+
+.wallet-balance-box {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.wallet-balance-box h6 {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.wallet-balance-box h4 {
+    margin: 0;
+    font-weight: bold;
+}
+
+/* Cart Item Image */
+.cart-item-image {
+    border-radius: 4px;
+}
+
+/* Purchase Summary in Modal */
+.purchase-summary {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+/* In cart.css */
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.qty-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.quantity-display {
+    min-width: 30px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.qty-btn:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.qty-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

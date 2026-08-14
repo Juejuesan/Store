@@ -1,3 +1,5 @@
+# cart/views.py
+
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -6,6 +8,8 @@ from django.utils import timezone
 from django.db import transaction
 from .models import Cart, CartItem, StockHold
 from posts.models import Item, SizeVariant
+from wallet.models import Wallet
+import json
 
 
 @login_required
@@ -26,14 +30,33 @@ def view_cart(request):
             hold.release_if_expired()
 
     # Refresh items after releasing expired
-    cart_items = cart.lines.filter(status='taken')
+    cart_items = cart.lines.filter(status='taken').select_related(
+        'item', 'size_variant'
+    ).prefetch_related('holds')
+
+    # Get wallet balance
+    wallet = Wallet.objects.get_or_create(user=request.user)[0]
+    wallet_balance = wallet.balance
+
+    # Calculate cart total
+    cart_total = cart.subtotal() if cart else 0
+
+    # Calculate remaining balance
+    remaining_balance = wallet_balance - cart_total
+
+    # Check if user has sufficient balance
+    has_sufficient_balance = remaining_balance >= 0
 
     context = {
         'cart': cart,
         'cart_items': cart_items,
+        'wallet_balance': wallet_balance,
+        'cart_total': cart_total,
+        'remaining_balance': remaining_balance,
+        'has_sufficient_balance': has_sufficient_balance,
         'now': timezone.now(),
     }
-    return render(request, 'cart.html', context)  # Changed from 'cart/cart.html' to 'cart.html'
+    return render(request, 'cart.html', context)
 
 
 @login_required
@@ -52,12 +75,12 @@ def add_to_cart(request, item_id):
         )
 
         with transaction.atomic():
-            item = Item.objects.get(id=item_id)
+            item = Item.objects.select_for_update().get(id=item_id)
             size_variant = None
 
             if item.has_sizes:
                 if size_variant_id:
-                    size_variant = SizeVariant.objects.get(id=size_variant_id)
+                    size_variant = SizeVariant.objects.select_for_update().get(id=size_variant_id)
                 else:
                     return JsonResponse({
                         'success': False,
@@ -112,6 +135,16 @@ def add_to_cart(request, item_id):
                 'cart_count': cart.total_items()
             })
 
+    except Item.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'Item not found'
+        }, status=404)
+    except SizeVariant.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'Size variant not found'
+        }, status=404)
     except Exception as e:
         print(f"Error: {str(e)}")
         import traceback
@@ -121,129 +154,220 @@ def add_to_cart(request, item_id):
             'message': f'Error: {str(e)}'
         }, status=500)
 
-@login_required
-def update_cart_item(request, cart_item_id):
-    """Update quantity of cart item"""
-    if request.method != 'POST':
-        return redirect('cart:view_cart')  # FIXED
 
-    cart_item = get_object_or_404(CartItem, id=cart_item_id)
-    new_quantity = int(request.POST.get('quantity', 1))
+@login_required
+def increase_quantity(request, cart_item_id):
+    """Increase quantity by 1 - AJAX enabled"""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
+
+    cart_item = get_object_or_404(
+        CartItem.objects.select_for_update().select_related('item', 'size_variant', 'cart'),
+        id=cart_item_id
+    )
 
     try:
         with transaction.atomic():
-            # Check if new quantity is valid
-            if new_quantity <= 0:
-                # Remove item
+            # Check available stock
+            if cart_item.size_variant:
+                available_stock = cart_item.size_variant.quantity
+            else:
+                available_stock = cart_item.item.simple_quantity
+
+            if available_stock < 1:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Insufficient stock. No more available'
+                })
+
+            # Update cart item quantity
+            cart_item.quantity += 1
+            cart_item.save()
+
+            # Update hold quantity
+            hold = cart_item.active_hold
+            if hold:
+                hold.quantity = cart_item.quantity
+                hold.save()
+
+            # Reduce stock from inventory
+            if cart_item.size_variant:
+                cart_item.size_variant.quantity -= 1
+                cart_item.size_variant.save()
+                new_available_stock = cart_item.size_variant.quantity
+            else:
+                cart_item.item.simple_quantity -= 1
+                cart_item.item.save(skip_has_sizes=True)
+                new_available_stock = cart_item.item.simple_quantity
+
+            # Calculate updated cart total
+            cart = cart_item.cart
+            cart_total = cart.subtotal()
+
+            # Get wallet balance for remaining calculation
+            wallet = Wallet.objects.get(user=request.user)
+            remaining_balance = wallet.balance - cart_total
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Quantity increased to {cart_item.quantity}',
+                'cart_item_id': cart_item.id,
+                'new_quantity': cart_item.quantity,
+                'new_subtotal': cart_item.line_total,
+                'cart_total': cart_total,
+                'remaining_balance': remaining_balance,
+                'new_available_stock': new_available_stock,
+                'removed': False
+            })
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': f'Error: {str(e)}'
+        }, status=500)
+
+
+@login_required
+def decrease_quantity(request, cart_item_id):
+    """Decrease quantity by 1 - AJAX enabled"""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
+
+    cart_item = get_object_or_404(
+        CartItem.objects.select_for_update().select_related('item', 'size_variant', 'cart'),
+        id=cart_item_id
+    )
+
+    try:
+        with transaction.atomic():
+            # If quantity becomes 0 or less, remove item
+            if cart_item.quantity <= 1:
+                # Remove item from cart
                 cart_item.release_hold()
                 cart_item.status = 'cancelled'
                 cart_item.save()
-                messages.success(request, "Item removed from cart")
-                return redirect('cart:view_cart')  # FIXED
 
-            # Check available stock for new quantity
-            available = cart_item.get_available_stock()
-            if available + cart_item.quantity < new_quantity:
-                messages.error(request, f"Insufficient stock. Only {available + cart_item.quantity} available")
-                return redirect('cart:view_cart')  # FIXED
+                # Calculate updated cart total
+                cart = cart_item.cart
+                cart_total = cart.subtotal()
 
-            # Update quantity
-            old_quantity = cart_item.quantity
-            cart_item.quantity = new_quantity
+                # Get wallet balance
+                wallet = Wallet.objects.get(user=request.user)
+                remaining_balance = wallet.balance - cart_total
+
+                return JsonResponse({
+                    'success': True,
+                    'message': f'{cart_item.item_name} removed from cart',
+                    'cart_item_id': cart_item.id,
+                    'removed': True,
+                    'cart_total': cart_total,
+                    'remaining_balance': remaining_balance,
+                    'cart_count': cart.total_items()
+                })
+
+            # Update cart item quantity
+            cart_item.quantity -= 1
             cart_item.save()
 
-            # Update hold quantity (keep same expiry)
+            # Update hold quantity
             hold = cart_item.active_hold
             if hold:
-                hold.quantity = new_quantity
+                hold.quantity = cart_item.quantity
                 hold.save()
 
-            messages.success(request, f"Quantity updated to {new_quantity}")
+            # Return stock to inventory
+            if cart_item.size_variant:
+                cart_item.size_variant.quantity += 1
+                cart_item.size_variant.save()
+                new_available_stock = cart_item.size_variant.quantity
+            else:
+                cart_item.item.simple_quantity += 1
+                cart_item.item.save(skip_has_sizes=True)
+                new_available_stock = cart_item.item.simple_quantity
+
+            # Calculate updated cart total
+            cart = cart_item.cart
+            cart_total = cart.subtotal()
+
+            # Get wallet balance
+            wallet = Wallet.objects.get(user=request.user)
+            remaining_balance = wallet.balance - cart_total
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Quantity decreased to {cart_item.quantity}',
+                'cart_item_id': cart_item.id,
+                'new_quantity': cart_item.quantity,
+                'new_subtotal': cart_item.line_total,
+                'cart_total': cart_total,
+                'remaining_balance': remaining_balance,
+                'new_available_stock': new_available_stock,
+                'removed': False
+            })
 
     except Exception as e:
-        messages.error(request, f"Error: {str(e)}")
-
-    return redirect('cart:view_cart')  # FIXED
+        print(f"Error: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': f'Error: {str(e)}'
+        }, status=500)
 
 
 @login_required
 def remove_from_cart(request, cart_item_id):
     """Remove item from cart"""
     if request.method != 'POST':
-        return redirect('cart:view_cart')  # FIXED
+        return redirect('cart:view_cart')
 
-    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    cart_item = get_object_or_404(
+        CartItem.objects.select_for_update().select_related('item', 'size_variant', 'cart'),
+        id=cart_item_id
+    )
 
     try:
         with transaction.atomic():
+            # Release hold and return stock
             cart_item.release_hold()
             cart_item.status = 'cancelled'
             cart_item.save()
+
+            # Calculate updated cart total
+            cart = cart_item.cart
+            cart_total = cart.subtotal()
+
+            # Get wallet balance
+            wallet = Wallet.objects.get(user=request.user)
+            remaining_balance = wallet.balance - cart_total
+
+            # Check if AJAX request
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Item removed from cart',
+                    'cart_item_id': cart_item.id,
+                    'removed': True,
+                    'cart_total': cart_total,
+                    'remaining_balance': remaining_balance,
+                    'cart_count': cart.total_items()
+                })
+
             messages.success(request, "Item removed from cart")
     except Exception as e:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': False,
+                'message': f'Error: {str(e)}'
+            }, status=500)
         messages.error(request, f"Error: {str(e)}")
 
-    return redirect('cart:view_cart')  # FIXED
+    return redirect('cart:view_cart')
 
 
 @login_required
 def checkout(request):
-    """Process checkout and purchase items"""
-    profile = request.user.profile
-    cart = Cart.objects.filter(user=profile, status='open').first()
-
-    if not cart:
-        messages.error(request, "No active cart")
-        return redirect('cart:view_cart')  # FIXED
-
-    try:
-        with transaction.atomic():
-            # Get all taken items
-            cart_items = cart.lines.filter(status='taken')
-
-            if not cart_items.exists():
-                messages.error(request, "Cart is empty")
-                return redirect('cart:view_cart')  # FIXED
-
-            # Check all holds are still valid
-            for item in cart_items:
-                hold = item.active_hold
-                if not hold or hold.is_expired:
-                    item.release_hold()
-                    messages.error(request, f"{item.item_name} has expired")
-                    return redirect('cart:view_cart')  # FIXED
-
-            # Calculate total
-            total = sum(item.line_total for item in cart_items)
-
-            # Check wallet balance (adjust based on your wallet implementation)
-            if hasattr(profile, 'wallet'):
-                if profile.wallet.balance < total:
-                    messages.error(request, f"Insufficient balance. Need {total}, have {profile.wallet.balance}")
-                    return redirect('cart:view_cart')  # FIXED
-
-                # Deduct from wallet
-                profile.wallet.balance -= total
-                profile.wallet.save()
-            else:
-                messages.error(request, "Wallet not found")
-                return redirect('cart:view_cart')  # FIXED
-
-            # Consume all holds (purchase items)
-            for item in cart_items:
-                item.consume_hold()
-
-            # Mark cart as checked out
-            cart.status = 'checked_out'
-            cart.save()
-
-            messages.success(request, f"Purchase successful! Total: {total} MMK")
-            return redirect('cart:view_cart')  # FIXED (change to order confirmation if you have one)
-
-    except Exception as e:
-        messages.error(request, f"Checkout error: {str(e)}")
-
-    return redirect('cart:view_cart')  # FIXED
+    """Redirect to order purchase"""
+    return redirect('order:purchase_cart')
 
 
 @login_required
@@ -258,3 +382,17 @@ def cart_count(request):
         count = 0
 
     return JsonResponse({'cart_count': count})
+
+
+@login_required
+def increase_quantity(request, cart_item_id):
+    """Increase quantity by 1 - AJAX enabled"""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
+
+    cart_item = get_object_or_404(
+        CartItem.objects.select_for_update().select_related('item', 'size_variant', 'cart'),
+        id=cart_item_id,
+        cart__user=request.user.profile,  # Add this to ensure ownership
+        cart__status='open'  # Ensure cart is still open
+    )

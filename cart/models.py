@@ -121,6 +121,7 @@ class CartItem(models.Model):
             return hold.expires_at
         return None
 
+
     def release_hold(self):
         """Release the taken hold (return stock)"""
         hold = self.active_hold
