@@ -70,9 +70,6 @@ class Profile(models.Model):
         null=True
     )
 
-    terms_accepted = models.BooleanField(
-        default=False
-    )
 
     terms_accepted_at = models.DateTimeField(
         null=True,
