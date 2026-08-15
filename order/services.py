@@ -14,7 +14,7 @@ class OrderService:
 
     @classmethod
     @transaction.atomic
-    def create_orders_from_cart(cls, cart, user_profile):
+    def create_orders_from_cart(cls, cart, user_profile, phone_number=None, location=None):
         """
         Create orders from cart items, grouping by seller
         """
@@ -64,7 +64,7 @@ class OrderService:
             # Calculate seller total
             seller_total = sum(item.line_total for item in items)
 
-            # Create order
+            # Create order with phone and location
             order = Order.objects.create(
                 user=user_profile,
                 seller=seller,
@@ -73,7 +73,9 @@ class OrderService:
                 status='pending',
                 payment_status='held',
                 pending_at=timezone.now(),
-                cancel_deadline=cancel_deadline
+                cancel_deadline=cancel_deadline,
+                phone_number=phone_number or user_profile.phone_number,
+                location=location or user_profile.address,
             )
 
             # Create order items

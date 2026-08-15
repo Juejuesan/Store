@@ -480,16 +480,46 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Confirm Purchase
-    const purchaseForm = document.getElementById('purchaseForm');
-    const confirmPurchaseBtn = document.getElementById('confirmPurchaseBtn');
+    // Purchase form validation
+const purchaseForm = document.getElementById('purchaseForm');
+if (purchaseForm) {
+    purchaseForm.addEventListener('submit', function(e) {
+        const phoneInput = document.getElementById('phone_number');
+        const locationInput = document.getElementById('location');
 
-    if (purchaseForm && confirmPurchaseBtn) {
-        purchaseForm.addEventListener('submit', function(e) {
-            confirmPurchaseBtn.disabled = true;
-            confirmPurchaseBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
-            showLoadingOverlay('Processing your purchase...');
-        });
-    }
+        // Validate phone
+        if (phoneInput && !phoneInput.value.trim()) {
+            e.preventDefault();
+            showToast('Please enter your phone number', 'error');
+            phoneInput.focus();
+            return;
+        }
+
+        // Validate phone format
+        const phonePattern = /^[0-9]{8,11}$/;
+        if (phoneInput && !phonePattern.test(phoneInput.value.trim())) {
+            e.preventDefault();
+            showToast('Please enter a valid phone number (8-11 digits)', 'error');
+            phoneInput.focus();
+            return;
+        }
+
+        // Validate location
+        if (locationInput && !locationInput.value.trim()) {
+            e.preventDefault();
+            showToast('Please enter pickup location', 'error');
+            locationInput.focus();
+            return;
+        }
+
+        // Show loading state
+        const confirmBtn = document.getElementById('confirmPurchaseBtn');
+        if (confirmBtn) {
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+        }
+    });
+}
 
     // Hold Timers
     updateHoldTimers();
@@ -714,6 +744,71 @@ function loadCartCount() {
         console.error('Error loading cart count:', error);
     });
 }
+
+// Purchase form validation
+const purchaseForm = document.getElementById('purchaseForm');
+const confirmPurchaseBtn = document.getElementById('confirmPurchaseBtn');
+
+if (purchaseForm && confirmPurchaseBtn) {
+    purchaseForm.addEventListener('submit', function(e) {
+        const phoneInput = document.getElementById('phone_number');
+        const locationInput = document.getElementById('location');
+
+        // Validate phone
+        if (phoneInput) {
+            const phone = phoneInput.value.trim();
+
+            // Check if empty
+            if (!phone) {
+                e.preventDefault();
+                showToast('Phone number is required', 'error');
+                phoneInput.focus();
+                return;
+            }
+
+            // Check if only digits
+            if (!/^\d+$/.test(phone)) {
+                e.preventDefault();
+                showToast('Phone number must contain only numbers', 'error');
+                phoneInput.focus();
+                return;
+            }
+
+            // Check length (10-11 digits)
+            if (phone.length < 10 || phone.length > 11) {
+                e.preventDefault();
+                showToast('Phone number must be 10-11 digits', 'error');
+                phoneInput.focus();
+                return;
+            }
+        }
+
+        // Validate location
+        if (locationInput && !locationInput.value.trim()) {
+            e.preventDefault();
+            showToast('Pickup location is required', 'error');
+            locationInput.focus();
+            return;
+        }
+
+        // Show loading state
+        confirmPurchaseBtn.disabled = true;
+        confirmPurchaseBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+        showLoadingOverlay('Processing your purchase...');
+    });
+}
+
+// Allow only numbers in phone input
+document.addEventListener('input', function(e) {
+    if (e.target.id === 'phone_number') {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+
+        // Limit to 11 digits
+        if (e.target.value.length > 11) {
+            e.target.value = e.target.value.slice(0, 11);
+        }
+    }
+});
 
 // Call on page load
 document.addEventListener('DOMContentLoaded', function() {

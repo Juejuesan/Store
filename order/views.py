@@ -24,8 +24,37 @@ def purchase_cart(request):
         messages.error(request, "No active cart found")
         return redirect('cart:view_cart')
 
+    # Get phone and location from POST data
+    phone_number = request.POST.get('phone_number', '').strip()
+    location = request.POST.get('location', '').strip()
+
+    # Validate phone number
+    if not phone_number:
+        messages.error(request, "Phone number is required")
+        return redirect('cart:view_cart')
+
+    # Check if phone contains only digits
+    if not phone_number.isdigit():
+        messages.error(request, "Phone number must contain only numbers")
+        return redirect('cart:view_cart')
+
+    # Check phone length (10-11 digits)
+    if len(phone_number) < 10 or len(phone_number) > 11:
+        messages.error(request, "Phone number must be 10-11 digits")
+        return redirect('cart:view_cart')
+
+    # Validate location
+    if not location:
+        messages.error(request, "Pickup location is required")
+        return redirect('cart:view_cart')
+
     try:
-        orders = OrderService.create_orders_from_cart(cart, request.user.profile)
+        orders = OrderService.create_orders_from_cart(
+            cart,
+            request.user.profile,
+            phone_number=phone_number,
+            location=location
+        )
         messages.success(
             request,
             f"Order placed successfully! {len(orders)} order(s) created. "
@@ -35,7 +64,6 @@ def purchase_cart(request):
     except ValueError as e:
         messages.error(request, str(e))
         return redirect('cart:view_cart')
-
 
 @login_required
 def order_list(request):

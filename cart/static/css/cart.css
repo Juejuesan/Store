@@ -275,3 +275,49 @@
         height: 28px;
     }
 }
+
+/* Purchase Modal Styles */
+.section-heading {
+    font-weight: 700;
+    color: #172033;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.section-heading i {
+    color: #2563eb;
+    margin-right: 8px;
+}
+
+.contact-info-section {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #334155;
+    font-size: 14px;
+}
+
+.form-control {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-control::placeholder {
+    color: #94a3b8;
+}
+
+.text-danger {
+    color: #dc2626 !important;
+}

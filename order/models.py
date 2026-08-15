@@ -32,6 +32,9 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
 
+    phone_number = models.CharField(max_length=11, blank=True, null=True)
+    location = models.CharField(max_length=200, blank=True, null=True)
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -67,6 +70,25 @@ class Order(models.Model):
                 self.cancel_deadline and
                 timezone.now() <= self.cancel_deadline
         )
+
+    def clean(self):
+        """Validate phone number"""
+        if self.phone_number:
+            # Check if only digits
+            if not self.phone_number.isdigit():
+                raise ValidationError({'phone_number': 'Phone number must contain only numbers'})
+
+            # Check length
+            if len(self.phone_number) < 10 or len(self.phone_number) > 11:
+                raise ValidationError({'phone_number': 'Phone number must be 10-11 digits'})
+
+        if not self.location:
+            raise ValidationError({'location': 'Location is required'})
+
+    def save(self, *args, **kwargs):
+        """Validate before saving"""
+        self.clean()
+        super().save(*args, **kwargs)
 
     @property
     def is_cancel_window_expired(self):
