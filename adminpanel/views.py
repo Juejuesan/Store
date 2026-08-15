@@ -941,3 +941,209 @@ def update_order_status(request, order_id, new_status):
         messages.error(request, str(e))
 
     return redirect('admin_order_detail', order_id=order.id)
+
+
+# =========================================================
+# ORDERS
+# =========================================================
+
+def check_and_auto_ready_orders():
+    """Auto-change pending orders to ready_for_pickup after 24 hours"""
+    Order.objects.filter(
+        status='pending',
+        auto_ready_at__lte=timezone.now()
+    ).update(
+        status='ready_for_pickup',
+        ready_for_pickup_at=timezone.now()
+    )
+
+
+@login_required
+def orders(request):
+    """View all orders"""
+    # Auto-ready expired orders first
+    check_and_auto_ready_orders()
+
+    orders = Order.objects.select_related(
+        'user__user', 'seller__user'
+    ).prefetch_related('items').order_by('-created_at')
+
+    context = {
+        'orders': orders,
+        'current_status': 'all',
+        'pending_count': Order.objects.filter(status='pending').count(),
+        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
+        'picked_up_count': Order.objects.filter(status='picked_up').count(),
+        'completed_count': Order.objects.filter(status='completed').count(),
+        'cancelled_count': Order.objects.filter(status='cancelled').count(),
+        'total_orders': Order.objects.count(),
+    }
+
+    return render(request, 'adminpanel/orders.html', context)
+
+
+@login_required
+def pending_orders(request):
+    """View pending orders"""
+    check_and_auto_ready_orders()
+
+    orders = Order.objects.filter(status='pending').select_related(
+        'user__user', 'seller__user'
+    ).order_by('-created_at')
+
+    context = {
+        'orders': orders,
+        'current_status': 'pending',
+        'pending_count': Order.objects.filter(status='pending').count(),
+        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
+        'picked_up_count': Order.objects.filter(status='picked_up').count(),
+        'completed_count': Order.objects.filter(status='completed').count(),
+        'cancelled_count': Order.objects.filter(status='cancelled').count(),
+        'total_orders': Order.objects.count(),
+    }
+
+    return render(request, 'adminpanel/orders.html', context)
+
+
+@login_required
+def ready_for_pickup_orders(request):
+    """View ready for pickup orders"""
+    orders = Order.objects.filter(status='ready_for_pickup').select_related(
+        'user__user', 'seller__user'
+    ).order_by('-ready_for_pickup_at')
+
+    context = {
+        'orders': orders,
+        'current_status': 'ready_for_pickup',
+        'pending_count': Order.objects.filter(status='pending').count(),
+        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
+        'picked_up_count': Order.objects.filter(status='picked_up').count(),
+        'completed_count': Order.objects.filter(status='completed').count(),
+        'cancelled_count': Order.objects.filter(status='cancelled').count(),
+        'total_orders': Order.objects.count(),
+    }
+
+    return render(request, 'adminpanel/orders.html', context)
+
+
+@login_required
+def picked_up_orders(request):
+    """View picked up orders"""
+    orders = Order.objects.filter(status='picked_up').select_related(
+        'user__user', 'seller__user'
+    ).order_by('-picked_up_at')
+
+    context = {
+        'orders': orders,
+        'current_status': 'picked_up',
+        'pending_count': Order.objects.filter(status='pending').count(),
+        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
+        'picked_up_count': Order.objects.filter(status='picked_up').count(),
+        'completed_count': Order.objects.filter(status='completed').count(),
+        'cancelled_count': Order.objects.filter(status='cancelled').count(),
+        'total_orders': Order.objects.count(),
+    }
+
+    return render(request, 'adminpanel/orders.html', context)
+
+
+@login_required
+def completed_orders(request):
+    """View completed orders"""
+    orders = Order.objects.filter(status='completed').select_related(
+        'user__user', 'seller__user'
+    ).order_by('-completed_at')
+
+    context = {
+        'orders': orders,
+        'current_status': 'completed',
+        'pending_count': Order.objects.filter(status='pending').count(),
+        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
+        'picked_up_count': Order.objects.filter(status='picked_up').count(),
+        'completed_count': Order.objects.filter(status='completed').count(),
+        'cancelled_count': Order.objects.filter(status='cancelled').count(),
+        'total_orders': Order.objects.count(),
+    }
+
+    return render(request, 'adminpanel/orders.html', context)
+
+
+@login_required
+def cancelled_orders(request):
+    """View cancelled orders"""
+    orders = Order.objects.filter(status='cancelled').select_related(
+        'user__user', 'seller__user'
+    ).order_by('-cancelled_at')
+
+    context = {
+        'orders': orders,
+        'current_status': 'cancelled',
+        'pending_count': Order.objects.filter(status='pending').count(),
+        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
+        'picked_up_count': Order.objects.filter(status='picked_up').count(),
+        'completed_count': Order.objects.filter(status='completed').count(),
+        'cancelled_count': Order.objects.filter(status='cancelled').count(),
+        'total_orders': Order.objects.count(),
+    }
+
+    return render(request, 'adminpanel/orders.html', context)
+
+
+@login_required
+def order_detail(request, order_id):
+    """View order details"""
+    order = get_object_or_404(
+        Order.objects.select_related('user__user', 'seller__user').prefetch_related(
+            'items__item__images', 'items__size_variant'
+        ),
+        id=order_id
+    )
+
+    # Auto-ready if expired
+    if order.status == 'pending' and order.auto_ready_at and timezone.now() >= order.auto_ready_at:
+        order.mark_ready_for_pickup()
+        order.refresh_from_db()
+
+    context = {
+        'order': order,
+    }
+
+    return render(request, 'adminpanel/order_detail.html', context)
+
+
+@login_required
+def auto_ready_order(request, order_id):
+    """Auto-ready order via AJAX"""
+    order = get_object_or_404(Order, id=order_id)
+
+    if order.status == 'pending' and order.auto_ready_at and timezone.now() >= order.auto_ready_at:
+        order.mark_ready_for_pickup()
+        return JsonResponse({'success': True, 'message': 'Order marked as ready for pickup'})
+
+    return JsonResponse({'success': False, 'message': 'Order not ready yet'})
+
+
+@login_required
+def update_order_status(request, order_id, new_status):
+    """Update order status from admin panel"""
+    order = get_object_or_404(Order, id=order_id)
+
+    try:
+        if new_status == 'ready_for_pickup':
+            order.mark_ready_for_pickup()
+            messages.success(request, f"Order #{order.id} marked as ready for pickup")
+        elif new_status == 'picked_up':
+            order.mark_picked_up()
+            messages.success(request, f"Order #{order.id} marked as picked up. Payment released.")
+        elif new_status == 'completed':
+            order.mark_completed()
+            messages.success(request, f"Order #{order.id} completed.")
+        elif new_status == 'cancelled':
+            order.cancel_order("Cancelled by admin")
+            messages.success(request, f"Order #{order.id} cancelled. Refund processed.")
+        else:
+            messages.error(request, "Invalid status")
+    except ValueError as e:
+        messages.error(request, str(e))
+
+    return redirect('admin_order_detail', order_id=order.id)

@@ -155,6 +155,6 @@ urlpatterns = [
 
     # Order detail and actions
     path('orders/<int:order_id>/', views.order_detail, name='admin_order_detail'),
+    path('orders/<int:order_id>/auto-ready/', views.auto_ready_order, name='admin_auto_ready_order'),  # ADD THIS
     path('orders/<int:order_id>/<str:new_status>/', views.update_order_status, name='admin_update_order_status'),
-
 ]

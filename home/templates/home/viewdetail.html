@@ -21,8 +21,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
 
-    {% if user.is_authenticated %}
-
+    {% if user.is_authenticated and request.user.profile != post.user %}
         <button
             type="button"
             class="wishlist-btn {% if post.id in wishlist_post_ids %}liked{% endif %}"
@@ -32,20 +31,19 @@
             data-remove-url="{% url 'wishlist:remove' post.id %}"
             data-wishlisted="{% if post.id in wishlist_post_ids %}true{% else %}false{% endif %}"
         >
-
             <i
                 id="wishlistIcon"
                 class="{% if post.id in wishlist_post_ids %}fa-solid{% else %}fa-regular{% endif %} fa-heart"
             ></i>
-
             <span id="wishlistText">
                 Wishlist
             </span>
-
         </button>
-
+    {% elif user.is_authenticated and request.user.profile == post.user %}
+        <span class="own-post-badge">
+            <i class="fa-solid fa-store"></i> This is your own post
+        </span>
     {% else %}
-
         <a
             href="{% url 'login' %}"
             class="wishlist-btn text-decoration-none"
@@ -53,7 +51,6 @@
             <i class="fa-regular fa-heart"></i>
             <span>Wishlist</span>
         </a>
-
     {% endif %}
 
 </div>
@@ -114,6 +111,7 @@
                         </p>
                     {% endif %}
 
+                    {% if request.user.profile != post.user %}
                     <div class="mt-4">
                         <div class="d-flex gap-2 align-items-center">
                             <div class="qty-selector">
@@ -137,12 +135,19 @@
                             </button>
                         </div>
                     </div>
+                    {% else %}
+                    <div class="own-item-notice mt-4">
+                        <i class="fa-solid fa-store"></i>
+                        This is your own item. You cannot buy your own items.
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
 
+    {% if post.items.count > 1 %}
     <div class="item-navigation">
         <button class="nav-btn" id="prevBtn" disabled>
             <i class="fa-solid fa-chevron-left"></i> Previous Item
@@ -152,6 +157,7 @@
             Next Item <i class="fa-solid fa-chevron-right"></i>
         </button>
     </div>
+    {% endif %}
 
 </div>
 </div>

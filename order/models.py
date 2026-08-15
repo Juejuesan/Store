@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils import timezone
@@ -44,8 +45,9 @@ class Order(models.Model):
     completed_at = models.DateTimeField(null=True, blank=True)
     cancelled_at = models.DateTimeField(null=True, blank=True)
 
-    # Cancellation window (e.g., 30 minutes)
+    # Cancellation window
     cancel_deadline = models.DateTimeField(null=True, blank=True)
+    auto_ready_at = models.DateTimeField(null=True, blank=True)  # ADDED
 
     # Notes
     cancellation_reason = models.TextField(blank=True, null=True)
@@ -71,29 +73,28 @@ class Order(models.Model):
                 timezone.now() <= self.cancel_deadline
         )
 
-    def clean(self):
-        """Validate phone number"""
-        if self.phone_number:
-            # Check if only digits
-            if not self.phone_number.isdigit():
-                raise ValidationError({'phone_number': 'Phone number must contain only numbers'})
-
-            # Check length
-            if len(self.phone_number) < 10 or len(self.phone_number) > 11:
-                raise ValidationError({'phone_number': 'Phone number must be 10-11 digits'})
-
-        if not self.location:
-            raise ValidationError({'location': 'Location is required'})
-
-    def save(self, *args, **kwargs):
-        """Validate before saving"""
-        self.clean()
-        super().save(*args, **kwargs)
-
     @property
     def is_cancel_window_expired(self):
         """Check if cancellation window has expired"""
         return self.cancel_deadline and timezone.now() > self.cancel_deadline
+
+    @property
+    def time_until_auto_ready(self):
+        """Return time remaining until auto-ready"""
+        if self.status == 'pending' and self.auto_ready_at:
+            remaining = self.auto_ready_at - timezone.now()
+            if remaining.total_seconds() > 0:
+                return remaining
+        return None
+
+    @property
+    def is_auto_ready_due(self):
+        """Check if order should be auto-ready now"""
+        return (
+                self.status == 'pending' and
+                self.auto_ready_at and
+                timezone.now() >= self.auto_ready_at
+        )
 
     @classmethod
     def get_user_cancellation_count_this_month(cls, user_profile):
@@ -114,6 +115,19 @@ class Order(models.Model):
         cancellation_count = cls.get_user_cancellation_count_this_month(user_profile)
         return cancellation_count < max_cancellations
 
+    def clean(self):
+        """Validate phone number"""
+        if self.phone_number:
+            if not self.phone_number.isdigit():
+                raise ValidationError({'phone_number': 'Phone number must contain only numbers'})
+            if len(self.phone_number) < 10 or len(self.phone_number) > 11:
+                raise ValidationError({'phone_number': 'Phone number must be 10-11 digits'})
+
+    def save(self, *args, **kwargs):
+        """Validate before saving"""
+        self.clean()
+        super().save(*args, **kwargs)
+
     def mark_ready_for_pickup(self):
         """Mark order as ready for pickup"""
         if self.status != 'pending':
@@ -124,26 +138,26 @@ class Order(models.Model):
         self.save()
 
     def mark_picked_up(self):
-        """Mark order as picked up by buyer"""
+        """Your team picked up from seller - release money to seller"""
         if self.status != 'ready_for_pickup':
             raise ValueError("Only ready for pickup orders can be marked as picked up")
 
         self.status = 'picked_up'
         self.picked_up_at = timezone.now()
-        self.save()
-
-    def mark_completed(self):
-        """Mark order as completed and release funds to seller"""
-        if self.status != 'picked_up':
-            raise ValueError("Only picked up orders can be marked as completed")
-
-        self.status = 'completed'
-        self.completed_at = timezone.now()
         self.payment_status = 'released'
         self.save()
 
-        # Release funds to seller
+        # Release funds to seller when picked up
         self.release_funds_to_seller()
+
+    def mark_completed(self):
+        """Item delivered to buyer - order closed"""
+        if self.status != 'picked_up':
+            raise ValueError("Only picked up orders can be completed")
+
+        self.status = 'completed'
+        self.completed_at = timezone.now()
+        self.save()
 
     def cancel_order(self, reason=None):
         """Cancel order and refund to buyer"""

@@ -9,8 +9,9 @@ from .models import Order, OrderItem
 
 
 class OrderService:
-    CANCELLATION_WINDOW_MINUTES = 30  # Configurable
+    CANCELLATION_WINDOW_MINUTES = 24  # Changed to 24 hours (1 day)
     MAX_CANCELLATIONS_PER_MONTH = 3
+    AUTO_READY_MINUTES = 1  # Auto-ready after 24 hours
 
     @classmethod
     @transaction.atomic
@@ -58,7 +59,12 @@ class OrderService:
 
         # Create orders for each seller
         orders = []
+        # cancel_deadline = timezone.now() + timedelta(hours=cls.CANCELLATION_WINDOW_HOURS)
+        # auto_ready_at = timezone.now() + timedelta(hours=cls.AUTO_READY_HOURS)
+
+        # for minute
         cancel_deadline = timezone.now() + timedelta(minutes=cls.CANCELLATION_WINDOW_MINUTES)
+        auto_ready_at = timezone.now() + timedelta(minutes=cls.AUTO_READY_MINUTES)
 
         for seller, items in items_by_seller.items():
             # Calculate seller total
@@ -74,6 +80,7 @@ class OrderService:
                 payment_status='held',
                 pending_at=timezone.now(),
                 cancel_deadline=cancel_deadline,
+                auto_ready_at=auto_ready_at,  # ADDED
                 phone_number=phone_number or user_profile.phone_number,
                 location=location or user_profile.address,
             )
@@ -140,10 +147,10 @@ class OrderService:
     @classmethod
     @transaction.atomic
     def mark_order_picked_up(cls, order_id, user_profile):
-        """Mark order as picked up (buyer confirms pickup)"""
+        """Mark order as picked up - releases money to seller"""
         order = Order.objects.select_for_update().get(id=order_id)
 
-        # Can be confirmed by either buyer or seller
+        # Can be confirmed by buyer, seller, or admin
         if order.user != user_profile and order.seller != user_profile:
             raise ValueError("Unauthorized to update this order")
 
@@ -153,7 +160,7 @@ class OrderService:
     @classmethod
     @transaction.atomic
     def mark_order_completed(cls, order_id, seller_profile):
-        """Mark order as completed and release funds"""
+        """Mark order as completed"""
         order = Order.objects.select_for_update().get(id=order_id)
 
         if order.seller != seller_profile:
@@ -161,3 +168,21 @@ class OrderService:
 
         order.mark_completed()
         return order
+
+    @classmethod
+    def auto_ready_orders(cls):
+        """Auto-change pending orders to ready_for_pickup after 24 hours"""
+        expired_orders = Order.objects.filter(
+            status='pending',
+            auto_ready_at__lte=timezone.now()
+        )
+
+        updated_count = 0
+        for order in expired_orders:
+            try:
+                order.mark_ready_for_pickup()
+                updated_count += 1
+            except Exception as e:
+                print(f"Failed to auto-ready order #{order.id}: {str(e)}")
+
+        return updated_count

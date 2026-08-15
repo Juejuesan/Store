@@ -1,15 +1,15 @@
-<!-- templates/order/order_detail.html -->
 {% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Order #{{ order.id }}{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/order.css' %}">
+<link rel="stylesheet" href="{% static 'css/order_detail.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="order-detail-container">
+    <!-- Header -->
     <div class="order-detail-header">
         <div class="header-left">
             <a href="{% if is_buyer %}{% url 'order:order_list' %}{% else %}{% url 'order:seller_orders' %}{% endif %}" class="back-link">
@@ -24,39 +24,39 @@
         </div>
     </div>
 
-    <!-- Progress Tracker -->
-    <div class="progress-tracker">
-        <div class="progress-step {% if order.status != 'cancelled' %}completed{% endif %}">
-            <div class="step-number">1</div>
-            <div class="step-label">Pending</div>
-        </div>
-        <div class="progress-line {% if order.status in 'ready_for_pickup,picked_up,completed' %}completed{% endif %}"></div>
-        <div class="progress-step {% if order.status in 'ready_for_pickup,picked_up,completed' %}completed{% endif %}">
-            <div class="step-number">2</div>
-            <div class="step-label">Ready for Pickup</div>
-        </div>
-        <div class="progress-line {% if order.status in 'picked_up,completed' %}completed{% endif %}"></div>
-        <div class="progress-step {% if order.status in 'picked_up,completed' %}completed{% endif %}">
-            <div class="step-number">3</div>
-            <div class="step-label">Picked Up</div>
-        </div>
-        <div class="progress-line {% if order.status == 'completed' %}completed{% endif %}"></div>
-        <div class="progress-step {% if order.status == 'completed' %}completed{% endif %}">
-            <div class="step-number">4</div>
-            <div class="step-label">Completed</div>
-        </div>
+    <!-- Status Message -->
+    <div class="status-message status-{{ order.status }}">
+        {% if order.status == 'pending' %}
+            <i class="fa-solid fa-clock"></i>
+            <span>Your order is pending. Waiting for confirmation.</span>
+        {% elif order.status == 'ready_for_pickup' %}
+            <i class="fa-solid fa-box-open"></i>
+            <span>We are going to pick up your items from the seller.</span>
+        {% elif order.status == 'picked_up' %}
+            <i class="fa-solid fa-hand"></i>
+            <span>We got the items for you! Preparing for delivery.</span>
+        {% elif order.status == 'completed' %}
+            <i class="fa-solid fa-check-circle"></i>
+            <span>Delivered successfully! Thank you for shopping with us.</span>
+        {% elif order.status == 'cancelled' %}
+            <i class="fa-solid fa-ban"></i>
+            <span>Order cancelled. Refund processed.</span>
+        {% endif %}
     </div>
 
-    <!-- Cancellation Warning -->
+    <!-- Cancellation Warning with Countdown -->
     {% if is_buyer and order.can_cancel %}
-    <div class="cancellation-warning" id="cancel-section">
+    <div class="cancellation-warning">
         <div class="warning-header">
             <span class="warning-icon">⚠️</span>
             <h3>Cancellation Window</h3>
         </div>
         <p>You can cancel this order until: <strong>{{ order.cancel_deadline|date:"M d, Y H:i" }}</strong></p>
-        <p class="cancellation-countdown" data-cancel-deadline="{{ order.cancel_deadline|date:'c' }}"></p>
-        <form method="post" action="{% url 'order:cancel_order' order.id %}" class="cancel-form confirm-form" data-confirm-message="Are you sure you want to cancel this order? This action cannot be undone.">
+        <div class="countdown-timer" data-cancel-deadline="{{ order.cancel_deadline|date:'c' }}">
+            <i class="fa-solid fa-hourglass-half"></i>
+            <span class="countdown-text">Loading...</span>
+        </div>
+        <form method="post" action="{% url 'order:cancel_order' order.id %}" class="cancel-form">
             {% csrf_token %}
             <div class="form-group">
                 <label for="cancellation_reason">Cancellation Reason (optional):</label>
@@ -67,16 +67,7 @@
     </div>
     {% endif %}
 
-    <!-- Cancellation Info -->
-    {% if order.status == 'cancelled' and order.cancellation_reason %}
-    <div class="cancellation-info">
-        <h4>Cancellation Information</h4>
-        <p><strong>Reason:</strong> {{ order.cancellation_reason }}</p>
-        <p><strong>Cancelled at:</strong> {{ order.cancelled_at|date:"M d, Y H:i" }}</p>
-    </div>
-    {% endif %}
-
-    <!-- Order Information -->
+    <!-- Order Info Grid -->
     <div class="order-info-grid">
         <div class="info-card">
             <h3>Order Information</h3>
@@ -103,20 +94,34 @@
         </div>
 
         <div class="info-card">
-            <h3>{% if is_buyer %}Seller Information{% else %}Buyer Information{% endif %}</h3>
+            {% if is_buyer %}
+            <h3>Seller Information</h3>
             <div class="info-row">
                 <span class="info-label">Username:</span>
-                <span>{% if is_buyer %}{{ order.seller.user.username }}{% else %}{{ order.user.user.username }}{% endif %}</span>
-            </div>
-            {% if is_buyer %}
-            <div class="info-row">
-                <span class="info-label">Phone:</span>
-                <span>{{ order.seller.phone }}</span>
+                <span>{{ order.seller.user.username }}</span>
             </div>
             {% else %}
+            <h3>Buyer Information</h3>
+            <div class="info-row">
+                <span class="info-label">Username:</span>
+                <span>{{ order.user.user.username }}</span>
+            </div>
             <div class="info-row">
                 <span class="info-label">Phone:</span>
-                <span>{{ order.user.phone }}</span>
+                <span>{{ order.user.phone_number|default:"-" }}</span>
+            </div>
+            {% endif %}
+
+            {% if order.phone_number %}
+            <div class="info-row">
+                <span class="info-label">Contact Phone:</span>
+                <span>{{ order.phone_number }}</span>
+            </div>
+            {% endif %}
+            {% if order.location %}
+            <div class="info-row">
+                <span class="info-label">Pickup Location:</span>
+                <span>{{ order.location }}</span>
             </div>
             {% endif %}
         </div>
@@ -146,7 +151,7 @@
             <div class="timeline-item completed">
                 <div class="timeline-marker"></div>
                 <div class="timeline-content">
-                    <h4>Picked Up</h4>
+                    <h4>Picked Up by Our Team</h4>
                     <p>{{ order.picked_up_at|date:"M d, Y H:i" }}</p>
                 </div>
             </div>
@@ -155,7 +160,7 @@
             <div class="timeline-item completed">
                 <div class="timeline-marker"></div>
                 <div class="timeline-content">
-                    <h4>Completed</h4>
+                    <h4>Delivered Successfully</h4>
                     <p>{{ order.completed_at|date:"M d, Y H:i" }}</p>
                 </div>
             </div>
@@ -192,10 +197,9 @@
                     {% if order_item.size_variant %}
                     <p class="order-item-size">Size: {{ order_item.size_variant.size }}</p>
                     {% endif %}
-                    <p class="order-item-description">{{ order_item.item.description|truncatechars:100 }}</p>
                     {% if order_item.item.post %}
                     <p class="order-item-category">
-                        Category: {{ order_item.item.post.category.name }}
+                        {{ order_item.item.post.category.name }}
                         {% if order_item.item.post.condition == 'new' %}
                         <span class="condition-badge new">New</span>
                         {% else %}
@@ -206,15 +210,12 @@
                 </div>
                 <div class="order-item-pricing">
                     <div class="price-row">
-                        <span class="price-label">Unit Price:</span>
-                        <span>{{ order_item.unit_price }} Ks</span>
+                        <span>Unit: {{ order_item.unit_price }} Ks</span>
                     </div>
                     <div class="price-row">
-                        <span class="price-label">Quantity:</span>
-                        <span>{{ order_item.quantity }}</span>
+                        <span>Qty: {{ order_item.quantity }}</span>
                     </div>
                     <div class="price-row total">
-                        <span class="price-label">Total:</span>
                         <span>{{ order_item.total_price }} Ks</span>
                     </div>
                 </div>
@@ -223,44 +224,13 @@
         </div>
 
         <div class="order-total-summary">
-            <div class="total-row">
-                <span>Total Amount:</span>
-                <span class="grand-total">{{ order.total_amount }} Ks</span>
-            </div>
+            <span>Total Amount:</span>
+            <span class="grand-total">{{ order.total_amount }} Ks</span>
         </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="action-buttons">
-        {% if is_seller %}
-            {% if order.status == 'pending' %}
-            <form method="post" action="{% url 'order:mark_ready_for_pickup' order.id %}" class="confirm-form" data-confirm-message="Mark this order as ready for pickup?">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-ready">Mark as Ready for Pickup</button>
-            </form>
-            {% elif order.status == 'ready_for_pickup' %}
-            <form method="post" action="{% url 'order:mark_picked_up' order.id %}" class="confirm-form" data-confirm-message="Confirm that buyer picked up this order?">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-picked">Confirm Pickup</button>
-            </form>
-            {% elif order.status == 'picked_up' %}
-            <form method="post" action="{% url 'order:mark_completed' order.id %}" class="confirm-form" data-confirm-message="Complete this order? Payment will be released to your wallet.">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-complete">Complete Order & Release Payment</button>
-            </form>
-            {% endif %}
-        {% elif is_buyer %}
-            {% if order.status == 'ready_for_pickup' %}
-            <form method="post" action="{% url 'order:mark_picked_up' order.id %}" class="confirm-form" data-confirm-message="Confirm that you picked up this order?">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-picked">Confirm Pickup</button>
-            </form>
-            {% endif %}
-        {% endif %}
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/order.js' %}"></script>
+<script src="{% static 'js/order_detail.js' %}"></script>
 {% endblock %}

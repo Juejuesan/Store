@@ -17,38 +17,38 @@
         </h2>
     </div>
 
-   <!-- Filter Tabs -->
-<div class="order-filters">
-    <a href="{% url 'admin_orders' %}" class="filter-btn {% if current_status == 'all' %}active{% endif %}">
-        <i class="fa-solid fa-list"></i> All Orders
-        <span class="count-badge">{{ total_orders }}</span>
-    </a>
+    <!-- Filter Tabs -->
+    <div class="order-filters">
+        <a href="{% url 'admin_orders' %}" class="filter-btn {% if current_status == 'all' %}active{% endif %}">
+            <i class="fa-solid fa-list"></i> All Orders
+            <span class="count-badge">{{ total_orders }}</span>
+        </a>
 
-    <a href="{% url 'admin_pending_orders' %}" class="filter-btn pending {% if current_status == 'pending' %}active{% endif %}">
-        <i class="fa-solid fa-clock"></i> Pending
-        <span class="count-badge">{{ pending_count }}</span>
-    </a>
+        <a href="{% url 'admin_pending_orders' %}" class="filter-btn pending {% if current_status == 'pending' %}active{% endif %}">
+            <i class="fa-solid fa-clock"></i> Pending
+            <span class="count-badge">{{ pending_count }}</span>
+        </a>
 
-    <a href="{% url 'admin_ready_orders' %}" class="filter-btn ready {% if current_status == 'ready_for_pickup' %}active{% endif %}">
-        <i class="fa-solid fa-box-open"></i> Ready for Pickup
-        <span class="count-badge">{{ ready_count }}</span>
-    </a>
+        <a href="{% url 'admin_ready_orders' %}" class="filter-btn ready {% if current_status == 'ready_for_pickup' %}active{% endif %}">
+            <i class="fa-solid fa-box-open"></i> Ready for Pickup
+            <span class="count-badge">{{ ready_count }}</span>
+        </a>
 
-    <a href="{% url 'admin_picked_up_orders' %}" class="filter-btn picked {% if current_status == 'picked_up' %}active{% endif %}">
-        <i class="fa-solid fa-hand"></i> Picked Up
-        <span class="count-badge">{{ picked_up_count }}</span>
-    </a>
+        <a href="{% url 'admin_picked_up_orders' %}" class="filter-btn picked {% if current_status == 'picked_up' %}active{% endif %}">
+            <i class="fa-solid fa-hand"></i> Picked Up
+            <span class="count-badge">{{ picked_up_count }}</span>
+        </a>
 
-    <a href="{% url 'admin_completed_orders' %}" class="filter-btn completed {% if current_status == 'completed' %}active{% endif %}">
-        <i class="fa-solid fa-check-circle"></i> Completed
-        <span class="count-badge">{{ completed_count }}</span>
-    </a>
+        <a href="{% url 'admin_completed_orders' %}" class="filter-btn completed {% if current_status == 'completed' %}active{% endif %}">
+            <i class="fa-solid fa-check-circle"></i> Completed
+            <span class="count-badge">{{ completed_count }}</span>
+        </a>
 
-    <a href="{% url 'admin_cancelled_orders' %}" class="filter-btn cancelled {% if current_status == 'cancelled' %}active{% endif %}">
-        <i class="fa-solid fa-ban"></i> Cancelled
-        <span class="count-badge">{{ cancelled_count }}</span>
-    </a>
-</div>
+        <a href="{% url 'admin_cancelled_orders' %}" class="filter-btn cancelled {% if current_status == 'cancelled' %}active{% endif %}">
+            <i class="fa-solid fa-ban"></i> Cancelled
+            <span class="count-badge">{{ cancelled_count }}</span>
+        </a>
+    </div>
 
     <!-- Orders Table -->
     <div class="orders-table-wrapper">
@@ -61,10 +61,10 @@
                         <th>Seller</th>
                         <th>Total</th>
                         <th>Status</th>
+                        <th>Countdown</th>
                         <th>Payment</th>
                         <th>Phone</th>
                         <th>Location</th>
-                        <th>Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -95,13 +95,30 @@
                             </span>
                         </td>
                         <td>
+                            {% if order.status == 'pending' and order.auto_ready_at %}
+                                <span class="countdown-timer"
+                                      data-auto-ready-at="{{ order.auto_ready_at|date:'c' }}"
+                                      data-order-id="{{ order.id }}">
+                                    <i class="fa-solid fa-hourglass-half"></i>
+                                    <span class="countdown-text">Loading...</span>
+                                </span>
+                            {% elif order.status == 'pending' and order.cancel_deadline %}
+                                <span class="countdown-timer cancel"
+                                      data-cancel-deadline="{{ order.cancel_deadline|date:'c' }}">
+                                    <i class="fa-solid fa-clock"></i>
+                                    <span class="countdown-text">Loading...</span>
+                                </span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
                             <span class="payment-badge {{ order.payment_status }}">
                                 {{ order.get_payment_status_display }}
                             </span>
                         </td>
                         <td>{{ order.phone_number|default:"-" }}</td>
                         <td>{{ order.location|default:"-"|truncatechars:15 }}</td>
-                        <td>{{ order.created_at|date:"M d, Y" }}</td>
                         <td>
                             <a href="{% url 'admin_order_detail' order.id %}" class="action-btn view">
                                 <i class="fa-solid fa-eye"></i> View

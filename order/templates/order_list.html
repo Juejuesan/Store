@@ -1,266 +1,88 @@
-<!-- templates/order/order_detail.html -->
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Order #{{ order.id }}{% endblock %}
+{% block title %}My Orders{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/order.css' %}">
+<link rel="stylesheet" href="{% static 'css/order_list.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="order-detail-container">
-    <div class="order-detail-header">
-        <div class="header-left">
-            <a href="{% if is_buyer %}{% url 'order:order_list' %}{% else %}{% url 'order:seller_orders' %}{% endif %}" class="back-link">
-                ← Back to Orders
-            </a>
-            <h2>Order #{{ order.id }}</h2>
-        </div>
-        <div class="header-right">
-            <span class="status-badge status-{{ order.status }}">
-                {{ order.get_status_display }}
-            </span>
-        </div>
-    </div>
+<div class="order-list-container">
+    <h2 class="order-list-title">My Orders</h2>
 
-    <!-- Progress Tracker -->
-    <div class="progress-tracker">
-        <div class="progress-step {% if order.status != 'cancelled' %}completed{% endif %}">
-            <div class="step-number">1</div>
-            <div class="step-label">Pending</div>
-        </div>
-        <div class="progress-line {% if order.status in 'ready_for_pickup,picked_up,completed' %}completed{% endif %}"></div>
-        <div class="progress-step {% if order.status in 'ready_for_pickup,picked_up,completed' %}completed{% endif %}">
-            <div class="step-number">2</div>
-            <div class="step-label">Ready for Pickup</div>
-        </div>
-        <div class="progress-line {% if order.status in 'picked_up,completed' %}completed{% endif %}"></div>
-        <div class="progress-step {% if order.status in 'picked_up,completed' %}completed{% endif %}">
-            <div class="step-number">3</div>
-            <div class="step-label">Picked Up</div>
-        </div>
-        <div class="progress-line {% if order.status == 'completed' %}completed{% endif %}"></div>
-        <div class="progress-step {% if order.status == 'completed' %}completed{% endif %}">
-            <div class="step-number">4</div>
-            <div class="step-label">Completed</div>
-        </div>
-    </div>
+    {% if orders %}
+    <div class="orders-grid">
+        {% for order in orders %}
+        <div class="order-card">
+            <!-- Order Header -->
+            <div class="order-card-header">
+                <div class="order-id-date">
+                    <span class="order-id">#{{ order.id }}</span>
+                    <span class="order-date">{{ order.created_at|date:"M d, Y" }}</span>
+                </div>
+                <span class="order-status status-{{ order.status }}">
+                    {{ order.get_status_display }}
+                </span>
+            </div>
 
-    <!-- Cancellation Warning -->
-    {% if is_buyer and order.can_cancel %}
-    <div class="cancellation-warning" id="cancel-section">
-        <div class="warning-header">
-            <span class="warning-icon">⚠️</span>
-            <h3>Cancellation Window</h3>
-        </div>
-        <p>You can cancel this order until: <strong>{{ order.cancel_deadline|date:"M d, Y H:i" }}</strong></p>
-        <p class="cancellation-countdown" data-cancel-deadline="{{ order.cancel_deadline|date:'c' }}"></p>
-        <form method="post" action="{% url 'order:cancel_order' order.id %}" id="cancelOrderForm" class="cancel-form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="cancellation_reason">Cancellation Reason (optional):</label>
-                <textarea name="reason" id="cancellation_reason" rows="3" placeholder="Please let us know why you're cancelling..."></textarea>
+            <!-- Seller Info -->
+            <div class="seller-info">
+                <i class="fa-solid fa-store"></i>
+                <span>Seller: {{ order.seller.fullName|default:order.seller.user.username }}</span>
             </div>
-            <button type="submit" class="btn btn-cancel" id="cancelOrderBtn">Cancel Order</button>
-        </form>
-    </div>
-    {% endif %}
 
-    <!-- Cancellation Info -->
-    {% if order.status == 'cancelled' and order.cancellation_reason %}
-    <div class="cancellation-info">
-        <h4>Cancellation Information</h4>
-        <p><strong>Reason:</strong> {{ order.cancellation_reason }}</p>
-        <p><strong>Cancelled at:</strong> {{ order.cancelled_at|date:"M d, Y H:i" }}</p>
-    </div>
-    {% endif %}
-
-    <!-- Order Information -->
-    <div class="order-info-grid">
-        <div class="info-card">
-            <h3>Order Information</h3>
-            <div class="info-row">
-                <span class="info-label">Order ID:</span>
-                <span>#{{ order.id }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Status:</span>
-                <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Payment Status:</span>
-                <span>{{ order.get_payment_status_display }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Total Amount:</span>
-                <span class="total-amount">{{ order.total_amount }} Ks</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Order Date:</span>
-                <span>{{ order.created_at|date:"M d, Y H:i" }}</span>
-            </div>
-        </div>
-
-        <div class="info-card">
-            <h3>{% if is_buyer %}Seller Information{% else %}Buyer Information{% endif %}</h3>
-            <div class="info-row">
-                <span class="info-label">Username:</span>
-                <span>{% if is_buyer %}{{ order.seller.user.username }}{% else %}{{ order.user.user.username }}{% endif %}</span>
-            </div>
-            {% if is_buyer %}
-            <div class="info-row">
-                <span class="info-label">Phone:</span>
-                <span>{{ order.seller.phone }}</span>
-            </div>
-            {% else %}
-            <div class="info-row">
-                <span class="info-label">Phone:</span>
-                <span>{{ order.user.phone }}</span>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Timeline -->
-    <div class="order-timeline">
-        <h3>Order Timeline</h3>
-        <div class="timeline">
-            <div class="timeline-item completed">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h4>Order Placed</h4>
-                    <p>{{ order.pending_at|date:"M d, Y H:i" }}</p>
-                </div>
-            </div>
-            {% if order.ready_for_pickup_at %}
-            <div class="timeline-item completed">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h4>Ready for Pickup</h4>
-                    <p>{{ order.ready_for_pickup_at|date:"M d, Y H:i" }}</p>
-                </div>
-            </div>
-            {% endif %}
-            {% if order.picked_up_at %}
-            <div class="timeline-item completed">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h4>Picked Up</h4>
-                    <p>{{ order.picked_up_at|date:"M d, Y H:i" }}</p>
-                </div>
-            </div>
-            {% endif %}
-            {% if order.completed_at %}
-            <div class="timeline-item completed">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h4>Completed</h4>
-                    <p>{{ order.completed_at|date:"M d, Y H:i" }}</p>
-                </div>
-            </div>
-            {% endif %}
-            {% if order.cancelled_at %}
-            <div class="timeline-item cancelled">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h4>Cancelled</h4>
-                    <p>{{ order.cancelled_at|date:"M d, Y H:i" }}</p>
-                </div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Order Items -->
-    <div class="order-items-section">
-        <h3>Order Items</h3>
-        <div class="order-items-list">
-            {% for order_item in order.items.all %}
-            <div class="order-item-card">
-                <div class="order-item-image">
-                    {% with first_image=order_item.item.images.first %}
-                        {% if first_image %}
-                        <img src="{{ first_image.image.url }}" alt="{{ order_item.item_name }}">
-                        {% else %}
-                        <div class="item-placeholder">📦</div>
-                        {% endif %}
-                    {% endwith %}
-                </div>
-                <div class="order-item-details">
-                    <h4 class="order-item-name">{{ order_item.item_name }}</h4>
-                    {% if order_item.size_variant %}
-                    <p class="order-item-size">Size: {{ order_item.size_variant.size }}</p>
-                    {% endif %}
-                    <p class="order-item-description">{{ order_item.item.description|truncatechars:100 }}</p>
-                    {% if order_item.item.post %}
-                    <p class="order-item-category">
-                        Category: {{ order_item.item.post.category.name }}
-                        {% if order_item.item.post.condition == 'new' %}
-                        <span class="condition-badge new">New</span>
-                        {% else %}
-                        <span class="condition-badge used">Second Hand</span>
-                        {% endif %}
-                    </p>
-                    {% endif %}
-                </div>
-                <div class="order-item-pricing">
-                    <div class="price-row">
-                        <span class="price-label">Unit Price:</span>
-                        <span>{{ order_item.unit_price }} Ks</span>
+            <!-- Order Items -->
+            <div class="order-items">
+                {% for order_item in order.items.all %}
+                <div class="order-item">
+                    <div class="item-image">
+                        {% with first_image=order_item.item.images.first %}
+                            {% if first_image %}
+                            <img src="{{ first_image.image.url }}" alt="{{ order_item.item_name }}">
+                            {% else %}
+                            <div class="no-image">📦</div>
+                            {% endif %}
+                        {% endwith %}
                     </div>
-                    <div class="price-row">
-                        <span class="price-label">Quantity:</span>
-                        <span>{{ order_item.quantity }}</span>
+                    <div class="item-details">
+                        <span class="item-name">{{ order_item.item_name }}</span>
+                        {% if order_item.size_variant %}
+                        <span class="item-size">Size: {{ order_item.size_variant.size }}</span>
+                        {% endif %}
+                        <span class="item-qty">Qty: {{ order_item.quantity }}</span>
                     </div>
-                    <div class="price-row total">
-                        <span class="price-label">Total:</span>
+                    <div class="item-price">
                         <span>{{ order_item.total_price }} Ks</span>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
 
-        <div class="order-total-summary">
-            <div class="total-row">
-                <span>Total Amount:</span>
-                <span class="grand-total">{{ order.total_amount }} Ks</span>
+            <!-- Order Footer -->
+            <div class="order-card-footer">
+                <div class="order-total">
+                    <span>Total:</span>
+                    <strong>{{ order.total_amount }} Ks</strong>
+                </div>
+                <a href="{% url 'order:order_detail' order.id %}" class="view-btn">
+                    View Details
+                </a>
             </div>
         </div>
+        {% endfor %}
     </div>
-
-    <!-- Action Buttons -->
-    <div class="action-buttons">
-        {% if is_seller %}
-            {% if order.status == 'pending' %}
-            <form method="post" action="{% url 'order:mark_ready_for_pickup' order.id %}" class="confirm-form" data-confirm-message="Mark this order as ready for pickup?">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-ready">Mark as Ready for Pickup</button>
-            </form>
-            {% elif order.status == 'ready_for_pickup' %}
-            <form method="post" action="{% url 'order:mark_picked_up' order.id %}" class="confirm-form" data-confirm-message="Confirm that buyer picked up this order?">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-picked">Confirm Pickup</button>
-            </form>
-            {% elif order.status == 'picked_up' %}
-            <form method="post" action="{% url 'order:mark_completed' order.id %}" class="confirm-form" data-confirm-message="Complete this order? Payment will be released to your wallet.">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-complete">Complete Order & Release Payment</button>
-            </form>
-            {% endif %}
-        {% elif is_buyer %}
-            {% if order.status == 'ready_for_pickup' %}
-            <form method="post" action="{% url 'order:mark_picked_up' order.id %}" class="confirm-form" data-confirm-message="Confirm that you picked up this order?">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-picked">Confirm Pickup</button>
-            </form>
-            {% endif %}
-        {% endif %}
+    {% else %}
+    <div class="empty-orders">
+        <i class="fa-solid fa-box-open"></i>
+        <h3>No Orders Yet</h3>
+        <p>Start shopping and your orders will appear here!</p>
+        <a href="{% url 'home' %}" class="shop-btn">Shop Now</a>
     </div>
+    {% endif %}
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/order.js' %}"></script>
+<script src="{% static 'js/order_list.js' %}"></script>
 {% endblock %}

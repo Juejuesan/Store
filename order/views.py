@@ -3,12 +3,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.db.models import Q
 from cart.models import Cart
 from wallet.models import Wallet, WalletTransaction
 from .models import Order, OrderItem
 from .services import OrderService
+
+
+def check_and_auto_ready_orders():
+    """Auto-change pending orders to ready_for_pickup after 24 hours"""
+    Order.objects.filter(
+        status='pending',
+        auto_ready_at__lte=timezone.now()
+    ).update(
+        status='ready_for_pickup',
+        ready_for_pickup_at=timezone.now()
+    )
 
 
 @login_required
@@ -58,16 +70,20 @@ def purchase_cart(request):
         messages.success(
             request,
             f"Order placed successfully! {len(orders)} order(s) created. "
-            f"You can cancel within 30 minutes."
+            f"You can cancel within 24 hours."
         )
         return redirect('order:order_list')
     except ValueError as e:
         messages.error(request, str(e))
         return redirect('cart:view_cart')
 
+
 @login_required
 def order_list(request):
     """View all orders for user (as buyer)"""
+    # Auto-ready expired orders
+    check_and_auto_ready_orders()
+
     # Get filter parameter
     status_filter = request.GET.get('status', 'all')
 
@@ -96,6 +112,11 @@ def order_detail(request, order_id):
         ),
         id=order_id
     )
+
+    # Auto-ready if expired
+    if order.status == 'pending' and order.auto_ready_at and timezone.now() >= order.auto_ready_at:
+        order.mark_ready_for_pickup()
+        order.refresh_from_db()
 
     # Check if user is buyer or seller
     if order.user != request.user.profile and order.seller != request.user.profile:
@@ -129,6 +150,9 @@ def cancel_order(request, order_id):
 @login_required
 def seller_orders(request):
     """View orders for seller"""
+    # Auto-ready expired orders
+    check_and_auto_ready_orders()
+
     status_filter = request.GET.get('status', 'all')
 
     orders = Order.objects.filter(
@@ -166,7 +190,7 @@ def mark_picked_up(request, order_id):
     """Mark order as picked up (buyer or seller confirms)"""
     try:
         order = OrderService.mark_order_picked_up(order_id, request.user.profile)
-        messages.success(request, "Order marked as picked up")
+        messages.success(request, "Order marked as picked up. Payment released to seller.")
     except ValueError as e:
         messages.error(request, str(e))
 
@@ -180,10 +204,10 @@ def mark_picked_up(request, order_id):
 @login_required
 @require_POST
 def mark_completed(request, order_id):
-    """Mark order as completed and release funds (seller action)"""
+    """Mark order as completed"""
     try:
         order = OrderService.mark_order_completed(order_id, request.user.profile)
-        messages.success(request, "Order completed. Payment released to your wallet.")
+        messages.success(request, "Order completed.")
     except ValueError as e:
         messages.error(request, str(e))
 

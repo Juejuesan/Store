@@ -5,6 +5,95 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
+    /* ============ COUNTDOWN TIMERS ============ */
+    function updateCountdowns() {
+        const countdowns = document.querySelectorAll('.countdown-timer');
+
+        countdowns.forEach(timer => {
+            const autoReadyAt = timer.getAttribute('data-auto-ready-at');
+            const cancelDeadline = timer.getAttribute('data-cancel-deadline');
+            const now = new Date();
+
+            let targetTime = null;
+            if (autoReadyAt) {
+                targetTime = new Date(autoReadyAt);
+            } else if (cancelDeadline) {
+                targetTime = new Date(cancelDeadline);
+            }
+
+            if (!targetTime) return;
+
+            const timeLeft = targetTime - now;
+            const countdownText = timer.querySelector('.countdown-text');
+
+            if (timeLeft <= 0) {
+                if (countdownText) {
+                    countdownText.textContent = 'Ready!';
+                }
+                timer.classList.add('expired');
+
+                // If auto-ready expired, reload page
+                if (autoReadyAt) {
+                    const orderId = timer.getAttribute('data-order-id');
+                    if (orderId) {
+                        updateOrderStatus(orderId);
+                    }
+                }
+            } else {
+                const hours = Math.floor(timeLeft / 3600000);
+                const minutes = Math.floor((timeLeft % 3600000) / 60000);
+                const seconds = Math.floor((timeLeft % 60000) / 1000);
+
+                if (countdownText) {
+                    countdownText.textContent = `${hours}h ${minutes}m ${seconds}s`;
+                }
+            }
+        });
+    }
+
+    function updateOrderStatus(orderId) {
+        fetch(`/admin/orders/${orderId}/auto-ready/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating order:', error);
+        });
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Update countdowns immediately
+    updateCountdowns();
+
+    // Update every second
+    setInterval(updateCountdowns, 1000);
+
     /* ============ FILTER TABS - FIXED ============ */
     // Don't add click handlers to filter tabs
     // Let the links work normally with page reload

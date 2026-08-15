@@ -121,22 +121,7 @@
  
                 </li> 
  
-                <li> 
- 
-                    <a href="#"> 
- 
-                        <i class="fa-solid fa-layer-group"></i> 
- 
-                        <span> 
- 
-                            Categories 
- 
-                        </span> 
- 
-                    </a> 
- 
-                </li> 
- 
+
                 <li class="{% if request.resolver_match.url_name == 'users' %}active{% endif %}"> 
  
     <a href="{% url 'users' %}"> 
@@ -154,7 +139,7 @@
 </li> 
                 <li> 
  
-                    <a href="#"> 
+                    <a href="{% url 'admin_orders' %}">
  
                         <i class="fa-solid fa-cart-shopping"></i> 
  

@@ -117,13 +117,39 @@
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-    overflow: hidden;
+    overflow-x: auto; /* CHANGED from hidden to auto */
 }
 
 .orders-table {
     width: 100%;
     margin-bottom: 0;
+    min-width: 1200px; /* ADD THIS */
+    table-layout: auto;
 }
+
+.orders-table thead th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.orders-table tbody td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Column widths */
+.orders-table thead th:nth-child(1) { min-width: 60px; }  /* Order ID */
+.orders-table thead th:nth-child(2) { min-width: 150px; } /* Buyer */
+.orders-table thead th:nth-child(3) { min-width: 150px; } /* Seller */
+.orders-table thead th:nth-child(4) { min-width: 100px; } /* Total */
+.orders-table thead th:nth-child(5) { min-width: 140px; } /* Status */
+.orders-table thead th:nth-child(6) { min-width: 140px; } /* Countdown */
+.orders-table thead th:nth-child(7) { min-width: 120px; } /* Payment */
+.orders-table thead th:nth-child(8) { min-width: 120px; } /* Phone */
+.orders-table thead th:nth-child(9) { min-width: 120px; } /* Location */
+.orders-table thead th:nth-child(10) { min-width: 80px; } /* Actions */
 
 .orders-table thead {
     background: #172033;
@@ -172,6 +198,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    min-width: 120px;
 }
 
 .user-avatar {
@@ -191,6 +218,10 @@
 .user-info .username {
     font-weight: 600;
     color: #172033;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
 }
 
 /* =========================================================
@@ -499,8 +530,12 @@
         white-space: nowrap;
     }
 
+    .orders-table-wrapper {
+        overflow-x: auto;
+    }
+
     .orders-table {
-        min-width: 900px;
+        min-width: 1100px;
     }
 }
 
@@ -514,4 +549,32 @@
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+/* Countdown Timer */
+.countdown-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    background: #fef3c7;
+    color: #92400e;
+    white-space: nowrap;
+}
+
+.countdown-timer.cancel {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.countdown-timer.expired {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.countdown-text {
+    font-variant-numeric: tabular-nums;
 }

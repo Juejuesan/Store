@@ -148,13 +148,13 @@
                     {% elif order.status == 'ready_for_pickup' %}
                     <div class="d-grid gap-2">
                         <a href="{% url 'admin_update_order_status' order.id 'picked_up' %}" class="action-btn picked confirm-action" data-confirm-message="Mark this order as picked up?">
-                            <i class="fa-solid fa-hand"></i> Mark as Picked Up
+                            <i class="fa-solid fa-hand"></i> Mark as Picked Up and Transfer Money to Seller
                         </a>
                     </div>
                     {% elif order.status == 'picked_up' %}
                     <div class="d-grid gap-2">
                         <a href="{% url 'admin_update_order_status' order.id 'completed' %}" class="action-btn complete confirm-action" data-confirm-message="Complete order? Payment will be released to seller.">
-                            <i class="fa-solid fa-check-circle"></i> Complete & Release Payment
+                            <i class="fa-solid fa-check-circle"></i> Delivered Successfully
                         </a>
                     </div>
                     {% elif order.status == 'completed' %}
