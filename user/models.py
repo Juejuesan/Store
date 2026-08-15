@@ -60,10 +60,20 @@ class Profile(models.Model):
         default=False
     )
 
+    terms_accepted = models.BooleanField(
+        default=False
+    )
+
     verification_code = models.CharField(
         max_length=6,
         blank=True,
         null=True
+    )
+
+
+    terms_accepted_at = models.DateTimeField(
+        null=True,
+        blank=True
     )
 
     def __str__(self):

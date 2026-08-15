@@ -1,6 +1,9 @@
-# user/urls.py
+# =========================================================
+# USER URLS
+# =========================================================
 
 from django.urls import path
+
 from . import views
 
 
@@ -19,6 +22,7 @@ urlpatterns = [
         name="register",
     ),
 
+
     # =====================================================
     # LOGIN
     # =====================================================
@@ -28,6 +32,7 @@ urlpatterns = [
         views.login_view,
         name="login",
     ),
+
 
     # =====================================================
     # LOGOUT
@@ -39,6 +44,7 @@ urlpatterns = [
         name="logout",
     ),
 
+
     # =====================================================
     # DASHBOARD
     # =====================================================
@@ -48,6 +54,7 @@ urlpatterns = [
         views.dashboard,
         name="dashboard",
     ),
+
 
     # =====================================================
     # PROFILE PICTURE
@@ -59,6 +66,29 @@ urlpatterns = [
         name="update_profile_pic",
     ),
 
+
+    # =====================================================
+    # DELETE PROFILE PICTURE
+    # =====================================================
+
+    path(
+        "delete-profile-pic/",
+        views.delete_profile_pic,
+        name="delete_profile_pic",
+    ),
+
+
+    # =====================================================
+    # EDIT PROFILE
+    # =====================================================
+
+    path(
+        "edit-profile/",
+        views.edit_profile,
+        name="edit_profile",
+    ),
+
+
     # =====================================================
     # EMAIL VERIFICATION
     # =====================================================
@@ -68,6 +98,34 @@ urlpatterns = [
         views.verify_email,
         name="verify_email",
     ),
+
+
+    # =====================================================
+    # TERMS & POLICY
+    #
+    # Shown after successful email verification.
+    # =====================================================
+
+    path(
+        "terms-policy/",
+        views.terms_policy,
+        name="terms_policy",
+    ),
+
+
+    # =====================================================
+    # ACCEPT TERMS & POLICY
+    #
+    # Called when user clicks:
+    # "Agree & Continue"
+    # =====================================================
+
+    path(
+        "accept-terms-policy/",
+        views.accept_terms_policy,
+        name="accept_terms_policy",
+    ),
+
 
     # =====================================================
     # FORGOT PASSWORD
@@ -79,6 +137,7 @@ urlpatterns = [
         name="forgot_password",
     ),
 
+
     # =====================================================
     # VERIFY PASSWORD RESET OTP
     # =====================================================
@@ -88,6 +147,7 @@ urlpatterns = [
         views.verify_reset_otp,
         name="verify_reset_otp",
     ),
+
 
     # =====================================================
     # RESET PASSWORD
@@ -99,23 +159,19 @@ urlpatterns = [
         name="reset_password",
     ),
 
-# =====================================================
-# EDIT PROFILE
-# =====================================================
+# =========================================================
+# TERMS & POLICY
+# =========================================================
 
 path(
-    "edit-profile/",
-    views.edit_profile,
-    name="edit_profile",
+    "terms-policy/",
+    views.terms_policy,
+    name="terms_policy",
 ),
 
-# =====================================================
-# DELETE PROFILE PHOTO
-# =====================================================
-
 path(
-    "delete-profile-pic/",
-    views.delete_profile_pic,
-    name="delete_profile_pic",
+    "accept-terms/",
+    views.accept_terms_policy,
+    name="accept_terms_policy",
 ),
 ]

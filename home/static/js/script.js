@@ -1540,3 +1540,22 @@ if (messageOverlay) {
     );
 
 });
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const checkbox = document.getElementById("termsCheckbox");
+    const agreeButton = document.getElementById("agreeButton");
+
+    if (!checkbox || !agreeButton) {
+        return;
+    }
+
+    checkbox.addEventListener("change", function () {
+
+        agreeButton.disabled = !checkbox.checked;
+
+    });
+
+});
+</script>

@@ -122,23 +122,23 @@
                 </li> 
  
 
-                <li class="{% if request.resolver_match.url_name == 'users' %}active{% endif %}"> 
- 
-    <a href="{% url 'users' %}"> 
- 
-        <i class="fa-solid fa-users"></i> 
- 
-        <span> 
- 
-            Users 
- 
-        </span> 
- 
-    </a> 
- 
-</li> 
-                <li> 
- 
+                <li class="{% if request.resolver_match.url_name == 'users' %}active{% endif %}">
+
+    <a href="{% url 'users' %}">
+
+        <i class="fa-solid fa-users"></i>
+
+        <span>
+
+            Users
+
+        </span>
+
+    </a>
+
+</li>
+                <li>
+
                     <a href="{% url 'admin_orders' %}">
  
                         <i class="fa-solid fa-cart-shopping"></i> 

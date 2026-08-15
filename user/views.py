@@ -2,12 +2,15 @@ from .forms import (
     RegisterForm,
     LoginForm,
     ProfilePicForm,
+    ProfileEditForm,
     EmailVerificationForm,
     ForgotPasswordForm,
     OTPVerificationForm,
     ResetPasswordForm,
 )
+
 from posts.models import Post
+
 import os
 import random
 
@@ -24,34 +27,24 @@ from django.contrib.auth import (
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
 from django.core.mail import send_mail
-from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.utils import timezone
-
-from .forms import (
-    RegisterForm,
-    LoginForm,
-    ProfilePicForm,
-    ProfileEditForm,
-    EmailVerificationForm,
-    ForgotPasswordForm,
-    OTPVerificationForm,
-    ResetPasswordForm,
-)
 
 from .models import (
     Profile,
     PasswordResetOTP,
 )
 
+
 User = get_user_model()
+
 
 # =========================================================
 # REGISTER
 # =========================================================
 
-
 def register_view(request):
+
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -64,17 +57,17 @@ def register_view(request):
 
         if form.is_valid():
 
-            # =====================================================
+            # =================================================
             # GENERATE 6-DIGIT VERIFICATION CODE
-            # =====================================================
+            # =================================================
 
             verification_code = str(
                 random.randint(100000, 999999)
             )
 
-            # =====================================================
+            # =================================================
             # STORE REGISTRATION DATA IN SESSION
-            # =====================================================
+            # =================================================
 
             request.session["pending_registration"] = {
 
@@ -95,9 +88,9 @@ def register_view(request):
                 "verification_code": verification_code,
             }
 
-            # =====================================================
+            # =================================================
             # TEMPORARILY SAVE PROFILE PICTURE
-            # =====================================================
+            # =================================================
 
             profile_pic = form.cleaned_data.get(
                 "profile_pic"
@@ -118,31 +111,31 @@ def register_view(request):
 
                 request.session.pop(
                     "pending_profile_pic_path",
-                    None
+                    None,
                 )
 
-                # =====================================================
+            # =================================================
             # SEND VERIFICATION EMAIL
-            # =====================================================
+            # =================================================
 
             send_mail(
 
                 subject="TrustyShop Email Verification",
 
-                message=f""" 
-Hello {form.cleaned_data["username"]}, 
+                message=f"""
+Hello {form.cleaned_data["username"]},
 
-Welcome to TrustyShop! 
+Welcome to TrustyShop!
 
-Your verification code is: 
+Your verification code is:
 
-{verification_code} 
+{verification_code}
 
-Please enter this 6-digit code to complete 
-your TrustyShop registration. 
+Please enter this 6-digit code to complete
+your TrustyShop registration.
 
-Thank you, 
-TrustyShop Team 
+Thank you,
+TrustyShop Team
 """,
 
                 from_email=settings.DEFAULT_FROM_EMAIL,
@@ -158,7 +151,7 @@ TrustyShop Team
                 request,
                 "Your registration information is valid. "
                 "Please enter the 6-digit code sent "
-                "to your email to complete registration."
+                "to your email to complete registration.",
             )
 
             return redirect(
@@ -170,9 +163,10 @@ TrustyShop Team
             for field, errors in form.errors.items():
 
                 for error in errors:
+
                     messages.error(
                         request,
-                        error
+                        error,
                     )
 
     else:
@@ -183,8 +177,8 @@ TrustyShop Team
         request,
         "user/register.html",
         {
-            "form": form
-        }
+            "form": form,
+        },
     )
 
 
@@ -193,6 +187,7 @@ TrustyShop Team
 # =========================================================
 
 def login_view(request):
+
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -230,7 +225,7 @@ def login_view(request):
 
                 login(
                     request,
-                    user
+                    user,
                 )
 
                 # =================================================
@@ -247,7 +242,7 @@ def login_view(request):
 
                     request.session.set_expiry(0)
 
-                    # =================================================
+                # =================================================
                 # GET PROFILE
                 # =================================================
 
@@ -267,20 +262,30 @@ def login_view(request):
 
                 messages.success(
                     request,
-                    f"Welcome back, {full_name}!"
+                    f"Welcome back, {full_name}!",
                 )
+
+                # =================================================
+                # EXISTING USER WHO HAS NOT ACCEPTED TERMS
+                # =================================================
+
+                if profile and not profile.terms_accepted:
+
+                    request.session[
+                        "show_terms_policy"
+                    ] = True
 
                 return redirect(
                     "home"
                 )
 
-                # =================================================
+            # =================================================
             # FAILED LOGIN
             # =================================================
 
             messages.error(
                 request,
-                "Invalid username/email or password."
+                "Invalid username/email or password.",
             )
 
     else:
@@ -291,8 +296,8 @@ def login_view(request):
         request,
         "user/login.html",
         {
-            "form": form
-        }
+            "form": form,
+        },
     )
 
 
@@ -301,11 +306,12 @@ def login_view(request):
 # =========================================================
 
 def logout_view(request):
+
     logout(request)
 
     messages.info(
         request,
-        "You have been logged out."
+        "You have been logged out.",
     )
 
     return redirect(
@@ -320,15 +326,14 @@ def logout_view(request):
 @login_required
 def dashboard(request):
 
-    # Get current user's Profile
     profile = request.user.profile
 
-    # Get posts created by this user's Profile
     user_posts = Post.objects.filter(
         user=profile
-    ).order_by("-created_at")
+    ).order_by(
+        "-created_at"
+    )
 
-    # Count user's posts
     post_count = user_posts.count()
 
     context = {
@@ -339,8 +344,9 @@ def dashboard(request):
     return render(
         request,
         "user/dashboard.html",
-        context
+        context,
     )
+
 
 # =========================================================
 # EDIT PROFILE
@@ -365,7 +371,7 @@ def edit_profile(request):
 
             messages.success(
                 request,
-                "Your profile has been updated successfully!"
+                "Your profile has been updated successfully!",
             )
 
             return redirect(
@@ -384,36 +390,39 @@ def edit_profile(request):
         {
             "form": form,
             "profile": profile,
-        }
+        },
     )
+
+
 # =========================================================
 # UPDATE PROFILE PICTURE
 # =========================================================
 
 @login_required
 def update_profile_pic(request):
+
     if request.method == "POST":
+
+        profile = request.user.profile
 
         form = ProfilePicForm(
             request.POST,
             request.FILES,
-            instance=request.user.profile,
+            instance=profile,
         )
 
         if form.is_valid():
-
-            profile = request.user.profile
 
             # =================================================
             # DELETE OLD PROFILE PICTURE
             # =================================================
 
             if (
-                    profile.profile_pic
-                    and profile.profile_pic.name
-                    and not profile.profile_pic.name.endswith(
-                "default.jpg"
-            )
+                profile.profile_pic
+                and profile.profile_pic.name
+                and not profile.profile_pic.name.endswith(
+                    "default.jpg"
+                )
             ):
 
                 try:
@@ -424,13 +433,13 @@ def update_profile_pic(request):
                         os.remove(old_path)
 
                 except (
-                        ValueError,
-                        OSError,
+                    ValueError,
+                    OSError,
                 ):
 
                     pass
 
-                    # =================================================
+            # =================================================
             # SAVE NEW PROFILE PICTURE
             # =================================================
 
@@ -438,7 +447,7 @@ def update_profile_pic(request):
 
             messages.success(
                 request,
-                "Profile picture updated successfully!"
+                "Profile picture updated successfully!",
             )
 
         else:
@@ -446,7 +455,7 @@ def update_profile_pic(request):
             messages.error(
                 request,
                 "Failed to update. "
-                "Please select a valid image."
+                "Please select a valid image.",
             )
 
     return redirect(
@@ -459,6 +468,7 @@ def update_profile_pic(request):
 # =========================================================
 
 def verify_email(request):
+
     # =========================================================
     # GET PENDING REGISTRATION
     # =========================================================
@@ -468,17 +478,18 @@ def verify_email(request):
     )
 
     if not pending:
+
         messages.error(
             request,
             "Your registration session has expired. "
-            "Please register again."
+            "Please register again.",
         )
 
         return redirect(
             "user:register"
         )
 
-        # =========================================================
+    # =========================================================
     # POST
     # =========================================================
 
@@ -508,20 +519,39 @@ def verify_email(request):
                 # CREATE USER
                 # =============================================
 
-                user = User.objects.create_user(
+                # =============================================
+                # GET OR CREATE USER
+                # =============================================
 
-                    username=pending[
-                        "username"
-                    ],
+                user = User.objects.filter(
+                    username=pending["username"]
+                ).first()
 
-                    email=pending[
-                        "email"
-                    ],
+                if user is None:
 
-                    password=pending[
-                        "password"
-                    ],
-                )
+                    user = User.objects.create_user(
+                        username=pending["username"],
+                        email=pending["email"],
+                        password=pending["password"],
+                    )
+
+                else:
+
+                    # User may have been created during
+                    # a previous verification attempt.
+                    # Update the email if necessary.
+                    user.email = pending["email"]
+
+                    user.set_password(
+                        pending["password"]
+                    )
+
+                    user.save(
+                        update_fields=[
+                            "email",
+                            "password",
+                        ]
+                    )
 
                 # =============================================
                 # CREATE PROFILE
@@ -562,8 +592,9 @@ def verify_email(request):
                     try:
 
                         if default_storage.exists(
-                                temp_pic_path
+                            temp_pic_path
                         ):
+
                             profile.profile_pic = (
                                 temp_pic_path
                             )
@@ -572,7 +603,7 @@ def verify_email(request):
 
                         pass
 
-                        # =============================================
+                # =============================================
                 # EMAIL VERIFIED
                 # =============================================
 
@@ -580,20 +611,30 @@ def verify_email(request):
 
                 profile.verification_code = None
 
+                # =============================================
+                # TERMS & POLICY
+                #
+                # New user has NOT accepted terms yet.
+                # =============================================
+
+                profile.terms_accepted = False
+
+                profile.terms_accepted_at = None
+
                 profile.save()
 
                 # =============================================
-                # REMOVE TEMPORARY SESSION DATA
+                # REMOVE TEMPORARY REGISTRATION SESSION
                 # =============================================
 
                 request.session.pop(
                     "pending_registration",
-                    None
+                    None,
                 )
 
                 request.session.pop(
                     "pending_profile_pic_path",
-                    None
+                    None,
                 )
 
                 # =============================================
@@ -606,20 +647,36 @@ def verify_email(request):
 
                 login(
                     request,
-                    user
+                    user,
                 )
+
+                # =============================================
+                # SHOW TERMS MODAL ON WELCOME PAGE
+                # =============================================
+
+                request.session[
+                    "show_terms_policy"
+                ] = True
 
                 messages.success(
                     request,
-                    "Registration completed successfully! "
-                    "Welcome to TrustyShop."
+                    "Email verified successfully. "
+                    "Please review and accept the "
+                    "TrustyShop Terms & Policies.",
                 )
+
+                # =============================================
+                # IMPORTANT
+                #
+                # Go to welcome page.
+                # The modal will appear OVER the welcome page.
+                # =============================================
 
                 return redirect(
-                    "home"
+                    "welcome"
                 )
 
-                # =================================================
+            # =================================================
             # WRONG CODE
             # =================================================
 
@@ -627,7 +684,7 @@ def verify_email(request):
                 request,
                 "Incorrect verification code. "
                 "Please enter the 6-digit code "
-                "sent to your email."
+                "sent to your email.",
             )
 
     else:
@@ -638,8 +695,140 @@ def verify_email(request):
         request,
         "user/verify_email.html",
         {
-            "form": form
-        }
+            "form": form,
+        },
+    )
+
+
+# =========================================================
+# TERMS & POLICY
+# =========================================================
+#
+# This is NOT intended to be a separate page.
+#
+# The welcome page should include:
+#
+# {% if request.user.is_authenticated and request.session.show_terms_policy %}
+#     {% include "user/terms_policy.html" %}
+# {% endif %}
+#
+# =========================================================
+
+@login_required
+def terms_policy(request):
+
+    profile = request.user.profile
+
+    # =========================================================
+    # ALREADY ACCEPTED
+    # =========================================================
+
+    if profile.terms_accepted:
+
+        request.session.pop(
+            "show_terms_policy",
+            None,
+        )
+
+        return redirect(
+            "home"
+        )
+
+    # =========================================================
+    # TURN ON MODAL
+    # =========================================================
+
+    request.session[
+        "show_terms_policy"
+    ] = True
+
+    # =========================================================
+    # GO BACK TO WELCOME PAGE
+    # =========================================================
+
+    return redirect(
+        "welcome"
+    )
+
+
+# =========================================================
+# ACCEPT TERMS & POLICY
+# =========================================================
+
+@login_required
+def accept_terms_policy(request):
+
+    # =========================================================
+    # ONLY POST REQUEST ALLOWED
+    # =========================================================
+
+    if request.method != "POST":
+
+        return redirect(
+            "welcome"
+        )
+
+    # =========================================================
+    # GET PROFILE
+    # =========================================================
+
+    profile = request.user.profile
+
+    # =========================================================
+    # ALREADY ACCEPTED
+    # =========================================================
+
+    if profile.terms_accepted:
+
+        request.session.pop(
+            "show_terms_policy",
+            None,
+        )
+
+        return redirect(
+            "home"
+        )
+
+    # =========================================================
+    # SAVE TERMS ACCEPTANCE
+    # =========================================================
+
+    profile.terms_accepted = True
+
+    profile.terms_accepted_at = timezone.now()
+
+    profile.save(
+        update_fields=[
+            "terms_accepted",
+            "terms_accepted_at",
+        ]
+    )
+
+    # =========================================================
+    # REMOVE MODAL SESSION FLAG
+    # =========================================================
+
+    request.session.pop(
+        "show_terms_policy",
+        None,
+    )
+
+    # =========================================================
+    # SUCCESS MESSAGE
+    # =========================================================
+
+    messages.success(
+        request,
+        "Welcome to TrustyShop! "
+        "Your account is now ready.",
+    )
+
+    # =========================================================
+    # GO TO HOME
+    # =========================================================
+
+    return redirect(
+        "home"
     )
 
 
@@ -649,6 +838,7 @@ def verify_email(request):
 # =========================================================
 
 def forgot_password(request):
+
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -671,10 +861,12 @@ def forgot_password(request):
 
             # =================================================
             # SECURITY
-            # Do not reveal whether email exists
+            #
+            # Do not reveal whether email exists.
             # =================================================
 
             if user:
+
                 # =================================================
                 # DELETE PREVIOUS UNUSED OTP
                 # =================================================
@@ -691,7 +883,7 @@ def forgot_password(request):
                 otp = str(
                     random.randint(
                         100000,
-                        999999
+                        999999,
                     )
                 )
 
@@ -702,8 +894,8 @@ def forgot_password(request):
                 now = timezone.now()
 
                 expires_at = (
-                        now
-                        + timedelta(minutes=5)
+                    now
+                    + timedelta(minutes=5)
                 )
 
                 # =================================================
@@ -729,21 +921,21 @@ def forgot_password(request):
                         "TrustyShop Password Reset OTP"
                     ),
 
-                    message=f""" 
-Hello {user.username}, 
+                    message=f"""
+Hello {user.username},
 
-We received a request to reset your TrustyShop password. 
+We received a request to reset your TrustyShop password.
 
-Your password reset OTP is: 
+Your password reset OTP is:
 
-{otp} 
+{otp}
 
-This OTP will expire in 5 minutes. 
+This OTP will expire in 5 minutes.
 
-If you did not request a password reset, 
-please ignore this email. 
+If you did not request a password reset,
+please ignore this email.
 
-TrustyShop Team 
+TrustyShop Team
 """,
 
                     from_email=(
@@ -765,14 +957,14 @@ TrustyShop Team
                     "password_reset_email"
                 ] = user.email
 
-                # =================================================
+            # =================================================
             # SAME MESSAGE FOR SECURITY
             # =================================================
 
             messages.success(
                 request,
                 "If an account exists with that email, "
-                "a 6-digit OTP has been sent."
+                "a 6-digit OTP has been sent.",
             )
 
             return redirect(
@@ -787,8 +979,8 @@ TrustyShop Team
         request,
         "user/forgot_password.html",
         {
-            "form": form
-        }
+            "form": form,
+        },
     )
 
 
@@ -797,6 +989,7 @@ TrustyShop Team
 # =========================================================
 
 def verify_reset_otp(request):
+
     if request.user.is_authenticated:
         return redirect("home")
 
@@ -805,10 +998,11 @@ def verify_reset_otp(request):
     )
 
     if not email:
+
         messages.error(
             request,
             "Password reset session expired. "
-            "Please request a new OTP."
+            "Please request a new OTP.",
         )
 
         return redirect(
@@ -834,14 +1028,14 @@ def verify_reset_otp(request):
             # =================================================
 
             if (
-                    submitted_email.lower()
-                    != email.lower()
+                submitted_email.lower()
+                != email.lower()
             ):
 
                 form.add_error(
                     "email",
                     "This email does not match "
-                    "the reset request."
+                    "the reset request.",
                 )
 
             else:
@@ -852,16 +1046,17 @@ def verify_reset_otp(request):
                 ).first()
 
                 if not user:
+
                     messages.error(
                         request,
-                        "Account not found."
+                        "Account not found.",
                     )
 
                     return redirect(
                         "user:forgot_password"
                     )
 
-                    # =================================================
+                # =================================================
                 # GET LATEST UNUSED OTP
                 # =================================================
 
@@ -871,7 +1066,9 @@ def verify_reset_otp(request):
                         user=user,
                         is_used=False,
                     )
-                    .order_by("-created_at")
+                    .order_by(
+                        "-created_at"
+                    )
                     .first()
                 )
 
@@ -884,10 +1081,10 @@ def verify_reset_otp(request):
                     form.add_error(
                         "otp",
                         "OTP is invalid. "
-                        "Please request a new OTP."
+                        "Please request a new OTP.",
                     )
 
-                    # =================================================
+                # =================================================
                 # OTP EXPIRED
                 # =================================================
 
@@ -898,10 +1095,10 @@ def verify_reset_otp(request):
                     form.add_error(
                         "otp",
                         "OTP has expired. "
-                        "Please request a new OTP."
+                        "Please request a new OTP.",
                     )
 
-                    # =================================================
+                # =================================================
                 # OTP INCORRECT
                 # =================================================
 
@@ -909,10 +1106,10 @@ def verify_reset_otp(request):
 
                     form.add_error(
                         "otp",
-                        "Incorrect OTP."
+                        "Incorrect OTP.",
                     )
 
-                    # =================================================
+                # =================================================
                 # OTP CORRECT
                 # =================================================
 
@@ -948,7 +1145,7 @@ def verify_reset_otp(request):
         {
             "form": form,
             "email": email,
-        }
+        },
     )
 
 
@@ -957,26 +1154,28 @@ def verify_reset_otp(request):
 # =========================================================
 
 def reset_password(request):
+
     if request.user.is_authenticated:
         return redirect("home")
 
-        # =========================================================
+    # =========================================================
     # CHECK OTP VERIFICATION
     # =========================================================
 
     if not request.session.get(
-            "password_reset_verified"
+        "password_reset_verified"
     ):
+
         messages.error(
             request,
-            "Please verify your OTP first."
+            "Please verify your OTP first.",
         )
 
         return redirect(
             "user:forgot_password"
         )
 
-        # =========================================================
+    # =========================================================
     # GET SESSION DATA
     # =========================================================
 
@@ -989,16 +1188,17 @@ def reset_password(request):
     )
 
     if not user_id or not otp_id:
+
         messages.error(
             request,
-            "Password reset session expired."
+            "Password reset session expired.",
         )
 
         return redirect(
             "user:forgot_password"
         )
 
-        # =========================================================
+    # =========================================================
     # GET USER
     # =========================================================
 
@@ -1013,14 +1213,14 @@ def reset_password(request):
 
         messages.error(
             request,
-            "User account could not be found."
+            "User account could not be found.",
         )
 
         return redirect(
             "user:forgot_password"
         )
 
-        # =========================================================
+    # =========================================================
     # GET OTP
     # =========================================================
 
@@ -1036,50 +1236,52 @@ def reset_password(request):
 
         messages.error(
             request,
-            "OTP is no longer valid."
+            "OTP is no longer valid.",
         )
 
         return redirect(
             "user:forgot_password"
         )
 
-        # =========================================================
+    # =========================================================
     # CHECK OTP EXPIRATION AGAIN
     # =========================================================
 
     if reset_otp.is_expired():
+
         reset_otp.delete()
 
         request.session.pop(
             "password_reset_verified",
-            None
+            None,
         )
 
         request.session.pop(
             "password_reset_user_id",
-            None
+            None,
         )
 
         request.session.pop(
             "password_reset_otp_id",
-            None
+            None,
         )
 
         messages.error(
             request,
             "OTP has expired. "
-            "Please request a new OTP."
+            "Please request a new OTP.",
         )
 
         return redirect(
             "user:forgot_password"
         )
 
-        # =========================================================
+    # =========================================================
     # GET RESET PASSWORD PAGE
     # =========================================================
 
     if request.method == "GET":
+
         form = ResetPasswordForm()
 
         return render(
@@ -1087,10 +1289,10 @@ def reset_password(request):
             "user/reset_password.html",
             {
                 "form": form
-            }
+            },
         )
 
-        # =========================================================
+    # =========================================================
     # POST RESET PASSWORD
     # =========================================================
 
@@ -1099,12 +1301,13 @@ def reset_password(request):
     )
 
     if not form.is_valid():
+
         return render(
             request,
             "user/reset_password.html",
             {
                 "form": form
-            }
+            },
         )
 
     new_password = form.cleaned_data[
@@ -1132,12 +1335,13 @@ def reset_password(request):
     user.refresh_from_db()
 
     if not user.check_password(
-            new_password
+        new_password
     ):
+
         messages.error(
             request,
             "Password could not be saved. "
-            "Please try again."
+            "Please try again.",
         )
 
         return render(
@@ -1145,10 +1349,10 @@ def reset_password(request):
             "user/reset_password.html",
             {
                 "form": form
-            }
+            },
         )
 
-        # =========================================================
+    # =========================================================
     # MARK OTP AS USED
     # =========================================================
 
@@ -1166,22 +1370,22 @@ def reset_password(request):
 
     request.session.pop(
         "password_reset_verified",
-        None
+        None,
     )
 
     request.session.pop(
         "password_reset_user_id",
-        None
+        None,
     )
 
     request.session.pop(
         "password_reset_otp_id",
-        None
+        None,
     )
 
     request.session.pop(
         "password_reset_email",
-        None
+        None,
     )
 
     # =========================================================
@@ -1197,12 +1401,13 @@ def reset_password(request):
     messages.success(
         request,
         "Your password has been changed successfully. "
-        "You can now login with your new password."
+        "You can now login with your new password.",
     )
 
     return redirect(
         "user:login"
     )
+
 
 # =========================================================
 # DELETE PROFILE PHOTO
@@ -1216,6 +1421,10 @@ def delete_profile_pic(request):
         profile = request.user.profile
 
         if profile.profile_pic:
+
+            # =================================================
+            # DELETE FILE
+            # =================================================
 
             try:
 
@@ -1231,16 +1440,23 @@ def delete_profile_pic(request):
 
                 pass
 
+            # =================================================
+            # REMOVE DATABASE REFERENCE
+            # =================================================
+
             profile.profile_pic = None
+
             profile.save(
-                update_fields=["profile_pic"]
+                update_fields=[
+                    "profile_pic"
+                ]
             )
 
             messages.success(
                 request,
-                "Profile picture deleted successfully!"
+                "Profile picture deleted successfully.",
             )
 
     return redirect(
-        "user:edit_profile"
+        "user:dashboard"
     )
