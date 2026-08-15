@@ -70,6 +70,15 @@ class Profile(models.Model):
         null=True
     )
 
+    terms_accepted = models.BooleanField(
+        default=False
+    )
+
+    terms_accepted_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
     def __str__(self):
         return f"{self.user.username}'s Profile"
 

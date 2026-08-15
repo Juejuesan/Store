@@ -390,6 +390,16 @@
             }
         });
     </script>
-</body>
+    <!-- =====================================================
+         TERMS & POLICY MODAL
+    ====================================================== -->
 
+    {% if request.session.show_terms_policy %}
+
+        {% include "user/terms_policy.html" %}
+
+    {% endif %}
+
+
+</body>
 </html>
