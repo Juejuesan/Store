@@ -1,0 +1,296 @@
+.sale-page {
+    min-height: 100vh;
+    background: #f4f8ff;
+}
+
+.sale-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.sale-header p {
+    color: #64748b;
+    margin: 0;
+}
+
+/* Stats */
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    height: 100%;
+}
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.stat-icon.total-earned { background: #dcfce7; color: #15803d; }
+.stat-icon.pending-amount { background: #fef3c7; color: #b45309; }
+.stat-icon.ready-count { background: #dbeafe; color: #1d4ed8; }
+.stat-icon.total-sales { background: #f3e8ff; color: #7c3aed; }
+
+.stat-card span {
+    font-size: 12px;
+    color: #94a3b8;
+    display: block;
+}
+
+.stat-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+/* Status Tabs */
+.status-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 10px 18px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    transition: all .3s;
+    font-family: inherit;
+}
+
+.tab-btn:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.tab-btn.active {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+/* Sale Cards */
+.sale-card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    transition: .3s;
+}
+
+.sale-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+.sale-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 14px;
+}
+
+.order-id {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 14px;
+}
+
+.order-date {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-left: 10px;
+}
+
+.sale-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sale-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sale-image {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f8fafc;
+}
+
+.sale-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 22px;
+}
+
+.sale-info {
+    flex: 1;
+}
+
+.sale-info h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0 0 3px;
+}
+
+.size-tag {
+    display: inline-block;
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.sale-info p {
+    color: #64748b;
+    font-size: 12px;
+    margin: 3px 0;
+}
+
+.item-total {
+    font-size: 14px;
+    color: #2563eb;
+}
+
+.sale-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sale-card-footer span {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.sale-card-footer strong {
+    color: #0f172a;
+    font-size: 14px;
+}
+
+.sale-total strong {
+    color: #2563eb;
+    font-size: 16px;
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-pending { background: #fef3c7; color: #b45309; }
+.status-ready_for_pickup { background: #dbeafe; color: #1d4ed8; }
+.status-picked_up { background: #c7d2fe; color: #3730a3; }
+.status-completed { background: #dcfce7; color: #15803d; }
+.status-cancelled { background: #fee2e2; color: #dc2626; }
+
+/* Detail Button - FIXED */
+.detail-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    background: #2563eb;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: .3s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: auto;
+    max-width: fit-content;
+}
+
+.detail-btn i {
+    font-size: 11px;
+}
+
+.detail-btn:hover {
+    background: #1d4ed8;
+    color: white;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+}
+
+.empty-state i {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    color: #0f172a;
+    font-size: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sale-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .detail-btn {
+        width: auto;
+    }
+    .status-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 5px;
+    }
+    .tab-btn {
+        white-space: nowrap;
+    }
+}

@@ -688,5 +688,27 @@ footer a:hover{
     vertical-align: middle;
 }
 
+.cart-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.cart-link {
+    position: relative;
+    display: inline-flex;
+}
+
 
 

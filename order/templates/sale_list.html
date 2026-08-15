@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/sale_list.css' %}">
+
+<div class="sale-page">
+    <div class="container py-4">
+        
+        <!-- Header -->
+        <div class="sale-header mb-4">
+            <h2><i class="fa-solid fa-sack-dollar"></i> My Sales</h2>
+            <p>Track all your sales and earnings</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-icon total-earned">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div>
+                        <span>Total Earned</span>
+                        <h3>{{ total_earned }} MMK</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-icon pending-amount">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div>
+                        <span>Pending Amount</span>
+                        <h3>{{ pending_amount }} MMK</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-icon ready-count">
+                        <i class="fa-solid fa-box"></i>
+                    </div>
+                    <div>
+                        <span>Ready for Pickup</span>
+                        <h3>{{ ready_count }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-icon total-sales">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <span>Total Sales</span>
+                        <h3>{{ total_sales }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Filter Tabs -->
+        <div class="status-tabs mb-4">
+            <button class="tab-btn active" data-status="all" onclick="filterSales('all')">
+                All ({{ total_sales }})
+            </button>
+            <button class="tab-btn" data-status="pending" onclick="filterSales('pending')">
+                Pending ({{ pending_count }})
+            </button>
+            <button class="tab-btn" data-status="ready_for_pickup" onclick="filterSales('ready_for_pickup')">
+                Ready ({{ ready_count }})
+            </button>
+            <button class="tab-btn" data-status="picked_up" onclick="filterSales('picked_up')">
+                Picked Up
+            </button>
+            <button class="tab-btn" data-status="completed" onclick="filterSales('completed')">
+                Completed
+            </button>
+            <button class="tab-btn" data-status="cancelled" onclick="filterSales('cancelled')">
+                Cancelled ({{ cancelled_count }})
+            </button>
+        </div>
+
+        <!-- Sales List -->
+        <div class="sales-list" id="salesList">
+            {% for sale in sales %}
+            <div class="sale-card" data-status="{{ sale.status }}">
+                <!-- Sale Header -->
+                <div class="sale-card-header">
+                    <div>
+<span class="order-id">Sale #{{ forloop.counter }}</span>
+                        <span class="order-date">{{ sale.created_at|date:"M d, Y H:i" }}</span>
+                    </div>
+                    <span class="status-badge status-{{ sale.status }}">
+                        {{ sale.status|title }}
+                    </span>
+                </div>
+
+                <!-- Items -->
+                <div class="sale-items">
+                    {% for order_item in sale.items.all %}
+                    <div class="sale-item">
+                        <!-- Item Image -->
+                        <div class="sale-image">
+                            {% with first_image=order_item.item.images.first %}
+                                {% if first_image %}
+                                    <img src="{{ first_image.image.url }}" alt="{{ order_item.item_name }}">
+                                {% else %}
+                                    <div class="no-image"><i class="fa-solid fa-image"></i></div>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+
+                        <!-- Item Info -->
+                        <div class="sale-info">
+                            <h4>{{ order_item.item_name }}</h4>
+                            {% if order_item.size_variant %}
+                                <span class="size-tag">Size: {{ order_item.size_variant.size }}</span>
+                            {% endif %}
+                            <p>Qty: {{ order_item.quantity }} × {{ order_item.unit_price }} MMK</p>
+                            <strong class="item-total">{{ order_item.total_price }} MMK</strong>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Sale Footer -->
+                <div class="sale-card-footer">
+                    <div>
+                        <span>Buyer:</span>
+                        <strong>{{ sale.user.user.username }}</strong>
+                        {% if sale.phone_number %}
+                            <small class="ms-2">{{ sale.phone_number }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="sale-total">
+                        <span>Total:</span>
+                        <strong>{{ sale.total_amount }} MMK</strong>
+                    </div>
+                    <a href="{% url 'order:sale_detail' sale.id %}" class="detail-btn">
+                        <i class="fa-solid fa-eye"></i> Details
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fa-solid fa-store"></i>
+                <h3>No sales yet</h3>
+                <p>Your sales will appear here when buyers purchase your items</p>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<script src="{% static 'js/sale_list.js' %}"></script>
+{% endblock %}

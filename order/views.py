@@ -212,3 +212,61 @@ def mark_completed(request, order_id):
         messages.error(request, str(e))
 
     return redirect('order:seller_orders')
+
+
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, Q
+from .models import Order, OrderItem
+
+
+@login_required
+def sale_list(request):
+    # Get all orders where current user is the seller
+    sales = Order.objects.filter(
+        seller=request.user.profile
+    ).order_by('-created_at')
+
+    # Calculate totals
+    total_earned = Order.objects.filter(
+        seller=request.user.profile,
+        payment_status='released'
+    ).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+
+    pending_amount = Order.objects.filter(
+        seller=request.user.profile,
+        status='pending'
+    ).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+
+    # Count by status
+    pending_count = sales.filter(status='pending').count()
+    ready_count = sales.filter(status='ready_for_pickup').count()
+    completed_count = sales.filter(status__in=['picked_up', 'completed']).count()
+    cancelled_count = sales.filter(status='cancelled').count()
+
+    context = {
+        'sales': sales,
+        'total_earned': total_earned,
+        'pending_amount': pending_amount,
+        'pending_count': pending_count,
+        'ready_count': ready_count,
+        'completed_count': completed_count,
+        'cancelled_count': cancelled_count,
+        'total_sales': sales.count(),
+    }
+    return render(request, 'sale_list.html', context)
+
+
+@login_required
+def sale_detail(request, order_id):
+    order = get_object_or_404(
+        Order,
+        id=order_id,
+        seller=request.user.profile
+    )
+
+    context = {
+        'order': order,
+        'items': order.items.all(),
+    }
+    return render(request, 'sale_detail.html', context)

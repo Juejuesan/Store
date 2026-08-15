@@ -814,3 +814,23 @@ document.addEventListener('input', function(e) {
 document.addEventListener('DOMContentLoaded', function() {
     loadCartCount();
 });
+
+function updateCartCount() {
+    fetch('/cart/count/')
+        .then(response => response.json())
+        .then(data => {
+            const badge = document.getElementById('cartBadge');
+            if (badge) {
+                if (data.count > 0) {
+                    badge.textContent = data.count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        })
+        .catch(error => console.error('Cart count error:', error));
+}
+
+document.addEventListener('DOMContentLoaded', updateCartCount);
+setInterval(updateCartCount, 30000);

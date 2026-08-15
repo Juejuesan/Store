@@ -1541,7 +1541,7 @@ if (messageOverlay) {
 
 });
 
-<script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const checkbox = document.getElementById("termsCheckbox");
@@ -1558,4 +1558,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
-</script>
