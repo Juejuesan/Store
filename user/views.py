@@ -508,20 +508,39 @@ def verify_email(request):
                 # CREATE USER
                 # =============================================
 
-                user = User.objects.create_user(
+                # =============================================
+                # GET OR CREATE USER
+                # =============================================
 
-                    username=pending[
-                        "username"
-                    ],
+                user = User.objects.filter(
+                    username=pending["username"]
+                ).first()
 
-                    email=pending[
-                        "email"
-                    ],
+                if user is None:
 
-                    password=pending[
-                        "password"
-                    ],
-                )
+                    user = User.objects.create_user(
+                        username=pending["username"],
+                        email=pending["email"],
+                        password=pending["password"],
+                    )
+
+                else:
+
+                    # User may have been created during
+                    # a previous verification attempt.
+                    # Update the email if necessary.
+                    user.email = pending["email"]
+
+                    user.set_password(
+                        pending["password"]
+                    )
+
+                    user.save(
+                        update_fields=[
+                            "email",
+                            "password",
+                        ]
+                    )
 
                 # =============================================
                 # CREATE PROFILE
