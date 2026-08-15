@@ -6,6 +6,8 @@ from django.utils import timezone
 from django.db import transaction
 from django.db.models import Sum
 from decimal import Decimal
+from order.models import Order, OrderItem
+
 
 from user.models import Profile
 from posts.models import Post
@@ -742,3 +744,200 @@ def read_notification(request, noti_id):
     notification.save()
 
     return redirect("dashboard")
+
+
+# =========================================================
+# ORDERS - ALL STATUS
+# =========================================================
+
+@login_required
+def orders(request):
+    """View all orders with status filter"""
+    status_filter = request.GET.get('status', 'all')
+
+    orders = Order.objects.select_related(
+        'user__user', 'seller__user'
+    ).prefetch_related('items').order_by('-created_at')
+
+    if status_filter != 'all':
+        orders = orders.filter(status=status_filter)
+
+    # Count by status
+    pending_orders = Order.objects.filter(status='pending')
+    ready_orders = Order.objects.filter(status='ready_for_pickup')
+    picked_up_orders = Order.objects.filter(status='picked_up')
+    completed_orders = Order.objects.filter(status='completed')
+    cancelled_orders = Order.objects.filter(status='cancelled')
+
+    context = {
+        'orders': orders,
+        'current_status': status_filter,
+        'pending_orders': pending_orders,
+        'ready_orders': ready_orders,
+        'picked_up_orders': picked_up_orders,
+        'completed_orders': completed_orders,
+        'cancelled_orders': cancelled_orders,
+        'pending_count': pending_orders.count(),
+        'ready_count': ready_orders.count(),
+        'picked_up_count': picked_up_orders.count(),
+        'completed_count': completed_orders.count(),
+        'cancelled_count': cancelled_orders.count(),
+        'total_orders': Order.objects.count(),
+    }
+
+    return render(request, 'adminpanel/orders.html', context)
+
+
+# =========================================================
+# PENDING ORDERS
+# =========================================================
+
+@login_required
+def pending_orders(request):
+    orders = Order.objects.filter(
+        status='pending'
+    ).select_related('user__user', 'seller__user').order_by('-created_at')
+
+    context = {
+        'orders': orders,
+        'title': 'Pending Orders',
+        'status': 'pending',
+    }
+    return render(request, 'adminpanel/orders.html', context)
+
+
+# =========================================================
+# READY FOR PICKUP ORDERS
+# =========================================================
+
+@login_required
+def ready_for_pickup_orders(request):
+    orders = Order.objects.filter(
+        status='ready_for_pickup'
+    ).select_related('user__user', 'seller__user').order_by('-ready_for_pickup_at')
+
+    context = {
+        'orders': orders,
+        'title': 'Ready for Pickup Orders',
+        'status': 'ready_for_pickup',
+    }
+    return render(request, 'adminpanel/orders.html', context)
+
+
+# =========================================================
+# PICKED UP ORDERS
+# =========================================================
+
+@login_required
+def picked_up_orders(request):
+    orders = Order.objects.filter(
+        status='picked_up'
+    ).select_related('user__user', 'seller__user').order_by('-picked_up_at')
+
+    context = {
+        'orders': orders,
+        'title': 'Picked Up Orders',
+        'status': 'picked_up',
+    }
+    return render(request, 'adminpanel/orders.html', context)
+
+
+# =========================================================
+# COMPLETED ORDERS
+# =========================================================
+
+@login_required
+def completed_orders(request):
+    orders = Order.objects.filter(
+        status='completed'
+    ).select_related('user__user', 'seller__user').order_by('-completed_at')
+
+    context = {
+        'orders': orders,
+        'title': 'Completed Orders',
+        'status': 'completed',
+    }
+    return render(request, 'adminpanel/orders.html', context)
+
+
+# =========================================================
+# CANCELLED ORDERS
+# =========================================================
+
+@login_required
+def cancelled_orders(request):
+    orders = Order.objects.filter(
+        status='cancelled'
+    ).select_related('user__user', 'seller__user').order_by('-cancelled_at')
+
+    context = {
+        'orders': orders,
+        'title': 'Cancelled Orders',
+        'status': 'cancelled',
+    }
+    return render(request, 'adminpanel/orders.html', context)
+
+
+# =========================================================
+# ORDER DETAIL
+# =========================================================
+
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(
+        Order.objects.select_related('user__user', 'seller__user').prefetch_related(
+            'items__item__images', 'items__size_variant'
+        ),
+        id=order_id
+    )
+
+    context = {
+        'order': order,
+    }
+
+    return render(request, 'adminpanel/order_detail.html', context)
+
+
+# =========================================================
+# UPDATE ORDER STATUS
+# =========================================================
+
+@login_required
+def update_order_status(request, order_id, new_status):
+    order = get_object_or_404(Order, id=order_id)
+
+    try:
+        if new_status == 'ready_for_pickup':
+            if order.status == 'pending':
+                order.mark_ready_for_pickup()
+                messages.success(request, f"Order #{order.id} marked as ready for pickup")
+            else:
+                messages.error(request, "Only pending orders can be marked as ready")
+
+        elif new_status == 'picked_up':
+            if order.status == 'ready_for_pickup':
+                order.mark_picked_up()
+                messages.success(request, f"Order #{order.id} marked as picked up")
+            else:
+                messages.error(request, "Only ready for pickup orders can be marked as picked up")
+
+        elif new_status == 'completed':
+            if order.status == 'picked_up':
+                order.mark_completed()
+                messages.success(request, f"Order #{order.id} completed. Payment released.")
+            else:
+                messages.error(request, "Only picked up orders can be completed")
+
+        elif new_status == 'cancelled':
+            if order.can_cancel:
+                order.cancel_order("Cancelled by admin")
+                messages.success(request, f"Order #{order.id} cancelled. Refund processed.")
+            else:
+                messages.error(request, "Order cannot be cancelled")
+        else:
+            messages.error(request, "Invalid status")
+
+    except ValueError as e:
+        messages.error(request, str(e))
+
+    return redirect('admin_order_detail', order_id=order.id)

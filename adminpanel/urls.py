@@ -143,4 +143,18 @@ urlpatterns = [
         name="unban_user",
     ),
 
+    # All Orders
+    path('orders/', views.orders, name='admin_orders'),
+
+    # Orders by status
+    path('orders/pending/', views.pending_orders, name='admin_pending_orders'),
+    path('orders/ready/', views.ready_for_pickup_orders, name='admin_ready_orders'),
+    path('orders/picked-up/', views.picked_up_orders, name='admin_picked_up_orders'),
+    path('orders/completed/', views.completed_orders, name='admin_completed_orders'),
+    path('orders/cancelled/', views.cancelled_orders, name='admin_cancelled_orders'),
+
+    # Order detail and actions
+    path('orders/<int:order_id>/', views.order_detail, name='admin_order_detail'),
+    path('orders/<int:order_id>/<str:new_status>/', views.update_order_status, name='admin_update_order_status'),
+
 ]

@@ -1,0 +1,222 @@
+{% extends "adminpanel/base_admin.html" %}
+{% load static %}
+
+{% block title %}Order #{{ order.id }} | Admin Panel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_order.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="order-detail-container">
+    
+    <!-- Header -->
+    <div class="order-detail-header">
+        <div>
+            <a href="{% url 'admin_orders' %}" class="action-btn view" style="margin-bottom: 15px;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Orders
+            </a>
+            <h2>Order #{{ order.id }}</h2>
+        </div>
+        <span class="status-badge {{ order.status }}" style="font-size: 15px;">
+            {{ order.get_status_display }}
+        </span>
+    </div>
+    
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-6">
+            <!-- Order Information -->
+            <div class="order-info-card">
+                <div class="card-header">
+                    <h5><i class="fa-solid fa-info-circle"></i> Order Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="info-table">
+                        <tr>
+                            <th>Order ID:</th>
+                            <td>#{{ order.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Status:</th>
+                            <td>{{ order.get_status_display }}</td>
+                        </tr>
+                        <tr>
+                            <th>Payment Status:</th>
+                            <td>{{ order.get_payment_status_display }}</td>
+                        </tr>
+                        <tr>
+                            <th>Total Amount:</th>
+                            <td><strong>{{ order.total_amount }} Ks</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Created:</th>
+                            <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{ order.phone_number|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Location:</th>
+                            <td>{{ order.location|default:"-" }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Timeline -->
+            <div class="order-info-card">
+                <div class="card-header">
+                    <h5><i class="fa-solid fa-history"></i> Order Timeline</h5>
+                </div>
+                <div class="card-body">
+                    <div class="order-timeline">
+                        <div class="timeline-item">
+                            <strong>Order Placed</strong>
+                            <span>{{ order.pending_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        {% if order.ready_for_pickup_at %}
+                        <div class="timeline-item">
+                            <strong>Ready for Pickup</strong>
+                            <span>{{ order.ready_for_pickup_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        {% endif %}
+                        {% if order.picked_up_at %}
+                        <div class="timeline-item">
+                            <strong>Picked Up</strong>
+                            <span>{{ order.picked_up_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        {% endif %}
+                        {% if order.completed_at %}
+                        <div class="timeline-item">
+                            <strong>Completed</strong>
+                            <span>{{ order.completed_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        {% endif %}
+                        {% if order.cancelled_at %}
+                        <div class="timeline-item">
+                            <strong>Cancelled</strong>
+                            <span>{{ order.cancelled_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div class="col-md-6">
+            <!-- Buyer & Seller Info -->
+            <div class="order-info-card">
+                <div class="card-header">
+                    <h5><i class="fa-solid fa-users"></i> Buyer & Seller</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <h6 class="text-primary">Buyer</h6>
+                            <p><strong>Username:</strong> {{ order.user.user.username }}</p>
+                            <p><strong>Name:</strong> {{ order.user.fullName|default:"-" }}</p>
+                            <p><strong>Phone:</strong> {{ order.user.phone_number|default:"-" }}</p>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-success">Seller</h6>
+                            <p><strong>Username:</strong> {{ order.seller.user.username }}</p>
+                            <p><strong>Name:</strong> {{ order.seller.fullName|default:"-" }}</p>
+                            <p><strong>Phone:</strong> {{ order.seller.phone_number|default:"-" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin Actions -->
+            <div class="order-info-card">
+                <div class="card-header">
+                    <h5><i class="fa-solid fa-tools"></i> Admin Actions</h5>
+                </div>
+                <div class="card-body">
+                    {% if order.status == 'pending' %}
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin_update_order_status' order.id 'ready_for_pickup' %}" class="action-btn ready confirm-action" data-confirm-message="Mark this order as ready for pickup?">
+                            <i class="fa-solid fa-box-open"></i> Mark as Ready for Pickup
+                        </a>
+                        <a href="{% url 'admin_update_order_status' order.id 'cancelled' %}" class="action-btn cancel confirm-action" data-confirm-message="Cancel this order? Refund will be processed.">
+                            <i class="fa-solid fa-ban"></i> Cancel Order & Refund
+                        </a>
+                    </div>
+                    {% elif order.status == 'ready_for_pickup' %}
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin_update_order_status' order.id 'picked_up' %}" class="action-btn picked confirm-action" data-confirm-message="Mark this order as picked up?">
+                            <i class="fa-solid fa-hand"></i> Mark as Picked Up
+                        </a>
+                    </div>
+                    {% elif order.status == 'picked_up' %}
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin_update_order_status' order.id 'completed' %}" class="action-btn complete confirm-action" data-confirm-message="Complete order? Payment will be released to seller.">
+                            <i class="fa-solid fa-check-circle"></i> Complete & Release Payment
+                        </a>
+                    </div>
+                    {% elif order.status == 'completed' %}
+                    <div class="alert alert-success">
+                        <i class="fa-solid fa-check-circle"></i> Order completed. Payment released to seller.
+                    </div>
+                    {% elif order.status == 'cancelled' %}
+                    <div class="alert alert-danger">
+                        <i class="fa-solid fa-ban"></i> Order cancelled. Refund processed to buyer.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order Items -->
+    <div class="order-info-card">
+        <div class="card-header">
+            <h5><i class="fa-solid fa-list"></i> Order Items</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Size</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.item_name }}</td>
+                            <td>{% if item.size_variant %}{{ item.size_variant.size }}{% else %}One Size{% endif %}</td>
+                            <td>{{ item.unit_price }} Ks</td>
+                            <td>{{ item.quantity }}</td>
+                            <td><strong>{{ item.total_price }} Ks</strong></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No items found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="4" class="text-end">Total:</th>
+                            <th><strong>{{ order.total_amount }} Ks</strong></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/admin_order.js' %}"></script>
+{% endblock %}
