@@ -1147,3 +1147,16 @@ def update_order_status(request, order_id, new_status):
         messages.error(request, str(e))
 
     return redirect('admin_order_detail', order_id=order.id)
+
+
+
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    context = {
+        'order': order,
+        'now': timezone.now(),  # ADD THIS
+    }
+
+    return render(request, 'adminpanel/order_detail.html', context)

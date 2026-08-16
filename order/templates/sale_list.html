@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/sale_list.css' %}">
 
 <div class="sale-page">
     <div class="container py-4">
-        
+
         <!-- Header -->
         <div class="sale-header mb-4">
             <h2><i class="fa-solid fa-sack-dollar"></i> My Sales</h2>
@@ -22,7 +23,7 @@
                     </div>
                     <div>
                         <span>Total Earned</span>
-                        <h3>{{ total_earned }} MMK</h3>
+                        <h3>{{ total_earned|intcomma }} MMK</h3>
                     </div>
                 </div>
             </div>
@@ -33,7 +34,7 @@
                     </div>
                     <div>
                         <span>Pending Amount</span>
-                        <h3>{{ pending_amount }} MMK</h3>
+                        <h3>{{ pending_amount|intcomma }} MMK</h3>
                     </div>
                 </div>
             </div>
@@ -90,11 +91,11 @@
                 <!-- Sale Header -->
                 <div class="sale-card-header">
                     <div>
-<span class="order-id">Sale #{{ forloop.counter }}</span>
+                        <span class="order-id">Sale #{{ sale.id }}</span>
                         <span class="order-date">{{ sale.created_at|date:"M d, Y H:i" }}</span>
                     </div>
                     <span class="status-badge status-{{ sale.status }}">
-                        {{ sale.status|title }}
+                        {{ sale.get_status_display }}
                     </span>
                 </div>
 
@@ -119,8 +120,8 @@
                             {% if order_item.size_variant %}
                                 <span class="size-tag">Size: {{ order_item.size_variant.size }}</span>
                             {% endif %}
-                            <p>Qty: {{ order_item.quantity }} × {{ order_item.unit_price }} MMK</p>
-                            <strong class="item-total">{{ order_item.total_price }} MMK</strong>
+                            <p>Qty: {{ order_item.quantity }} × {{ order_item.unit_price|intcomma }} MMK</p>
+                            <strong class="item-total">{{ order_item.total_price|intcomma }} MMK</strong>
                         </div>
                     </div>
                     {% endfor %}
@@ -137,7 +138,7 @@
                     </div>
                     <div class="sale-total">
                         <span>Total:</span>
-                        <strong>{{ sale.total_amount }} MMK</strong>
+                        <strong>{{ sale.total_amount|intcomma }} MMK</strong>
                     </div>
                     <a href="{% url 'order:sale_detail' sale.id %}" class="detail-btn">
                         <i class="fa-solid fa-eye"></i> Details

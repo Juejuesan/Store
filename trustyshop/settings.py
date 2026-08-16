@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'cart',
     'image_search',
     'order',
+'django.contrib.humanize', 
+
 ]
 
 MIDDLEWARE = [

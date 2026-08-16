@@ -10,37 +10,61 @@ document.addEventListener('DOMContentLoaded', function() {
     if (countdownElement) {
         const deadline = new Date(countdownElement.getAttribute('data-cancel-deadline'));
         const countdownText = countdownElement.querySelector('.countdown-text');
+        const cancelForm = document.getElementById('cancelOrderForm');
+        const cancelBtn = document.getElementById('cancelOrderBtn');
+        const warningBox = document.querySelector('.cancellation-warning');
 
         function updateCountdown() {
             const now = new Date();
             const timeLeft = deadline - now;
 
             if (timeLeft <= 0) {
+                // Countdown finished
                 if (countdownText) {
                     countdownText.textContent = 'Cancellation window expired';
                 }
                 countdownElement.classList.add('expired');
 
-                // Disable cancel button
-                const cancelBtn = document.querySelector('.btn-cancel');
-                if (cancelBtn) {
-                    cancelBtn.disabled = true;
-                    cancelBtn.style.opacity = '0.5';
-                    cancelBtn.style.cursor = 'not-allowed';
+                // Hide cancel form
+                if (cancelForm) {
+                    cancelForm.style.display = 'none';
+                }
+
+                // Replace warning box with expired message
+                if (warningBox) {
+                    warningBox.innerHTML = `
+                        <div class="cancellation-expired">
+                            <i class="fa-solid fa-lock"></i>
+                            <div>
+                                <strong>Cancellation Window Expired</strong>
+                                <p>You can no longer cancel this order. Our team will process your order soon.</p>
+                            </div>
+                        </div>
+                    `;
                 }
                 return;
             }
 
+            // Countdown still running
             const hours = Math.floor(timeLeft / 3600000);
             const minutes = Math.floor((timeLeft % 3600000) / 60000);
             const seconds = Math.floor((timeLeft % 60000) / 1000);
 
             if (countdownText) {
-                countdownText.textContent = `${hours}h ${minutes}m ${seconds}s remaining`;
+                if (hours > 0) {
+                    countdownText.textContent = `${hours}h ${minutes}m ${seconds}s remaining`;
+                } else if (minutes > 0) {
+                    countdownText.textContent = `${minutes}m ${seconds}s remaining`;
+                } else {
+                    countdownText.textContent = `${seconds}s remaining`;
+                }
             }
         }
 
+        // Run immediately
         updateCountdown();
+
+        // Update every second
         setInterval(updateCountdown, 1000);
     }
 

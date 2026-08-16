@@ -341,3 +341,90 @@
         flex-wrap: wrap;
     }
 }
+
+/* Cancellation Expired */
+.cancellation-expired {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.cancellation-expired i {
+    font-size: 18px;
+    color: #94a3b8;
+}
+
+/* Monthly Limit Alert */
+.cancellation-limit-alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 20px;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: #991b1b;
+}
+
+.cancellation-limit-alert i {
+    font-size: 24px;
+    color: #dc2626;
+}
+
+.cancellation-limit-alert strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+.cancellation-limit-alert p {
+    margin: 0;
+    font-size: 13px;
+}
+
+/* Cancellation Info Text */
+.cancellation-info-text {
+    font-size: 12px;
+    color: #92400e;
+    margin: 10px 0;
+    font-weight: 600;
+}
+
+/* Cancellation Expired */
+.cancellation-expired {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 20px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+.cancellation-expired i {
+    font-size: 24px;
+    color: #94a3b8;
+}
+
+.cancellation-expired strong {
+    display: block;
+    font-size: 14px;
+    color: #334155;
+    margin-bottom: 3px;
+}
+
+.cancellation-expired p {
+    margin: 0;
+    font-size: 13px;
+}

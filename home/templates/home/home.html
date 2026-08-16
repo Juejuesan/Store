@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
+{% load humanize %}
+
 
 <html lang="en">
 
@@ -931,7 +933,7 @@
 
                                             <span class="price">
 
-                                                {{ item.price }}
+                                                {{ item.price|intcomma }}
                                                 MMK
 
                                             </span>
@@ -1175,7 +1177,7 @@
                                                 <span class="price">
 
                                                     From
-                                                    {{ first_item.price }}
+                                                    {{ first_item.price|intcomma }}
                                                     MMK
 
                                                 </span>

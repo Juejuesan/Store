@@ -292,9 +292,11 @@ def decrease_quantity(request, cart_item_id):
             # If quantity becomes 0 or less, remove item
             if cart_item.quantity <= 1:
                 # Remove item from cart
-                cart_item.release_hold()
+                cart_item.release_hold()  # This already returns stock
                 cart_item.status = 'cancelled'
                 cart_item.save()
+
+                # Post status will auto-update via model save
 
                 # Calculate updated cart total
                 cart = cart_item.cart
@@ -333,10 +335,10 @@ def decrease_quantity(request, cart_item_id):
             # Return stock to inventory
             if cart_item.size_variant:
                 cart_item.size_variant.quantity += 1
-                cart_item.size_variant.save()
+                cart_item.size_variant.save()  # This triggers post.check_and_update_status()
             else:
                 cart_item.item.simple_quantity += 1
-                cart_item.item.save(skip_has_sizes=True)
+                cart_item.item.save(skip_has_sizes=True)  # This triggers post.check_and_update_status()
 
             # Calculate updated cart total
             cart = cart_item.cart
@@ -387,10 +389,12 @@ def remove_from_cart(request, cart_item_id):
 
     try:
         with transaction.atomic():
-            # Release hold and return stock
+            # Release hold and return stock (this already returns stock)
             cart_item.release_hold()
             cart_item.status = 'cancelled'
             cart_item.save()
+
+            # Post status will auto-update via model save
 
             # Calculate updated cart total
             cart = cart_item.cart

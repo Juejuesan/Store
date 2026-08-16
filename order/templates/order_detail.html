@@ -44,8 +44,19 @@
         {% endif %}
     </div>
 
-    <!-- Cancellation Warning with Countdown -->
-    {% if is_buyer and order.can_cancel %}
+<!-- Cancellation Warning with Countdown -->
+{% if is_buyer and order.status == 'pending' %}
+    {% if not can_cancel_more %}
+    <!-- Monthly limit reached -->
+    <div class="cancellation-limit-alert">
+        <i class="fa-solid fa-exclamation-triangle"></i>
+        <div>
+            <strong>Cancellation Limit Reached</strong>
+            <p>You have reached your monthly cancellation limit ({{ max_cancellations }} cancellations). You cannot cancel this order.</p>
+        </div>
+    </div>
+    {% elif order.can_cancel %}
+    <!-- Can cancel - show countdown and button -->
     <div class="cancellation-warning">
         <div class="warning-header">
             <span class="warning-icon">⚠️</span>
@@ -56,16 +67,31 @@
             <i class="fa-solid fa-hourglass-half"></i>
             <span class="countdown-text">Loading...</span>
         </div>
-        <form method="post" action="{% url 'order:cancel_order' order.id %}" class="cancel-form">
+        <p class="cancellation-info-text">
+            Cancellations used this month: {{ cancellation_count }} / {{ max_cancellations }}
+        </p>
+        <form method="post" action="{% url 'order:cancel_order' order.id %}" class="cancel-form" id="cancelOrderForm">
             {% csrf_token %}
             <div class="form-group">
                 <label for="cancellation_reason">Cancellation Reason (optional):</label>
                 <textarea name="reason" id="cancellation_reason" rows="3" placeholder="Please let us know why you're cancelling..."></textarea>
             </div>
-            <button type="submit" class="btn btn-cancel">Cancel Order</button>
+            <button type="submit" class="btn btn-cancel" id="cancelOrderBtn">
+                <i class="fa-solid fa-ban"></i> Cancel Order
+            </button>
         </form>
     </div>
+    {% else %}
+    <!-- Countdown expired -->
+    <div class="cancellation-expired">
+        <i class="fa-solid fa-lock"></i>
+        <div>
+            <strong>Cancellation Window Expired</strong>
+            <p>You can no longer cancel this order.</p>
+        </div>
+    </div>
     {% endif %}
+{% endif %}
 
     <!-- Order Info Grid -->
     <div class="order-info-grid">

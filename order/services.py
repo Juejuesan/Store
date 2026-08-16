@@ -9,9 +9,9 @@ from .models import Order, OrderItem
 
 
 class OrderService:
-    CANCELLATION_WINDOW_MINUTES = 24  # Changed to 24 hours (1 day)
+    CANCELLATION_WINDOW_MINUTES = 3  # Changed to 24 hours (1 day)
     MAX_CANCELLATIONS_PER_MONTH = 3
-    AUTO_READY_MINUTES = 1  # Auto-ready after 24 hours
+    AUTO_READY_MINUTES = 3  # Auto-ready after 24 hours
 
     @classmethod
     @transaction.atomic

@@ -123,10 +123,22 @@ def order_detail(request, order_id):
         messages.error(request, "Unauthorized to view this order")
         return redirect('order:order_list')
 
+    # Get cancellation info for buyer
+    cancellation_count = 0
+    max_cancellations = 3
+    can_cancel_more = True
+
+    if order.user == request.user.profile:
+        cancellation_count = Order.get_user_cancellation_count_this_month(request.user.profile)
+        can_cancel_more = Order.can_user_cancel_more(request.user.profile, max_cancellations)
+
     context = {
         'order': order,
         'is_buyer': order.user == request.user.profile,
-        'is_seller': order.seller == request.user.profile
+        'is_seller': order.seller == request.user.profile,
+        'cancellation_count': cancellation_count,
+        'max_cancellations': max_cancellations,
+        'can_cancel_more': can_cancel_more,
     }
     return render(request, 'order_detail.html', context)
 
@@ -141,7 +153,11 @@ def cancel_order(request, order_id):
         order = OrderService.cancel_order(order_id, request.user.profile, reason)
         messages.success(request, "Order cancelled successfully. Refund processed to wallet.")
     except ValueError as e:
-        messages.error(request, str(e))
+        # Check if it's monthly limit error
+        if "monthly cancellation limit" in str(e):
+            messages.error(request, str(e))
+        else:
+            messages.error(request, str(e))
 
     return redirect('order:order_detail', order_id=order_id)
 

@@ -47,6 +47,7 @@ class Post(models.Model):
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
+        ('sold', 'Sold'),
     ]
 
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posts')
@@ -60,6 +61,34 @@ class Post(models.Model):
     def __str__(self):
         return f"Post by {self.user.user.username} - {self.category.name}"
 
+    def check_and_update_status(self):
+        """Check stock and update status accordingly"""
+        # Only check approved or sold posts
+        if self.status not in ['approved', 'sold']:
+            return False
+
+        total_stock = 0
+        for item in self.items.all():
+            if item.has_sizes:
+                total_stock += item.total_quantity
+            else:
+                total_stock += item.simple_quantity
+
+        if total_stock <= 0:
+            # All stock gone - mark as sold
+            if self.status != 'sold':
+                self.status = 'sold'
+                self.save()
+                return True
+        else:
+            # Stock available - mark as approved
+            if self.status != 'approved':
+                self.status = 'approved'
+                self.save()
+                return True
+
+        return False
+
 
 class Item(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='items')
@@ -72,15 +101,6 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name
-
-    def save(self, *args, **kwargs):
-        if self.post:
-            category_supports_sizes = self.post.category.size_type != 'none'
-            is_new_item = self.post.condition == 'new'
-            self.has_sizes = category_supports_sizes and is_new_item
-        else:
-            self.has_sizes = False
-        super().save(*args, **kwargs)
 
     @property
     def total_quantity(self):
@@ -105,7 +125,7 @@ class Item(models.Model):
         from django.db.models import Sum
 
         if self.has_sizes:
-            return None  # Use size variants instead
+            return None
 
         taken = StockHold.objects.filter(
             item=self,
@@ -116,22 +136,28 @@ class Item(models.Model):
         return self.simple_quantity - taken
 
     def save(self, *args, **kwargs):
-        # Remove this auto-override or add a flag to skip it
-        if not kwargs.pop('skip_has_sizes', False):  # Allow skipping
+        skip_has_sizes = kwargs.pop('skip_has_sizes', False)
+
+        if not skip_has_sizes:
             if self.post:
                 category_supports_sizes = self.post.category.size_type != 'none'
                 is_new_item = self.post.condition == 'new'
                 self.has_sizes = category_supports_sizes and is_new_item
             else:
                 self.has_sizes = False
+
         super().save(*args, **kwargs)
+
+        # Check if post status should update
+        if self.post:
+            self.post.check_and_update_status()
 
 
 class SizeVariant(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='size_variants')
     size = models.CharField(max_length=50)
     quantity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
-    price = models.IntegerField(default=0, validators=[MinValueValidator(0)])  # ADD THIS
+    price = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
     class Meta:
         unique_together = ['item', 'size']
@@ -150,6 +176,13 @@ class SizeVariant(models.Model):
         ).aggregate(total=Sum('quantity'))['total'] or 0
 
         return self.quantity - taken
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        # Check if post status should update
+        if self.item and self.item.post:
+            self.item.post.check_and_update_status()
 
 
 class ItemImage(models.Model):
