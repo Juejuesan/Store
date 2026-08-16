@@ -9,13 +9,22 @@ class Notification(models.Model):
         ("new_post", "New Post"),
         ("approved", "Approved"),
         ("rejected", "Rejected"),
+
         ("deposit_request", "Deposit Request"),
         ("deposit_approved", "Deposit Approved"),
         ("deposit_rejected", "Deposit Rejected"),
+
         ("withdraw_approved", "Withdraw Approved"),
         ("withdraw_rejected", "Withdraw Rejected"),
-    ]
 
+        ("order_created", "Order Created"),
+        ("order_ready", "Order Ready"),
+        ("order_picked_up", "Order Picked Up"),
+        ("order_completed", "Order Completed"),
+        ("order_cancelled", "Order Cancelled"),
+        ("payment_released", "Payment Released"),
+        ("payment_received", "Payment Received"),
+    ]
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

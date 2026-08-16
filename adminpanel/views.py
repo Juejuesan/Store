@@ -1,17 +1,20 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from decimal import Decimal
+
 from django.contrib import messages
-from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Sum
-from decimal import Decimal
-from order.models import Order, OrderItem
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
+from order.models import Order
 
 from user.models import Profile
 from posts.models import Post
 from notifications.models import Notification
+
 from wallet.models import (
     DepositRequest,
     WithdrawRequest,
@@ -28,30 +31,39 @@ from .models import AdminActivity
 
 @login_required
 def dashboard(request):
-    recent_activities = AdminActivity.objects.select_related(
-        "admin"
-    ).order_by("-created_at")[:10]
+
+    recent_activities = (
+        AdminActivity.objects
+        .select_related("admin")
+        .order_by("-created_at")[:10]
+    )
 
     context = {
-
         "total_users": User.objects.filter(
             is_staff=False,
             is_superuser=False,
-            is_active=True
+            is_active=True,
         ).count(),
 
         "total_sellers": User.objects.filter(
             is_staff=False,
-            is_superuser=False
+            is_superuser=False,
         ).count(),
 
         "pending_posts": Post.objects.filter(
             status="pending"
         ).count(),
 
-        "pending_orders": 15,
+        "pending_orders": Order.objects.filter(
+            status="pending"
+        ).count(),
 
-        "total_revenue": "15,800,000",
+        "total_revenue": (
+            Order.objects
+            .filter(status="completed")
+            .aggregate(total=Sum("total_amount"))["total"]
+            or Decimal("0")
+        ),
 
         "recent_activities": recent_activities,
     }
@@ -59,7 +71,7 @@ def dashboard(request):
     return render(
         request,
         "adminpanel/dashboard.html",
-        context
+        context,
     )
 
 
@@ -69,11 +81,12 @@ def dashboard(request):
 
 @login_required
 def users(request):
+
     users = (
         User.objects
         .filter(
             is_staff=False,
-            is_superuser=False
+            is_superuser=False,
         )
         .select_related("profile")
         .order_by("-date_joined")
@@ -87,7 +100,7 @@ def users(request):
     return render(
         request,
         "adminpanel/user.html",
-        context
+        context,
     )
 
 
@@ -97,29 +110,32 @@ def users(request):
 
 @login_required
 def ban_user(request, user_id):
+
     user = get_object_or_404(
         User,
-        id=user_id
+        id=user_id,
     )
 
     profile = get_object_or_404(
         Profile,
-        user=user
+        user=user,
     )
 
     profile.status = "Banned"
     profile.save()
 
-    # ADMIN RECENT ACTIVITY
     AdminActivity.objects.create(
         admin=request.user,
         action="ban_user",
-        message=f"You successfully banned {user.username}"
+        message=(
+            f"You successfully banned "
+            f"{user.username}"
+        ),
     )
 
     messages.success(
         request,
-        f"{user.username} has been banned successfully."
+        f"{user.username} has been banned successfully.",
     )
 
     return redirect("users")
@@ -131,29 +147,32 @@ def ban_user(request, user_id):
 
 @login_required
 def unban_user(request, user_id):
+
     user = get_object_or_404(
         User,
-        id=user_id
+        id=user_id,
     )
 
     profile = get_object_or_404(
         Profile,
-        user=user
+        user=user,
     )
 
     profile.status = "Approved"
     profile.save()
 
-    # ADMIN RECENT ACTIVITY
     AdminActivity.objects.create(
         admin=request.user,
         action="unban_user",
-        message=f"You successfully unbanned {user.username}"
+        message=(
+            f"You successfully unbanned "
+            f"{user.username}"
+        ),
     )
 
     messages.success(
         request,
-        f"{user.username} has been unbanned successfully."
+        f"{user.username} has been unbanned successfully.",
     )
 
     return redirect("users")
@@ -165,6 +184,7 @@ def unban_user(request, user_id):
 
 @login_required
 def posts(request):
+
     pending_posts = (
         Post.objects
         .filter(status="pending")
@@ -177,7 +197,7 @@ def posts(request):
         "adminpanel/posts.html",
         {
             "pending_posts": pending_posts,
-        }
+        },
     )
 
 
@@ -187,9 +207,10 @@ def posts(request):
 
 @login_required
 def post_detail(request, post_id):
+
     post = get_object_or_404(
         Post,
-        id=post_id
+        id=post_id,
     )
 
     return render(
@@ -197,7 +218,7 @@ def post_detail(request, post_id):
         "adminpanel/post_detail.html",
         {
             "post": post,
-        }
+        },
     )
 
 
@@ -207,28 +228,29 @@ def post_detail(request, post_id):
 
 @login_required
 def approve_post(request, post_id):
+
     post = get_object_or_404(
         Post,
-        id=post_id
+        id=post_id,
     )
 
     post.status = "approved"
     post.save()
 
-    # Get seller username safely
     try:
         username = post.user.user.username
     except AttributeError:
         username = "user"
 
-        # ADMIN RECENT ACTIVITY
     AdminActivity.objects.create(
         admin=request.user,
         action="approve_post",
-        message=f"You successfully approved a post from {username}"
+        message=(
+            f"You successfully approved "
+            f"a post from {username}"
+        ),
     )
 
-    # USER NOTIFICATION
     Notification.objects.create(
         user=post.user.user,
         post=post,
@@ -238,7 +260,7 @@ def approve_post(request, post_id):
 
     messages.success(
         request,
-        "Post approved successfully."
+        "Post approved successfully.",
     )
 
     return redirect("posts")
@@ -250,9 +272,10 @@ def approve_post(request, post_id):
 
 @login_required
 def reject_post(request, post_id):
+
     post = get_object_or_404(
         Post,
-        id=post_id
+        id=post_id,
     )
 
     post.status = "rejected"
@@ -263,14 +286,15 @@ def reject_post(request, post_id):
     except AttributeError:
         username = "user"
 
-        # ADMIN RECENT ACTIVITY
     AdminActivity.objects.create(
         admin=request.user,
         action="reject_post",
-        message=f"You successfully rejected a post from {username}"
+        message=(
+            f"You successfully rejected "
+            f"a post from {username}"
+        ),
     )
 
-    # USER NOTIFICATION
     Notification.objects.create(
         user=post.user.user,
         post=post,
@@ -280,7 +304,7 @@ def reject_post(request, post_id):
 
     messages.success(
         request,
-        "Post rejected successfully."
+        "Post rejected successfully.",
     )
 
     return redirect("posts")
@@ -292,6 +316,7 @@ def reject_post(request, post_id):
 
 @login_required
 def wallet_requests(request):
+
     deposits = (
         DepositRequest.objects
         .select_related("user")
@@ -313,38 +338,32 @@ def wallet_requests(request):
     ).count()
 
     approved_amount = (
-            deposits
-            .filter(status="Approved")
-            .aggregate(total=Sum("amount"))["total"]
-            or Decimal("0")
+        deposits
+        .filter(status="Approved")
+        .aggregate(total=Sum("amount"))["total"]
+        or Decimal("0")
     )
 
     approved_withdraw_amount = (
-            withdrawals
-            .filter(status="Approved")
-            .aggregate(total=Sum("amount"))["total"]
-            or Decimal("0")
+        withdrawals
+        .filter(status="Approved")
+        .aggregate(total=Sum("amount"))["total"]
+        or Decimal("0")
     )
 
     context = {
-
         "deposits": deposits,
-
         "withdrawals": withdrawals,
-
         "pending_count": pending_deposits,
-
         "pending_withdrawals": pending_withdrawals,
-
         "approved_amount": approved_amount,
-
         "approved_withdraw_amount": approved_withdraw_amount,
     }
 
     return render(
         request,
         "adminpanel/wallet.html",
-        context
+        context,
     )
 
 
@@ -354,6 +373,7 @@ def wallet_requests(request):
 
 @login_required
 def deposit_requests(request):
+
     deposits = (
         DepositRequest.objects
         .select_related("user")
@@ -365,25 +385,22 @@ def deposit_requests(request):
     ).count()
 
     approved_amount = (
-            deposits
-            .filter(status="Approved")
-            .aggregate(total=Sum("amount"))["total"]
-            or Decimal("0")
+        deposits
+        .filter(status="Approved")
+        .aggregate(total=Sum("amount"))["total"]
+        or Decimal("0")
     )
 
     context = {
-
         "deposits": deposits,
-
         "pending_count": pending_count,
-
         "approved_amount": approved_amount,
     }
 
     return render(
         request,
         "adminpanel/wallet.html",
-        context
+        context,
     )
 
 
@@ -394,36 +411,33 @@ def deposit_requests(request):
 @login_required
 @transaction.atomic
 def approve_deposit(request, deposit_id):
+
     deposit = get_object_or_404(
         DepositRequest,
-        id=deposit_id
+        id=deposit_id,
     )
 
-    # Prevent approving twice
     if deposit.status != "Pending":
+
         messages.warning(
             request,
-            "This deposit request has already been processed."
+            "This deposit request has already been processed.",
         )
 
         return redirect("deposit_requests")
 
-        # Get or create wallet
     wallet, created = Wallet.objects.get_or_create(
-        user=deposit.user
+        user=deposit.user,
     )
 
-    # Add money
     wallet.balance += deposit.amount
     wallet.save()
 
-    # Update deposit
     deposit.status = "Approved"
     deposit.approved_at = timezone.now()
     deposit.approved_by = request.user
     deposit.save()
 
-    # Transaction history
     WalletTransaction.objects.create(
         wallet=wallet,
         transaction_type="Deposit",
@@ -433,7 +447,6 @@ def approve_deposit(request, deposit_id):
         reference_id=str(deposit.id),
     )
 
-    # User notification
     Notification.objects.create(
         user=deposit.user,
         message=(
@@ -444,7 +457,6 @@ def approve_deposit(request, deposit_id):
         notification_type="deposit_approved",
     )
 
-    # ADMIN RECENT ACTIVITY
     AdminActivity.objects.create(
         admin=request.user,
         action="approve_deposit",
@@ -452,12 +464,12 @@ def approve_deposit(request, deposit_id):
             f"You successfully approved a deposit "
             f"of MMK {deposit.amount:,.0f} "
             f"from {deposit.user.username}"
-        )
+        ),
     )
 
     messages.success(
         request,
-        "Deposit approved successfully."
+        "Deposit approved successfully.",
     )
 
     return redirect("deposit_requests")
@@ -470,15 +482,17 @@ def approve_deposit(request, deposit_id):
 @login_required
 @transaction.atomic
 def reject_deposit(request, deposit_id):
+
     deposit = get_object_or_404(
         DepositRequest,
-        id=deposit_id
+        id=deposit_id,
     )
 
     if deposit.status != "Pending":
+
         messages.warning(
             request,
-            "This deposit request has already been processed."
+            "This deposit request has already been processed.",
         )
 
         return redirect("deposit_requests")
@@ -488,7 +502,6 @@ def reject_deposit(request, deposit_id):
     deposit.approved_by = request.user
     deposit.save()
 
-    # User notification
     Notification.objects.create(
         user=deposit.user,
         message=(
@@ -499,7 +512,6 @@ def reject_deposit(request, deposit_id):
         notification_type="deposit_rejected",
     )
 
-    # ADMIN RECENT ACTIVITY
     AdminActivity.objects.create(
         admin=request.user,
         action="reject_deposit",
@@ -507,12 +519,12 @@ def reject_deposit(request, deposit_id):
             f"You successfully rejected a deposit "
             f"of MMK {deposit.amount:,.0f} "
             f"from {deposit.user.username}"
-        )
+        ),
     )
 
     messages.success(
         request,
-        "Deposit rejected successfully."
+        "Deposit rejected successfully.",
     )
 
     return redirect("deposit_requests")
@@ -524,6 +536,7 @@ def reject_deposit(request, deposit_id):
 
 @login_required
 def withdraw_requests(request):
+
     withdrawals = (
         WithdrawRequest.objects
         .select_related("user")
@@ -535,25 +548,22 @@ def withdraw_requests(request):
     ).count()
 
     approved_amount = (
-            withdrawals
-            .filter(status="Approved")
-            .aggregate(total=Sum("amount"))["total"]
-            or Decimal("0")
+        withdrawals
+        .filter(status="Approved")
+        .aggregate(total=Sum("amount"))["total"]
+        or Decimal("0")
     )
 
     context = {
-
         "withdrawals": withdrawals,
-
         "pending_count": pending_count,
-
         "approved_amount": approved_amount,
     }
 
     return render(
         request,
-        "adminpanel/withdraw_requests.html",
-        context
+        "adminpanel/wallet.html",
+        context,
     )
 
 
@@ -564,26 +574,28 @@ def withdraw_requests(request):
 @login_required
 @transaction.atomic
 def approve_withdraw(request, withdraw_id):
+
     withdraw = get_object_or_404(
         WithdrawRequest,
-        id=withdraw_id
+        id=withdraw_id,
     )
 
     if withdraw.status != "Pending":
+
         messages.warning(
             request,
-            "This withdrawal request has already been processed."
+            "This withdrawal request has already been processed.",
         )
 
         return redirect("withdraw_requests")
 
     wallet = get_object_or_404(
         Wallet,
-        user=withdraw.user
+        user=withdraw.user,
     )
 
-    # Check balance
     if withdraw.amount > wallet.balance:
+
         withdraw.status = "Rejected"
         withdraw.admin_remark = (
             "Insufficient wallet balance."
@@ -592,7 +604,6 @@ def approve_withdraw(request, withdraw_id):
         withdraw.approved_at = timezone.now()
         withdraw.save()
 
-        # User notification
         Notification.objects.create(
             user=withdraw.user,
             message=(
@@ -604,7 +615,6 @@ def approve_withdraw(request, withdraw_id):
             notification_type="withdraw_rejected",
         )
 
-        # ADMIN RECENT ACTIVITY
         AdminActivity.objects.create(
             admin=request.user,
             action="reject_withdraw",
@@ -613,27 +623,24 @@ def approve_withdraw(request, withdraw_id):
                 f"of MMK {withdraw.amount:,.0f} "
                 f"from {withdraw.user.username} "
                 f"because of insufficient balance"
-            )
+            ),
         )
 
         messages.error(
             request,
-            "Withdrawal rejected because of insufficient balance."
+            "Withdrawal rejected because of insufficient balance.",
         )
 
         return redirect("withdraw_requests")
 
-        # Deduct balance
     wallet.balance -= withdraw.amount
     wallet.save()
 
-    # Update withdrawal
     withdraw.status = "Approved"
     withdraw.approved_at = timezone.now()
     withdraw.approved_by = request.user
     withdraw.save()
 
-    # Transaction history
     WalletTransaction.objects.create(
         wallet=wallet,
         transaction_type="Withdraw",
@@ -643,7 +650,6 @@ def approve_withdraw(request, withdraw_id):
         reference_id=str(withdraw.id),
     )
 
-    # User notification
     Notification.objects.create(
         user=withdraw.user,
         message=(
@@ -654,7 +660,6 @@ def approve_withdraw(request, withdraw_id):
         notification_type="withdraw_approved",
     )
 
-    # ADMIN RECENT ACTIVITY
     AdminActivity.objects.create(
         admin=request.user,
         action="approve_withdraw",
@@ -662,12 +667,12 @@ def approve_withdraw(request, withdraw_id):
             f"You successfully approved a withdrawal "
             f"of MMK {withdraw.amount:,.0f} "
             f"for {withdraw.user.username}"
-        )
+        ),
     )
 
     messages.success(
         request,
-        "Withdrawal approved successfully."
+        "Withdrawal approved successfully.",
     )
 
     return redirect("withdraw_requests")
@@ -680,15 +685,17 @@ def approve_withdraw(request, withdraw_id):
 @login_required
 @transaction.atomic
 def reject_withdraw(request, withdraw_id):
+
     withdraw = get_object_or_404(
         WithdrawRequest,
-        id=withdraw_id
+        id=withdraw_id,
     )
 
     if withdraw.status != "Pending":
+
         messages.warning(
             request,
-            "This withdrawal request has already been processed."
+            "This withdrawal request has already been processed.",
         )
 
         return redirect("withdraw_requests")
@@ -698,7 +705,6 @@ def reject_withdraw(request, withdraw_id):
     withdraw.approved_at = timezone.now()
     withdraw.save()
 
-    # User notification
     Notification.objects.create(
         user=withdraw.user,
         message=(
@@ -709,7 +715,6 @@ def reject_withdraw(request, withdraw_id):
         notification_type="withdraw_rejected",
     )
 
-    # ADMIN RECENT ACTIVITY
     AdminActivity.objects.create(
         admin=request.user,
         action="reject_withdraw",
@@ -717,12 +722,12 @@ def reject_withdraw(request, withdraw_id):
             f"You successfully rejected a withdrawal "
             f"of MMK {withdraw.amount:,.0f} "
             f"from {withdraw.user.username}"
-        )
+        ),
     )
 
     messages.success(
         request,
-        "Withdrawal rejected successfully."
+        "Withdrawal rejected successfully.",
     )
 
     return redirect("withdraw_requests")
@@ -734,10 +739,11 @@ def reject_withdraw(request, withdraw_id):
 
 @login_required
 def read_notification(request, noti_id):
+
     notification = get_object_or_404(
         Notification,
         id=noti_id,
-        user=request.user
+        user=request.user,
     )
 
     notification.is_read = True
@@ -747,45 +753,83 @@ def read_notification(request, noti_id):
 
 
 # =========================================================
-# ORDERS - ALL STATUS
+# AUTO READY ORDERS
+# =========================================================
+
+def check_and_auto_ready_orders():
+    """
+    Automatically change pending orders to
+    ready_for_pickup after auto_ready_at.
+    """
+
+    now = timezone.now()
+
+    Order.objects.filter(
+        status="pending",
+        auto_ready_at__isnull=False,
+        auto_ready_at__lte=now,
+    ).update(
+        status="ready_for_pickup",
+        ready_for_pickup_at=now,
+        updated_at=now,
+    )
+
+
+# =========================================================
+# ALL ORDERS
 # =========================================================
 
 @login_required
 def orders(request):
-    """View all orders with status filter"""
-    status_filter = request.GET.get('status', 'all')
+    """
+    Display all orders with status counts.
+    """
 
-    orders = Order.objects.select_related(
-        'user__user', 'seller__user'
-    ).prefetch_related('items').order_by('-created_at')
+    # Check expired 24-hour orders first.
+    check_and_auto_ready_orders()
 
-    if status_filter != 'all':
-        orders = orders.filter(status=status_filter)
-
-    # Count by status
-    pending_orders = Order.objects.filter(status='pending')
-    ready_orders = Order.objects.filter(status='ready_for_pickup')
-    picked_up_orders = Order.objects.filter(status='picked_up')
-    completed_orders = Order.objects.filter(status='completed')
-    cancelled_orders = Order.objects.filter(status='cancelled')
+    orders_queryset = (
+        Order.objects
+        .select_related(
+            "user__user",
+            "seller__user",
+        )
+        .prefetch_related("items")
+        .order_by("-created_at")
+    )
 
     context = {
-        'orders': orders,
-        'current_status': status_filter,
-        'pending_orders': pending_orders,
-        'ready_orders': ready_orders,
-        'picked_up_orders': picked_up_orders,
-        'completed_orders': completed_orders,
-        'cancelled_orders': cancelled_orders,
-        'pending_count': pending_orders.count(),
-        'ready_count': ready_orders.count(),
-        'picked_up_count': picked_up_orders.count(),
-        'completed_count': completed_orders.count(),
-        'cancelled_count': cancelled_orders.count(),
-        'total_orders': Order.objects.count(),
+        "orders": orders_queryset,
+        "current_status": "all",
+
+        "pending_count": Order.objects.filter(
+            status="pending"
+        ).count(),
+
+        "ready_count": Order.objects.filter(
+            status="ready_for_pickup"
+        ).count(),
+
+        "picked_up_count": Order.objects.filter(
+            status="picked_up"
+        ).count(),
+
+        "completed_count": Order.objects.filter(
+            status="completed"
+        ).count(),
+
+        "cancelled_count": Order.objects.filter(
+            status="cancelled"
+        ).count(),
+
+        "total_orders": Order.objects.count(),
     }
 
-    return render(request, 'adminpanel/orders.html', context)
+    return render(
+        request,
+        "adminpanel/orders.html",
+        context,
+    )
 
 
 # =========================================================
@@ -794,16 +838,55 @@ def orders(request):
 
 @login_required
 def pending_orders(request):
-    orders = Order.objects.filter(
-        status='pending'
-    ).select_related('user__user', 'seller__user').order_by('-created_at')
+    """
+    Display pending orders.
+    """
+
+    check_and_auto_ready_orders()
+
+    orders_queryset = (
+        Order.objects
+        .filter(status="pending")
+        .select_related(
+            "user__user",
+            "seller__user",
+        )
+        .prefetch_related("items")
+        .order_by("-created_at")
+    )
 
     context = {
-        'orders': orders,
-        'title': 'Pending Orders',
-        'status': 'pending',
+        "orders": orders_queryset,
+        "current_status": "pending",
+
+        "pending_count": Order.objects.filter(
+            status="pending"
+        ).count(),
+
+        "ready_count": Order.objects.filter(
+            status="ready_for_pickup"
+        ).count(),
+
+        "picked_up_count": Order.objects.filter(
+            status="picked_up"
+        ).count(),
+
+        "completed_count": Order.objects.filter(
+            status="completed"
+        ).count(),
+
+        "cancelled_count": Order.objects.filter(
+            status="cancelled"
+        ).count(),
+
+        "total_orders": Order.objects.count(),
     }
-    return render(request, 'adminpanel/orders.html', context)
+
+    return render(
+        request,
+        "adminpanel/orders.html",
+        context,
+    )
 
 
 # =========================================================
@@ -812,16 +895,53 @@ def pending_orders(request):
 
 @login_required
 def ready_for_pickup_orders(request):
-    orders = Order.objects.filter(
-        status='ready_for_pickup'
-    ).select_related('user__user', 'seller__user').order_by('-ready_for_pickup_at')
+    """
+    Display orders ready for pickup.
+    """
+
+    orders_queryset = (
+        Order.objects
+        .filter(status="ready_for_pickup")
+        .select_related(
+            "user__user",
+            "seller__user",
+        )
+        .prefetch_related("items")
+        .order_by("-ready_for_pickup_at")
+    )
 
     context = {
-        'orders': orders,
-        'title': 'Ready for Pickup Orders',
-        'status': 'ready_for_pickup',
+        "orders": orders_queryset,
+        "current_status": "ready_for_pickup",
+
+        "pending_count": Order.objects.filter(
+            status="pending"
+        ).count(),
+
+        "ready_count": Order.objects.filter(
+            status="ready_for_pickup"
+        ).count(),
+
+        "picked_up_count": Order.objects.filter(
+            status="picked_up"
+        ).count(),
+
+        "completed_count": Order.objects.filter(
+            status="completed"
+        ).count(),
+
+        "cancelled_count": Order.objects.filter(
+            status="cancelled"
+        ).count(),
+
+        "total_orders": Order.objects.count(),
     }
-    return render(request, 'adminpanel/orders.html', context)
+
+    return render(
+        request,
+        "adminpanel/orders.html",
+        context,
+    )
 
 
 # =========================================================
@@ -830,16 +950,53 @@ def ready_for_pickup_orders(request):
 
 @login_required
 def picked_up_orders(request):
-    orders = Order.objects.filter(
-        status='picked_up'
-    ).select_related('user__user', 'seller__user').order_by('-picked_up_at')
+    """
+    Display picked-up orders.
+    """
+
+    orders_queryset = (
+        Order.objects
+        .filter(status="picked_up")
+        .select_related(
+            "user__user",
+            "seller__user",
+        )
+        .prefetch_related("items")
+        .order_by("-picked_up_at")
+    )
 
     context = {
-        'orders': orders,
-        'title': 'Picked Up Orders',
-        'status': 'picked_up',
+        "orders": orders_queryset,
+        "current_status": "picked_up",
+
+        "pending_count": Order.objects.filter(
+            status="pending"
+        ).count(),
+
+        "ready_count": Order.objects.filter(
+            status="ready_for_pickup"
+        ).count(),
+
+        "picked_up_count": Order.objects.filter(
+            status="picked_up"
+        ).count(),
+
+        "completed_count": Order.objects.filter(
+            status="completed"
+        ).count(),
+
+        "cancelled_count": Order.objects.filter(
+            status="cancelled"
+        ).count(),
+
+        "total_orders": Order.objects.count(),
     }
-    return render(request, 'adminpanel/orders.html', context)
+
+    return render(
+        request,
+        "adminpanel/orders.html",
+        context,
+    )
 
 
 # =========================================================
@@ -848,16 +1005,53 @@ def picked_up_orders(request):
 
 @login_required
 def completed_orders(request):
-    orders = Order.objects.filter(
-        status='completed'
-    ).select_related('user__user', 'seller__user').order_by('-completed_at')
+    """
+    Display completed orders.
+    """
+
+    orders_queryset = (
+        Order.objects
+        .filter(status="completed")
+        .select_related(
+            "user__user",
+            "seller__user",
+        )
+        .prefetch_related("items")
+        .order_by("-completed_at")
+    )
 
     context = {
-        'orders': orders,
-        'title': 'Completed Orders',
-        'status': 'completed',
+        "orders": orders_queryset,
+        "current_status": "completed",
+
+        "pending_count": Order.objects.filter(
+            status="pending"
+        ).count(),
+
+        "ready_count": Order.objects.filter(
+            status="ready_for_pickup"
+        ).count(),
+
+        "picked_up_count": Order.objects.filter(
+            status="picked_up"
+        ).count(),
+
+        "completed_count": Order.objects.filter(
+            status="completed"
+        ).count(),
+
+        "cancelled_count": Order.objects.filter(
+            status="cancelled"
+        ).count(),
+
+        "total_orders": Order.objects.count(),
     }
-    return render(request, 'adminpanel/orders.html', context)
+
+    return render(
+        request,
+        "adminpanel/orders.html",
+        context,
+    )
 
 
 # =========================================================
@@ -866,16 +1060,53 @@ def completed_orders(request):
 
 @login_required
 def cancelled_orders(request):
-    orders = Order.objects.filter(
-        status='cancelled'
-    ).select_related('user__user', 'seller__user').order_by('-cancelled_at')
+    """
+    Display cancelled orders.
+    """
+
+    orders_queryset = (
+        Order.objects
+        .filter(status="cancelled")
+        .select_related(
+            "user__user",
+            "seller__user",
+        )
+        .prefetch_related("items")
+        .order_by("-cancelled_at")
+    )
 
     context = {
-        'orders': orders,
-        'title': 'Cancelled Orders',
-        'status': 'cancelled',
+        "orders": orders_queryset,
+        "current_status": "cancelled",
+
+        "pending_count": Order.objects.filter(
+            status="pending"
+        ).count(),
+
+        "ready_count": Order.objects.filter(
+            status="ready_for_pickup"
+        ).count(),
+
+        "picked_up_count": Order.objects.filter(
+            status="picked_up"
+        ).count(),
+
+        "completed_count": Order.objects.filter(
+            status="completed"
+        ).count(),
+
+        "cancelled_count": Order.objects.filter(
+            status="cancelled"
+        ).count(),
+
+        "total_orders": Order.objects.count(),
     }
-    return render(request, 'adminpanel/orders.html', context)
+
+    return render(
+        request,
+        "adminpanel/orders.html",
+        context,
+    )
 
 
 # =========================================================
@@ -884,18 +1115,77 @@ def cancelled_orders(request):
 
 @login_required
 def order_detail(request, order_id):
+    """
+    Display complete order details.
+    """
+
     order = get_object_or_404(
-        Order.objects.select_related('user__user', 'seller__user').prefetch_related(
-            'items__item__images', 'items__size_variant'
+        Order.objects
+        .select_related(
+            "user__user",
+            "seller__user",
+        )
+        .prefetch_related(
+            "items__item__images",
+            "items__size_variant",
         ),
-        id=order_id
+        id=order_id,
     )
 
-    context = {
-        'order': order,
-    }
+    # Automatically move expired pending order
+    # to ready_for_pickup.
+    if (
+        order.status == "pending"
+        and order.auto_ready_at
+        and timezone.now() >= order.auto_ready_at
+    ):
+        order.mark_ready_for_pickup()
+        order.refresh_from_db()
 
-    return render(request, 'adminpanel/order_detail.html', context)
+    return render(
+        request,
+        "adminpanel/order_detail.html",
+        {
+            "order": order,
+        },
+    )
+
+
+# =========================================================
+# AUTO READY ORDER - AJAX
+# =========================================================
+
+@login_required
+def auto_ready_order(request, order_id):
+    """
+    Check whether an order's automatic ready time
+    has expired.
+    """
+
+    order = get_object_or_404(
+        Order,
+        id=order_id,
+    )
+
+    if (
+        order.status == "pending"
+        and order.auto_ready_at
+        and timezone.now() >= order.auto_ready_at
+    ):
+
+        order.mark_ready_for_pickup()
+
+        return JsonResponse({
+            "success": True,
+            "message": (
+                "Order marked as ready for pickup"
+            ),
+        })
+
+    return JsonResponse({
+        "success": False,
+        "message": "Order not ready yet",
+    })
 
 
 # =========================================================
@@ -904,246 +1194,246 @@ def order_detail(request, order_id):
 
 @login_required
 def update_order_status(request, order_id, new_status):
-    order = get_object_or_404(Order, id=order_id)
+    """
+    Update order status from admin panel.
+    """
 
-    try:
-        if new_status == 'ready_for_pickup':
-            if order.status == 'pending':
-                order.mark_ready_for_pickup()
-                messages.success(request, f"Order #{order.id} marked as ready for pickup")
-            else:
-                messages.error(request, "Only pending orders can be marked as ready")
-
-        elif new_status == 'picked_up':
-            if order.status == 'ready_for_pickup':
-                order.mark_picked_up()
-                messages.success(request, f"Order #{order.id} marked as picked up")
-            else:
-                messages.error(request, "Only ready for pickup orders can be marked as picked up")
-
-        elif new_status == 'completed':
-            if order.status == 'picked_up':
-                order.mark_completed()
-                messages.success(request, f"Order #{order.id} completed. Payment released.")
-            else:
-                messages.error(request, "Only picked up orders can be completed")
-
-        elif new_status == 'cancelled':
-            if order.can_cancel:
-                order.cancel_order("Cancelled by admin")
-                messages.success(request, f"Order #{order.id} cancelled. Refund processed.")
-            else:
-                messages.error(request, "Order cannot be cancelled")
-        else:
-            messages.error(request, "Invalid status")
-
-    except ValueError as e:
-        messages.error(request, str(e))
-
-    return redirect('admin_order_detail', order_id=order.id)
-
-
-# =========================================================
-# ORDERS
-# =========================================================
-
-def check_and_auto_ready_orders():
-    """Auto-change pending orders to ready_for_pickup after 24 hours"""
-    Order.objects.filter(
-        status='pending',
-        auto_ready_at__lte=timezone.now()
-    ).update(
-        status='ready_for_pickup',
-        ready_for_pickup_at=timezone.now()
-    )
-
-
-@login_required
-def orders(request):
-    """View all orders"""
-    # Auto-ready expired orders first
-    check_and_auto_ready_orders()
-
-    orders = Order.objects.select_related(
-        'user__user', 'seller__user'
-    ).prefetch_related('items').order_by('-created_at')
-
-    context = {
-        'orders': orders,
-        'current_status': 'all',
-        'pending_count': Order.objects.filter(status='pending').count(),
-        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
-        'picked_up_count': Order.objects.filter(status='picked_up').count(),
-        'completed_count': Order.objects.filter(status='completed').count(),
-        'cancelled_count': Order.objects.filter(status='cancelled').count(),
-        'total_orders': Order.objects.count(),
-    }
-
-    return render(request, 'adminpanel/orders.html', context)
-
-
-@login_required
-def pending_orders(request):
-    """View pending orders"""
-    check_and_auto_ready_orders()
-
-    orders = Order.objects.filter(status='pending').select_related(
-        'user__user', 'seller__user'
-    ).order_by('-created_at')
-
-    context = {
-        'orders': orders,
-        'current_status': 'pending',
-        'pending_count': Order.objects.filter(status='pending').count(),
-        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
-        'picked_up_count': Order.objects.filter(status='picked_up').count(),
-        'completed_count': Order.objects.filter(status='completed').count(),
-        'cancelled_count': Order.objects.filter(status='cancelled').count(),
-        'total_orders': Order.objects.count(),
-    }
-
-    return render(request, 'adminpanel/orders.html', context)
-
-
-@login_required
-def ready_for_pickup_orders(request):
-    """View ready for pickup orders"""
-    orders = Order.objects.filter(status='ready_for_pickup').select_related(
-        'user__user', 'seller__user'
-    ).order_by('-ready_for_pickup_at')
-
-    context = {
-        'orders': orders,
-        'current_status': 'ready_for_pickup',
-        'pending_count': Order.objects.filter(status='pending').count(),
-        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
-        'picked_up_count': Order.objects.filter(status='picked_up').count(),
-        'completed_count': Order.objects.filter(status='completed').count(),
-        'cancelled_count': Order.objects.filter(status='cancelled').count(),
-        'total_orders': Order.objects.count(),
-    }
-
-    return render(request, 'adminpanel/orders.html', context)
-
-
-@login_required
-def picked_up_orders(request):
-    """View picked up orders"""
-    orders = Order.objects.filter(status='picked_up').select_related(
-        'user__user', 'seller__user'
-    ).order_by('-picked_up_at')
-
-    context = {
-        'orders': orders,
-        'current_status': 'picked_up',
-        'pending_count': Order.objects.filter(status='pending').count(),
-        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
-        'picked_up_count': Order.objects.filter(status='picked_up').count(),
-        'completed_count': Order.objects.filter(status='completed').count(),
-        'cancelled_count': Order.objects.filter(status='cancelled').count(),
-        'total_orders': Order.objects.count(),
-    }
-
-    return render(request, 'adminpanel/orders.html', context)
-
-
-@login_required
-def completed_orders(request):
-    """View completed orders"""
-    orders = Order.objects.filter(status='completed').select_related(
-        'user__user', 'seller__user'
-    ).order_by('-completed_at')
-
-    context = {
-        'orders': orders,
-        'current_status': 'completed',
-        'pending_count': Order.objects.filter(status='pending').count(),
-        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
-        'picked_up_count': Order.objects.filter(status='picked_up').count(),
-        'completed_count': Order.objects.filter(status='completed').count(),
-        'cancelled_count': Order.objects.filter(status='cancelled').count(),
-        'total_orders': Order.objects.count(),
-    }
-
-    return render(request, 'adminpanel/orders.html', context)
-
-
-@login_required
-def cancelled_orders(request):
-    """View cancelled orders"""
-    orders = Order.objects.filter(status='cancelled').select_related(
-        'user__user', 'seller__user'
-    ).order_by('-cancelled_at')
-
-    context = {
-        'orders': orders,
-        'current_status': 'cancelled',
-        'pending_count': Order.objects.filter(status='pending').count(),
-        'ready_count': Order.objects.filter(status='ready_for_pickup').count(),
-        'picked_up_count': Order.objects.filter(status='picked_up').count(),
-        'completed_count': Order.objects.filter(status='completed').count(),
-        'cancelled_count': Order.objects.filter(status='cancelled').count(),
-        'total_orders': Order.objects.count(),
-    }
-
-    return render(request, 'adminpanel/orders.html', context)
-
-
-@login_required
-def order_detail(request, order_id):
-    """View order details"""
     order = get_object_or_404(
-        Order.objects.select_related('user__user', 'seller__user').prefetch_related(
-            'items__item__images', 'items__size_variant'
+        Order.objects.select_related(
+            "user__user",
+            "seller__user",
         ),
-        id=order_id
+        id=order_id,
     )
 
-    # Auto-ready if expired
-    if order.status == 'pending' and order.auto_ready_at and timezone.now() >= order.auto_ready_at:
-        order.mark_ready_for_pickup()
-        order.refresh_from_db()
-
-    context = {
-        'order': order,
-    }
-
-    return render(request, 'adminpanel/order_detail.html', context)
-
-
-@login_required
-def auto_ready_order(request, order_id):
-    """Auto-ready order via AJAX"""
-    order = get_object_or_404(Order, id=order_id)
-
-    if order.status == 'pending' and order.auto_ready_at and timezone.now() >= order.auto_ready_at:
-        order.mark_ready_for_pickup()
-        return JsonResponse({'success': True, 'message': 'Order marked as ready for pickup'})
-
-    return JsonResponse({'success': False, 'message': 'Order not ready yet'})
-
-
-@login_required
-def update_order_status(request, order_id, new_status):
-    """Update order status from admin panel"""
-    order = get_object_or_404(Order, id=order_id)
-
     try:
-        if new_status == 'ready_for_pickup':
-            order.mark_ready_for_pickup()
-            messages.success(request, f"Order #{order.id} marked as ready for pickup")
-        elif new_status == 'picked_up':
-            order.mark_picked_up()
-            messages.success(request, f"Order #{order.id} marked as picked up. Payment released.")
-        elif new_status == 'completed':
-            order.mark_completed()
-            messages.success(request, f"Order #{order.id} completed.")
-        elif new_status == 'cancelled':
-            order.cancel_order("Cancelled by admin")
-            messages.success(request, f"Order #{order.id} cancelled. Refund processed.")
-        else:
-            messages.error(request, "Invalid status")
-    except ValueError as e:
-        messages.error(request, str(e))
 
-    return redirect('admin_order_detail', order_id=order.id)
+        # =================================================
+        # READY FOR PICKUP
+        # =================================================
+
+        if new_status == "ready_for_pickup":
+
+            if order.status != "pending":
+
+                messages.error(
+                    request,
+                    (
+                        "Only pending orders can be "
+                        "marked as ready for pickup."
+                    ),
+                )
+
+                return redirect(
+                    "admin_order_detail",
+                    order_id=order.id,
+                )
+
+            order.mark_ready_for_pickup()
+
+            Notification.objects.create(
+                user=order.user.user,
+                message=(
+                    "Your order is ready for pickup."
+                ),
+                notification_type="order_ready",
+                target_url=f"/orders/{order.id}/",
+            )
+
+            messages.success(
+                request,
+                "Order marked as ready for pickup.",
+            )
+
+
+        # =================================================
+        # PICKED UP
+        # PAYMENT RELEASED TO SELLER
+        # =================================================
+
+        elif new_status == "picked_up":
+            order.mark_picked_up()
+
+            AdminActivity.objects.create(
+                admin=request.user,
+                action="picked_up_order",
+                message=(
+                    f"You marked Order as picked up "
+                    f"and transferred MMK {order.total_amount:,.0f} to the seller."
+                )
+            )
+
+            if order.status != "ready_for_pickup":
+
+                messages.error(
+                    request,
+                    (
+                        "Only ready for pickup orders "
+                        "can be marked as picked up."
+                    ),
+                )
+
+                return redirect(
+                    "admin_order_detail",
+                    order_id=order.id,
+                )
+
+            order.mark_picked_up()
+
+            # =================================================
+            # ADMIN RECENT ACTIVITY
+            # =================================================
+
+            AdminActivity.objects.create(
+                admin=request.user,
+                action="picked_up_order",
+                message=(
+                    f"You marked Order #{order.id} as picked up "
+                    f"and transferred MMK {order.total_amount:,.0f} to the seller."
+                )
+            )
+
+            # Buyer notification
+            Notification.objects.create(
+                user=order.user.user,
+                message=(
+                    f"Picked Up & Paid • "
+                    f"MMK {order.total_amount:,.0f} "
+                    f"has been paid from your wallet."
+                ),
+                notification_type="order_picked_up",
+                target_url=f"/orders/{order.id}/",
+            )
+
+            # Seller notification
+            Notification.objects.create(
+                user=order.seller.user,
+                message=(
+                    f"Payment Received! "
+                    f"MMK {order.total_amount:,.0f} "
+                    f"has been added to your wallet "
+                    f"for your sold item."
+                ),
+                notification_type="payment_received",
+                target_url=f"/orders/{order.id}/",
+            )
+
+            messages.success(
+                request,
+                (
+                    f"Order #{order.id} marked as picked up. "
+                    f"Payment released to seller."
+                ),
+            )
+
+
+        # =================================================
+        # COMPLETED
+        # =================================================
+
+        elif new_status == "completed":
+
+            if order.status != "picked_up":
+
+                messages.error(
+                    request,
+                    (
+                        "Only picked up orders can "
+                        "be completed."
+                    ),
+                )
+
+                return redirect(
+                    "admin_order_detail",
+                    order_id=order.id,
+                )
+
+            order.mark_completed()
+
+            AdminActivity.objects.create(
+                admin=request.user,
+                action="complete_order",
+                message=(
+                    f"You completed delivery for order"
+                )
+            )
+
+            Notification.objects.create(
+                user=order.user.user,
+                message=(
+                    "Order completed successfully."
+                ),
+                notification_type="order_completed",
+                target_url=f"/orders/{order.id}/",
+            )
+
+            messages.success(
+                request,
+                f"Order #{order.id} completed successfully.",
+            )
+
+
+        # =================================================
+        # CANCELLED
+        # =================================================
+
+        elif new_status == "cancelled":
+
+            if not order.can_cancel:
+
+                messages.error(
+                    request,
+                    "Order cannot be cancelled.",
+                )
+
+                return redirect(
+                    "admin_order_detail",
+                    order_id=order.id,
+                )
+
+            order.cancel_order(
+                "Cancelled by admin"
+            )
+
+            Notification.objects.create(
+                user=order.user.user,
+                message=(
+                    f"Your order has been cancelled. "
+                    f"MMK {order.total_amount:,.0f} "
+                    f"has been refunded to your wallet."
+                ),
+                notification_type="order_cancelled",
+                target_url=f"/orders/{order.id}/",
+            )
+
+            messages.success(
+                request,
+                (
+                    f"Order #{order.id} cancelled. "
+                    f"Refund processed."
+                ),
+            )
+
+
+        # =================================================
+        # INVALID STATUS
+        # =================================================
+
+        else:
+
+            messages.error(
+                request,
+                "Invalid order status.",
+            )
+
+    except ValueError as e:
+
+        messages.error(
+            request,
+            str(e),
+        )
+
+    return redirect(
+        "admin_order_detail",
+        order_id=order.id,
+    )

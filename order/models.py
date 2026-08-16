@@ -138,16 +138,32 @@ class Order(models.Model):
         self.save()
 
     def mark_picked_up(self):
-        """Your team picked up from seller - release money to seller"""
+        """Mark order as picked up and release payment to seller."""
+
         if self.status != 'ready_for_pickup':
-            raise ValueError("Only ready for pickup orders can be marked as picked up")
+            raise ValueError(
+                "Only ready for pickup orders can be marked as picked up"
+            )
+
+        if self.payment_status == 'released':
+            raise ValueError(
+                "Payment has already been released for this order"
+            )
 
         self.status = 'picked_up'
         self.picked_up_at = timezone.now()
         self.payment_status = 'released'
-        self.save()
 
-        # Release funds to seller when picked up
+        self.save(
+            update_fields=[
+                'status',
+                'picked_up_at',
+                'payment_status',
+                'updated_at',
+            ]
+        )
+
+        # Release held funds to seller
         self.release_funds_to_seller()
 
     def mark_completed(self):
