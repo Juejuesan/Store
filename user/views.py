@@ -21,11 +21,12 @@ from django.contrib.auth import (
     login,
     logout,
 )
+from wishlist.models import Wishlist
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
 from .forms import (
@@ -313,33 +314,95 @@ def logout_view(request):
     )
 
 
-# =========================================================
-# USER DASHBOARD
-# =========================================================
+
 
 @login_required
 def dashboard(request):
 
-    # Get current user's Profile
     profile = request.user.profile
 
-    # Get posts created by this user's Profile
+    # =====================================================
+    # USER POSTS
+    # =====================================================
+
     user_posts = Post.objects.filter(
         user=profile
     ).order_by("-created_at")
 
-    # Count user's posts
     post_count = user_posts.count()
 
+
+    # =====================================================
+    # USER WISHLIST
+    # =====================================================
+
+    wishlist_count = Wishlist.objects.filter(
+        user=request.user
+    ).count()
+
+
+    # =====================================================
+    # CONTEXT
+    # =====================================================
+
     context = {
+        "profile": profile,
+        "seller": request.user,
         "user_posts": user_posts,
         "post_count": post_count,
+        "wishlist_count": wishlist_count,
+        "is_owner": True,
     }
+
 
     return render(
         request,
         "user/dashboard.html",
         context
+    )
+
+
+
+
+# =========================================================
+# PUBLIC SELLER PROFILE
+# =========================================================
+
+def seller_profile(request, username):
+
+    seller = get_object_or_404(
+        User,
+        username=username,
+    )
+
+    profile = get_object_or_404(
+        Profile,
+        user=seller,
+    )
+
+    user_posts = Post.objects.filter(
+        user=profile
+    ).order_by("-created_at")
+
+    post_count = user_posts.count()
+
+    is_owner = (
+        request.user.is_authenticated
+        and request.user.id == seller.id
+    )
+
+    context = {
+        "profile": profile,
+        "seller": seller,
+        "user_posts": user_posts,
+        "post_count": post_count,
+        "is_owner": is_owner,
+    }
+
+    return render(
+        request,
+        "user/dashboard.html",
+        context,
     )
 
 # =========================================================
@@ -1244,3 +1307,42 @@ def delete_profile_pic(request):
     return redirect(
         "user:edit_profile"
     )
+
+#
+#
+# from django.contrib.auth.models import User
+# from django.shortcuts import get_object_or_404, render
+#
+#
+# @login_required
+# def seller_profile(request, username):
+#
+#     seller = get_object_or_404(
+#         User,
+#         username=username
+#     )
+#
+#     profile = get_object_or_404(
+#         Profile,
+#         user=seller
+#     )
+#
+#     user_posts = Post.objects.filter(
+#         user=profile
+#     ).order_by("-created_at")
+#
+#     post_count = user_posts.count()
+#
+#     context = {
+#         "profile": profile,
+#         "seller": seller,
+#         "user_posts": user_posts,
+#         "post_count": post_count,
+#     }
+
+    return render(
+        request,
+        "user/dashboard.html",
+        context
+    )
+

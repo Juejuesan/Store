@@ -92,7 +92,6 @@ def users(request):
 # =========================================================
 # BAN USER
 # =========================================================
-
 @login_required
 def ban_user(request, user_id):
     user = get_object_or_404(
@@ -160,7 +159,6 @@ def unban_user(request, user_id):
 # =========================================================
 # PENDING POSTS
 # =========================================================
-
 @login_required
 def posts(request):
     pending_posts = (
@@ -182,7 +180,6 @@ def posts(request):
 # =========================================================
 # POST DETAIL
 # =========================================================
-
 @login_required
 def post_detail(request, post_id):
     post = get_object_or_404(
@@ -202,7 +199,6 @@ def post_detail(request, post_id):
 # =========================================================
 # APPROVE POST
 # =========================================================
-
 @login_required
 def approve_post(request, post_id):
     post = get_object_or_404(
@@ -245,7 +241,6 @@ def approve_post(request, post_id):
 # =========================================================
 # REJECT POST
 # =========================================================
-
 @login_required
 def reject_post(request, post_id):
     post = get_object_or_404(
@@ -464,7 +459,6 @@ def approve_deposit(request, deposit_id):
 # =========================================================
 # REJECT DEPOSIT
 # =========================================================
-
 @login_required
 @transaction.atomic
 def reject_deposit(request, deposit_id):
@@ -674,7 +668,6 @@ def approve_withdraw(request, withdraw_id):
 # =========================================================
 # REJECT WITHDRAWAL
 # =========================================================
-
 @login_required
 @transaction.atomic
 def reject_withdraw(request, withdraw_id):
@@ -729,7 +722,6 @@ def reject_withdraw(request, withdraw_id):
 # =========================================================
 # READ NOTIFICATION
 # =========================================================
-
 @login_required
 def read_notification(request, noti_id):
     notification = get_object_or_404(

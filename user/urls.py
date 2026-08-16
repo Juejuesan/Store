@@ -49,6 +49,12 @@ urlpatterns = [
         name="dashboard",
     ),
 
+path(
+    "profile/<str:username>/",
+    views.seller_profile,
+    name="seller-profile",
+),
+
     # =====================================================
     # PROFILE PICTURE
     # =====================================================
@@ -118,4 +124,8 @@ path(
     views.delete_profile_pic,
     name="delete_profile_pic",
 ),
+
+
+
+
 ]

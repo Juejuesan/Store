@@ -1,42 +1,45 @@
-/* =========================================================
-   TRUSTYSHOP VIEW DETAIL JAVASCRIPT
-   CLEAN • STABLE • RESPONSIVE
 
-   FEATURES
+/* =========================================================
+   TRUSTYSHOP — VIEW DETAIL JAVASCRIPT
    ---------------------------------------------------------
+   Features:
    1. Navbar scroll effect
    2. Search
    3. Scroll to top
-   4. Logo click animation
+   4. Logo animation
    5. Custom cursor
-   6. Message alert
+   6. Message alerts
    7. Seller card hover
    8. Button ripple
    9. Item navigation
-   10. Size selection
-   11. Quantity + / -
-   12. Add to cart
-   13. Cart count
-   14. Cart toast
-   15. Wishlist
-   16. Image slider
-   17. Escape key
-   18. Image drag prevention
-   19. Reduced motion
-   20. Resize cleanup
+   10. Thumbnail → Main image switching
+   11. Size selection
+   12. Quantity selector
+   13. Add to cart
+   14. Cart count
+   15. Cart animation
+   16. Cart toast
+   17. Detail button
+   18. Scroll reveal
+   19. Floating particles
+   20. Mouse glow
+   21. Escape key
+   22. Prevent image dragging
+   23. Reduced motion
+   24. Resize cleanup
+   25. Wishlist
+   26. Initial cart count
+   27. Fullscreen image lightbox
 ========================================================= */
 
-
 document.addEventListener("DOMContentLoaded", () => {
-
 
     /* =====================================================
        1. COMMON HELPERS
     ===================================================== */
 
-    const finePointer = window.matchMedia(
-        "(pointer:fine)"
-    ).matches;
+    const finePointer =
+        window.matchMedia("(pointer:fine)").matches;
 
 
     function getCookie(name) {
@@ -49,11 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const trimmedCookie = cookie.trim();
 
-            if (
-                trimmedCookie.startsWith(
-                    `${name}=`
-                )
-            ) {
+            if (trimmedCookie.startsWith(`${name}=`)) {
 
                 return decodeURIComponent(
                     trimmedCookie.substring(
@@ -69,8 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getCSRFToken() {
 
-        const cookieToken =
-            getCookie("csrftoken");
+        const cookieToken = getCookie("csrftoken");
 
         if (cookieToken) {
             return cookieToken;
@@ -139,19 +137,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        messageBox.textContent = message;
+        messageBox.textContent =
+            message;
+
 
         messageBox.style.background =
             type === "success"
                 ? "#dcfce7"
                 : "#fee2e2";
 
+
         messageBox.style.color =
             type === "success"
                 ? "#166534"
                 : "#991b1b";
 
-        messageBox.style.opacity = "1";
+
+        messageBox.style.opacity =
+            "1";
 
 
         clearTimeout(
@@ -169,6 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+
     /* =====================================================
        2. NAVBAR SCROLL EFFECT
     ===================================================== */
@@ -179,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-    const handleNavbarScroll = () => {
+    function handleNavbarScroll() {
 
         if (!navbar) {
             return;
@@ -189,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "scrolled",
             window.scrollY > 50
         );
-    };
+    }
 
 
     handleNavbarScroll();
@@ -202,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
             passive: true
         }
     );
+
 
 
     /* =====================================================
@@ -243,7 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     searchInput.focus();
                 }
             );
-
         }
     );
 
@@ -261,6 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const value =
                     searchInput.value.trim();
 
+
                 if (!value) {
 
                     event.preventDefault();
@@ -270,6 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     searchInput.classList.add(
                         "search-error"
                     );
+
 
                     setTimeout(() => {
 
@@ -302,6 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         );
     }
+
 
 
     /* =====================================================
@@ -341,13 +348,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const handleTopButton = () => {
+    function handleTopButton() {
 
         topButton.style.display =
             window.scrollY > 500
                 ? "flex"
                 : "none";
-    };
+    }
 
 
     handleTopButton();
@@ -370,8 +377,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 top: 0,
                 behavior: "smooth"
             });
+
         }
     );
+
 
 
     /* =====================================================
@@ -400,6 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     "logo-click"
                 );
 
+
                 setTimeout(() => {
 
                     logo.classList.remove(
@@ -410,6 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         );
     }
+
 
 
     /* =====================================================
@@ -460,7 +471,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-        const animateFollower = () => {
+        function animateFollower() {
 
             followerX +=
                 (mouseX - followerX) *
@@ -470,16 +481,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 (mouseY - followerY) *
                 0.15;
 
+
             follower.style.left =
                 `${followerX}px`;
 
             follower.style.top =
                 `${followerY}px`;
 
+
             requestAnimationFrame(
                 animateFollower
             );
-        };
+        }
 
 
         animateFollower();
@@ -495,7 +508,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 ".detail-btn, " +
                 ".size-btn, " +
                 ".qty-btn, " +
-                ".add-to-cart-btn"
+                ".add-to-cart-btn, " +
+                ".thumbnail-wrapper"
             );
 
 
@@ -522,10 +536,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
                     }
                 );
-
             }
         );
     }
+
 
 
     /* =====================================================
@@ -564,6 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
+
                 if (
                     !document.body.contains(
                         messageOverlay
@@ -571,6 +586,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ) {
                     return;
                 }
+
 
                 if (
                     messageOverlay.dataset.closing ===
@@ -626,14 +642,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
+
                 if (isPending) {
                     return;
                 }
+
 
                 window.closeSuccessAlert();
             }
         );
     }
+
 
 
     /* =====================================================
@@ -712,10 +731,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             "";
                     }
                 );
-
             }
         );
     }
+
 
 
     /* =====================================================
@@ -769,9 +788,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         }, 700);
                     }
                 );
-
             }
         );
+
 
 
     /* =====================================================
@@ -805,23 +824,836 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentItemIndex = 0;
 
 
+
+    /* =====================================================
+       10A. GET CURRENT ITEM
+    ===================================================== */
+
     function getCurrentSlide() {
 
-        return itemSlides[
-            currentItemIndex
-        ] || null;
+        return (
+            itemSlides[
+                currentItemIndex
+            ] || null
+        );
     }
 
+
+
+    /* =====================================================
+       10B. THUMBNAIL → MAIN IMAGE
+    ===================================================== */
+
+    function setupThumbnailSystem(slide) {
+
+        if (!slide) {
+            return;
+        }
+
+
+        const mainImage =
+            slide.querySelector(
+                ".main-image"
+            );
+
+
+        const thumbnails =
+            slide.querySelectorAll(
+                ".thumbnail-wrapper"
+            );
+
+
+        if (
+            !mainImage ||
+            !thumbnails.length
+        ) {
+            return;
+        }
+
+
+        thumbnails.forEach(
+            (thumbnail) => {
+
+                /* Prevent duplicate listeners */
+
+                if (
+                    thumbnail.dataset.thumbnailReady ===
+                    "true"
+                ) {
+                    return;
+                }
+
+
+                thumbnail.dataset.thumbnailReady =
+                    "true";
+
+
+                thumbnail.addEventListener(
+                    "click",
+                    (event) => {
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+
+                        const imageURL =
+                            thumbnail.dataset.imageUrl;
+
+
+                        if (!imageURL) {
+
+                            console.warn(
+                                "Thumbnail image URL is missing."
+                            );
+
+                            return;
+                        }
+
+
+                        /* =================================
+                           Don't reload same image
+                        ================================= */
+
+                        if (
+                            mainImage.src.endsWith(
+                                imageURL
+                            )
+                        ) {
+
+                            thumbnails.forEach(
+                                (thumb) => {
+
+                                    thumb.classList.remove(
+                                        "active"
+                                    );
+                                }
+                            );
+
+
+                            thumbnail.classList.add(
+                                "active"
+                            );
+
+                            return;
+                        }
+
+
+                        /* =================================
+                           Preload next image
+                        ================================= */
+
+                        const newImage =
+                            new Image();
+
+
+                        newImage.onload =
+                            () => {
+
+                                mainImage.classList.add(
+                                    "image-changing"
+                                );
+
+
+                                setTimeout(() => {
+
+                                    mainImage.src =
+                                        imageURL;
+
+
+                                    mainImage.classList.remove(
+                                        "image-changing"
+                                    );
+
+                                }, 150);
+                            };
+
+
+                        newImage.onerror =
+                            () => {
+
+                                console.error(
+                                    "Unable to load image:",
+                                    imageURL
+                                );
+
+
+                                mainImage.classList.remove(
+                                    "image-changing"
+                                );
+
+
+                                showTemporaryMessage(
+                                    "Unable to load this image.",
+                                    "error"
+                                );
+                            };
+
+
+                        newImage.src =
+                            imageURL;
+
+
+                        /* =================================
+                           Active thumbnail
+                        ================================= */
+
+                        thumbnails.forEach(
+                            (thumb) => {
+
+                                thumb.classList.remove(
+                                    "active"
+                                );
+                            }
+                        );
+
+
+                        thumbnail.classList.add(
+                            "active"
+                        );
+                    }
+                );
+            }
+        );
+    }
+
+
+
+    /* =====================================================
+       10C. INITIALIZE ALL THUMBNAILS
+    ===================================================== */
+
+    itemSlides.forEach(
+        (slide) => {
+
+            setupThumbnailSystem(
+                slide
+            );
+        }
+    );
+
+
+
+    /* =========================================================
+       10C-1. FULLSCREEN IMAGE VIEWER / LIGHTBOX
+       ---------------------------------------------------------
+       Behavior:
+
+       Main image click
+           ↓
+       Fullscreen black viewer
+           ↓
+       ONLY image + X button
+           ↓
+       X / Escape
+           ↓
+       Return to product page
+
+       The image itself cannot close the viewer.
+    ========================================================= */
+
+    function setupImageLightbox(slide) {
+
+        if (!slide) {
+            return;
+        }
+
+
+        const mainImage =
+            slide.querySelector(
+                ".main-image"
+            );
+
+
+        if (!mainImage) {
+            return;
+        }
+
+
+        /* Prevent duplicate listeners */
+
+        if (
+            mainImage.dataset.lightboxReady ===
+            "true"
+        ) {
+            return;
+        }
+
+
+        mainImage.dataset.lightboxReady =
+            "true";
+
+
+        /* ==============================================
+           Show zoom cursor on main image
+        ============================================== */
+
+        mainImage.style.cursor =
+            "zoom-in";
+
+
+        /* ==============================================
+           MAIN IMAGE CLICK
+        ============================================== */
+
+        mainImage.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+
+                const imageURL =
+                    mainImage.currentSrc ||
+                    mainImage.src;
+
+
+                if (!imageURL) {
+                    return;
+                }
+
+
+                /* ==========================================
+                   Remove old lightbox if somehow present
+                ========================================== */
+
+                const existingLightbox =
+                    document.getElementById(
+                        "trustyshopImageLightbox"
+                    );
+
+
+                if (existingLightbox) {
+                    existingLightbox.remove();
+                }
+
+
+                /* ==========================================
+                   CREATE LIGHTBOX
+                ========================================== */
+
+                const lightbox =
+                    document.createElement("div");
+
+
+                lightbox.id =
+                    "trustyshopImageLightbox";
+
+
+                lightbox.setAttribute(
+                    "role",
+                    "dialog"
+                );
+
+
+                lightbox.setAttribute(
+                    "aria-modal",
+                    "true"
+                );
+
+
+                lightbox.setAttribute(
+                    "aria-label",
+                    "Full screen product image"
+                );
+
+
+                /* ==========================================
+                   LIGHTBOX HTML
+
+                   IMPORTANT:
+                   There is NO image container here.
+
+                   Only:
+                   1. X button
+                   2. Image
+                ========================================== */
+
+                lightbox.innerHTML = `
+
+                    <button
+                        type="button"
+                        class="lightbox-close"
+                        aria-label="Close image viewer"
+                    >
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                    <img
+                        src="${imageURL}"
+                        class="lightbox-image"
+                        alt="${mainImage.alt || "Product image"}"
+                        draggable="false"
+                    >
+
+                `;
+
+
+                document.body.appendChild(
+                    lightbox
+                );
+
+
+                /* ==========================================
+                   ELEMENTS
+                ========================================== */
+
+                const closeButton =
+                    lightbox.querySelector(
+                        ".lightbox-close"
+                    );
+
+
+                const lightboxImage =
+                    lightbox.querySelector(
+                        ".lightbox-image"
+                    );
+
+
+                /* ==========================================
+                   LIGHTBOX INLINE STYLES
+
+                   These make the viewer work even if
+                   you have not added lightbox CSS yet.
+                ========================================== */
+
+                lightbox.style.position =
+                    "fixed";
+
+                lightbox.style.inset =
+                    "0";
+
+                lightbox.style.width =
+                    "100vw";
+
+                lightbox.style.height =
+                    "100vh";
+
+                lightbox.style.background =
+                    "rgba(0, 0, 0, 0.96)";
+
+                lightbox.style.display =
+                    "flex";
+
+                lightbox.style.alignItems =
+                    "center";
+
+                lightbox.style.justifyContent =
+                    "center";
+
+                lightbox.style.padding =
+                    "40px";
+
+                lightbox.style.boxSizing =
+                    "border-box";
+
+                lightbox.style.zIndex =
+                    "999999";
+
+                lightbox.style.opacity =
+                    "0";
+
+                lightbox.style.visibility =
+                    "hidden";
+
+                lightbox.style.transition =
+                    "opacity .25s ease, visibility .25s ease";
+
+                lightbox.style.overflow =
+                    "hidden";
+
+
+                /* ==========================================
+                   IMAGE STYLE
+                ========================================== */
+
+                if (lightboxImage) {
+
+                    lightboxImage.style.display =
+                        "block";
+
+                    lightboxImage.style.maxWidth =
+                        "calc(100vw - 80px)";
+
+                    lightboxImage.style.maxHeight =
+                        "calc(100vh - 80px)";
+
+                    lightboxImage.style.width =
+                        "auto";
+
+                    lightboxImage.style.height =
+                        "auto";
+
+                    lightboxImage.style.objectFit =
+                        "contain";
+
+                    lightboxImage.style.borderRadius =
+                        "12px";
+
+                    lightboxImage.style.boxShadow =
+                        "0 25px 80px rgba(0, 0, 0, 0.65)";
+
+                    lightboxImage.style.userSelect =
+                        "none";
+
+                    lightboxImage.style.webkitUserDrag =
+                        "none";
+
+                    lightboxImage.style.cursor =
+                        "default";
+
+                    lightboxImage.style.transition =
+                        "transform .25s ease";
+                }
+
+
+                /* ==========================================
+                   CLOSE BUTTON STYLE
+                ========================================== */
+
+                if (closeButton) {
+
+                    closeButton.style.position =
+                        "fixed";
+
+                    closeButton.style.top =
+                        "24px";
+
+                    closeButton.style.right =
+                        "24px";
+
+                    closeButton.style.width =
+                        "48px";
+
+                    closeButton.style.height =
+                        "48px";
+
+                    closeButton.style.border =
+                        "none";
+
+                    closeButton.style.borderRadius =
+                        "50%";
+
+                    closeButton.style.background =
+                        "rgba(255, 255, 255, 0.14)";
+
+                    closeButton.style.color =
+                        "#ffffff";
+
+                    closeButton.style.display =
+                        "flex";
+
+                    closeButton.style.alignItems =
+                        "center";
+
+                    closeButton.style.justifyContent =
+                        "center";
+
+                    closeButton.style.fontSize =
+                        "22px";
+
+                    closeButton.style.cursor =
+                        "pointer";
+
+                    closeButton.style.zIndex =
+                        "1000000";
+
+                    closeButton.style.backdropFilter =
+                        "blur(12px)";
+
+                    closeButton.style.webkitBackdropFilter =
+                        "blur(12px)";
+
+                    closeButton.style.border =
+                        "1px solid rgba(255,255,255,.2)";
+
+                    closeButton.style.transition =
+                        "all .2s ease";
+                }
+
+
+                /* ==========================================
+                   CLOSE BUTTON HOVER
+                ========================================== */
+
+                if (closeButton) {
+
+                    closeButton.addEventListener(
+                        "mouseenter",
+                        () => {
+
+                            closeButton.style.background =
+                                "rgba(255,255,255,.25)";
+
+                            closeButton.style.transform =
+                                "rotate(90deg) scale(1.08)";
+                        }
+                    );
+
+
+                    closeButton.addEventListener(
+                        "mouseleave",
+                        () => {
+
+                            closeButton.style.background =
+                                "rgba(255,255,255,.14)";
+
+                            closeButton.style.transform =
+                                "rotate(0deg) scale(1)";
+                        }
+                    );
+                }
+
+
+                /* ==========================================
+                   OPEN ANIMATION
+                ========================================== */
+
+                requestAnimationFrame(() => {
+
+                    lightbox.style.opacity =
+                        "1";
+
+                    lightbox.style.visibility =
+                        "visible";
+
+
+                    if (lightboxImage) {
+
+                        lightboxImage.style.transform =
+                            "scale(1)";
+                    }
+                });
+
+
+                /* ==========================================
+                   PREVENT PAGE SCROLL
+                ========================================== */
+
+                document.body.classList.add(
+                    "lightbox-active"
+                );
+
+
+                /* Save current body overflow */
+
+                const previousBodyOverflow =
+                    document.body.style.overflow;
+
+
+                document.body.dataset.previousOverflow =
+                    previousBodyOverflow;
+
+
+                document.body.style.overflow =
+                    "hidden";
+
+
+                /* ==========================================
+                   CLOSE FUNCTION
+                ========================================== */
+
+                let isClosing = false;
+
+
+                function closeLightbox() {
+
+                    if (
+                        isClosing ||
+                        !lightbox
+                    ) {
+                        return;
+                    }
+
+
+                    isClosing = true;
+
+
+                    /* Remove Escape listener */
+
+                    document.removeEventListener(
+                        "keydown",
+                        handleEscape
+                    );
+
+
+                    /* Fade out */
+
+                    lightbox.style.opacity =
+                        "0";
+
+                    lightbox.style.visibility =
+                        "hidden";
+
+
+                    /* Restore body scrolling */
+
+                    document.body.classList.remove(
+                        "lightbox-active"
+                    );
+
+
+                    const previousOverflow =
+                        document.body.dataset.previousOverflow;
+
+
+                    document.body.style.overflow =
+                        previousOverflow || "";
+
+
+                    delete document.body.dataset.previousOverflow;
+
+
+                    /* Remove lightbox after animation */
+
+                    setTimeout(() => {
+
+                        if (
+                            lightbox &&
+                            document.body.contains(
+                                lightbox
+                            )
+                        ) {
+
+                            lightbox.remove();
+                        }
+
+                    }, 250);
+                }
+
+
+                /* ==========================================
+                   CLOSE BUTTON
+                ========================================== */
+
+                if (closeButton) {
+
+                    closeButton.addEventListener(
+                        "click",
+                        function (event) {
+
+                            event.preventDefault();
+
+                            event.stopPropagation();
+
+                            closeLightbox();
+                        }
+                    );
+                }
+
+
+                /* ==========================================
+                   IMPORTANT:
+
+                   Clicking the image DOES NOTHING.
+
+                   It stays open.
+
+                   Only X or Escape closes it.
+                ========================================== */
+
+                if (lightboxImage) {
+
+                    lightboxImage.addEventListener(
+                        "click",
+                        function (event) {
+
+                            event.preventDefault();
+
+                            event.stopPropagation();
+
+                        }
+                    );
+
+
+                    /* Prevent dragging */
+
+                    lightboxImage.addEventListener(
+                        "dragstart",
+                        function (event) {
+
+                            event.preventDefault();
+
+                        }
+                    );
+                }
+
+
+                /* ==========================================
+                   ESCAPE KEY
+                ========================================== */
+
+                function handleEscape(event) {
+
+                    if (
+                        event.key ===
+                        "Escape"
+                    ) {
+
+                        event.preventDefault();
+
+                        closeLightbox();
+                    }
+                }
+
+
+                document.addEventListener(
+                    "keydown",
+                    handleEscape
+                );
+
+
+                /* ==========================================
+                   FOCUS CLOSE BUTTON
+                ========================================== */
+
+                if (closeButton) {
+
+                    setTimeout(() => {
+
+                        closeButton.focus();
+
+                    }, 50);
+                }
+
+            }
+        );
+    }
+
+
+
+    /* =====================================================
+       INITIALIZE LIGHTBOX FOR EVERY ITEM
+    ===================================================== */
+
+    itemSlides.forEach(
+        function (slide) {
+
+            setupImageLightbox(slide);
+
+        }
+    );
+
+
+
+    /* =====================================================
+       10D. RESET CURRENT ITEM CONTROLS
+    ===================================================== */
 
     function resetCurrentItemControls() {
 
         const slide =
             getCurrentSlide();
 
+
         if (!slide) {
             return;
         }
 
+
+        /* ---------------------------------------------
+           Quantity
+        --------------------------------------------- */
 
         const quantityInput =
             slide.querySelector(
@@ -829,36 +1661,26 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-        const sizeButtons =
-            slide.querySelectorAll(
-                ".size-btn"
-            );
-
-
-        const sizeVariantInput =
-            slide.querySelector(
-                'input[name="size_variant_id"]'
-            );
-
-
-        const sizeInfo =
-            slide.querySelector(
-                ".size-info"
-            );
-
-
-        const item =
-            slide.dataset.itemId;
-
-
         if (quantityInput) {
 
-            quantityInput.value = 1;
+            quantityInput.value =
+                "1";
 
             quantityInput.max =
                 quantityInput.dataset.defaultMax ||
                 "1";
         }
+
+
+
+        /* ---------------------------------------------
+           Size buttons
+        --------------------------------------------- */
+
+        const sizeButtons =
+            slide.querySelectorAll(
+                ".size-btn"
+            );
 
 
         sizeButtons.forEach(
@@ -872,11 +1694,33 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
+
+        /* ---------------------------------------------
+           Size hidden input
+        --------------------------------------------- */
+
+        const sizeVariantInput =
+            slide.querySelector(
+                'input[name="size_variant_id"]'
+            );
+
+
         if (sizeVariantInput) {
 
             sizeVariantInput.value =
                 "";
         }
+
+
+
+        /* ---------------------------------------------
+           Size information
+        --------------------------------------------- */
+
+        const sizeInfo =
+            slide.querySelector(
+                ".size-info"
+            );
 
 
         if (sizeInfo) {
@@ -886,13 +1730,105 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        const originalPrice =
+
+        /* ---------------------------------------------
+           Reset thumbnails
+        --------------------------------------------- */
+
+        const mainImage =
+            slide.querySelector(
+                ".main-image"
+            );
+
+
+        const thumbnails =
+            slide.querySelectorAll(
+                ".thumbnail-wrapper"
+            );
+
+
+        if (
+            mainImage &&
+            thumbnails.length
+        ) {
+
+            thumbnails.forEach(
+                (thumbnail) => {
+
+                    thumbnail.classList.remove(
+                        "active"
+                    );
+                }
+            );
+
+
+            const firstThumbnail =
+                thumbnails[0];
+
+
+            if (firstThumbnail) {
+
+                firstThumbnail.classList.add(
+                    "active"
+                );
+
+
+                const firstImageURL =
+                    firstThumbnail.dataset.imageUrl;
+
+
+                if (firstImageURL) {
+
+                    mainImage.classList.add(
+                        "image-changing"
+                    );
+
+
+                    const resetImage =
+                        new Image();
+
+
+                    resetImage.onload =
+                        () => {
+
+                            mainImage.src =
+                                firstImageURL;
+
+
+                            mainImage.classList.remove(
+                                "image-changing"
+                            );
+                        };
+
+
+                    resetImage.onerror =
+                        () => {
+
+                            mainImage.classList.remove(
+                                "image-changing"
+                            );
+                        };
+
+
+                    resetImage.src =
+                        firstImageURL;
+                }
+            }
+        }
+
+
+
+        /* ---------------------------------------------
+           Reset price
+        --------------------------------------------- */
+
+        const priceElement =
             slide.querySelector(
                 ".item-price"
             );
 
 
-        if (originalPrice) {
+        if (priceElement) {
 
             const firstSize =
                 slide.querySelector(
@@ -905,15 +1841,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 const basePrice =
                     firstSize.dataset.price;
 
+
                 if (basePrice) {
 
-                    originalPrice.dataset.originalPrice =
+                    priceElement.textContent =
+                        `${parseInt(
+                            basePrice,
+                            10
+                        ).toLocaleString()} MMK`;
+
+
+                    priceElement.dataset.originalPrice =
                         basePrice;
                 }
             }
         }
     }
 
+
+
+    /* =====================================================
+       10E. UPDATE ITEM NAVIGATION
+    ===================================================== */
 
     function updateItemNavigation() {
 
@@ -924,7 +1873,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (itemCounter) {
 
             itemCounter.textContent =
-                `Item ${currentItemIndex + 1} of ${total}`;
+                `Item ${
+                    currentItemIndex + 1
+                } of ${total}`;
         }
 
 
@@ -938,10 +1889,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (nextButton) {
 
             nextButton.disabled =
-                currentItemIndex >= total - 1;
+                currentItemIndex >=
+                total - 1;
         }
     }
 
+
+
+    /* =====================================================
+       10F. SHOW ITEM
+    ===================================================== */
 
     function showItem(index) {
 
@@ -950,26 +1907,71 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        /* ---------------------------------------------
+           Prevent invalid index
+        --------------------------------------------- */
+
         if (index < 0) {
             index = 0;
         }
 
 
         if (
-            index >= itemSlides.length
+            index >=
+            itemSlides.length
         ) {
+
             index =
                 itemSlides.length - 1;
         }
 
 
+        /* ---------------------------------------------
+           If already on item, stop
+        --------------------------------------------- */
+
+        if (
+            index === currentItemIndex &&
+            itemSlides[index].style.display === "block"
+        ) {
+
+            updateItemNavigation();
+
+            return;
+        }
+
+
+        /* ---------------------------------------------
+           Hide / show item
+        --------------------------------------------- */
+
         itemSlides.forEach(
             (slide, slideIndex) => {
 
-                slide.style.display =
-                    slideIndex === index
-                        ? "block"
-                        : "none";
+                if (slideIndex === index) {
+
+                    slide.style.display =
+                        "block";
+
+
+                    slide.classList.add(
+                        "item-enter"
+                    );
+
+
+                    setTimeout(() => {
+
+                        slide.classList.remove(
+                            "item-enter"
+                        );
+
+                    }, 400);
+
+                } else {
+
+                    slide.style.display =
+                        "none";
+                }
             }
         );
 
@@ -978,16 +1980,51 @@ document.addEventListener("DOMContentLoaded", () => {
             index;
 
 
+        /* ---------------------------------------------
+           Reset controls for new item
+        --------------------------------------------- */
+
         resetCurrentItemControls();
+
+
+        /* ---------------------------------------------
+           Update navigation
+        --------------------------------------------- */
 
         updateItemNavigation();
 
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+
+        /* ---------------------------------------------
+           Scroll product viewer into view
+        --------------------------------------------- */
+
+        const page =
+            document.querySelector(
+                ".pd-page"
+            );
+
+
+        if (page) {
+
+            page.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        } else {
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
     }
 
+
+
+    /* =====================================================
+       10G. PREVIOUS ITEM
+    ===================================================== */
 
     if (prevButton) {
 
@@ -1002,6 +2039,11 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
+
+
+    /* =====================================================
+       10H. NEXT ITEM
+    ===================================================== */
 
     if (nextButton) {
 
@@ -1018,6 +2060,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     updateItemNavigation();
+
 
 
     /* =====================================================
@@ -1098,9 +2141,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                 sizeButton.dataset.variantId;
 
 
-                            /* ---------------------------------
-                               Remove Previous Selection
-                            --------------------------------- */
+                            /* --------------------------------
+                               Remove previous selection
+                            -------------------------------- */
 
                             sizeButtons.forEach(
                                 (button) => {
@@ -1113,9 +2156,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             );
 
 
-                            /* ---------------------------------
-                               Select Current Size
-                            --------------------------------- */
+                            /* --------------------------------
+                               Select current size
+                            -------------------------------- */
 
                             sizeButton.classList.add(
                                 "selected",
@@ -1123,9 +2166,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             );
 
 
-                            /* ---------------------------------
-                               Save Variant ID
-                            --------------------------------- */
+                            /* --------------------------------
+                               Save variant ID
+                            -------------------------------- */
 
                             if (sizeVariantInput) {
 
@@ -1134,9 +2177,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             }
 
 
-                            /* ---------------------------------
-                               Update Price
-                            --------------------------------- */
+                            /* --------------------------------
+                               Update price
+                            -------------------------------- */
 
                             if (priceElement) {
 
@@ -1145,9 +2188,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             }
 
 
-                            /* ---------------------------------
-                               Update Quantity Limit
-                            --------------------------------- */
+                            /* --------------------------------
+                               Update quantity max
+                            -------------------------------- */
 
                             if (quantityInput) {
 
@@ -1166,7 +2209,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                                 if (
-                                    quantity > stock
+                                    quantity >
+                                    stock
                                 ) {
 
                                     quantity =
@@ -1178,7 +2222,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                     quantity < 1
                                 ) {
 
-                                    quantity = 1;
+                                    quantity =
+                                        1;
                                 }
 
 
@@ -1187,14 +2232,18 @@ document.addEventListener("DOMContentLoaded", () => {
                             }
 
 
-                            /* ---------------------------------
-                               Update Stock Information
-                            --------------------------------- */
+                            /* --------------------------------
+                               Stock information
+                            -------------------------------- */
 
                             if (sizeInfo) {
 
                                 sizeInfo.textContent =
-                                    `${size} • ${price.toLocaleString()} MMK • ${stock} available`;
+                                    `${size} • ${
+                                        price.toLocaleString()
+                                    } MMK • ${
+                                        stock
+                                    } available`;
                             }
                         }
                     );
@@ -1202,6 +2251,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
     );
+
 
 
     /* =====================================================
@@ -1247,6 +2297,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     Number.isFinite(max) &&
                     max > 0
                 ) {
+
                     return max;
                 }
 
@@ -1276,8 +2327,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 if (
-                    Number.isNaN(quantity)
+                    Number.isNaN(
+                        quantity
+                    )
                 ) {
+
                     quantity = 1;
                 }
 
@@ -1308,7 +2362,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     (event) => {
 
                         event.preventDefault();
-
                         event.stopPropagation();
 
 
@@ -1334,7 +2387,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     (event) => {
 
                         event.preventDefault();
-
                         event.stopPropagation();
 
 
@@ -1353,15 +2405,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            /*
-             * Keep this input readonly so
-             * quantity can only be changed
-             * using + / - buttons.
-             */
             quantityInput.readOnly =
                 true;
         }
     );
+
 
 
     /* =====================================================
@@ -1388,6 +2436,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         button.dataset.busy ===
                         "true"
                     ) {
+
                         return;
                     }
 
@@ -1443,10 +2492,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
 
 
-                    /* -----------------------------------------
-                       Quantity
-                    ----------------------------------------- */
-
                     const quantity =
                         parseInt(
                             quantityInput?.value,
@@ -1454,14 +2499,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         ) || 1;
 
 
-                    /* -----------------------------------------
-                       Size Validation
-                    ----------------------------------------- */
-
-                    let sizeVariantId = "";
+                    let sizeVariantId =
+                        "";
 
 
-                    if (sizeButtons.length > 0) {
+                    /* --------------------------------
+                       Size validation
+                    -------------------------------- */
+
+                    if (
+                        sizeButtons.length > 0
+                    ) {
 
                         if (!selectedSize) {
 
@@ -1492,9 +2540,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    /* -----------------------------------------
-                       Quantity Validation
-                    ----------------------------------------- */
+                    /* --------------------------------
+                       Quantity validation
+                    -------------------------------- */
 
                     if (
                         quantity < 1
@@ -1520,7 +2568,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         Number.isFinite(
                             maxQuantity
                         ) &&
-                        quantity > maxQuantity
+                        quantity >
+                        maxQuantity
                     ) {
 
                         showTemporaryMessage(
@@ -1532,9 +2581,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    /* -----------------------------------------
-                       Button Loading State
-                    ----------------------------------------- */
+                    /* --------------------------------
+                       Loading state
+                    -------------------------------- */
 
                     button.dataset.busy =
                         "true";
@@ -1552,9 +2601,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
 
 
-                    /* -----------------------------------------
-                       Create Form Data
-                    ----------------------------------------- */
+                    /* --------------------------------
+                       Form data
+                    -------------------------------- */
 
                     const formData =
                         new FormData();
@@ -1575,13 +2624,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    /* -----------------------------------------
-                       Add to Cart URL
-
-                       IMPORTANT:
-                       cart/urls.py:
-                       add/<int:item_id>/
-                    ----------------------------------------- */
+                    /* --------------------------------
+                       Cart URL
+                    -------------------------------- */
 
                     const addCartUrl =
                         `/cart/add/${itemId}/`;
@@ -1598,6 +2643,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     body: formData,
 
                                     headers: {
+
                                         "X-CSRFToken":
                                             getCSRFToken(),
 
@@ -1622,7 +2668,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             data =
                                 await response.json();
 
-                        } catch (jsonError) {
+                        } catch (
+                            jsonError
+                        ) {
 
                             throw new Error(
                                 "Invalid server response."
@@ -1642,9 +2690,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
 
 
-                        /* -------------------------------------
+                        /* --------------------------------
                            Success
-                        ------------------------------------- */
+                        -------------------------------- */
 
                         button.innerHTML =
                             '<i class="fa-solid fa-check"></i> Added';
@@ -1655,25 +2703,25 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
 
 
-                        /* -------------------------------------
-                           Update Navbar Cart Count
-                        ------------------------------------- */
+                        /* --------------------------------
+                           Cart count
+                        -------------------------------- */
 
                         updateCartCount(
                             data.cart_count
                         );
 
 
-                        /* -------------------------------------
-                           Cart Animation
-                        ------------------------------------- */
+                        /* --------------------------------
+                           Cart animation
+                        -------------------------------- */
 
                         animateCart();
 
 
-                        /* -------------------------------------
+                        /* --------------------------------
                            Toast
-                        ------------------------------------- */
+                        -------------------------------- */
 
                         showCartToast(
                             data.message ||
@@ -1681,9 +2729,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
 
 
-                        /* -------------------------------------
-                           Reset Quantity
-                        ------------------------------------- */
+                        /* --------------------------------
+                           Reset quantity
+                        -------------------------------- */
 
                         if (quantityInput) {
 
@@ -1710,6 +2758,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         button.innerHTML =
                             originalHTML;
 
+
                     } finally {
 
                         setTimeout(
@@ -1718,11 +2767,14 @@ document.addEventListener("DOMContentLoaded", () => {
                                 button.disabled =
                                     false;
 
+
                                 button.dataset.busy =
                                     "false";
 
+
                                 button.innerHTML =
                                     originalHTML;
+
 
                                 button.classList.remove(
                                     "cart-added"
@@ -1736,6 +2788,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
     );
+
 
 
     /* =====================================================
@@ -1763,17 +2816,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     countElement.textContent =
                         serverCount;
 
+
                     countElement.classList.remove(
                         "cart-pop"
                     );
 
+
                     void countElement.offsetWidth;
+
 
                     countElement.classList.add(
                         "cart-pop"
                     );
                 }
             );
+
 
             return;
         }
@@ -1785,6 +2842,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: "GET",
 
                 headers: {
+
                     "X-Requested-With":
                         "XMLHttpRequest",
 
@@ -1805,6 +2863,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         "Cart count request failed."
                     );
                 }
+
 
                 return response.json();
             }
@@ -1833,6 +2892,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         );
     }
+
 
 
     /* =====================================================
@@ -1876,6 +2936,7 @@ document.addEventListener("DOMContentLoaded", () => {
             600
         );
     }
+
 
 
     /* =====================================================
@@ -1965,6 +3026,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+
     /* =====================================================
        17. DETAIL BUTTON
     ===================================================== */
@@ -2019,9 +3081,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     }
                 );
-
             }
         );
+
 
 
     /* =====================================================
@@ -2076,6 +3138,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     "hidden"
                 );
 
+
                 observer.observe(
                     card
                 );
@@ -2095,8 +3158,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+
     /* =====================================================
-       19. MARKET FLOATING PARTICLES
+       19. FLOATING MARKET PARTICLES
     ===================================================== */
 
     const marketParticles =
@@ -2164,6 +3228,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+
     /* =====================================================
        20. MOUSE GLOW
     ===================================================== */
@@ -2199,7 +3264,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-        const animateGlow = () => {
+        function animateGlow() {
 
             glowX +=
                 (targetX - glowX) *
@@ -2222,368 +3287,24 @@ document.addEventListener("DOMContentLoaded", () => {
             requestAnimationFrame(
                 animateGlow
             );
-        };
+        }
 
 
         animateGlow();
     }
 
 
-    /* =====================================================
-       21. IMAGE SLIDER
-    ===================================================== */
-
-    const sliderIntervals =
-        new WeakMap();
-
-
-    const sliderIndexes =
-        new WeakMap();
-
-
-    function getSliderImages(
-        slider
-    ) {
-
-        if (!slider) {
-            return [];
-        }
-
-
-        const data =
-            slider.dataset.images;
-
-
-        if (!data) {
-            return [];
-        }
-
-
-        return data
-            .split(",")
-            .map(
-                (image) =>
-                    image.trim()
-            )
-            .filter(Boolean);
-    }
-
-
-    function changeSliderImage(
-        slider,
-        index
-    ) {
-
-        const images =
-            getSliderImages(
-                slider
-            );
-
-
-        if (!images.length) {
-            return;
-        }
-
-
-        const imageElement =
-            slider.querySelector(
-                "img"
-            );
-
-
-        if (!imageElement) {
-            return;
-        }
-
-
-        index =
-            index % images.length;
-
-
-        if (index < 0) {
-
-            index =
-                images.length - 1;
-        }
-
-
-        sliderIndexes.set(
-            slider,
-            index
-        );
-
-
-        imageElement.style.opacity =
-            "0";
-
-
-        setTimeout(
-            () => {
-
-                imageElement.src =
-                    images[index];
-
-                imageElement.style.opacity =
-                    "1";
-
-            },
-            150
-        );
-
-
-        const dots =
-            slider.querySelectorAll(
-                ".slider-dot"
-            );
-
-
-        dots.forEach(
-            (dot, dotIndex) => {
-
-                dot.classList.toggle(
-                    "active",
-                    dotIndex === index
-                );
-            }
-        );
-    }
-
-
-    function startSlide(
-        slider
-    ) {
-
-        if (!slider) {
-            return;
-        }
-
-
-        const images =
-            getSliderImages(
-                slider
-            );
-
-
-        if (
-            images.length <= 1
-        ) {
-            return;
-        }
-
-
-        if (
-            sliderIntervals.has(
-                slider
-            )
-        ) {
-            return;
-        }
-
-
-        let index =
-            sliderIndexes.get(
-                slider
-            ) || 0;
-
-
-        const interval =
-            setInterval(
-                () => {
-
-                    index =
-                        (
-                            index + 1
-                        ) %
-                        images.length;
-
-
-                    changeSliderImage(
-                        slider,
-                        index
-                    );
-
-                },
-                1500
-            );
-
-
-        sliderIntervals.set(
-            slider,
-            interval
-        );
-    }
-
-
-    function stopSlide(
-        slider
-    ) {
-
-        if (!slider) {
-            return;
-        }
-
-
-        const interval =
-            sliderIntervals.get(
-                slider
-            );
-
-
-        if (interval) {
-
-            clearInterval(
-                interval
-            );
-
-            sliderIntervals.delete(
-                slider
-            );
-        }
-
-
-        changeSliderImage(
-            slider,
-            0
-        );
-    }
-
-
-    window.startSlide =
-        startSlide;
-
-
-    window.stopSlide =
-        stopSlide;
-
-
-    document
-        .querySelectorAll(
-            ".post-image-slider"
-        )
-        .forEach(
-            (slider) => {
-
-                const images =
-                    getSliderImages(
-                        slider
-                    );
-
-
-                const dots =
-                    slider.querySelectorAll(
-                        ".slider-dot"
-                    );
-
-
-                if (
-                    images.length > 0 &&
-                    dots.length > 0
-                ) {
-
-                    dots.forEach(
-                        (dot, index) => {
-
-                            dot.classList.toggle(
-                                "active",
-                                index === 0
-                            );
-                        }
-                    );
-                }
-
-
-                slider.addEventListener(
-                    "mouseenter",
-                    () => {
-
-                        if (finePointer) {
-
-                            startSlide(
-                                slider
-                            );
-                        }
-                    }
-                );
-
-
-                slider.addEventListener(
-                    "mouseleave",
-                    () => {
-
-                        if (finePointer) {
-
-                            stopSlide(
-                                slider
-                            );
-                        }
-                    }
-                );
-
-
-                slider.addEventListener(
-                    "touchstart",
-                    () => {
-
-                        startSlide(
-                            slider
-                        );
-
-                    },
-                    {
-                        passive: true
-                    }
-                );
-
-
-                dots.forEach(
-                    (dot, index) => {
-
-                        dot.addEventListener(
-                            "mouseenter",
-                            () => {
-
-                                if (!finePointer) {
-                                    return;
-                                }
-
-
-                                stopSlide(
-                                    slider
-                                );
-
-
-                                changeSliderImage(
-                                    slider,
-                                    index
-                                );
-                            }
-                        );
-
-
-                        dot.addEventListener(
-                            "click",
-                            (event) => {
-
-                                event.preventDefault();
-
-                                event.stopPropagation();
-
-
-                                changeSliderImage(
-                                    slider,
-                                    index
-                                );
-                            }
-                        );
-                    }
-                );
-
-            }
-        );
-
 
     /* =====================================================
-       22. ESCAPE KEY
+       21. ESCAPE KEY
+       -----------------------------------------------------
+       This global Escape handler handles:
+       - Save boxes
+       - Message overlay
+
+       The image lightbox has its own Escape handler
+       because it needs to close itself and clean up
+       its listener correctly.
     ===================================================== */
 
     document.addEventListener(
@@ -2591,11 +3312,14 @@ document.addEventListener("DOMContentLoaded", () => {
         (event) => {
 
             if (
-                event.key !== "Escape"
+                event.key !==
+                "Escape"
             ) {
                 return;
             }
 
+
+            /* Close save menus */
 
             document
                 .querySelectorAll(
@@ -2610,6 +3334,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 );
 
+
+            /* Don't interfere with lightbox */
+
+            const lightbox =
+                document.getElementById(
+                    "trustyshopImageLightbox"
+                );
+
+
+            if (lightbox) {
+                return;
+            }
+
+
+            /* Close normal message overlay */
 
             const overlay =
                 document.getElementById(
@@ -2643,8 +3382,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+
     /* =====================================================
-       23. PREVENT IMAGE DRAGGING
+       22. PREVENT IMAGE DRAGGING
     ===================================================== */
 
     document
@@ -2675,8 +3415,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
+
     /* =====================================================
-       24. REDUCED MOTION
+       23. REDUCED MOTION
     ===================================================== */
 
     const reducedMotion =
@@ -2685,14 +3426,13 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-    const applyReducedMotion =
-        () => {
+    function applyReducedMotion() {
 
-            document.documentElement.classList.toggle(
-                "reduce-motion",
-                reducedMotion.matches
-            );
-        };
+        document.documentElement.classList.toggle(
+            "reduce-motion",
+            reducedMotion.matches
+        );
+    }
 
 
     applyReducedMotion();
@@ -2710,8 +3450,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+
     /* =====================================================
-       25. RESIZE CLEANUP
+       24. RESIZE CLEANUP
     ===================================================== */
 
     window.addEventListener(
@@ -2738,8 +3479,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+
     /* =====================================================
-       26. WISHLIST TOGGLE
+       25. WISHLIST TOGGLE
     ===================================================== */
 
     const wishlistButton =
@@ -2767,6 +3509,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     wishlistButton.dataset.busy ===
                     "true"
                 ) {
+
                     return;
                 }
 
@@ -2796,6 +3539,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     wishlistButton.dataset.busy =
                         "false";
 
+
                     return;
                 }
 
@@ -2809,6 +3553,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 method: "GET",
 
                                 headers: {
+
                                     "X-Requested-With":
                                         "XMLHttpRequest"
                                 },
@@ -2882,6 +3627,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         "wishlist-heart-pop"
                     );
 
+
                 } catch (error) {
 
                     console.error(
@@ -2889,11 +3635,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         error
                     );
 
+
                     showTemporaryMessage(
                         error.message ||
                         "Wishlist update failed.",
                         "error"
                     );
+
 
                 } finally {
 
@@ -2905,8 +3653,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+
     /* =====================================================
-       27. INITIAL CART COUNT
+       26. INITIAL CART COUNT
     ===================================================== */
 
     if (
@@ -2919,8 +3668,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+
     /* =====================================================
-       28. PAGE READY
+       27. PAGE READY
     ===================================================== */
 
     document.documentElement.classList.add(

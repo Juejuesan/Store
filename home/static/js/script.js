@@ -12,12 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const navbar = document.querySelector(".cute-navbar");
 
     const handleNavbarScroll = () => {
+
         if (!navbar) return;
 
         navbar.classList.toggle(
             "scrolled",
             window.scrollY > 50
         );
+
     };
 
     handleNavbarScroll();
@@ -45,7 +47,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-    /* Trending search buttons */
+    /* -----------------------------------------------------
+       Trending Search Buttons
+    ----------------------------------------------------- */
 
     suggestionButtons.forEach((button) => {
 
@@ -63,43 +67,52 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* Search form */
+    /* -----------------------------------------------------
+       Search Form
+    ----------------------------------------------------- */
 
     if (searchForm) {
 
-        searchForm.addEventListener("submit", (event) => {
+        searchForm.addEventListener(
+            "submit",
+            (event) => {
 
-            if (!searchInput) return;
+                if (!searchInput) return;
 
-            const value =
-                searchInput.value.trim();
+                const value =
+                    searchInput.value.trim();
 
-            if (!value) {
 
-                event.preventDefault();
+                if (!value) {
 
-                searchInput.focus();
+                    event.preventDefault();
 
-                searchInput.classList.add(
-                    "search-error"
-                );
+                    searchInput.focus();
 
-                setTimeout(() => {
-
-                    searchInput.classList.remove(
+                    searchInput.classList.add(
                         "search-error"
                     );
 
-                }, 700);
+
+                    setTimeout(() => {
+
+                        searchInput.classList.remove(
+                            "search-error"
+                        );
+
+                    }, 700);
+
+                }
 
             }
-
-        });
+        );
 
     }
 
 
-    /* Prevent empty Enter */
+    /* -----------------------------------------------------
+       Prevent Empty Enter
+    ----------------------------------------------------- */
 
     if (searchInput) {
 
@@ -131,12 +144,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let topButton =
         document.querySelector(".top-btn");
 
+
     if (!topButton) {
 
         topButton =
             document.createElement("button");
 
         topButton.className = "top-btn";
+
         topButton.type = "button";
 
         topButton.setAttribute(
@@ -147,7 +162,9 @@ document.addEventListener("DOMContentLoaded", () => {
         topButton.innerHTML =
             '<i class="fa-solid fa-arrow-up"></i>';
 
-        document.body.appendChild(topButton);
+        document.body.appendChild(
+            topButton
+        );
 
     }
 
@@ -161,7 +178,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     };
 
+
     handleTopButton();
+
 
     window.addEventListener(
         "scroll",
@@ -188,45 +207,63 @@ document.addEventListener("DOMContentLoaded", () => {
     ===================================================== */
 
     const logo =
-        document.querySelector(".logo-circle");
+        document.querySelector(
+            ".logo-circle"
+        );
+
 
     if (logo) {
 
-        logo.addEventListener("click", () => {
-
-            logo.classList.remove("logo-click");
-
-            void logo.offsetWidth;
-
-            logo.classList.add("logo-click");
-
-            setTimeout(() => {
+        logo.addEventListener(
+            "click",
+            () => {
 
                 logo.classList.remove(
                     "logo-click"
                 );
 
-            }, 500);
+                void logo.offsetWidth;
 
-        });
+                logo.classList.add(
+                    "logo-click"
+                );
+
+
+                setTimeout(() => {
+
+                    logo.classList.remove(
+                        "logo-click"
+                    );
+
+                }, 500);
+
+            }
+        );
 
     }
 
 
     /* =====================================================
        5. CUSTOM CURSOR
+       DESKTOP ONLY
     ===================================================== */
 
     const cursor =
-        document.querySelector(".cursor");
+        document.querySelector(
+            ".cursor"
+        );
+
 
     const follower =
         document.querySelector(
             ".cursor-follower"
         );
 
+
     const finePointer =
-        window.matchMedia("(pointer:fine)").matches;
+        window.matchMedia(
+            "(pointer:fine)"
+        ).matches;
 
 
     if (
@@ -246,8 +283,12 @@ document.addEventListener("DOMContentLoaded", () => {
             "mousemove",
             (event) => {
 
-                mouseX = event.clientX;
-                mouseY = event.clientY;
+                mouseX =
+                    event.clientX;
+
+                mouseY =
+                    event.clientY;
+
 
                 cursor.style.left =
                     `${mouseX}px`;
@@ -267,11 +308,13 @@ document.addEventListener("DOMContentLoaded", () => {
             followerY +=
                 (mouseY - followerY) * 0.15;
 
+
             follower.style.left =
                 `${followerX}px`;
 
             follower.style.top =
                 `${followerY}px`;
+
 
             requestAnimationFrame(
                 animateFollower
@@ -279,173 +322,193 @@ document.addEventListener("DOMContentLoaded", () => {
 
         };
 
+
         animateFollower();
 
 
         const hoverElements =
             document.querySelectorAll(
-                "a, button, " +
-                ".modern-product, " +
-                ".category-card, " +
-                ".nav-link, " +
-                ".cart-btn, " +
-                ".detail-btn"
+                [
+                    "a",
+                    "button",
+                    ".modern-product",
+                    ".category-card",
+                    ".nav-link",
+                    ".cart-btn",
+                    ".detail-btn",
+                    ".wishlist-btn-home",
+                    ".menu-btn",
+                    ".slider-dot"
+                ].join(", ")
             );
 
 
-        hoverElements.forEach((element) => {
+        hoverElements.forEach(
+            (element) => {
 
-            element.addEventListener(
-                "mouseenter",
-                () => {
+                element.addEventListener(
+                    "mouseenter",
+                    () => {
 
-                    follower.classList.add(
-                        "cursor-hover"
-                    );
+                        follower.classList.add(
+                            "cursor-hover"
+                        );
 
-                }
-            );
+                    }
+                );
 
 
-            element.addEventListener(
-                "mouseleave",
-                () => {
+                element.addEventListener(
+                    "mouseleave",
+                    () => {
 
-                    follower.classList.remove(
-                        "cursor-hover"
-                    );
+                        follower.classList.remove(
+                            "cursor-hover"
+                        );
 
-                }
-            );
+                    }
+                );
 
-        });
+            }
+        );
 
     }
 
 
-   /* =====================================================
-   6. TRUSTYSHOP MESSAGE ALERT
+    /* =====================================================
+       6. TRUSTYSHOP MESSAGE ALERT
 
-   NORMAL:
-   Automatically closes after 2 seconds.
+       NORMAL:
+       Automatically closes after 2 seconds.
 
-   PENDING:
-   NEVER auto-closes.
-   ONLY closes when "Got it" is clicked.
-===================================================== */
+       PENDING:
+       NEVER auto-closes.
+       ONLY closes when "Got it" is clicked.
+    ===================================================== */
 
-const messageOverlay = document.getElementById(
-    "messageOverlay"
-);
-
-if (messageOverlay) {
-
-    /* Always show overlay */
-    messageOverlay.style.display = "flex";
-    messageOverlay.style.opacity = "1";
-
-    /* Get message type */
-    const messageType =
-        messageOverlay.getAttribute("data-message-type");
-
-    const isPending =
-        messageType === "pending";
-
-
-    /* =================================================
-       GLOBAL CLOSE FUNCTION
-    ================================================= */
-
-    window.closeSuccessAlert = function () {
-
-        if (!messageOverlay) {
-            return;
-        }
-
-        if (!document.body.contains(messageOverlay)) {
-            return;
-        }
-
-
-        /* Prevent multiple close calls */
-        if (
-            messageOverlay.dataset.closing === "true"
-        ) {
-            return;
-        }
-
-        messageOverlay.dataset.closing = "true";
-
-
-        /* Closing animation */
-        messageOverlay.classList.add(
-            "message-closing"
+    const messageOverlay =
+        document.getElementById(
+            "messageOverlay"
         );
 
 
-        setTimeout(() => {
+    if (messageOverlay) {
 
-            if (
-                messageOverlay &&
-                document.body.contains(
-                    messageOverlay
-                )
-            ) {
+        messageOverlay.style.display =
+            "flex";
 
-                messageOverlay.remove();
-
-            }
-
-        }, 300);
-
-    };
+        messageOverlay.style.opacity =
+            "1";
 
 
-    /* =================================================
-       NORMAL MESSAGE ONLY
-       AUTO CLOSE AFTER 2 SECONDS
-    ================================================= */
-
-    if (!isPending) {
-
-        setTimeout(() => {
-
-            window.closeSuccessAlert();
-
-        }, 2000);
-
-    }
+        const messageType =
+            messageOverlay.getAttribute(
+                "data-message-type"
+            );
 
 
-    /* =================================================
-       CLICK OUTSIDE
-    ================================================= */
-
-    messageOverlay.addEventListener(
-        "click",
-        (event) => {
-
-            /* Only react to the overlay itself */
-            if (
-                event.target !==
-                messageOverlay
-            ) {
-                return;
-            }
+        const isPending =
+            messageType === "pending";
 
 
-            /* Pending messages NEVER close outside */
-            if (isPending) {
-                return;
-            }
+        /* -------------------------------------------------
+           Global Close Function
+        ------------------------------------------------- */
+
+        window.closeSuccessAlert =
+            function () {
+
+                if (!messageOverlay) {
+                    return;
+                }
 
 
-            window.closeSuccessAlert();
+                if (
+                    !document.body.contains(
+                        messageOverlay
+                    )
+                ) {
+                    return;
+                }
+
+
+                if (
+                    messageOverlay.dataset.closing ===
+                    "true"
+                ) {
+                    return;
+                }
+
+
+                messageOverlay.dataset.closing =
+                    "true";
+
+
+                messageOverlay.classList.add(
+                    "message-closing"
+                );
+
+
+                setTimeout(() => {
+
+                    if (
+                        messageOverlay &&
+                        document.body.contains(
+                            messageOverlay
+                        )
+                    ) {
+
+                        messageOverlay.remove();
+
+                    }
+
+                }, 300);
+
+            };
+
+
+        /* -------------------------------------------------
+           Normal Message Auto Close
+        ------------------------------------------------- */
+
+        if (!isPending) {
+
+            setTimeout(() => {
+
+                window.closeSuccessAlert();
+
+            }, 2000);
 
         }
-    );
 
-}
+
+        /* -------------------------------------------------
+           Click Outside
+        ------------------------------------------------- */
+
+        messageOverlay.addEventListener(
+            "click",
+            (event) => {
+
+                if (
+                    event.target !==
+                    messageOverlay
+                ) {
+                    return;
+                }
+
+
+                if (isPending) {
+                    return;
+                }
+
+
+                window.closeSuccessAlert();
+
+            }
+        );
+
+    }
 
 
     /* =====================================================
@@ -464,71 +527,72 @@ if (messageOverlay) {
         finePointer
     ) {
 
-        sellerCards.forEach((card) => {
+        sellerCards.forEach(
+            (card) => {
 
-            card.addEventListener(
-                "mousemove",
-                (event) => {
+                card.addEventListener(
+                    "mousemove",
+                    (event) => {
 
-                    /* Don't animate hidden cards */
+                        if (
+                            !card.classList.contains(
+                                "show"
+                            )
+                        ) {
+                            return;
+                        }
 
-                    if (
-                        !card.classList.contains(
-                            "show"
-                        )
-                    ) {
-                        return;
+
+                        const rect =
+                            card.getBoundingClientRect();
+
+
+                        const x =
+                            event.clientX -
+                            rect.left;
+
+
+                        const y =
+                            event.clientY -
+                            rect.top;
+
+
+                        const rotateY =
+                            (
+                                x -
+                                rect.width / 2
+                            ) / 35;
+
+
+                        const rotateX =
+                            (
+                                rect.height / 2 -
+                                y
+                            ) / 35;
+
+
+                        card.style.transform =
+                            `perspective(1200px)
+                             rotateX(${rotateX}deg)
+                             rotateY(${rotateY}deg)
+                             translateY(-8px)`;
+
                     }
+                );
 
 
-                    const rect =
-                        card.getBoundingClientRect();
+                card.addEventListener(
+                    "mouseleave",
+                    () => {
 
+                        card.style.transform =
+                            "";
 
-                    const x =
-                        event.clientX -
-                        rect.left;
+                    }
+                );
 
-
-                    const y =
-                        event.clientY -
-                        rect.top;
-
-
-                    const rotateY =
-                        (
-                            x -
-                            rect.width / 2
-                        ) / 35;
-
-
-                    const rotateX =
-                        (
-                            rect.height / 2 -
-                            y
-                        ) / 35;
-
-
-                    card.style.transform =
-                        `perspective(1200px)
-                         rotateX(${rotateX}deg)
-                         rotateY(${rotateY}deg)
-                         translateY(-8px)`;
-
-                }
-            );
-
-
-            card.addEventListener(
-                "mouseleave",
-                () => {
-
-                    card.style.transform = "";
-
-                }
-            );
-
-        });
+            }
+        );
 
     }
 
@@ -541,45 +605,51 @@ if (messageOverlay) {
         .querySelectorAll(
             ".cart-btn, .detail-btn"
         )
-        .forEach((button) => {
+        .forEach(
+            (button) => {
 
-            button.addEventListener(
-                "click",
-                (event) => {
+                button.addEventListener(
+                    "click",
+                    (event) => {
 
-                    const ripple =
-                        document.createElement(
-                            "span"
+                        const ripple =
+                            document.createElement(
+                                "span"
+                            );
+
+
+                        ripple.className =
+                            "ripple";
+
+
+                        const rect =
+                            button.getBoundingClientRect();
+
+
+                        ripple.style.left =
+                            `${event.clientX - rect.left}px`;
+
+
+                        ripple.style.top =
+                            `${event.clientY - rect.top}px`;
+
+
+                        button.appendChild(
+                            ripple
                         );
 
 
-                    ripple.className = "ripple";
+                        setTimeout(() => {
 
+                            ripple.remove();
 
-                    const rect =
-                        button.getBoundingClientRect();
+                        }, 700);
 
+                    }
+                );
 
-                    ripple.style.left =
-                        `${event.clientX - rect.left}px`;
-
-                    ripple.style.top =
-                        `${event.clientY - rect.top}px`;
-
-
-                    button.appendChild(ripple);
-
-
-                    setTimeout(() => {
-
-                        ripple.remove();
-
-                    }, 700);
-
-                }
-            );
-
-        });
+            }
+        );
 
 
     /* =====================================================
@@ -592,168 +662,190 @@ if (messageOverlay) {
         );
 
 
-    cartButtons.forEach((button) => {
+    cartButtons.forEach(
+        (button) => {
 
-        button.addEventListener(
-            "click",
-            () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                /* Prevent double-click */
+                    /* -------------------------------------
+                       Prevent Double Click
+                    ------------------------------------- */
 
-                if (
-                    button.dataset.cartBusy ===
-                    "true"
-                ) {
-                    return;
-                }
-
-
-                button.dataset.cartBusy = "true";
-
-
-                const originalHTML =
-                    button.innerHTML;
+                    if (
+                        button.dataset.cartBusy ===
+                        "true"
+                    ) {
+                        return;
+                    }
 
 
-                /* Success state */
-
-                button.innerHTML =
-                    '<i class="fa-solid fa-check"></i> Added';
-
-                button.classList.add(
-                    "cart-added"
-                );
+                    button.dataset.cartBusy =
+                        "true";
 
 
-                /* Cart count */
-
-                const cartCount =
-                    document.querySelector(
-                        ".cart-count"
-                    );
+                    const originalHTML =
+                        button.innerHTML;
 
 
-                const cartLink =
-                    document.querySelector(
-                        ".cart-link"
-                    );
-
-
-                if (cartCount) {
-
-                    let count =
-                        parseInt(
-                            cartCount.textContent,
-                            10
-                        ) || 0;
-
-
-                    count++;
-
-
-                    cartCount.textContent =
-                        count;
-
-
-                    cartCount.classList.remove(
-                        "cart-pop"
-                    );
-
-
-                    void cartCount.offsetWidth;
-
-
-                    cartCount.classList.add(
-                        "cart-pop"
-                    );
-
-                }
-
-
-                /* Cart shake */
-
-                if (cartLink) {
-
-                    cartLink.classList.remove(
-                        "shake"
-                    );
-
-
-                    void cartLink.offsetWidth;
-
-
-                    cartLink.classList.add(
-                        "shake"
-                    );
-
-                }
-
-
-                /* Remove animation classes */
-
-                setTimeout(() => {
-
-                    cartCount?.classList.remove(
-                        "cart-pop"
-                    );
-
-                    cartLink?.classList.remove(
-                        "shake"
-                    );
-
-                }, 600);
-
-
-                /* Cart toast */
-
-                const toast =
-                    document.getElementById(
-                        "cartToast"
-                    );
-
-
-                if (toast) {
-
-                    toast.classList.add("show");
-
-
-                    clearTimeout(
-                        toast._hideTimer
-                    );
-
-
-                    toast._hideTimer =
-                        setTimeout(() => {
-
-                            toast.classList.remove(
-                                "show"
-                            );
-
-                        }, 2200);
-
-                }
-
-
-                /* Restore button */
-
-                setTimeout(() => {
+                    /* -------------------------------------
+                       Success State
+                    ------------------------------------- */
 
                     button.innerHTML =
-                        originalHTML;
+                        '<i class="fa-solid fa-check"></i> Added';
 
-                    button.classList.remove(
+
+                    button.classList.add(
                         "cart-added"
                     );
 
-                    button.dataset.cartBusy =
-                        "false";
 
-                }, 1800);
+                    /* -------------------------------------
+                       Cart Count
+                    ------------------------------------- */
 
-            }
-        );
+                    const cartCount =
+                        document.querySelector(
+                            ".cart-count"
+                        );
 
-    });
+
+                    const cartLink =
+                        document.querySelector(
+                            ".cart-link"
+                        );
+
+
+                    if (cartCount) {
+
+                        let count =
+                            parseInt(
+                                cartCount.textContent,
+                                10
+                            ) || 0;
+
+
+                        count++;
+
+
+                        cartCount.textContent =
+                            count;
+
+
+                        cartCount.classList.remove(
+                            "cart-pop"
+                        );
+
+
+                        void cartCount.offsetWidth;
+
+
+                        cartCount.classList.add(
+                            "cart-pop"
+                        );
+
+                    }
+
+
+                    /* -------------------------------------
+                       Cart Shake
+                    ------------------------------------- */
+
+                    if (cartLink) {
+
+                        cartLink.classList.remove(
+                            "shake"
+                        );
+
+
+                        void cartLink.offsetWidth;
+
+
+                        cartLink.classList.add(
+                            "shake"
+                        );
+
+                    }
+
+
+                    setTimeout(() => {
+
+                        cartCount?.classList.remove(
+                            "cart-pop"
+                        );
+
+
+                        cartLink?.classList.remove(
+                            "shake"
+                        );
+
+                    }, 600);
+
+
+                    /* -------------------------------------
+                       Cart Toast
+                    ------------------------------------- */
+
+                    const toast =
+                        document.getElementById(
+                            "cartToast"
+                        );
+
+
+                    if (toast) {
+
+                        toast.classList.add(
+                            "show"
+                        );
+
+
+                        clearTimeout(
+                            toast._hideTimer
+                        );
+
+
+                        toast._hideTimer =
+                            setTimeout(
+                                () => {
+
+                                    toast.classList.remove(
+                                        "show"
+                                    );
+
+                                },
+                                2200
+                            );
+
+                    }
+
+
+                    /* -------------------------------------
+                       Restore Button
+                    ------------------------------------- */
+
+                    setTimeout(() => {
+
+                        button.innerHTML =
+                            originalHTML;
+
+
+                        button.classList.remove(
+                            "cart-added"
+                        );
+
+
+                        button.dataset.cartBusy =
+                            "false";
+
+                    }, 1800);
+
+                }
+            );
+
+        }
+    );
 
 
     /* =====================================================
@@ -761,54 +853,60 @@ if (messageOverlay) {
     ===================================================== */
 
     document
-        .querySelectorAll(".detail-btn")
-        .forEach((button) => {
+        .querySelectorAll(
+            ".detail-btn"
+        )
+        .forEach(
+            (button) => {
 
-            button.addEventListener(
-                "click",
-                () => {
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                    const card =
-                        button.closest(
-                            ".seller-card"
-                        );
-
-
-                    if (!card) return;
+                        const card =
+                            button.closest(
+                                ".seller-card"
+                            );
 
 
-                    if (
-                        typeof card.animate ===
-                        "function"
-                    ) {
+                        if (!card) {
+                            return;
+                        }
 
-                        card.animate(
-                            [
+
+                        if (
+                            typeof card.animate ===
+                            "function"
+                        ) {
+
+                            card.animate(
+                                [
+                                    {
+                                        transform:
+                                            "scale(1)"
+                                    },
+                                    {
+                                        transform:
+                                            "scale(.98)"
+                                    },
+                                    {
+                                        transform:
+                                            "scale(1)"
+                                    }
+                                ],
                                 {
-                                    transform:
-                                        "scale(1)"
-                                },
-                                {
-                                    transform:
-                                        "scale(.98)"
-                                },
-                                {
-                                    transform:
-                                        "scale(1)"
+                                    duration: 350,
+                                    easing: "ease-out"
                                 }
-                            ],
-                            {
-                                duration: 350,
-                                easing: "ease-out"
-                            }
-                        );
+                            );
+
+                        }
 
                     }
+                );
 
-                }
-            );
-
-        });
+            }
+        );
 
 
     /* =====================================================
@@ -830,24 +928,26 @@ if (messageOverlay) {
             new IntersectionObserver(
                 (entries) => {
 
-                    entries.forEach((entry) => {
+                    entries.forEach(
+                        (entry) => {
 
-                        if (
-                            entry.isIntersecting
-                        ) {
+                            if (
+                                entry.isIntersecting
+                            ) {
 
-                            entry.target.classList.add(
-                                "show"
-                            );
+                                entry.target.classList.add(
+                                    "show"
+                                );
 
 
-                            observer.unobserve(
-                                entry.target
-                            );
+                                observer.unobserve(
+                                    entry.target
+                                );
+
+                            }
 
                         }
-
-                    });
+                    );
 
                 },
                 {
@@ -856,21 +956,32 @@ if (messageOverlay) {
             );
 
 
-        revealCards.forEach((card) => {
+        revealCards.forEach(
+            (card) => {
 
-            card.classList.add("hidden");
+                card.classList.add(
+                    "hidden"
+                );
 
-            observer.observe(card);
 
-        });
+                observer.observe(
+                    card
+                );
+
+            }
+        );
 
     } else {
 
-        revealCards.forEach((card) => {
+        revealCards.forEach(
+            (card) => {
 
-            card.classList.add("show");
+                card.classList.add(
+                    "show"
+                );
 
-        });
+            }
+        );
 
     }
 
@@ -891,7 +1002,11 @@ if (messageOverlay) {
             document.createDocumentFragment();
 
 
-        for (let i = 0; i < 35; i++) {
+        for (
+            let i = 0;
+            i < 35;
+            i++
+        ) {
 
             const circle =
                 document.createElement(
@@ -928,7 +1043,9 @@ if (messageOverlay) {
                 `${Math.random() * 5}s`;
 
 
-            fragment.appendChild(circle);
+            fragment.appendChild(
+                circle
+            );
 
         }
 
@@ -942,6 +1059,7 @@ if (messageOverlay) {
 
     /* =====================================================
        13. MOUSE GLOW
+       DESKTOP ONLY
     ===================================================== */
 
     const mouseGlow =
@@ -966,8 +1084,11 @@ if (messageOverlay) {
             "mousemove",
             (event) => {
 
-                targetX = event.clientX;
-                targetY = event.clientY;
+                targetX =
+                    event.clientX;
+
+                targetY =
+                    event.clientY;
 
             }
         );
@@ -978,12 +1099,14 @@ if (messageOverlay) {
             glowX +=
                 (targetX - glowX) * 0.12;
 
+
             glowY +=
                 (targetY - glowY) * 0.12;
 
 
             mouseGlow.style.left =
                 `${glowX}px`;
+
 
             mouseGlow.style.top =
                 `${glowY}px`;
@@ -1004,7 +1127,7 @@ if (messageOverlay) {
     /* =====================================================
        14. IMAGE SLIDER
 
-       Uses ONE slider system only.
+       ONE SLIDER SYSTEM ONLY.
        Prevents duplicate intervals.
     ===================================================== */
 
@@ -1034,7 +1157,10 @@ if (messageOverlay) {
 
         return data
             .split(",")
-            .map((image) => image.trim())
+            .map(
+                (image) =>
+                    image.trim()
+            )
             .filter(Boolean);
 
     }
@@ -1045,8 +1171,15 @@ if (messageOverlay) {
         index
     ) {
 
+        if (!slider) {
+            return;
+        }
+
+
         const images =
-            getSliderImages(slider);
+            getSliderImages(
+                slider
+            );
 
 
         if (!images.length) {
@@ -1055,7 +1188,9 @@ if (messageOverlay) {
 
 
         const imageElement =
-            slider.querySelector("img");
+            slider.querySelector(
+                "img"
+            );
 
 
         if (!imageElement) {
@@ -1068,8 +1203,10 @@ if (messageOverlay) {
 
 
         if (index < 0) {
+
             index =
                 images.length - 1;
+
         }
 
 
@@ -1079,13 +1216,15 @@ if (messageOverlay) {
         );
 
 
-        imageElement.style.opacity = "0";
+        imageElement.style.opacity =
+            "0";
 
 
         setTimeout(() => {
 
             imageElement.src =
                 images[index];
+
 
             imageElement.style.opacity =
                 "1";
@@ -1101,57 +1240,74 @@ if (messageOverlay) {
             );
 
 
-        dots.forEach((dot, dotIndex) => {
+        dots.forEach(
+            (dot, dotIndex) => {
 
-            dot.classList.toggle(
-                "active",
-                dotIndex === index
-            );
+                dot.classList.toggle(
+                    "active",
+                    dotIndex === index
+                );
 
-        });
+            }
+        );
 
     }
 
 
     function startSlide(slider) {
 
-        if (!slider) return;
+        if (!slider) {
+            return;
+        }
 
 
         const images =
-            getSliderImages(slider);
+            getSliderImages(
+                slider
+            );
 
 
-        if (images.length <= 1) {
+        if (
+            images.length <= 1
+        ) {
             return;
         }
 
 
         if (
-            sliderIntervals.has(slider)
+            sliderIntervals.has(
+                slider
+            )
         ) {
             return;
         }
 
 
         let index =
-            sliderIndexes.get(slider) || 0;
+            sliderIndexes.get(
+                slider
+            ) || 0;
 
 
         const interval =
-            setInterval(() => {
+            setInterval(
+                () => {
 
-                index =
-                    (index + 1) %
-                    images.length;
+                    index =
+                        (
+                            index + 1
+                        ) %
+                        images.length;
 
 
-                changeSliderImage(
-                    slider,
-                    index
-                );
+                    changeSliderImage(
+                        slider,
+                        index
+                    );
 
-            }, 1500);
+                },
+                1500
+            );
 
 
         sliderIntervals.set(
@@ -1164,7 +1320,9 @@ if (messageOverlay) {
 
     function stopSlide(slider) {
 
-        if (!slider) return;
+        if (!slider) {
+            return;
+        }
 
 
         const interval =
@@ -1175,7 +1333,10 @@ if (messageOverlay) {
 
         if (interval) {
 
-            clearInterval(interval);
+            clearInterval(
+                interval
+            );
+
 
             sliderIntervals.delete(
                 slider
@@ -1194,152 +1355,211 @@ if (messageOverlay) {
     }
 
 
-    /* Make functions available globally
-       for inline HTML handlers if needed. */
+    /* -----------------------------------------------------
+       Make Slider Functions Globally Available
+    ----------------------------------------------------- */
 
-    window.startSlide = startSlide;
-    window.stopSlide = stopSlide;
+    window.startSlide =
+        startSlide;
 
 
-    /* Attach sliders */
+    window.stopSlide =
+        stopSlide;
+
+
+    /* -----------------------------------------------------
+       Attach Sliders
+    ----------------------------------------------------- */
 
     document
         .querySelectorAll(
             ".post-image-slider"
         )
-        .forEach((slider) => {
+        .forEach(
+            (slider) => {
 
-            const images =
-                getSliderImages(slider);
-
-
-            /* Initialize first dot */
-
-            const dots =
-                slider.querySelectorAll(
-                    ".slider-dot"
-                );
-
-
-            if (
-                images.length > 0 &&
-                dots.length > 0
-            ) {
-
-                dots.forEach((dot, index) => {
-
-                    dot.classList.toggle(
-                        "active",
-                        index === 0
+                const images =
+                    getSliderImages(
+                        slider
                     );
 
-                });
 
-            }
+                const dots =
+                    slider.querySelectorAll(
+                        ".slider-dot"
+                    );
 
 
-            /* Desktop hover */
+                /* -----------------------------------------
+                   Initialize First Dot
+                ----------------------------------------- */
 
-            slider.addEventListener(
-                "mouseenter",
-                () => {
+                if (
+                    images.length > 0 &&
+                    dots.length > 0
+                ) {
 
-                    if (finePointer) {
-                        startSlide(slider);
-                    }
+                    dots.forEach(
+                        (dot, index) => {
+
+                            dot.classList.toggle(
+                                "active",
+                                index === 0
+                            );
+
+                        }
+                    );
 
                 }
-            );
 
 
-            slider.addEventListener(
-                "mouseleave",
-                () => {
+                /* -----------------------------------------
+                   Desktop Hover
+                ----------------------------------------- */
 
-                    if (finePointer) {
-                        stopSlide(slider);
-                    }
-
-                }
-            );
-
-
-            /* Mobile touch */
-
-            slider.addEventListener(
-                "touchstart",
-                () => {
-
-                    startSlide(slider);
-
-                },
-                {
-                    passive: true
-                }
-            );
-
-
-            /* Dots */
-
-            dots.forEach((dot, index) => {
-
-                dot.addEventListener(
+                slider.addEventListener(
                     "mouseenter",
                     () => {
 
+                        if (finePointer) {
+
+                            startSlide(
+                                slider
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                slider.addEventListener(
+                    "mouseleave",
+                    () => {
+
+                        if (finePointer) {
+
+                            stopSlide(
+                                slider
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                /* -----------------------------------------
+                   Mobile Touch
+                ----------------------------------------- */
+
+                slider.addEventListener(
+                    "touchstart",
+                    () => {
+
+                        startSlide(
+                            slider
+                        );
+
+                    },
+                    {
+                        passive: true
+                    }
+                );
+
+
+                slider.addEventListener(
+                    "touchend",
+                    () => {
+
+                        /*
+                         * Stop after the user
+                         * finishes touching.
+                         */
+
                         if (!finePointer) {
-                            return;
-                        }
 
+                            setTimeout(
+                                () => {
 
-                        /* Stop automatic slider */
+                                    stopSlide(
+                                        slider
+                                    );
 
-                        const interval =
-                            sliderIntervals.get(
-                                slider
-                            );
-
-
-                        if (interval) {
-
-                            clearInterval(
-                                interval
-                            );
-
-                            sliderIntervals.delete(
-                                slider
+                                },
+                                2500
                             );
 
                         }
 
+                    },
+                    {
+                        passive: true
+                    }
+                );
 
-                        changeSliderImage(
-                            slider,
-                            index
+
+                /* -----------------------------------------
+                   Slider Dots
+                ----------------------------------------- */
+
+                dots.forEach(
+                    (dot, index) => {
+
+                        /* Desktop Hover */
+
+                        dot.addEventListener(
+                            "mouseenter",
+                            () => {
+
+                                if (!finePointer) {
+                                    return;
+                                }
+
+
+                                stopSlide(
+                                    slider
+                                );
+
+
+                                changeSliderImage(
+                                    slider,
+                                    index
+                                );
+
+                            }
+                        );
+
+
+                        /* Click */
+
+                        dot.addEventListener(
+                            "click",
+                            (event) => {
+
+                                event.preventDefault();
+
+                                event.stopPropagation();
+
+
+                                stopSlide(
+                                    slider
+                                );
+
+
+                                changeSliderImage(
+                                    slider,
+                                    index
+                                );
+
+                            }
                         );
 
                     }
                 );
 
-
-                dot.addEventListener(
-                    "click",
-                    (event) => {
-
-                        event.preventDefault();
-                        event.stopPropagation();
-
-                        changeSliderImage(
-                            slider,
-                            index
-                        );
-
-                    }
-                );
-
-            });
-
-        });
+            }
+        );
 
 
     /* =====================================================
@@ -1369,7 +1589,247 @@ if (messageOverlay) {
 
 
     /* =====================================================
-       16. ESCAPE KEY
+       16. SAVE MENU
+
+       Handles:
+       - Three-dot menu
+       - Open/close
+       - Outside click
+       - Escape key
+    ===================================================== */
+
+    const menuButtons =
+        document.querySelectorAll(
+            ".menu-btn"
+        );
+
+
+    menuButtons.forEach(
+        (button) => {
+
+            button.addEventListener(
+                "click",
+                (event) => {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    const sellerRight =
+                        button.closest(
+                            ".seller-right"
+                        );
+
+
+                    if (!sellerRight) {
+                        return;
+                    }
+
+
+                    const saveBox =
+                        sellerRight.querySelector(
+                            ".save-box"
+                        );
+
+
+                    if (!saveBox) {
+                        return;
+                    }
+
+
+                    /* Close other menus */
+
+                    document
+                        .querySelectorAll(
+                            ".save-box.active"
+                        )
+                        .forEach(
+                            (box) => {
+
+                                if (
+                                    box !==
+                                    saveBox
+                                ) {
+
+                                    box.classList.remove(
+                                        "active"
+                                    );
+
+                                }
+
+                            }
+                        );
+
+
+                    saveBox.classList.toggle(
+                        "active"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* -----------------------------------------------------
+       Save Box Click Protection
+    ----------------------------------------------------- */
+
+    document
+        .querySelectorAll(
+            ".save-box"
+        )
+        .forEach(
+            (box) => {
+
+                box.addEventListener(
+                    "click",
+                    (event) => {
+
+                        event.stopPropagation();
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* -----------------------------------------------------
+       Close Save Menus Outside
+    ----------------------------------------------------- */
+
+    document.addEventListener(
+        "click",
+        () => {
+
+            document
+                .querySelectorAll(
+                    ".save-box.active"
+                )
+                .forEach(
+                    (box) => {
+
+                        box.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+        }
+    );
+
+
+    /* =====================================================
+       17. HOME WISHLIST BUTTON
+
+       UI state only.
+       Backend saving should be handled by
+       your Django wishlist endpoint if available.
+    ===================================================== */
+
+    const wishlistButtons =
+        document.querySelectorAll(
+            ".wishlist-btn-home"
+        );
+
+
+    wishlistButtons.forEach(
+        (button) => {
+
+            button.addEventListener(
+                "click",
+                (event) => {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    /* Toggle liked state */
+
+                    button.classList.toggle(
+                        "liked"
+                    );
+
+
+                    /* Heart animation */
+
+                    button.classList.remove(
+                        "wishlist-heart-pop"
+                    );
+
+
+                    void button.offsetWidth;
+
+
+                    button.classList.add(
+                        "wishlist-heart-pop"
+                    );
+
+
+                    /* Update icon */
+
+                    const icon =
+                        button.querySelector(
+                            ".wishlist-icon-home"
+                        );
+
+
+                    if (icon) {
+
+                        if (
+                            button.classList.contains(
+                                "liked"
+                            )
+                        ) {
+
+                            icon.classList.remove(
+                                "fa-regular"
+                            );
+
+                            icon.classList.add(
+                                "fa-solid"
+                            );
+
+                        } else {
+
+                            icon.classList.remove(
+                                "fa-solid"
+                            );
+
+                            icon.classList.add(
+                                "fa-regular"
+                            );
+
+                        }
+
+                    }
+
+
+                    /* Accessibility */
+
+                    button.setAttribute(
+                        "aria-pressed",
+                        button.classList.contains(
+                            "liked"
+                        )
+                            ? "true"
+                            : "false"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       18. ESCAPE KEY
 
        Important:
        Pending messages are NOT closed by Escape.
@@ -1386,22 +1846,28 @@ if (messageOverlay) {
             }
 
 
-            /* Close save menus */
+            /* ---------------------------------------------
+               Close Save Menus
+            --------------------------------------------- */
 
             document
                 .querySelectorAll(
                     ".save-box"
                 )
-                .forEach((box) => {
+                .forEach(
+                    (box) => {
 
-                    box.classList.remove(
-                        "active"
-                    );
+                        box.classList.remove(
+                            "active"
+                        );
 
-                });
+                    }
+                );
 
 
-            /* Close message only if NOT pending */
+            /* ---------------------------------------------
+               Close Message
+            --------------------------------------------- */
 
             const overlay =
                 document.getElementById(
@@ -1438,37 +1904,42 @@ if (messageOverlay) {
 
 
     /* =====================================================
-       17. PREVENT IMAGE DRAGGING
+       19. PREVENT IMAGE DRAGGING
     ===================================================== */
 
     document
         .querySelectorAll(
-            ".seller-profile, " +
-            ".product-image, " +
-            ".post-image-slider img"
+            [
+                ".seller-profile",
+                ".product-image",
+                ".post-image-slider img",
+                ".nav-profile-img"
+            ].join(", ")
         )
-        .forEach((image) => {
+        .forEach(
+            (image) => {
 
-            image.setAttribute(
-                "draggable",
-                "false"
-            );
+                image.setAttribute(
+                    "draggable",
+                    "false"
+                );
 
 
-            image.addEventListener(
-                "dragstart",
-                (event) => {
+                image.addEventListener(
+                    "dragstart",
+                    (event) => {
 
-                    event.preventDefault();
+                        event.preventDefault();
 
-                }
-            );
+                    }
+                );
 
-        });
+            }
+        );
 
 
     /* =====================================================
-       18. REDUCE MOTION
+       20. REDUCE MOTION
        ACCESSIBILITY
     ===================================================== */
 
@@ -1505,24 +1976,44 @@ if (messageOverlay) {
 
 
     /* =====================================================
-       19. RESIZE CLEANUP
+       21. RESIZE CLEANUP
     ===================================================== */
 
     window.addEventListener(
         "resize",
         () => {
 
+            /* Close save menus */
+
             document
                 .querySelectorAll(
                     ".save-box"
                 )
-                .forEach((box) => {
+                .forEach(
+                    (box) => {
 
-                    box.classList.remove(
-                        "active"
-                    );
+                        box.classList.remove(
+                            "active"
+                        );
 
-                });
+                    }
+                );
+
+
+            /* Reset card transforms */
+
+            document
+                .querySelectorAll(
+                    ".seller-card"
+                )
+                .forEach(
+                    (card) => {
+
+                        card.style.transform =
+                            "";
+
+                    }
+                );
 
         },
         {
@@ -1532,11 +2023,12 @@ if (messageOverlay) {
 
 
     /* =====================================================
-       20. PAGE INITIALIZATION COMPLETE
+       22. PAGE INITIALIZATION COMPLETE
     ===================================================== */
 
     document.documentElement.classList.add(
         "trustyshop-js-ready"
     );
+
 
 });
