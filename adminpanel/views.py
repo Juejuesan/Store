@@ -1,14 +1,18 @@
+from functools import wraps
+
+from django.contrib.auth import logout, authenticate, login
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.utils import timezone
 from django.db import transaction
 from django.db.models import Sum
 from decimal import Decimal
-
 from user.models import Profile
 from posts.models import Post
+
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
 from notifications.models import Notification
 from wallet.models import (
     DepositRequest,
@@ -18,13 +22,95 @@ from wallet.models import (
 )
 
 from .models import AdminActivity
+# =========================================================
+# ADMIN AUTHENTICATION
+# =========================================================
+
+def admin_required(view_func):
+
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+
+        # Not logged in
+        if not request.user.is_authenticated:
+            return redirect("admin_login")
+
+        # Logged in, but NOT an admin
+        if not request.user.is_staff:
+            logout(request)
+            return redirect("admin_login")
+
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
+
+# =========================================================
+# ADMIN LOGIN
+# =========================================================
+
+def admin_login(request):
+
+    # Already logged in as admin
+    if request.user.is_authenticated and request.user.is_staff:
+        return redirect("dashboard")
+
+    if request.method == "POST":
+
+        username = request.POST.get(
+            "username",
+            ""
+        ).strip()
+
+        password = request.POST.get(
+            "password",
+            ""
+        )
+
+        user = authenticate(
+            request=request,
+            username=username,
+            password=password,
+        )
+
+        # Only staff users can enter admin panel
+        if user is not None and user.is_staff:
+
+            login(
+                request,
+                user
+            )
+
+            return redirect(
+                "dashboard"
+            )
+
+        messages.error(
+            request,
+            "Invalid admin username or password."
+        )
+
+    return render(
+        request,
+        "adminpanel/admin_login.html"
+    )
 
 
+# =========================================================
+# ADMIN LOGOUT
+# =========================================================
+
+def admin_logout(request):
+
+    logout(request)
+
+    return redirect(
+        "admin_login"
+    )
 # =========================================================
 # DASHBOARD
 # =========================================================
 
-@login_required
+@admin_required
 def dashboard(request):
     recent_activities = AdminActivity.objects.select_related(
         "admin"
@@ -65,7 +151,7 @@ def dashboard(request):
 # USERS
 # =========================================================
 
-@login_required
+@admin_required
 def users(request):
     users = (
         User.objects
@@ -92,7 +178,7 @@ def users(request):
 # =========================================================
 # BAN USER
 # =========================================================
-@login_required
+@admin_required
 def ban_user(request, user_id):
     user = get_object_or_404(
         User,
@@ -126,7 +212,7 @@ def ban_user(request, user_id):
 # UNBAN USER
 # =========================================================
 
-@login_required
+@admin_required
 def unban_user(request, user_id):
     user = get_object_or_404(
         User,
@@ -159,7 +245,7 @@ def unban_user(request, user_id):
 # =========================================================
 # PENDING POSTS
 # =========================================================
-@login_required
+@admin_required
 def posts(request):
     pending_posts = (
         Post.objects
@@ -180,7 +266,7 @@ def posts(request):
 # =========================================================
 # POST DETAIL
 # =========================================================
-@login_required
+@admin_required
 def post_detail(request, post_id):
     post = get_object_or_404(
         Post,
@@ -199,7 +285,7 @@ def post_detail(request, post_id):
 # =========================================================
 # APPROVE POST
 # =========================================================
-@login_required
+@admin_required
 def approve_post(request, post_id):
     post = get_object_or_404(
         Post,
@@ -241,7 +327,7 @@ def approve_post(request, post_id):
 # =========================================================
 # REJECT POST
 # =========================================================
-@login_required
+@admin_required
 def reject_post(request, post_id):
     post = get_object_or_404(
         Post,
@@ -283,7 +369,7 @@ def reject_post(request, post_id):
 # WALLET PAGE
 # =========================================================
 
-@login_required
+@admin_required
 def wallet_requests(request):
     deposits = (
         DepositRequest.objects
@@ -345,7 +431,7 @@ def wallet_requests(request):
 # DEPOSIT REQUESTS
 # =========================================================
 
-@login_required
+@admin_required
 def deposit_requests(request):
     deposits = (
         DepositRequest.objects
@@ -384,7 +470,7 @@ def deposit_requests(request):
 # APPROVE DEPOSIT
 # =========================================================
 
-@login_required
+@admin_required
 @transaction.atomic
 def approve_deposit(request, deposit_id):
     deposit = get_object_or_404(
@@ -459,7 +545,7 @@ def approve_deposit(request, deposit_id):
 # =========================================================
 # REJECT DEPOSIT
 # =========================================================
-@login_required
+@admin_required
 @transaction.atomic
 def reject_deposit(request, deposit_id):
     deposit = get_object_or_404(
@@ -514,7 +600,7 @@ def reject_deposit(request, deposit_id):
 # WITHDRAW REQUESTS
 # =========================================================
 
-@login_required
+@admin_required
 def withdraw_requests(request):
     withdrawals = (
         WithdrawRequest.objects
@@ -553,7 +639,7 @@ def withdraw_requests(request):
 # APPROVE WITHDRAWAL
 # =========================================================
 
-@login_required
+@admin_required
 @transaction.atomic
 def approve_withdraw(request, withdraw_id):
     withdraw = get_object_or_404(
@@ -668,7 +754,7 @@ def approve_withdraw(request, withdraw_id):
 # =========================================================
 # REJECT WITHDRAWAL
 # =========================================================
-@login_required
+@admin_required
 @transaction.atomic
 def reject_withdraw(request, withdraw_id):
     withdraw = get_object_or_404(
@@ -722,7 +808,7 @@ def reject_withdraw(request, withdraw_id):
 # =========================================================
 # READ NOTIFICATION
 # =========================================================
-@login_required
+@admin_required
 def read_notification(request, noti_id):
     notification = get_object_or_404(
         Notification,
@@ -734,3 +820,33 @@ def read_notification(request, noti_id):
     notification.save()
 
     return redirect("dashboard")
+
+
+
+# =========================================================
+# ADMIN ACCESS CHECK
+# =========================================================
+
+def admin_required(view_func):
+
+    @login_required(login_url="/adminpanel/login/")
+    def wrapper(request, *args, **kwargs):
+
+        if not (
+            request.user.is_staff
+            or request.user.is_superuser
+        ):
+            messages.error(
+                request,
+                "You do not have permission to access the admin panel."
+            )
+
+            return redirect("admin_login")
+
+        return view_func(
+            request,
+            *args,
+            **kwargs
+        )
+
+    return wrapper

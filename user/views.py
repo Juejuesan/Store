@@ -290,7 +290,7 @@ def login_view(request):
 
     return render(
         request,
-        "user/login.html",
+        "user/admin_login.html",
         {
             "form": form
         }
