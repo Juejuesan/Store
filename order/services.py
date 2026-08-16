@@ -9,9 +9,10 @@ from .models import Order, OrderItem
 
 
 class OrderService:
-    CANCELLATION_WINDOW_MINUTES = 3  # Changed to 24 hours (1 day)
+    CANCELLATION_WINDOW_HOURS = 24
     MAX_CANCELLATIONS_PER_MONTH = 3
-    AUTO_READY_MINUTES = 3  # Auto-ready after 24 hours
+    AUTO_READY_HOURS = 24
+
 
     @classmethod
     @transaction.atomic
@@ -63,8 +64,13 @@ class OrderService:
         # auto_ready_at = timezone.now() + timedelta(hours=cls.AUTO_READY_HOURS)
 
         # for minute
-        cancel_deadline = timezone.now() + timedelta(minutes=cls.CANCELLATION_WINDOW_MINUTES)
-        auto_ready_at = timezone.now() + timedelta(minutes=cls.AUTO_READY_MINUTES)
+        cancel_deadline = timezone.now() + timedelta(
+            hours=cls.CANCELLATION_WINDOW_HOURS
+        )
+
+        auto_ready_at = timezone.now() + timedelta(
+            hours=cls.AUTO_READY_HOURS
+        )
 
         for seller, items in items_by_seller.items():
             # Calculate seller total
@@ -99,7 +105,34 @@ class OrderService:
 
                 # Consume stock hold
                 cart_item.consume_hold()
+            # =========================================================
+            # BUYER NOTIFICATION
+            # =========================================================
 
+            # =========================================================
+            # BUYER NOTIFICATION
+            # =========================================================
+
+            Notification.objects.create(
+                user=user_profile.user,
+                message=(
+                    "Purchase Confirmed! "
+                    "Admin review in progress for item pick-up and payout."
+                ),
+                notification_type="order_created",
+                target_url=f"/orders/{order.id}/",
+            )
+
+            # =========================================================
+            # SELLER NOTIFICATION
+            # =========================================================
+
+            Notification.objects.create(
+                user=seller.user,
+                message="You received a new order.",
+                notification_type="order_created",
+                target_url=f"/orders/{order.id}/",
+            )
             orders.append(order)
 
         # Update cart status
@@ -111,50 +144,135 @@ class OrderService:
     @classmethod
     @transaction.atomic
     def cancel_order(cls, order_id, user_profile, reason=None):
-        """Cancel order and process refund"""
-        order = Order.objects.select_for_update().get(id=order_id)
+        """Cancel order and process refund."""
+
+        order = Order.objects.select_for_update().get(
+            id=order_id
+        )
+
+        # =====================================================
+        # AUTHORIZATION
+        # =====================================================
 
         if order.user != user_profile:
-            raise ValueError("Unauthorized to cancel this order")
-
-        if not order.can_cancel:
-            raise ValueError("Order cannot be cancelled - cancellation window has expired")
-
-        # Check monthly cancellation limit
-        current_count = Order.get_user_cancellation_count_this_month(user_profile)
-        if current_count >= cls.MAX_CANCELLATIONS_PER_MONTH:
             raise ValueError(
-                f"You have reached your monthly cancellation limit "
-                f"({cls.MAX_CANCELLATIONS_PER_MONTH} cancellations). "
-                f"Please wait until next month."
+                "Unauthorized to cancel this order"
             )
 
+        # =====================================================
+        # CANCELLATION WINDOW
+        # =====================================================
+
+        if not order.can_cancel:
+            raise ValueError(
+                "Order cannot be cancelled - "
+                "cancellation window has expired"
+            )
+
+        # =====================================================
+        # MONTHLY CANCELLATION LIMIT
+        # =====================================================
+
+        current_count = (
+            Order.get_user_cancellation_count_this_month(
+                user_profile
+            )
+        )
+
+        if current_count >= cls.MAX_CANCELLATIONS_PER_MONTH:
+            raise ValueError(
+                f"You have reached your monthly cancellation "
+                f"limit ({cls.MAX_CANCELLATIONS_PER_MONTH} "
+                f"cancellations). Please wait until next month."
+            )
+
+        # =====================================================
+        # CANCEL + REFUND
+        # =====================================================
+
         order.cancel_order(reason)
+
+        # =====================================================
+        # BUYER NOTIFICATION
+        # =====================================================
+
+        Notification.objects.create(
+            user=order.user.user,
+            message=(
+                f"Your order has been cancelled. "
+                f"MMK {order.total_amount:,.0f} "
+                f"has been refunded to your wallet."
+            ),
+            notification_type="order_cancelled",
+            target_url=f"/orders/{order.id}/",
+        )
+
         return order
 
     @classmethod
     @transaction.atomic
     def mark_order_ready_for_pickup(cls, order_id, seller_profile):
         """Mark order as ready for pickup"""
-        order = Order.objects.select_for_update().get(id=order_id)
+
+        order = Order.objects.select_for_update().get(
+            id=order_id
+        )
 
         if order.seller != seller_profile:
-            raise ValueError("Unauthorized to update this order")
+            raise ValueError(
+                "Unauthorized to update this order"
+            )
 
         order.mark_ready_for_pickup()
+
+        # =====================================================
+        # BUYER NOTIFICATION
+        # =====================================================
+
+        Notification.objects.create(
+            user=order.user.user,
+            message="Your order has been picked up.",
+            notification_type="order_ready",
+            target_url=f"/orders/{order.id}/",
+        )
+
         return order
 
     @classmethod
     @transaction.atomic
-    def mark_order_picked_up(cls, order_id, user_profile):
-        """Mark order as picked up - releases money to seller"""
-        order = Order.objects.select_for_update().get(id=order_id)
+    def mark_order_completed(cls, order_id, seller_profile):
+        """Mark order as completed."""
 
-        # Can be confirmed by buyer, seller, or admin
-        if order.user != user_profile and order.seller != user_profile:
-            raise ValueError("Unauthorized to update this order")
+        order = Order.objects.select_for_update().get(
+            id=order_id
+        )
 
-        order.mark_picked_up()
+        # =====================================================
+        # AUTHORIZATION
+        # =====================================================
+
+        if order.seller != seller_profile:
+            raise ValueError(
+                "Unauthorized to update this order"
+            )
+
+        # =====================================================
+        # MARK COMPLETED
+        # =====================================================
+
+        order.mark_completed()
+
+        # =====================================================
+        # BUYER NOTIFICATION
+        # =====================================================
+
+        Notification.objects.create(
+            user=order.user.user,
+            message="Your order has been completed.",
+            notification_type="order_completed",
+            target_url=f"/orders/{order.id}/",
+        )
+
         return order
 
     @classmethod
@@ -170,19 +288,41 @@ class OrderService:
         return order
 
     @classmethod
+    @transaction.atomic
     def auto_ready_orders(cls):
-        """Auto-change pending orders to ready_for_pickup after 24 hours"""
+        """Auto-change expired pending orders to ready for pickup."""
+
         expired_orders = Order.objects.filter(
-            status='pending',
+            status="pending",
             auto_ready_at__lte=timezone.now()
         )
 
         updated_count = 0
+
         for order in expired_orders:
+
             try:
+
                 order.mark_ready_for_pickup()
+
+                # =================================================
+                # BUYER NOTIFICATION
+                # =================================================
+
+                Notification.objects.create(
+                    user=order.user.user,
+                    message="Your order is ready for pickup.",
+                    notification_type="order_ready",
+                    target_url=f"/orders/{order.id}/",
+                )
+
                 updated_count += 1
+
             except Exception as e:
-                print(f"Failed to auto-ready order #{order.id}: {str(e)}")
+
+                print(
+                    f"Failed to auto-ready "
+                    f"order #{order.id}: {str(e)}"
+                )
 
         return updated_count

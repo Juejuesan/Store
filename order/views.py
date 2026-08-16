@@ -1,280 +1,661 @@
-# order/views.py
+# =========================================================
+# ORDER VIEWS
+# =========================================================
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-from django.db.models import Q
+
 from cart.models import Cart
-from wallet.models import Wallet, WalletTransaction
-from .models import Order, OrderItem
+
+from .models import Order
 from .services import OrderService
 
 
-def check_and_auto_ready_orders():
-    """Auto-change pending orders to ready_for_pickup after 24 hours"""
-    Order.objects.filter(
-        status='pending',
-        auto_ready_at__lte=timezone.now()
-    ).update(
-        status='ready_for_pickup',
-        ready_for_pickup_at=timezone.now()
-    )
+# =========================================================
+# AUTO READY EXPIRED ORDERS
+# =========================================================
 
+def check_and_auto_ready_orders():
+    """
+    Automatically change expired pending orders
+    to ready_for_pickup.
+
+    The notification is handled inside OrderService
+    so that duplicate notifications are avoided.
+    """
+
+    return OrderService.auto_ready_orders()
+
+
+# =========================================================
+# PURCHASE CART
+# =========================================================
 
 @login_required
 @require_POST
 def purchase_cart(request):
-    """Purchase items in cart and create orders"""
+    """
+    Purchase items in the active cart and create orders.
+    """
+
     cart = Cart.objects.filter(
         user=request.user.profile,
-        status='open'
+        status="open"
     ).first()
 
+    # -----------------------------------------------------
+    # CHECK CART
+    # -----------------------------------------------------
+
     if not cart:
-        messages.error(request, "No active cart found")
-        return redirect('cart:view_cart')
+        messages.error(
+            request,
+            "No active cart found."
+        )
 
-    # Get phone and location from POST data
-    phone_number = request.POST.get('phone_number', '').strip()
-    location = request.POST.get('location', '').strip()
+        return redirect("cart:view_cart")
 
-    # Validate phone number
+    # -----------------------------------------------------
+    # GET CUSTOMER INFORMATION
+    # -----------------------------------------------------
+
+    phone_number = request.POST.get(
+        "phone_number",
+        ""
+    ).strip()
+
+    location = request.POST.get(
+        "location",
+        ""
+    ).strip()
+
+    # -----------------------------------------------------
+    # VALIDATE PHONE NUMBER
+    # -----------------------------------------------------
+
     if not phone_number:
-        messages.error(request, "Phone number is required")
-        return redirect('cart:view_cart')
 
-    # Check if phone contains only digits
+        messages.error(
+            request,
+            "Phone number is required."
+        )
+
+        return redirect("cart:view_cart")
+
     if not phone_number.isdigit():
-        messages.error(request, "Phone number must contain only numbers")
-        return redirect('cart:view_cart')
 
-    # Check phone length (10-11 digits)
+        messages.error(
+            request,
+            "Phone number must contain only numbers."
+        )
+
+        return redirect("cart:view_cart")
+
     if len(phone_number) < 10 or len(phone_number) > 11:
-        messages.error(request, "Phone number must be 10-11 digits")
-        return redirect('cart:view_cart')
 
-    # Validate location
+        messages.error(
+            request,
+            "Phone number must be 10-11 digits."
+        )
+
+        return redirect("cart:view_cart")
+
+    # -----------------------------------------------------
+    # VALIDATE LOCATION
+    # -----------------------------------------------------
+
     if not location:
-        messages.error(request, "Pickup location is required")
-        return redirect('cart:view_cart')
+
+        messages.error(
+            request,
+            "Pickup location is required."
+        )
+
+        return redirect("cart:view_cart")
+
+    # -----------------------------------------------------
+    # CREATE ORDER
+    # -----------------------------------------------------
 
     try:
+
         orders = OrderService.create_orders_from_cart(
             cart,
             request.user.profile,
             phone_number=phone_number,
             location=location
         )
+
         messages.success(
             request,
-            f"Order placed successfully! {len(orders)} order(s) created. "
-            f"You can cancel within 24 hours."
+            (
+                f"Order placed successfully! "
+                f"{len(orders)} order(s) created. "
+                f"You can cancel within 24 hours."
+            )
         )
-        return redirect('order:order_list')
-    except ValueError as e:
-        messages.error(request, str(e))
-        return redirect('cart:view_cart')
 
+        return redirect("order:order_list")
+
+    except ValueError as e:
+
+        messages.error(
+            request,
+            str(e)
+        )
+
+        return redirect("cart:view_cart")
+
+
+# =========================================================
+# BUYER ORDER LIST
+# =========================================================
 
 @login_required
 def order_list(request):
-    """View all orders for user (as buyer)"""
-    # Auto-ready expired orders
+    """
+    Display all orders belonging to the current buyer.
+    """
+
+    # -----------------------------------------------------
+    # AUTO READY EXPIRED ORDERS
+    # -----------------------------------------------------
+
     check_and_auto_ready_orders()
 
-    # Get filter parameter
-    status_filter = request.GET.get('status', 'all')
+    # -----------------------------------------------------
+    # STATUS FILTER
+    # -----------------------------------------------------
 
-    orders = Order.objects.filter(
-        user=request.user.profile
-    ).select_related('seller__user').prefetch_related('items__item__images')
+    status_filter = request.GET.get(
+        "status",
+        "all"
+    )
 
-    # Apply status filter
-    if status_filter != 'all':
-        orders = orders.filter(status=status_filter)
+    # -----------------------------------------------------
+    # GET ORDERS
+    # -----------------------------------------------------
+
+    orders = (
+        Order.objects
+        .filter(
+            user=request.user.profile
+        )
+        .select_related(
+            "seller__user"
+        )
+        .prefetch_related(
+            "items__item__images"
+        )
+    )
+
+    # -----------------------------------------------------
+    # APPLY FILTER
+    # -----------------------------------------------------
+
+    if status_filter != "all":
+
+        orders = orders.filter(
+            status=status_filter
+        )
+
+    # -----------------------------------------------------
+    # CONTEXT
+    # -----------------------------------------------------
 
     context = {
-        'orders': orders,
-        'is_buyer_view': True,
-        'current_status': status_filter
+        "orders": orders,
+        "is_buyer_view": True,
+        "current_status": status_filter,
     }
-    return render(request, 'order_list.html', context)
 
+    return render(
+        request,
+        "order_list.html",
+        context
+    )
+
+
+# =========================================================
+# ORDER DETAIL
+# =========================================================
 
 @login_required
 def order_detail(request, order_id):
-    """View order details"""
+    """
+    Display order details for the buyer or seller.
+    """
+
+    # -----------------------------------------------------
+    # AUTO READY EXPIRED ORDERS
+    # -----------------------------------------------------
+
+    check_and_auto_ready_orders()
+
+    # -----------------------------------------------------
+    # GET ORDER
+    # -----------------------------------------------------
+
     order = get_object_or_404(
-        Order.objects.select_related('user__user', 'seller__user').prefetch_related(
-            'items__item__images', 'items__size_variant'
+        (
+            Order.objects
+            .select_related(
+                "user__user",
+                "seller__user"
+            )
+            .prefetch_related(
+                "items__item__images",
+                "items__size_variant"
+            )
         ),
         id=order_id
     )
 
-    # Auto-ready if expired
-    if order.status == 'pending' and order.auto_ready_at and timezone.now() >= order.auto_ready_at:
-        order.mark_ready_for_pickup()
-        order.refresh_from_db()
+    # -----------------------------------------------------
+    # AUTHORIZATION
+    # -----------------------------------------------------
 
-    # Check if user is buyer or seller
-    if order.user != request.user.profile and order.seller != request.user.profile:
-        messages.error(request, "Unauthorized to view this order")
-        return redirect('order:order_list')
+    if (
+        order.user != request.user.profile
+        and
+        order.seller != request.user.profile
+    ):
 
-    # Get cancellation info for buyer
-    cancellation_count = 0
-    max_cancellations = 3
-    can_cancel_more = True
+        messages.error(
+            request,
+            "Unauthorized to view this order."
+        )
 
-    if order.user == request.user.profile:
-        cancellation_count = Order.get_user_cancellation_count_this_month(request.user.profile)
-        can_cancel_more = Order.can_user_cancel_more(request.user.profile, max_cancellations)
+        return redirect(
+            "order:order_list"
+        )
+
+    # -----------------------------------------------------
+    # CONTEXT
+    # -----------------------------------------------------
 
     context = {
-        'order': order,
-        'is_buyer': order.user == request.user.profile,
-        'is_seller': order.seller == request.user.profile,
-        'cancellation_count': cancellation_count,
-        'max_cancellations': max_cancellations,
-        'can_cancel_more': can_cancel_more,
-    }
-    return render(request, 'order_detail.html', context)
+        "order": order,
 
+        "is_buyer": (
+            order.user == request.user.profile
+        ),
+
+        "is_seller": (
+            order.seller == request.user.profile
+        ),
+    }
+
+    return render(
+        request,
+        "order_detail.html",
+        context
+    )
+
+
+# =========================================================
+# CANCEL ORDER
+# =========================================================
 
 @login_required
 @require_POST
 def cancel_order(request, order_id):
-    """Cancel pending order"""
-    reason = request.POST.get('reason', '')
+    """
+    Cancel a pending order and process refund.
+    """
+
+    reason = request.POST.get(
+        "reason",
+        ""
+    ).strip()
 
     try:
-        order = OrderService.cancel_order(order_id, request.user.profile, reason)
-        messages.success(request, "Order cancelled successfully. Refund processed to wallet.")
+
+        OrderService.cancel_order(
+            order_id,
+            request.user.profile,
+            reason
+        )
+
+        messages.success(
+            request,
+            (
+                "Order cancelled successfully. "
+                "Refund processed to wallet."
+            )
+        )
+
     except ValueError as e:
-        # Check if it's monthly limit error
-        if "monthly cancellation limit" in str(e):
-            messages.error(request, str(e))
-        else:
-            messages.error(request, str(e))
 
-    return redirect('order:order_detail', order_id=order_id)
+        messages.error(
+            request,
+            str(e)
+        )
+
+    return redirect(
+        "order:order_detail",
+        order_id=order_id
+    )
 
 
-# Seller views
+# =========================================================
+# SELLER ORDER LIST
+# =========================================================
+
 @login_required
 def seller_orders(request):
-    """View orders for seller"""
-    # Auto-ready expired orders
+    """
+    Display all orders belonging to the current seller.
+    """
+
+    # -----------------------------------------------------
+    # AUTO READY EXPIRED ORDERS
+    # -----------------------------------------------------
+
     check_and_auto_ready_orders()
 
-    status_filter = request.GET.get('status', 'all')
+    # -----------------------------------------------------
+    # STATUS FILTER
+    # -----------------------------------------------------
 
-    orders = Order.objects.filter(
-        seller=request.user.profile
-    ).select_related('user__user').prefetch_related('items__item__images')
+    status_filter = request.GET.get(
+        "status",
+        "all"
+    )
 
-    # Apply status filter
-    if status_filter != 'all':
-        orders = orders.filter(status=status_filter)
+    # -----------------------------------------------------
+    # GET SELLER ORDERS
+    # -----------------------------------------------------
+
+    orders = (
+        Order.objects
+        .filter(
+            seller=request.user.profile
+        )
+        .select_related(
+            "user__user"
+        )
+        .prefetch_related(
+            "items__item__images"
+        )
+    )
+
+    # -----------------------------------------------------
+    # APPLY FILTER
+    # -----------------------------------------------------
+
+    if status_filter != "all":
+
+        orders = orders.filter(
+            status=status_filter
+        )
+
+    # -----------------------------------------------------
+    # CONTEXT
+    # -----------------------------------------------------
 
     context = {
-        'orders': orders,
-        'is_seller_view': True,
-        'current_status': status_filter
+        "orders": orders,
+        "is_seller_view": True,
+        "current_status": status_filter,
     }
-    return render(request, 'order_list.html', context)
 
+    return render(
+        request,
+        "order_list.html",
+        context
+    )
+
+
+# =========================================================
+# SELLER - MARK READY FOR PICKUP
+# =========================================================
 
 @login_required
 @require_POST
 def mark_ready_for_pickup(request, order_id):
-    """Mark order as ready for pickup (seller action)"""
+    """
+    Seller manually marks an order as ready for pickup.
+    """
+
     try:
-        order = OrderService.mark_order_ready_for_pickup(order_id, request.user.profile)
-        messages.success(request, "Order marked as ready for pickup")
+
+        OrderService.mark_order_ready_for_pickup(
+            order_id,
+            request.user.profile
+        )
+
+        messages.success(
+            request,
+            "Order marked as ready for pickup."
+        )
+
     except ValueError as e:
-        messages.error(request, str(e))
 
-    return redirect('order:seller_orders')
+        messages.error(
+            request,
+            str(e)
+        )
 
+    return redirect(
+        "order:seller_orders"
+    )
+
+
+# =========================================================
+# MARK ORDER AS PICKED UP
+# =========================================================
 
 @login_required
 @require_POST
 def mark_picked_up(request, order_id):
-    """Mark order as picked up (buyer or seller confirms)"""
+    """
+    Buyer or seller confirms that the order has been picked up.
+    """
+
     try:
-        order = OrderService.mark_order_picked_up(order_id, request.user.profile)
-        messages.success(request, "Order marked as picked up. Payment released to seller.")
+
+        order = OrderService.mark_order_picked_up(
+            order_id,
+            request.user.profile
+        )
+
+        messages.success(
+            request,
+            (
+                "Order marked as picked up. "
+                "Payment released to seller."
+            )
+        )
+
+        # -------------------------------------------------
+        # REDIRECT BASED ON USER TYPE
+        # -------------------------------------------------
+
+        if order.user == request.user.profile:
+
+            return redirect(
+                "order:order_list"
+            )
+
+        return redirect(
+            "order:seller_orders"
+        )
+
     except ValueError as e:
-        messages.error(request, str(e))
 
-    # Redirect based on user type
-    if order.user == request.user.profile:
-        return redirect('order:order_list')
-    else:
-        return redirect('order:seller_orders')
+        messages.error(
+            request,
+            str(e)
+        )
 
+        # -------------------------------------------------
+        # SAFE REDIRECT AFTER ERROR
+        # -------------------------------------------------
+
+        return redirect(
+            "order:order_detail",
+            order_id=order_id
+        )
+
+
+# =========================================================
+# MARK ORDER COMPLETED
+# =========================================================
 
 @login_required
 @require_POST
 def mark_completed(request, order_id):
-    """Mark order as completed"""
+    """
+    Seller marks an order as completed.
+    """
+
     try:
-        order = OrderService.mark_order_completed(order_id, request.user.profile)
-        messages.success(request, "Order completed.")
+
+        OrderService.mark_order_completed(
+            order_id,
+            request.user.profile
+        )
+
+        messages.success(
+            request,
+            "Order completed."
+        )
+
     except ValueError as e:
-        messages.error(request, str(e))
 
-    return redirect('order:seller_orders')
+        messages.error(
+            request,
+            str(e)
+        )
+
+    return redirect(
+        "order:seller_orders"
+    )
 
 
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.db.models import Sum, Q
-from .models import Order, OrderItem
-
+# =========================================================
+# SELLER SALES LIST
+# =========================================================
 
 @login_required
 def sale_list(request):
-    # Get all orders where current user is the seller
-    sales = Order.objects.filter(
-        seller=request.user.profile
-    ).order_by('-created_at')
+    """
+    Display all sales belonging to the current seller.
+    """
 
-    # Calculate totals
-    total_earned = Order.objects.filter(
-        seller=request.user.profile,
-        payment_status='released'
-    ).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+    # -----------------------------------------------------
+    # GET SALES
+    # -----------------------------------------------------
 
-    pending_amount = Order.objects.filter(
-        seller=request.user.profile,
-        status='pending'
-    ).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+    sales = (
+        Order.objects
+        .filter(
+            seller=request.user.profile
+        )
+        .order_by(
+            "-created_at"
+        )
+    )
 
-    # Count by status
-    pending_count = sales.filter(status='pending').count()
-    ready_count = sales.filter(status='ready_for_pickup').count()
-    completed_count = sales.filter(status__in=['picked_up', 'completed']).count()
-    cancelled_count = sales.filter(status='cancelled').count()
+    # -----------------------------------------------------
+    # TOTAL EARNED
+    # -----------------------------------------------------
+
+    total_earned = (
+        Order.objects
+        .filter(
+            seller=request.user.profile,
+            payment_status="released"
+        )
+        .aggregate(
+            Sum("total_amount")
+        )["total_amount__sum"]
+        or 0
+    )
+
+    # -----------------------------------------------------
+    # PENDING AMOUNT
+    # -----------------------------------------------------
+
+    pending_amount = (
+        Order.objects
+        .filter(
+            seller=request.user.profile,
+            status="pending"
+        )
+        .aggregate(
+            Sum("total_amount")
+        )["total_amount__sum"]
+        or 0
+    )
+
+    # -----------------------------------------------------
+    # STATUS COUNTS
+    # -----------------------------------------------------
+
+    pending_count = sales.filter(
+        status="pending"
+    ).count()
+
+    ready_count = sales.filter(
+        status="ready_for_pickup"
+    ).count()
+
+    completed_count = sales.filter(
+        status__in=[
+            "picked_up",
+            "completed"
+        ]
+    ).count()
+
+    cancelled_count = sales.filter(
+        status="cancelled"
+    ).count()
+
+    # -----------------------------------------------------
+    # CONTEXT
+    # -----------------------------------------------------
 
     context = {
-        'sales': sales,
-        'total_earned': total_earned,
-        'pending_amount': pending_amount,
-        'pending_count': pending_count,
-        'ready_count': ready_count,
-        'completed_count': completed_count,
-        'cancelled_count': cancelled_count,
-        'total_sales': sales.count(),
-    }
-    return render(request, 'sale_list.html', context)
+        "sales": sales,
 
+        "total_earned": total_earned,
+
+        "pending_amount": pending_amount,
+
+        "pending_count": pending_count,
+
+        "ready_count": ready_count,
+
+        "completed_count": completed_count,
+
+        "cancelled_count": cancelled_count,
+
+        "total_sales": sales.count(),
+    }
+
+    return render(
+        request,
+        "sale_list.html",
+        context
+    )
+
+
+# =========================================================
+# SALE DETAIL
+# =========================================================
 
 @login_required
 def sale_detail(request, order_id):
+    """
+    Display details of a seller's order.
+    """
+
     order = get_object_or_404(
         Order,
         id=order_id,
@@ -282,7 +663,12 @@ def sale_detail(request, order_id):
     )
 
     context = {
-        'order': order,
-        'items': order.items.all(),
+        "order": order,
+        "items": order.items.all(),
     }
-    return render(request, 'sale_detail.html', context)
+
+    return render(
+        request,
+        "sale_detail.html",
+        context
+    )
