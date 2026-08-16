@@ -6,7 +6,7 @@ from datetime import timedelta
 from cart.models import Cart, CartItem
 from wallet.models import Wallet, WalletTransaction
 from .models import Order, OrderItem
-
+from notifications.models import Notification
 
 class OrderService:
     CANCELLATION_WINDOW_HOURS = 24

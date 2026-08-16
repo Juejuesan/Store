@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 {% load static %}
 {% load humanize %}
@@ -63,9 +64,7 @@
 
 
     <!-- ==================================================
-         IMAGE SEARCH ADDITIONAL STYLING
-
-         Does NOT replace your existing design.
+         IMAGE SEARCH + WISHLIST STYLING
     ================================================== -->
 
     <style>
@@ -263,6 +262,198 @@
             color: #64748b;
 
             margin-bottom: 0;
+
+        }
+
+
+        /* =================================================
+           WISHLIST BUTTON
+           FLOATING TOP-RIGHT OF EVERY PRODUCT CARD
+        ================================================= */
+
+        .wishlist-btn-home {
+
+            position: absolute;
+
+            top: 16px;
+            right: 16px;
+
+            z-index: 30;
+
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.95);
+
+            color: #64748b;
+
+            font-size: 20px;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 8px 22px rgba(15, 23, 42, 0.14);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            transition:
+                transform 0.25s ease,
+                background 0.25s ease,
+                color 0.25s ease,
+                box-shadow 0.25s ease;
+
+        }
+
+
+        .wishlist-btn-home:hover {
+
+            transform: scale(1.10);
+
+            color: #ef4444;
+
+            background: #ffffff;
+
+            box-shadow:
+                0 10px 28px rgba(239, 68, 68, 0.22);
+
+        }
+
+
+        .wishlist-btn-home:active {
+
+            transform: scale(0.92);
+
+        }
+
+
+        /* =================================================
+           SAVED / LIKED STATE
+        ================================================= */
+
+        .wishlist-btn-home.liked {
+
+            background: #ef4444;
+
+            color: #ffffff;
+
+            box-shadow:
+                0 8px 24px rgba(239, 68, 68, 0.35);
+
+        }
+
+
+        .wishlist-btn-home.liked:hover {
+
+            background: #dc2626;
+
+            color: #ffffff;
+
+            box-shadow:
+                0 10px 30px rgba(220, 38, 38, 0.42);
+
+        }
+
+
+        .wishlist-btn-home i {
+
+            pointer-events: none;
+
+            transition:
+                transform 0.25s ease;
+
+        }
+
+
+        .wishlist-btn-home.liked i {
+
+            transform: scale(1.08);
+
+        }
+
+
+        /* =================================================
+           HEART POP ANIMATION
+        ================================================= */
+
+        .wishlist-heart-pop {
+
+            animation:
+                wishlistHeartPop 0.42s ease;
+
+        }
+
+
+        @keyframes wishlistHeartPop {
+
+            0% {
+
+                transform: scale(1);
+
+            }
+
+            35% {
+
+                transform: scale(1.45);
+
+            }
+
+            65% {
+
+                transform: scale(0.85);
+
+            }
+
+            100% {
+
+                transform: scale(1);
+
+            }
+
+        }
+
+
+        /* =================================================
+           PREVENT CARD LINK FROM COVERING BUTTON
+        ================================================= */
+
+        .wishlist-btn-home {
+
+            -webkit-user-select: none;
+            user-select: none;
+
+            -webkit-touch-callout: none;
+
+        }
+
+
+        /* =================================================
+           MOBILE WISHLIST
+        ================================================= */
+
+        @media (max-width: 600px) {
+
+            .wishlist-btn-home {
+
+                top: 12px;
+                right: 12px;
+
+                width: 40px;
+                height: 40px;
+
+                font-size: 18px;
+
+            }
 
         }
 
@@ -599,16 +790,12 @@
                     id="textSearchForm"
                 >
 
-                    <!-- SEARCH ICON -->
-
                     <div class="search-icon">
 
                         <i class="fa-solid fa-magnifying-glass"></i>
 
                     </div>
 
-
-                    <!-- TEXT INPUT -->
 
                     <input
                         type="text"
@@ -620,11 +807,7 @@
                     >
 
 
-                    <!-- ==================================================
-                         IMAGE SEARCH BUTTON
-
-                         Clicking this opens the file picker.
-                    ================================================== -->
+                    <!-- IMAGE SEARCH BUTTON -->
 
                     <label
                         for="imageSearchInput"
@@ -638,8 +821,6 @@
 
                     </label>
 
-
-                    <!-- NORMAL TEXT SEARCH BUTTON -->
 
                     <button
                         type="submit"
@@ -657,12 +838,6 @@
 
                 <!-- ==================================================
                      HIDDEN IMAGE SEARCH FORM
-
-                     Camera selection submits this form.
-
-                     POST
-                     multipart/form-data
-                     same home URL
                 ================================================== -->
 
                 <form
@@ -782,10 +957,6 @@
                     </span>
 
 
-                    <!-- ==================================================
-                         IMAGE SEARCH HEADER
-                    ================================================== -->
-
                     {% if searched and image_search %}
 
                         <h2 class="mt-3 mb-2">
@@ -799,10 +970,6 @@
 
                         </p>
 
-
-                    <!-- ==================================================
-                         TEXT SEARCH HEADER
-                    ================================================== -->
 
                     {% elif search_query %}
 
@@ -822,10 +989,6 @@
                         </p>
 
 
-                    <!-- ==================================================
-                         DEFAULT HOME HEADER
-                    ================================================== -->
-
                     {% else %}
 
                         <h2 class="mt-3 mb-2">
@@ -841,24 +1004,6 @@
                         </p>
 
                     {% endif %}
-
-                </div>
-
-
-                <!-- CREATE POST -->
-
-                <div>
-
-                    <a
-                        href="{% url 'createPost' %}"
-                        class="create-post-btn"
-                    >
-
-                        <i class="fa-solid fa-plus"></i>
-
-                        Create Post
-
-                    </a>
 
                 </div>
 
@@ -892,10 +1037,7 @@
 
                                 <div class="seller-card">
 
-
-                                    <!-- ==================================================
-                                         PRODUCT IMAGE
-                                    ================================================== -->
+                                    <!-- PRODUCT IMAGE -->
 
                                     <div class="product-image-box">
 
@@ -917,10 +1059,7 @@
                                     </div>
 
 
-
-                                    <!-- ==================================================
-                                         PRODUCT BODY
-                                    ================================================== -->
+                                    <!-- PRODUCT BODY -->
 
                                     <div class="product-body">
 
@@ -948,8 +1087,6 @@
                                         </p>
 
 
-                                        <!-- FEATURES -->
-
                                         <div class="product-features">
 
                                             <span>
@@ -973,8 +1110,6 @@
 
                                         </div>
 
-
-                                        <!-- SIMILARITY -->
 
                                         <div class="image-similarity">
 
@@ -1000,10 +1135,6 @@
 
 
             {% else %}
-
-                <!-- ==================================================
-                     NO IMAGE RESULTS
-                ================================================== -->
 
                 <div class="image-no-results">
 
@@ -1049,7 +1180,54 @@
 
 
                                 <!-- ==================================================
+                                     WISHLIST BUTTON
+                                     IMPORTANT:
+                                     This is inside each post card.
+                                     There is NO duplicate ID.
+                                ================================================== -->
+
+                                {% if user.is_authenticated %}
+
+                                    <button
+                                        type="button"
+                                        class="wishlist-btn-home {% if post.id in wishlist_post_ids %}liked{% endif %}"
+                                        data-post-id="{{ post.id }}"
+                                        data-add-url="{% url 'wishlist:add' post.id %}"
+                                        data-remove-url="{% url 'wishlist:remove' post.id %}"
+                                        data-wishlisted="{% if post.id in wishlist_post_ids %}true{% else %}false{% endif %}"
+                                        aria-label="{% if post.id in wishlist_post_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}"
+                                        title="{% if post.id in wishlist_post_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}"
+                                    >
+
+                                        <i
+                                            class="wishlist-icon-home {% if post.id in wishlist_post_ids %}fa-solid{% else %}fa-regular{% endif %} fa-heart"
+                                        ></i>
+
+                                    </button>
+
+                                {% else %}
+
+                                    <a
+                                        href="{% url 'login' %}"
+                                        class="wishlist-btn-home"
+                                        aria-label="Login to use wishlist"
+                                        title="Login to use wishlist"
+                                    >
+
+                                        <i class="fa-regular fa-heart"></i>
+
+                                    </a>
+
+                                {% endif %}
+
+
+
+                                <!-- ==================================================
                                      SELLER
+                                     IMPORTANT:
+                                     post.user IS THE PROFILE OBJECT
+                                     because create_post uses:
+                                     post.user = request.user.profile
                                 ================================================== -->
 
                                 <div class="seller-top">
@@ -1057,13 +1235,22 @@
                                     <div class="seller-left">
 
 
-                                        {% if post.user.profile.profile_pic %}
+                                        {% if post.user.profile_pic %}
 
                                             <img
-                                                src="{{ post.user.profile.profile_pic.url }}"
+                                                src="{{ post.user.profile_pic.url }}"
                                                 class="seller-profile"
                                                 alt="{{ post.user.fullName }}"
+                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
                                             >
+
+
+                                            <!-- Hidden fallback icon -->
+
+                                            <i
+                                                class="fa-solid fa-circle-user nav-profile-icon"
+                                                style="display:none;"
+                                            ></i>
 
                                         {% else %}
 
@@ -1115,8 +1302,6 @@
                                     <div
                                         class="post-image-slider"
                                         data-images="{% for item in post.items.all %}{% if item.images.first %}{{ item.images.first.image.url }}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}"
-                                        onmouseenter="startSlide(this)"
-                                        onmouseleave="stopSlide(this)"
                                     >
 
                                         {% with first_item=post.items.first %}
@@ -1136,6 +1321,33 @@
                                                     class="product-image"
                                                     alt="No image"
                                                 >
+
+                                            {% endif %}
+
+                                        {% endwith %}
+
+
+                                        <!-- SLIDER DOTS -->
+
+                                        {% with image_count=post.items.first.images.all|length %}
+
+                                            {% if image_count > 1 %}
+
+                                                <div class="slider-dots">
+
+                                                    {% for item in post.items.all %}
+
+                                                        {% if item.images.first %}
+
+                                                            <span
+                                                                class="slider-dot {% if forloop.first %}active{% endif %}"
+                                                            ></span>
+
+                                                        {% endif %}
+
+                                                    {% endfor %}
+
+                                                </div>
 
                                             {% endif %}
 
@@ -1405,6 +1617,7 @@
 
 {% include "includes/footer.html" %}
 
+<script src="{% static 'js/header-footer.js' %}"></script>
 
 
 <!-- ==================================================
@@ -1416,14 +1629,11 @@
 ></script>
 
 
-
 <!-- ==================================================
      CUSTOM JS
 ================================================== -->
 
 <script src="{% static 'js/about.js' %}"></script>
-
-<script src="{% static 'js/header-footer.js' %}"></script>
 
 <script src="{% static 'js/home-slider.js' %}"></script>
 
@@ -1437,154 +1647,500 @@
 
 <script>
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
 
-    /* =====================================================
-       IMAGE SEARCH
+        /* =====================================================
+           IMAGE SEARCH
+        ===================================================== */
 
-       Camera
-           ↓
-       File picker
-           ↓
-       Select image
-           ↓
-       Submit hidden POST form
-           ↓
-       home/views.py
-           ↓
-       search_similar_images()
-           ↓
-       Same home page displays results
-    ===================================================== */
-
-    const imageInput =
-        document.getElementById("imageSearchInput");
-
-    const imageSearchButton =
-        document.getElementById("imageSearchButton");
-
-    const imageSearchForm =
-        document.getElementById("imageSearchForm");
+        const imageInput =
+            document.getElementById(
+                "imageSearchInput"
+            );
 
 
-    if (
-        imageInput &&
-        imageSearchButton &&
-        imageSearchForm
-    ) {
-
-        imageInput.addEventListener(
-            "change",
-            function () {
-
-                if (
-                    !this.files ||
-                    this.files.length === 0
-                ) {
-
-                    return;
-
-                }
+        const imageSearchButton =
+            document.getElementById(
+                "imageSearchButton"
+            );
 
 
-                const selectedFile =
-                    this.files[0];
+        const imageSearchForm =
+            document.getElementById(
+                "imageSearchForm"
+            );
 
 
-                /* ---------------------------------------------
-                   Validate image
-                --------------------------------------------- */
+        if (
+            imageInput &&
+            imageSearchButton &&
+            imageSearchForm
+        ) {
 
-                if (
-                    !selectedFile.type.startsWith("image/")
-                ) {
+            imageInput.addEventListener(
+                "change",
+                function () {
 
-                    alert(
-                        "Please select a valid image file."
+                    if (
+                        !this.files ||
+                        this.files.length === 0
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const selectedFile =
+                        this.files[0];
+
+
+                    /* ---------------------------------------------
+                       Validate image
+                    --------------------------------------------- */
+
+                    if (
+                        !selectedFile.type.startsWith(
+                            "image/"
+                        )
+                    ) {
+
+                        alert(
+                            "Please select a valid image file."
+                        );
+
+                        this.value = "";
+
+                        return;
+
+                    }
+
+
+                    /* ---------------------------------------------
+                       Loading state
+                    --------------------------------------------- */
+
+                    imageSearchButton.classList.add(
+                        "image-search-loading"
                     );
 
-                    this.value = "";
 
-                    return;
+                    imageSearchButton.innerHTML =
+                        '<i class="fa-solid fa-spinner"></i>';
+
+
+                    imageSearchButton.title =
+                        "Searching...";
+
+
+                    /* ---------------------------------------------
+                       Submit hidden image-search form
+                    --------------------------------------------- */
+
+                    imageSearchForm.submit();
 
                 }
+            );
+
+        }
 
 
-                /* ---------------------------------------------
-                   Loading state
-                --------------------------------------------- */
 
-                imageSearchButton.classList.add(
-                    "image-search-loading"
+        /* =====================================================
+           SCROLL TO SEARCH RESULTS
+        ===================================================== */
+
+        const searchQuery =
+            "{{ search_query|escapejs }}";
+
+
+        const imageSearch =
+            "{{ image_search|yesno:'true,false' }}";
+
+
+        const searched =
+            "{{ searched|yesno:'true,false' }}";
+
+
+        const searchResults =
+            document.getElementById(
+                "searchResults"
+            );
+
+
+        if (
+            searchResults &&
+            (
+                searchQuery ||
+                imageSearch === "true" ||
+                searched === "true"
+            )
+        ) {
+
+            setTimeout(
+                function () {
+
+                    searchResults.scrollIntoView({
+
+                        behavior: "smooth",
+
+                        block: "start"
+
+                    });
+
+                },
+                150
+            );
+
+        }
+
+
+
+        /* =====================================================
+           WISHLIST
+           Handles EVERY wishlist button independently.
+        ===================================================== */
+
+        document
+            .querySelectorAll(
+                ".wishlist-btn-home"
+            )
+            .forEach(
+                function (wishlistButton) {
+
+
+                    wishlistButton.addEventListener(
+                        "click",
+                        async function (event) {
+
+
+                            /*
+                             * VERY IMPORTANT:
+                             * The wishlist button is inside
+                             * the product-card <a>.
+                             *
+                             * Prevent the card from opening
+                             * when the heart is clicked.
+                             */
+
+                            event.preventDefault();
+
+                            event.stopPropagation();
+
+
+                            if (
+                                wishlistButton.dataset.busy ===
+                                "true"
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            /*
+                             * If this is the login link,
+                             * allow normal navigation.
+                             */
+
+                            if (
+                                wishlistButton.tagName.toLowerCase() ===
+                                "a"
+                            ) {
+
+                                window.location.href =
+                                    wishlistButton.href;
+
+                                return;
+
+                            }
+
+
+                            wishlistButton.dataset.busy =
+                                "true";
+
+
+                            const isWishlisted =
+                                wishlistButton.dataset.wishlisted ===
+                                "true";
+
+
+                            const url =
+                                isWishlisted
+                                    ? wishlistButton.dataset.removeUrl
+                                    : wishlistButton.dataset.addUrl;
+
+
+                            if (!url) {
+
+                                console.error(
+                                    "Wishlist URL is missing."
+                                );
+
+                                wishlistButton.dataset.busy =
+                                    "false";
+
+                                return;
+
+                            }
+
+
+                            try {
+
+
+                                const response =
+                                    await fetch(
+                                        url,
+                                        {
+                                            method: "GET",
+
+                                            headers: {
+                                                "X-Requested-With":
+                                                    "XMLHttpRequest"
+                                            },
+
+                                            credentials:
+                                                "same-origin"
+                                        }
+                                    );
+
+
+                                if (!response.ok) {
+
+                                    throw new Error(
+                                        "Wishlist request failed."
+                                    );
+
+                                }
+
+
+                                const data =
+                                    await response.json();
+
+
+                                if (!data.success) {
+
+                                    throw new Error(
+                                        data.message ||
+                                        "Wishlist update failed."
+                                    );
+
+                                }
+
+
+                                /*
+                                 * Backend returns:
+                                 *
+                                 * {
+                                 *     success: true,
+                                 *     wishlisted: true/false
+                                 * }
+                                 */
+
+                                const newState =
+                                    Boolean(
+                                        data.wishlisted
+                                    );
+
+
+                                wishlistButton.dataset.wishlisted =
+                                    newState
+                                        ? "true"
+                                        : "false";
+
+
+                                /*
+                                 * RED STATE
+                                 */
+
+                                wishlistButton.classList.toggle(
+                                    "liked",
+                                    newState
+                                );
+
+
+                                /*
+                                 * Find the heart belonging
+                                 * to THIS button only.
+                                 */
+
+                                const wishlistIcon =
+                                    wishlistButton.querySelector(
+                                        ".wishlist-icon-home"
+                                    );
+
+
+                                if (wishlistIcon) {
+
+                                    wishlistIcon.classList.toggle(
+                                        "fa-solid",
+                                        newState
+                                    );
+
+
+                                    wishlistIcon.classList.toggle(
+                                        "fa-regular",
+                                        !newState
+                                    );
+
+
+                                    /*
+                                     * Heart animation
+                                     */
+
+                                    wishlistIcon.classList.remove(
+                                        "wishlist-heart-pop"
+                                    );
+
+
+                                    void wishlistIcon.offsetWidth;
+
+
+                                    wishlistIcon.classList.add(
+                                        "wishlist-heart-pop"
+                                    );
+
+                                }
+
+
+                                /*
+                                 * Update accessibility text.
+                                 */
+
+                                wishlistButton.setAttribute(
+                                    "aria-label",
+                                    newState
+                                        ? "Remove from wishlist"
+                                        : "Add to wishlist"
+                                );
+
+
+                                wishlistButton.setAttribute(
+                                    "title",
+                                    newState
+                                        ? "Remove from wishlist"
+                                        : "Add to wishlist"
+                                );
+
+
+                            } catch (error) {
+
+
+                                console.error(
+                                    "Wishlist error:",
+                                    error
+                                );
+
+
+                                /*
+                                 * Use existing TrustyShop
+                                 * message system if available.
+                                 */
+
+                                if (
+                                    typeof showTemporaryMessage ===
+                                    "function"
+                                ) {
+
+                                    showTemporaryMessage(
+                                        error.message ||
+                                        "Wishlist update failed.",
+                                        "error"
+                                    );
+
+                                } else {
+
+                                    alert(
+                                        error.message ||
+                                        "Wishlist update failed."
+                                    );
+
+                                }
+
+
+                            } finally {
+
+                                wishlistButton.dataset.busy =
+                                    "false";
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+
+
+        /* =====================================================
+           WISHLIST BUTTON HOVER
+           Make cursor follower work with wishlist buttons.
+        ===================================================== */
+
+        if (
+            typeof window.finePointer !==
+            "undefined"
+        ) {
+
+            document
+                .querySelectorAll(
+                    ".wishlist-btn-home"
+                )
+                .forEach(
+                    function (button) {
+
+                        button.addEventListener(
+                            "mouseenter",
+                            function () {
+
+                                const follower =
+                                    document.getElementById(
+                                        "cursorFollower"
+                                    );
+
+                                if (follower) {
+
+                                    follower.classList.add(
+                                        "cursor-hover"
+                                    );
+
+                                }
+
+                            }
+                        );
+
+
+                        button.addEventListener(
+                            "mouseleave",
+                            function () {
+
+                                const follower =
+                                    document.getElementById(
+                                        "cursorFollower"
+                                    );
+
+                                if (follower) {
+
+                                    follower.classList.remove(
+                                        "cursor-hover"
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
                 );
 
-
-                imageSearchButton.innerHTML =
-                    '<i class="fa-solid fa-spinner"></i>';
-
-
-                imageSearchButton.title =
-                    "Searching...";
-
-
-                /* ---------------------------------------------
-                   Submit image-search form
-                --------------------------------------------- */
-
-                imageSearchForm.submit();
-
-            }
-        );
+        }
 
     }
-
-
-
-    /* =====================================================
-       SCROLL TO SEARCH RESULTS
-    ===================================================== */
-
-    const searchQuery =
-        "{{ search_query|escapejs }}";
-
-
-    const imageSearch =
-        "{{ image_search|yesno:'true,false' }}";
-
-
-    const searched =
-        "{{ searched|yesno:'true,false' }}";
-
-
-    const searchResults =
-        document.getElementById("searchResults");
-
-
-    if (
-        searchResults &&
-        (
-            searchQuery ||
-            imageSearch === "true" ||
-            searched === "true"
-        )
-    ) {
-
-        setTimeout(function () {
-
-            searchResults.scrollIntoView({
-
-                behavior: "smooth",
-
-                block: "start"
-
-            });
-
-        }, 150);
-
-    }
-
-});
+);
 
 
 
@@ -1592,11 +2148,15 @@ document.addEventListener("DOMContentLoaded", function () {
    TRENDING SEARCH
 ========================================================= */
 
-function searchProduct(category) {
+function searchProduct(
+    category
+) {
 
 
     const searchInput =
-        document.getElementById("searchInput");
+        document.getElementById(
+            "searchInput"
+        );
 
 
     if (!searchInput) {
@@ -1611,7 +2171,9 @@ function searchProduct(category) {
 
 
     const form =
-        document.getElementById("textSearchForm");
+        document.getElementById(
+            "textSearchForm"
+        );
 
 
     if (form) {
@@ -1625,6 +2187,8 @@ function searchProduct(category) {
 </script>
 
 
+
 </body>
 
 </html>
+

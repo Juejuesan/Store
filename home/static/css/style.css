@@ -3397,3 +3397,164 @@ footer a:hover {
 /* =========================================================
    END OF TRUSTYSHOP HOME CSS
 ========================================================= */
+
+
+/* =========================================================
+   HOME WISHLIST BUTTON
+========================================================= */
+
+.seller-card {
+    position: relative;
+}
+
+
+/* =========================================================
+   HEART BUTTON
+========================================================= */
+
+.wishlist-btn-home {
+
+    position: absolute;
+
+    top: 18px;
+    right: 18px;
+
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    color: #64748b;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    z-index: 20;
+
+    box-shadow:
+        0 8px 22px rgba(15, 23, 42, 0.16);
+
+    transition:
+        transform .25s ease,
+        background .25s ease,
+        color .25s ease,
+        box-shadow .25s ease;
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.wishlist-btn-home:hover {
+
+    transform: scale(1.12);
+
+    color: #ef233c;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 12px 28px rgba(239, 35, 60, 0.22);
+}
+
+
+/* =========================================================
+   SAVED / LIKED
+========================================================= */
+
+.wishlist-btn-home.liked {
+
+    background: #ef233c;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 10px 25px rgba(239, 35, 60, 0.38);
+}
+
+
+/* =========================================================
+   SAVED HOVER
+========================================================= */
+
+.wishlist-btn-home.liked:hover {
+
+    background: #d90429;
+
+    color: #ffffff;
+
+    transform: scale(1.12);
+
+    box-shadow:
+        0 14px 32px rgba(239, 35, 60, 0.45);
+}
+
+
+/* =========================================================
+   HEART
+========================================================= */
+
+.wishlist-icon-home {
+
+    pointer-events: none;
+
+    transition:
+        transform .25s ease;
+}
+
+
+/* =========================================================
+   HEART POP
+========================================================= */
+
+.wishlist-btn-home.wishlist-heart-pop
+.wishlist-icon-home {
+
+    animation:
+        wishlistHeartPop .35s ease;
+}
+
+
+@keyframes wishlistHeartPop {
+
+    0% {
+        transform: scale(.6);
+    }
+
+    60% {
+        transform: scale(1.35);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .wishlist-btn-home {
+
+        top: 12px;
+        right: 12px;
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 18px;
+    }
+}

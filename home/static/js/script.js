@@ -284,12 +284,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const hoverElements =
             document.querySelectorAll(
-                "a, button, " +
-                ".modern-product, " +
-                ".category-card, " +
-                ".nav-link, " +
-                ".cart-btn, " +
-                ".detail-btn"
+                [
+                    "a",
+                    "button",
+                    ".modern-product",
+                    ".category-card",
+                    ".nav-link",
+                    ".cart-btn",
+                    ".detail-btn",
+                    ".wishlist-btn-home",
+                    ".menu-btn",
+                    ".slider-dot"
+                ].join(", ")
             );
 
 
@@ -374,8 +380,9 @@ if (messageOverlay) {
             return;
         }
 
-        messageOverlay.dataset.closing = "true";
 
+                messageOverlay.dataset.closing =
+                    "true";
 
         /* Closing animation */
         messageOverlay.classList.add(
@@ -860,9 +867,13 @@ if (messageOverlay) {
 
             card.classList.add("hidden");
 
-            observer.observe(card);
 
-        });
+                observer.observe(
+                    card
+                );
+
+            }
+        );
 
     } else {
 
@@ -1045,6 +1056,11 @@ if (messageOverlay) {
         index
     ) {
 
+        if (!slider) {
+            return;
+        }
+
+
         const images =
             getSliderImages(slider);
 
@@ -1194,12 +1210,16 @@ if (messageOverlay) {
     }
 
 
-    /* Make functions available globally
-       for inline HTML handlers if needed. */
+    /* -----------------------------------------------------
+       Make Slider Functions Globally Available
+    ----------------------------------------------------- */
 
-    window.startSlide = startSlide;
-    window.stopSlide = stopSlide;
+    window.startSlide =
+        startSlide;
 
+
+    window.stopSlide =
+        stopSlide;
 
     /* Attach sliders */
 
@@ -1279,9 +1299,45 @@ if (messageOverlay) {
             );
 
 
-            /* Dots */
+                slider.addEventListener(
+                    "touchend",
+                    () => {
 
-            dots.forEach((dot, index) => {
+                        /*
+                         * Stop after the user
+                         * finishes touching.
+                         */
+
+                        if (!finePointer) {
+
+                            setTimeout(
+                                () => {
+
+                                    stopSlide(
+                                        slider
+                                    );
+
+                                },
+                                2500
+                            );
+
+                        }
+
+                    },
+                    {
+                        passive: true
+                    }
+                );
+
+
+                /* -----------------------------------------
+                   Slider Dots
+                ----------------------------------------- */
+
+                dots.forEach(
+                    (dot, index) => {
+
+                        /* Desktop Hover */
 
                 dot.addEventListener(
                     "mouseenter",
@@ -1292,31 +1348,15 @@ if (messageOverlay) {
                         }
 
 
-                        /* Stop automatic slider */
-
-                        const interval =
-                            sliderIntervals.get(
-                                slider
-                            );
+                                stopSlide(
+                                    slider
+                                );
 
 
-                        if (interval) {
-
-                            clearInterval(
-                                interval
-                            );
-
-                            sliderIntervals.delete(
-                                slider
-                            );
-
-                        }
-
-
-                        changeSliderImage(
-                            slider,
-                            index
-                        );
+                                changeSliderImage(
+                                    slider,
+                                    index
+                                );
 
                     }
                 );
@@ -1329,17 +1369,25 @@ if (messageOverlay) {
                         event.preventDefault();
                         event.stopPropagation();
 
-                        changeSliderImage(
-                            slider,
-                            index
+
+                                stopSlide(
+                                    slider
+                                );
+
+
+                                changeSliderImage(
+                                    slider,
+                                    index
+                                );
+
+                            }
                         );
 
                     }
                 );
 
-            });
-
-        });
+            }
+        );
 
 
     /* =====================================================
@@ -1369,7 +1417,247 @@ if (messageOverlay) {
 
 
     /* =====================================================
-       16. ESCAPE KEY
+       16. SAVE MENU
+
+       Handles:
+       - Three-dot menu
+       - Open/close
+       - Outside click
+       - Escape key
+    ===================================================== */
+
+    const menuButtons =
+        document.querySelectorAll(
+            ".menu-btn"
+        );
+
+
+    menuButtons.forEach(
+        (button) => {
+
+            button.addEventListener(
+                "click",
+                (event) => {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    const sellerRight =
+                        button.closest(
+                            ".seller-right"
+                        );
+
+
+                    if (!sellerRight) {
+                        return;
+                    }
+
+
+                    const saveBox =
+                        sellerRight.querySelector(
+                            ".save-box"
+                        );
+
+
+                    if (!saveBox) {
+                        return;
+                    }
+
+
+                    /* Close other menus */
+
+                    document
+                        .querySelectorAll(
+                            ".save-box.active"
+                        )
+                        .forEach(
+                            (box) => {
+
+                                if (
+                                    box !==
+                                    saveBox
+                                ) {
+
+                                    box.classList.remove(
+                                        "active"
+                                    );
+
+                                }
+
+                            }
+                        );
+
+
+                    saveBox.classList.toggle(
+                        "active"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* -----------------------------------------------------
+       Save Box Click Protection
+    ----------------------------------------------------- */
+
+    document
+        .querySelectorAll(
+            ".save-box"
+        )
+        .forEach(
+            (box) => {
+
+                box.addEventListener(
+                    "click",
+                    (event) => {
+
+                        event.stopPropagation();
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* -----------------------------------------------------
+       Close Save Menus Outside
+    ----------------------------------------------------- */
+
+    document.addEventListener(
+        "click",
+        () => {
+
+            document
+                .querySelectorAll(
+                    ".save-box.active"
+                )
+                .forEach(
+                    (box) => {
+
+                        box.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+        }
+    );
+
+
+    /* =====================================================
+       17. HOME WISHLIST BUTTON
+
+       UI state only.
+       Backend saving should be handled by
+       your Django wishlist endpoint if available.
+    ===================================================== */
+
+    const wishlistButtons =
+        document.querySelectorAll(
+            ".wishlist-btn-home"
+        );
+
+
+    wishlistButtons.forEach(
+        (button) => {
+
+            button.addEventListener(
+                "click",
+                (event) => {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    /* Toggle liked state */
+
+                    button.classList.toggle(
+                        "liked"
+                    );
+
+
+                    /* Heart animation */
+
+                    button.classList.remove(
+                        "wishlist-heart-pop"
+                    );
+
+
+                    void button.offsetWidth;
+
+
+                    button.classList.add(
+                        "wishlist-heart-pop"
+                    );
+
+
+                    /* Update icon */
+
+                    const icon =
+                        button.querySelector(
+                            ".wishlist-icon-home"
+                        );
+
+
+                    if (icon) {
+
+                        if (
+                            button.classList.contains(
+                                "liked"
+                            )
+                        ) {
+
+                            icon.classList.remove(
+                                "fa-regular"
+                            );
+
+                            icon.classList.add(
+                                "fa-solid"
+                            );
+
+                        } else {
+
+                            icon.classList.remove(
+                                "fa-solid"
+                            );
+
+                            icon.classList.add(
+                                "fa-regular"
+                            );
+
+                        }
+
+                    }
+
+
+                    /* Accessibility */
+
+                    button.setAttribute(
+                        "aria-pressed",
+                        button.classList.contains(
+                            "liked"
+                        )
+                            ? "true"
+                            : "false"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       18. ESCAPE KEY
 
        Important:
        Pending messages are NOT closed by Escape.
@@ -1443,16 +1731,20 @@ if (messageOverlay) {
 
     document
         .querySelectorAll(
-            ".seller-profile, " +
-            ".product-image, " +
-            ".post-image-slider img"
+            [
+                ".seller-profile",
+                ".product-image",
+                ".post-image-slider img",
+                ".nav-profile-img"
+            ].join(", ")
         )
-        .forEach((image) => {
+        .forEach(
+            (image) => {
 
-            image.setAttribute(
-                "draggable",
-                "false"
-            );
+                image.setAttribute(
+                    "draggable",
+                    "false"
+                );
 
 
             image.addEventListener(
@@ -1522,7 +1814,24 @@ if (messageOverlay) {
                         "active"
                     );
 
-                });
+                    }
+                );
+
+
+            /* Reset card transforms */
+
+            document
+                .querySelectorAll(
+                    ".seller-card"
+                )
+                .forEach(
+                    (card) => {
+
+                        card.style.transform =
+                            "";
+
+                    }
+                );
 
         },
         {

@@ -1,6 +1,8 @@
+from functools import wraps
 from decimal import Decimal
 
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -10,7 +12,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from order.models import Order
-
 from user.models import Profile
 from posts.models import Post
 from notifications.models import Notification
@@ -26,10 +27,101 @@ from .models import AdminActivity
 
 
 # =========================================================
+# ADMIN AUTHENTICATION
+# =========================================================
+
+def admin_required(view_func):
+    """
+    Allow only authenticated staff/admin users
+    to access the admin panel.
+    """
+
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+
+        # Not logged in
+        if not request.user.is_authenticated:
+            return redirect("admin_login")
+
+        # Logged in but not staff
+        if not request.user.is_staff:
+            logout(request)
+            return redirect("admin_login")
+
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
+
+
+# =========================================================
+# ADMIN LOGIN
+# =========================================================
+
+def admin_login(request):
+
+    # Already logged in as admin
+    if request.user.is_authenticated and request.user.is_staff:
+        return redirect("dashboard")
+
+    if request.method == "POST":
+
+        username = request.POST.get(
+            "username",
+            "",
+        ).strip()
+
+        password = request.POST.get(
+            "password",
+            "",
+        )
+
+        user = authenticate(
+            request=request,
+            username=username,
+            password=password,
+        )
+
+        # Only staff users can enter admin panel
+        if user is not None and user.is_staff:
+
+            login(
+                request,
+                user,
+            )
+
+            return redirect(
+                "dashboard"
+            )
+
+        messages.error(
+            request,
+            "Invalid admin username or password.",
+        )
+
+    return render(
+        request,
+        "adminpanel/admin_login.html",
+    )
+
+
+# =========================================================
+# ADMIN LOGOUT
+# =========================================================
+
+def admin_logout(request):
+
+    logout(request)
+
+    return redirect(
+        "admin_login"
+    )
+
+
+# =========================================================
 # DASHBOARD
 # =========================================================
 
-@login_required
+@admin_required
 def dashboard(request):
 
     recent_activities = (
@@ -61,7 +153,9 @@ def dashboard(request):
         "total_revenue": (
             Order.objects
             .filter(status="completed")
-            .aggregate(total=Sum("total_amount"))["total"]
+            .aggregate(
+                total=Sum("total_amount")
+            )["total"]
             or Decimal("0")
         ),
 
@@ -79,7 +173,7 @@ def dashboard(request):
 # USERS
 # =========================================================
 
-@login_required
+@admin_required
 def users(request):
 
     users = (
@@ -108,7 +202,7 @@ def users(request):
 # BAN USER
 # =========================================================
 
-@login_required
+@admin_required
 def ban_user(request, user_id):
 
     user = get_object_or_404(
@@ -124,7 +218,6 @@ def ban_user(request, user_id):
     profile.status = "Banned"
     profile.save()
 
-    # ADMIN RECENT ACTIVITY
     AdminActivity.objects.create(
         admin=request.user,
         action="ban_user",
@@ -146,7 +239,7 @@ def ban_user(request, user_id):
 # UNBAN USER
 # =========================================================
 
-@login_required
+@admin_required
 def unban_user(request, user_id):
 
     user = get_object_or_404(
@@ -183,7 +276,7 @@ def unban_user(request, user_id):
 # PENDING POSTS
 # =========================================================
 
-@login_required
+@admin_required
 def posts(request):
 
     pending_posts = (
@@ -206,7 +299,7 @@ def posts(request):
 # POST DETAIL
 # =========================================================
 
-@login_required
+@admin_required
 def post_detail(request, post_id):
 
     post = get_object_or_404(
@@ -227,7 +320,7 @@ def post_detail(request, post_id):
 # APPROVE POST
 # =========================================================
 
-@login_required
+@admin_required
 def approve_post(request, post_id):
 
     post = get_object_or_404(
@@ -271,7 +364,7 @@ def approve_post(request, post_id):
 # REJECT POST
 # =========================================================
 
-@login_required
+@admin_required
 def reject_post(request, post_id):
 
     post = get_object_or_404(
@@ -305,7 +398,7 @@ def reject_post(request, post_id):
 
     messages.success(
         request,
-        "Post rejected successfully."
+        "Post rejected successfully.",
     )
 
     return redirect("posts")
@@ -315,7 +408,7 @@ def reject_post(request, post_id):
 # WALLET PAGE
 # =========================================================
 
-@login_required
+@admin_required
 def wallet_requests(request):
 
     deposits = (
@@ -341,14 +434,18 @@ def wallet_requests(request):
     approved_amount = (
         deposits
         .filter(status="Approved")
-        .aggregate(total=Sum("amount"))["total"]
+        .aggregate(
+            total=Sum("amount")
+        )["total"]
         or Decimal("0")
     )
 
     approved_withdraw_amount = (
         withdrawals
         .filter(status="Approved")
-        .aggregate(total=Sum("amount"))["total"]
+        .aggregate(
+            total=Sum("amount")
+        )["total"]
         or Decimal("0")
     )
 
@@ -372,7 +469,7 @@ def wallet_requests(request):
 # DEPOSIT REQUESTS
 # =========================================================
 
-@login_required
+@admin_required
 def deposit_requests(request):
 
     deposits = (
@@ -388,7 +485,9 @@ def deposit_requests(request):
     approved_amount = (
         deposits
         .filter(status="Approved")
-        .aggregate(total=Sum("amount"))["total"]
+        .aggregate(
+            total=Sum("amount")
+        )["total"]
         or Decimal("0")
     )
 
@@ -409,7 +508,7 @@ def deposit_requests(request):
 # APPROVE DEPOSIT
 # =========================================================
 
-@login_required
+@admin_required
 @transaction.atomic
 def approve_deposit(request, deposit_id):
 
@@ -480,7 +579,7 @@ def approve_deposit(request, deposit_id):
 # REJECT DEPOSIT
 # =========================================================
 
-@login_required
+@admin_required
 @transaction.atomic
 def reject_deposit(request, deposit_id):
 
@@ -535,7 +634,7 @@ def reject_deposit(request, deposit_id):
 # WITHDRAW REQUESTS
 # =========================================================
 
-@login_required
+@admin_required
 def withdraw_requests(request):
 
     withdrawals = (
@@ -551,7 +650,9 @@ def withdraw_requests(request):
     approved_amount = (
         withdrawals
         .filter(status="Approved")
-        .aggregate(total=Sum("amount"))["total"]
+        .aggregate(
+            total=Sum("amount")
+        )["total"]
         or Decimal("0")
     )
 
@@ -572,7 +673,7 @@ def withdraw_requests(request):
 # APPROVE WITHDRAWAL
 # =========================================================
 
-@login_required
+@admin_required
 @transaction.atomic
 def approve_withdraw(request, withdraw_id):
 
@@ -683,7 +784,7 @@ def approve_withdraw(request, withdraw_id):
 # REJECT WITHDRAWAL
 # =========================================================
 
-@login_required
+@admin_required
 @transaction.atomic
 def reject_withdraw(request, withdraw_id):
 
@@ -738,7 +839,7 @@ def reject_withdraw(request, withdraw_id):
 # READ NOTIFICATION
 # =========================================================
 
-@login_required
+@admin_required
 def read_notification(request, noti_id):
 
     notification = get_object_or_404(
@@ -777,32 +878,12 @@ def check_and_auto_ready_orders():
 
 
 # =========================================================
-# ALL ORDERS
+# ORDER STATUS COUNTS
 # =========================================================
 
-@login_required
-def orders(request):
-    """
-    Display all orders with status counts.
-    """
+def get_order_status_counts():
 
-    # Check expired 24-hour orders first.
-    check_and_auto_ready_orders()
-
-    orders_queryset = (
-        Order.objects
-        .select_related(
-            "user__user",
-            "seller__user",
-        )
-        .prefetch_related("items")
-        .order_by("-created_at")
-    )
-
-    context = {
-        "orders": orders_queryset,
-        "current_status": "all",
-
+    return {
         "pending_count": Order.objects.filter(
             status="pending"
         ).count(),
@@ -826,6 +907,32 @@ def orders(request):
         "total_orders": Order.objects.count(),
     }
 
+
+# =========================================================
+# ALL ORDERS
+# =========================================================
+
+@admin_required
+def orders(request):
+
+    check_and_auto_ready_orders()
+
+    orders_queryset = (
+        Order.objects
+        .select_related(
+            "user__user",
+            "seller__user",
+        )
+        .prefetch_related("items")
+        .order_by("-created_at")
+    )
+
+    context = {
+        "orders": orders_queryset,
+        "current_status": "all",
+        **get_order_status_counts(),
+    }
+
     return render(
         request,
         "adminpanel/orders.html",
@@ -837,11 +944,8 @@ def orders(request):
 # PENDING ORDERS
 # =========================================================
 
-@login_required
+@admin_required
 def pending_orders(request):
-    """
-    Display pending orders.
-    """
 
     check_and_auto_ready_orders()
 
@@ -859,28 +963,7 @@ def pending_orders(request):
     context = {
         "orders": orders_queryset,
         "current_status": "pending",
-
-        "pending_count": Order.objects.filter(
-            status="pending"
-        ).count(),
-
-        "ready_count": Order.objects.filter(
-            status="ready_for_pickup"
-        ).count(),
-
-        "picked_up_count": Order.objects.filter(
-            status="picked_up"
-        ).count(),
-
-        "completed_count": Order.objects.filter(
-            status="completed"
-        ).count(),
-
-        "cancelled_count": Order.objects.filter(
-            status="cancelled"
-        ).count(),
-
-        "total_orders": Order.objects.count(),
+        **get_order_status_counts(),
     }
 
     return render(
@@ -894,11 +977,10 @@ def pending_orders(request):
 # READY FOR PICKUP ORDERS
 # =========================================================
 
-@login_required
+@admin_required
 def ready_for_pickup_orders(request):
-    """
-    Display orders ready for pickup.
-    """
+
+    check_and_auto_ready_orders()
 
     orders_queryset = (
         Order.objects
@@ -914,28 +996,7 @@ def ready_for_pickup_orders(request):
     context = {
         "orders": orders_queryset,
         "current_status": "ready_for_pickup",
-
-        "pending_count": Order.objects.filter(
-            status="pending"
-        ).count(),
-
-        "ready_count": Order.objects.filter(
-            status="ready_for_pickup"
-        ).count(),
-
-        "picked_up_count": Order.objects.filter(
-            status="picked_up"
-        ).count(),
-
-        "completed_count": Order.objects.filter(
-            status="completed"
-        ).count(),
-
-        "cancelled_count": Order.objects.filter(
-            status="cancelled"
-        ).count(),
-
-        "total_orders": Order.objects.count(),
+        **get_order_status_counts(),
     }
 
     return render(
@@ -949,11 +1010,8 @@ def ready_for_pickup_orders(request):
 # PICKED UP ORDERS
 # =========================================================
 
-@login_required
+@admin_required
 def picked_up_orders(request):
-    """
-    Display picked-up orders.
-    """
 
     orders_queryset = (
         Order.objects
@@ -969,28 +1027,7 @@ def picked_up_orders(request):
     context = {
         "orders": orders_queryset,
         "current_status": "picked_up",
-
-        "pending_count": Order.objects.filter(
-            status="pending"
-        ).count(),
-
-        "ready_count": Order.objects.filter(
-            status="ready_for_pickup"
-        ).count(),
-
-        "picked_up_count": Order.objects.filter(
-            status="picked_up"
-        ).count(),
-
-        "completed_count": Order.objects.filter(
-            status="completed"
-        ).count(),
-
-        "cancelled_count": Order.objects.filter(
-            status="cancelled"
-        ).count(),
-
-        "total_orders": Order.objects.count(),
+        **get_order_status_counts(),
     }
 
     return render(
@@ -1004,11 +1041,8 @@ def picked_up_orders(request):
 # COMPLETED ORDERS
 # =========================================================
 
-@login_required
+@admin_required
 def completed_orders(request):
-    """
-    Display completed orders.
-    """
 
     orders_queryset = (
         Order.objects
@@ -1024,28 +1058,7 @@ def completed_orders(request):
     context = {
         "orders": orders_queryset,
         "current_status": "completed",
-
-        "pending_count": Order.objects.filter(
-            status="pending"
-        ).count(),
-
-        "ready_count": Order.objects.filter(
-            status="ready_for_pickup"
-        ).count(),
-
-        "picked_up_count": Order.objects.filter(
-            status="picked_up"
-        ).count(),
-
-        "completed_count": Order.objects.filter(
-            status="completed"
-        ).count(),
-
-        "cancelled_count": Order.objects.filter(
-            status="cancelled"
-        ).count(),
-
-        "total_orders": Order.objects.count(),
+        **get_order_status_counts(),
     }
 
     return render(
@@ -1059,11 +1072,8 @@ def completed_orders(request):
 # CANCELLED ORDERS
 # =========================================================
 
-@login_required
+@admin_required
 def cancelled_orders(request):
-    """
-    Display cancelled orders.
-    """
 
     orders_queryset = (
         Order.objects
@@ -1079,28 +1089,7 @@ def cancelled_orders(request):
     context = {
         "orders": orders_queryset,
         "current_status": "cancelled",
-
-        "pending_count": Order.objects.filter(
-            status="pending"
-        ).count(),
-
-        "ready_count": Order.objects.filter(
-            status="ready_for_pickup"
-        ).count(),
-
-        "picked_up_count": Order.objects.filter(
-            status="picked_up"
-        ).count(),
-
-        "completed_count": Order.objects.filter(
-            status="completed"
-        ).count(),
-
-        "cancelled_count": Order.objects.filter(
-            status="cancelled"
-        ).count(),
-
-        "total_orders": Order.objects.count(),
+        **get_order_status_counts(),
     }
 
     return render(
@@ -1114,11 +1103,8 @@ def cancelled_orders(request):
 # ORDER DETAIL
 # =========================================================
 
-@login_required
+@admin_required
 def order_detail(request, order_id):
-    """
-    Display complete order details.
-    """
 
     order = get_object_or_404(
         Order.objects
@@ -1148,6 +1134,7 @@ def order_detail(request, order_id):
         "adminpanel/order_detail.html",
         {
             "order": order,
+            "now": timezone.now(),
         },
     )
 
@@ -1156,12 +1143,8 @@ def order_detail(request, order_id):
 # AUTO READY ORDER - AJAX
 # =========================================================
 
-@login_required
+@admin_required
 def auto_ready_order(request, order_id):
-    """
-    Check whether an order's automatic ready time
-    has expired.
-    """
 
     order = get_object_or_404(
         Order,
@@ -1193,11 +1176,8 @@ def auto_ready_order(request, order_id):
 # UPDATE ORDER STATUS
 # =========================================================
 
-@login_required
+@admin_required
 def update_order_status(request, order_id, new_status):
-    """
-    Update order status from admin panel.
-    """
 
     order = get_object_or_404(
         Order.objects.select_related(
@@ -1253,16 +1233,6 @@ def update_order_status(request, order_id, new_status):
         # =================================================
 
         elif new_status == "picked_up":
-            order.mark_picked_up()
-
-            AdminActivity.objects.create(
-                admin=request.user,
-                action="picked_up_order",
-                message=(
-                    f"You marked Order as picked up "
-                    f"and transferred MMK {order.total_amount:,.0f} to the seller."
-                )
-            )
 
             if order.status != "ready_for_pickup":
 
@@ -1281,17 +1251,15 @@ def update_order_status(request, order_id, new_status):
 
             order.mark_picked_up()
 
-            # =================================================
-            # ADMIN RECENT ACTIVITY
-            # =================================================
-
             AdminActivity.objects.create(
                 admin=request.user,
                 action="picked_up_order",
                 message=(
                     f"You marked Order #{order.id} as picked up "
-                    f"and transferred MMK {order.total_amount:,.0f} to the seller."
-                )
+                    f"and transferred MMK "
+                    f"{order.total_amount:,.0f} "
+                    f"to the seller."
+                ),
             )
 
             # Buyer notification
@@ -1355,8 +1323,9 @@ def update_order_status(request, order_id, new_status):
                 admin=request.user,
                 action="complete_order",
                 message=(
-                    f"You completed delivery for order"
-                )
+                    f"You completed delivery for "
+                    f"order #{order.id}."
+                ),
             )
 
             Notification.objects.create(
@@ -1438,17 +1407,3 @@ def update_order_status(request, order_id, new_status):
         "admin_order_detail",
         order_id=order.id,
     )
-    return redirect('admin_order_detail', order_id=order.id)
-
-
-
-@login_required
-def order_detail(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-
-    context = {
-        'order': order,
-        'now': timezone.now(),  # ADD THIS
-    }
-
-    return render(request, 'adminpanel/order_detail.html', context)
