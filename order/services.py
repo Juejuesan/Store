@@ -9,9 +9,9 @@ from .models import Order, OrderItem
 from notifications.models import Notification
 
 class OrderService:
-    CANCELLATION_WINDOW_HOURS = 24
+    CANCELLATION_WINDOW_HOURS = 3
     MAX_CANCELLATIONS_PER_MONTH = 3
-    AUTO_READY_HOURS = 24
+    AUTO_READY_HOURS = 3
 
 
     @classmethod
@@ -65,11 +65,11 @@ class OrderService:
 
         # for minute
         cancel_deadline = timezone.now() + timedelta(
-            hours=cls.CANCELLATION_WINDOW_HOURS
+            minutes=cls.CANCELLATION_WINDOW_HOURS
         )
 
         auto_ready_at = timezone.now() + timedelta(
-            hours=cls.AUTO_READY_HOURS
+            minutes=cls.AUTO_READY_HOURS
         )
 
         for seller, items in items_by_seller.items():

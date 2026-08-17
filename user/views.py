@@ -31,6 +31,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from functools import wraps  # ✅ ADDED
 
 from .models import (
     Profile,
@@ -38,6 +39,34 @@ from .models import (
 )
 
 User = get_user_model()
+
+
+# =========================================================
+# ✅ ADDED: SESSION CHECK DECORATOR
+# =========================================================
+
+def check_session_user(view_func):
+    """
+    Check if current session matches logged in user.
+    Prevents multi-tab account switching issues.
+    """
+
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            session_user_id = request.session.get('logged_in_user_id')
+            if session_user_id and session_user_id != request.user.id:
+                logout(request)
+                messages.warning(
+                    request,
+                    "Your session expired because your account "
+                    "was changed in another tab. Please login again."
+                )
+                return redirect("user:login")
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
+
 
 # =========================================================
 # REGISTER
@@ -226,6 +255,9 @@ def login_view(request):
                     user
                 )
 
+                # ✅ ADDED: Store user ID in session
+                request.session['logged_in_user_id'] = user.id
+
                 # =================================================
                 # REMEMBER ME
                 # =================================================
@@ -268,7 +300,6 @@ def login_view(request):
                 # =================================================
 
                 if profile and not profile.terms_accepted:
-
                     request.session[
                         "show_terms_policy"
                     ] = True
@@ -292,7 +323,7 @@ def login_view(request):
 
     return render(
         request,
-        "user/admin_login.html",
+        "user/login.html",
         {
             "form": form,
         },
@@ -304,6 +335,8 @@ def login_view(request):
 # =========================================================
 
 def logout_view(request):
+    # ✅ ADDED: Clear session user ID on logout
+    request.session.pop('logged_in_user_id', None)
 
     logout(request)
 
@@ -322,8 +355,8 @@ def logout_view(request):
 # =========================================================
 
 @login_required
+@check_session_user  # ✅ ADDED
 def dashboard(request):
-
     # Get current user's Profile
     profile = request.user.profile
 
@@ -335,7 +368,6 @@ def dashboard(request):
     # Count user's posts
     post_count = user_posts.count()
 
-
     # =====================================================
     # USER WISHLIST
     # =====================================================
@@ -343,7 +375,6 @@ def dashboard(request):
     wishlist_count = Wishlist.objects.filter(
         user=request.user
     ).count()
-
 
     # =====================================================
     # CONTEXT
@@ -365,14 +396,11 @@ def dashboard(request):
     )
 
 
-
-
 # =========================================================
 # PUBLIC SELLER PROFILE
 # =========================================================
 
 def seller_profile(request, username):
-
     seller = get_object_or_404(
         User,
         username=username,
@@ -390,8 +418,8 @@ def seller_profile(request, username):
     post_count = user_posts.count()
 
     is_owner = (
-        request.user.is_authenticated
-        and request.user.id == seller.id
+            request.user.is_authenticated
+            and request.user.id == seller.id
     )
 
     context = {
@@ -408,13 +436,14 @@ def seller_profile(request, username):
         context,
     )
 
+
 # =========================================================
 # EDIT PROFILE
 # =========================================================
 
 @login_required
+@check_session_user  # ✅ ADDED
 def edit_profile(request):
-
     profile = request.user.profile
 
     if request.method == "POST":
@@ -426,7 +455,6 @@ def edit_profile(request):
         )
 
         if form.is_valid():
-
             form.save()
 
             messages.success(
@@ -452,11 +480,14 @@ def edit_profile(request):
             "profile": profile,
         }
     )
+
+
 # =========================================================
 # UPDATE PROFILE PICTURE
 # =========================================================
 
 @login_required
+@check_session_user  # ✅ ADDED
 def update_profile_pic(request):
     if request.method == "POST":
 
@@ -647,7 +678,7 @@ def verify_email(request):
                     try:
 
                         if default_storage.exists(
-                            temp_pic_path
+                                temp_pic_path
                         ):
                             profile.profile_pic = (
                                 temp_pic_path
@@ -693,6 +724,9 @@ def verify_email(request):
                     request,
                     user,
                 )
+
+                # ✅ ADDED: Store user ID in session
+                request.session['logged_in_user_id'] = user.id
 
                 # =============================================
                 # SHOW TERMS MODAL ON WELCOME PAGE
@@ -759,8 +793,8 @@ def verify_email(request):
 # =========================================================
 
 @login_required
+@check_session_user  # ✅ ADDED
 def terms_policy(request):
-
     profile = request.user.profile
 
     # =========================================================
@@ -768,7 +802,6 @@ def terms_policy(request):
     # =========================================================
 
     if profile.terms_accepted:
-
         request.session.pop(
             "show_terms_policy",
             None,
@@ -800,14 +833,13 @@ def terms_policy(request):
 # =========================================================
 
 @login_required
+@check_session_user  # ✅ ADDED
 def accept_terms_policy(request):
-
     # =========================================================
     # ONLY POST REQUEST ALLOWED
     # =========================================================
 
     if request.method != "POST":
-
         return redirect(
             "welcome"
         )
@@ -823,7 +855,6 @@ def accept_terms_policy(request):
     # =========================================================
 
     if profile.terms_accepted:
-
         request.session.pop(
             "show_terms_policy",
             None,
@@ -935,8 +966,8 @@ def forgot_password(request):
                 now = timezone.now()
 
                 expires_at = (
-                    now
-                    + timedelta(minutes=5)
+                        now
+                        + timedelta(minutes=5)
                 )
 
                 # =================================================
@@ -1067,8 +1098,8 @@ def verify_reset_otp(request):
             # =================================================
 
             if (
-                submitted_email.lower()
-                != email.lower()
+                    submitted_email.lower()
+                    != email.lower()
             ):
 
                 form.add_error(
@@ -1200,7 +1231,7 @@ def reset_password(request):
     # =========================================================
 
     if not request.session.get(
-        "password_reset_verified"
+            "password_reset_verified"
     ):
         messages.error(
             request,
@@ -1334,7 +1365,6 @@ def reset_password(request):
     )
 
     if not form.is_valid():
-
         return render(
             request,
             "user/reset_password.html",
@@ -1368,7 +1398,7 @@ def reset_password(request):
     user.refresh_from_db()
 
     if not user.check_password(
-        new_password
+            new_password
     ):
         messages.error(
             request,
@@ -1440,13 +1470,14 @@ def reset_password(request):
         "user:login"
     )
 
+
 # =========================================================
 # DELETE PROFILE PHOTO
 # =========================================================
 
 @login_required
+@check_session_user  # ✅ ADDED
 def delete_profile_pic(request):
-
     if request.method == "POST":
 
         profile = request.user.profile
@@ -1465,8 +1496,8 @@ def delete_profile_pic(request):
                     os.remove(old_path)
 
             except (
-                ValueError,
-                OSError,
+                    ValueError,
+                    OSError,
             ):
 
                 pass

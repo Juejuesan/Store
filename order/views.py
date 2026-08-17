@@ -256,6 +256,18 @@ def order_detail(request, order_id):
     )
 
     # -----------------------------------------------------
+    # AUTO-READY THIS ORDER IF EXPIRED
+    # -----------------------------------------------------
+
+    if (
+        order.status == 'pending'
+        and order.auto_ready_at
+        and timezone.now() >= order.auto_ready_at
+    ):
+        order.mark_ready_for_pickup()
+        order.refresh_from_db()
+
+    # -----------------------------------------------------
     # AUTHORIZATION
     # -----------------------------------------------------
 
@@ -264,15 +276,26 @@ def order_detail(request, order_id):
         and
         order.seller != request.user.profile
     ):
-
         messages.error(
             request,
             "Unauthorized to view this order."
         )
+        return redirect("order:order_list")
 
-        return redirect(
-            "order:order_list"
+    # -----------------------------------------------------
+    # CANCELLATION INFO (ONLY FOR BUYER)
+    # -----------------------------------------------------
+
+    cancellation_count = 0
+    max_cancellations = 3
+    can_cancel_more = True
+
+    if order.user == request.user.profile:
+        # Count THIS user's cancellations only
+        cancellation_count = Order.get_user_cancellation_count_this_month(
+            request.user.profile
         )
+        can_cancel_more = cancellation_count < max_cancellations
 
     # -----------------------------------------------------
     # CONTEXT
@@ -280,14 +303,15 @@ def order_detail(request, order_id):
 
     context = {
         "order": order,
-
         "is_buyer": (
             order.user == request.user.profile
         ),
-
         "is_seller": (
             order.seller == request.user.profile
         ),
+        "cancellation_count": cancellation_count,
+        "max_cancellations": max_cancellations,
+        "can_cancel_more": can_cancel_more,
     }
 
     return render(

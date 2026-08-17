@@ -98,14 +98,16 @@ class Order(models.Model):
 
     @classmethod
     def get_user_cancellation_count_this_month(cls, user_profile):
-        """Get number of cancellations by user in current month"""
+        """Get number of cancellations by user in last 5 minutes (TESTING)"""
         today = timezone.now()
-        month_start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+        time_window = today - timedelta(minutes=5)
+        # month_start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
         return cls.objects.filter(
             user=user_profile,
             status='cancelled',
-            cancelled_at__gte=month_start,
+            cancelled_at__gte=time_window,
             cancelled_at__lte=today
         ).count()
 
