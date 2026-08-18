@@ -68,22 +68,84 @@ document.addEventListener('DOMContentLoaded', function() {
         setInterval(updateCountdown, 1000);
     }
 
-    // Cancel form confirmation
+    // Cancel form with CUSTOM CONFIRMATION (not blocking)
     const cancelForm = document.querySelector('.cancel-form');
 
     if (cancelForm) {
         cancelForm.addEventListener('submit', function(e) {
-            if (!confirm('Are you sure you want to cancel this order?')) {
-                e.preventDefault();
-                return;
-            }
+            e.preventDefault(); // Always prevent default first
 
-            const submitBtn = cancelForm.querySelector('.btn-cancel');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cancelling...';
-            }
+            // Show custom confirmation modal
+            showCancelConfirmModal(cancelForm);
         });
+    }
+
+    // Custom confirmation modal
+    function showCancelConfirmModal(form) {
+        // Create modal if not exists
+        let modal = document.getElementById('cancelConfirmModal');
+
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'cancelConfirmModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 99999;
+            `;
+
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 25px; max-width: 400px; width: 90%; text-align: center;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 40px; color: #f59e0b; margin-bottom: 15px;"></i>
+                    <h4 style="margin-bottom: 10px; color: #172033;">Cancel Order?</h4>
+                    <p style="color: #64748b; margin-bottom: 20px;">Are you sure you want to cancel this order? This action cannot be undone.</p>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button id="cancelConfirmNo" style="padding: 10px 20px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            Keep Order
+                        </button>
+                        <button id="cancelConfirmYes" style="padding: 10px 20px; border: none; background: #ef4444; color: white; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            Yes, Cancel Order
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // Close modal on "No"
+            document.getElementById('cancelConfirmNo').addEventListener('click', function() {
+                modal.remove();
+            });
+
+            // Submit form on "Yes"
+            document.getElementById('cancelConfirmYes').addEventListener('click', function() {
+                modal.remove();
+
+                // Show loading on submit button
+                const submitBtn = form.querySelector('.btn-cancel');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cancelling...';
+                }
+
+                // Submit the form
+                form.submit();
+            });
+
+            // Close modal if clicking outside
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
     }
 
 });

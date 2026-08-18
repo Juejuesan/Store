@@ -9,16 +9,15 @@ from .models import Order, OrderItem
 from notifications.models import Notification
 
 class OrderService:
-    CANCELLATION_WINDOW_HOURS = 3
+    CANCELLATION_WINDOW_MINUTES = 180  # 3 hours in minutes
     MAX_CANCELLATIONS_PER_MONTH = 3
-    AUTO_READY_HOURS = 3
-
+    AUTO_READY_MINUTES = 180  # 3 hours in minutes
 
     @classmethod
     @transaction.atomic
     def create_orders_from_cart(cls, cart, user_profile, phone_number=None, location=None):
         """
-        Create orders from cart items, grouping by seller
+        Create ONE order from all cart items
         """
         # Get all taken cart items
         cart_items = cart.lines.filter(status='taken').select_related(
@@ -50,135 +49,81 @@ class OrderService:
             reference_id=f"CART-{cart.id}"
         )
 
-        # Group items by seller
-        items_by_seller = {}
+        # Time settings
+        cancel_deadline = timezone.now() + timedelta(minutes=cls.CANCELLATION_WINDOW_MINUTES)
+        auto_ready_at = timezone.now() + timedelta(minutes=cls.AUTO_READY_MINUTES)
+
+        # Get first seller (for order reference)
+        first_cart_item = cart_items.first()
+        seller = first_cart_item.item.post.user
+
+        # Create ONE order for ALL items
+        order = Order.objects.create(
+            user=user_profile,
+            seller=seller,
+            cart=cart,
+            total_amount=total_amount,
+            status='pending',
+            payment_status='held',
+            pending_at=timezone.now(),
+            cancel_deadline=cancel_deadline,
+            auto_ready_at=auto_ready_at,
+            phone_number=phone_number or user_profile.phone_number,
+            location=location or user_profile.address,
+        )
+
+        # Add ALL items to the SAME order
         for cart_item in cart_items:
-            seller = cart_item.item.post.user
-            if seller not in items_by_seller:
-                items_by_seller[seller] = []
-            items_by_seller[seller].append(cart_item)
-
-        # Create orders for each seller
-        orders = []
-        # cancel_deadline = timezone.now() + timedelta(hours=cls.CANCELLATION_WINDOW_HOURS)
-        # auto_ready_at = timezone.now() + timedelta(hours=cls.AUTO_READY_HOURS)
-
-        # for minute
-        cancel_deadline = timezone.now() + timedelta(
-            minutes=cls.CANCELLATION_WINDOW_HOURS
-        )
-
-        auto_ready_at = timezone.now() + timedelta(
-            minutes=cls.AUTO_READY_HOURS
-        )
-
-        for seller, items in items_by_seller.items():
-            # Calculate seller total
-            seller_total = sum(item.line_total for item in items)
-
-            # Create order with phone and location
-            order = Order.objects.create(
-                user=user_profile,
-                seller=seller,
-                cart=cart,
-                total_amount=seller_total,
-                status='pending',
-                payment_status='held',
-                pending_at=timezone.now(),
-                cancel_deadline=cancel_deadline,
-                auto_ready_at=auto_ready_at,  # ADDED
-                phone_number=phone_number or user_profile.phone_number,
-                location=location or user_profile.address,
+            OrderItem.objects.create(
+                order=order,
+                item=cart_item.item,
+                size_variant=cart_item.size_variant,
+                cart_item=cart_item,
+                item_name=cart_item.item_name,
+                unit_price=cart_item.unit_price,
+                quantity=cart_item.quantity
             )
 
-            # Create order items
-            for cart_item in items:
-                OrderItem.objects.create(
-                    order=order,
-                    item=cart_item.item,
-                    size_variant=cart_item.size_variant,
-                    cart_item=cart_item,
-                    item_name=cart_item.item_name,
-                    unit_price=cart_item.unit_price,
-                    quantity=cart_item.quantity
-                )
+            # Consume stock hold
+            cart_item.consume_hold()
 
-                # Consume stock hold
-                cart_item.consume_hold()
-            # =========================================================
-            # BUYER NOTIFICATION
-            # =========================================================
+        # BUYER NOTIFICATION
+        Notification.objects.create(
+            user=user_profile.user,
+            message="Purchase Confirmed! Admin review in progress.",
+            notification_type="order_created",
+            target_url=f"/orders/{order.id}/",
+        )
 
-            # =========================================================
-            # BUYER NOTIFICATION
-            # =========================================================
-
+        # SELLER NOTIFICATIONS (notify all unique sellers)
+        unique_sellers = set(cart_item.item.post.user for cart_item in cart_items)
+        for seller_profile in unique_sellers:
             Notification.objects.create(
-                user=user_profile.user,
-                message=(
-                    "Purchase Confirmed! "
-                    "Admin review in progress for item pick-up and payout."
-                ),
-                notification_type="order_created",
-                target_url=f"/orders/{order.id}/",
-            )
-
-            # =========================================================
-            # SELLER NOTIFICATION
-            # =========================================================
-
-            Notification.objects.create(
-                user=seller.user,
+                user=seller_profile.user,
                 message="You received a new order.",
                 notification_type="order_created",
                 target_url=f"/orders/{order.id}/",
             )
-            orders.append(order)
 
         # Update cart status
         cart.status = 'checked_out'
         cart.save()
 
-        return orders
+        return [order]  # Return as list
 
     @classmethod
     @transaction.atomic
     def cancel_order(cls, order_id, user_profile, reason=None):
         """Cancel order and process refund."""
-
-        order = Order.objects.select_for_update().get(
-            id=order_id
-        )
-
-        # =====================================================
-        # AUTHORIZATION
-        # =====================================================
+        order = Order.objects.select_for_update().get(id=order_id)
 
         if order.user != user_profile:
-            raise ValueError(
-                "Unauthorized to cancel this order"
-            )
-
-        # =====================================================
-        # CANCELLATION WINDOW
-        # =====================================================
+            raise ValueError("Unauthorized to cancel this order")
 
         if not order.can_cancel:
-            raise ValueError(
-                "Order cannot be cancelled - "
-                "cancellation window has expired"
-            )
+            raise ValueError("Order cannot be cancelled - cancellation window has expired")
 
-        # =====================================================
-        # MONTHLY CANCELLATION LIMIT
-        # =====================================================
-
-        current_count = (
-            Order.get_user_cancellation_count_this_month(
-                user_profile
-            )
-        )
-
+        current_count = Order.get_user_cancellation_count_this_month(user_profile)
         if current_count >= cls.MAX_CANCELLATIONS_PER_MONTH:
             raise ValueError(
                 f"You have reached your monthly cancellation "
@@ -186,16 +131,9 @@ class OrderService:
                 f"cancellations). Please wait until next month."
             )
 
-        # =====================================================
-        # CANCEL + REFUND
-        # =====================================================
-
         order.cancel_order(reason)
 
-        # =====================================================
         # BUYER NOTIFICATION
-        # =====================================================
-
         Notification.objects.create(
             user=order.user.user,
             message=(
@@ -213,25 +151,16 @@ class OrderService:
     @transaction.atomic
     def mark_order_ready_for_pickup(cls, order_id, seller_profile):
         """Mark order as ready for pickup"""
-
-        order = Order.objects.select_for_update().get(
-            id=order_id
-        )
+        order = Order.objects.select_for_update().get(id=order_id)
 
         if order.seller != seller_profile:
-            raise ValueError(
-                "Unauthorized to update this order"
-            )
+            raise ValueError("Unauthorized to update this order")
 
         order.mark_ready_for_pickup()
 
-        # =====================================================
-        # BUYER NOTIFICATION
-        # =====================================================
-
         Notification.objects.create(
             user=order.user.user,
-            message="Your order has been picked up.",
+            message="Your order is ready for pickup.",
             notification_type="order_ready",
             target_url=f"/orders/{order.id}/",
         )
@@ -240,39 +169,14 @@ class OrderService:
 
     @classmethod
     @transaction.atomic
-    def mark_order_completed(cls, order_id, seller_profile):
-        """Mark order as completed."""
+    def mark_order_picked_up(cls, order_id, user_profile):
+        """Mark order as picked up - releases money to seller"""
+        order = Order.objects.select_for_update().get(id=order_id)
 
-        order = Order.objects.select_for_update().get(
-            id=order_id
-        )
+        if order.user != user_profile and order.seller != user_profile:
+            raise ValueError("Unauthorized to update this order")
 
-        # =====================================================
-        # AUTHORIZATION
-        # =====================================================
-
-        if order.seller != seller_profile:
-            raise ValueError(
-                "Unauthorized to update this order"
-            )
-
-        # =====================================================
-        # MARK COMPLETED
-        # =====================================================
-
-        order.mark_completed()
-
-        # =====================================================
-        # BUYER NOTIFICATION
-        # =====================================================
-
-        Notification.objects.create(
-            user=order.user.user,
-            message="Your order has been completed.",
-            notification_type="order_completed",
-            target_url=f"/orders/{order.id}/",
-        )
-
+        order.mark_picked_up()
         return order
 
     @classmethod
@@ -285,13 +189,20 @@ class OrderService:
             raise ValueError("Unauthorized to update this order")
 
         order.mark_completed()
+
+        Notification.objects.create(
+            user=order.user.user,
+            message="Your order has been completed.",
+            notification_type="order_completed",
+            target_url=f"/orders/{order.id}/",
+        )
+
         return order
 
     @classmethod
     @transaction.atomic
     def auto_ready_orders(cls):
         """Auto-change expired pending orders to ready for pickup."""
-
         expired_orders = Order.objects.filter(
             status="pending",
             auto_ready_at__lte=timezone.now()
@@ -300,14 +211,8 @@ class OrderService:
         updated_count = 0
 
         for order in expired_orders:
-
             try:
-
                 order.mark_ready_for_pickup()
-
-                # =================================================
-                # BUYER NOTIFICATION
-                # =================================================
 
                 Notification.objects.create(
                     user=order.user.user,
@@ -319,10 +224,6 @@ class OrderService:
                 updated_count += 1
 
             except Exception as e:
-
-                print(
-                    f"Failed to auto-ready "
-                    f"order #{order.id}: {str(e)}"
-                )
+                print(f"Failed to auto-ready order #{order.id}: {str(e)}")
 
         return updated_count

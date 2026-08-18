@@ -57,11 +57,9 @@
 
 <div class="seller-profile">
 
-    <!-- ==========================================
-         SELLER PROFILE PHOTO
-         ========================================== -->
-<a href="{% url 'user:seller-profile' post.user.user.username %}"
-   class="seller-avatar-link">
+    <!-- SELLER PROFILE PHOTO -->
+    <a href="{% url 'user:seller-profile' post.user.user.username %}"
+       class="seller-avatar-link">
 
         <div class="seller-avatar">
 
@@ -74,10 +72,9 @@
 
             {% else %}
 
-                <img
-                    src="{% static 'images/default-profile.png' %}"
-                    alt="Default profile"
-                >
+                <div class="default-avatar-placeholder">
+                    <i class="fa-solid fa-user"></i>
+                </div>
 
             {% endif %}
 
@@ -85,25 +82,20 @@
 
     </a>
 
-
-    <!-- ==========================================
-         SELLER INFORMATION
-         ========================================== -->
-
+    <!-- SELLER INFORMATION -->
     <div class="seller-info">
 
         <div class="seller-name-row">
 
             <!-- CLICKABLE SELLER NAME -->
-
-           <a
-    href="{% url 'user:seller-profile' post.user.user.username %}"
-    class="seller-name-link"
->
-    <span class="seller-name">
-        {{ post.user.fullName }}
-    </span>
-</a>
+            <a
+                href="{% url 'user:seller-profile' post.user.user.username %}"
+                class="seller-name-link"
+            >
+                <span class="seller-name">
+                    {{ post.user.fullName }}
+                </span>
+            </a>
 
             <span
                 class="verified-badge"
@@ -113,7 +105,6 @@
             </span>
 
         </div>
-
 
         <div class="seller-meta">
 
@@ -134,7 +125,6 @@
     </div>
 
 </div>
-
 
     <div class="post-title-area">
 
@@ -160,31 +150,28 @@
                 <div class="col-md-6">
                     <div class="main-image-box">
                         {% with first_image=item.images.first %}
-<img
-    src="{% if first_image %}{{ first_image.image.url }}{% else %}{% static 'images/no-image.png' %}{% endif %}"
-    class="main-image"
-    alt="{{ item.name }}"
->                        {% endwith %}
+                        <img
+                            src="{% if first_image %}{{ first_image.image.url }}{% else %}{% static 'images/no-image.png' %}{% endif %}"
+                            class="main-image"
+                            alt="{{ item.name }}"
+                        >
+                        {% endwith %}
                     </div>
                     <div class="thumbnail-row">
-
-    {% for image in item.images.all %}
-
-        <button
-            type="button"
-            class="thumbnail-wrapper {% if forloop.first %}active{% endif %}"
-            data-image-url="{{ image.image.url }}"
-        >
-            <img
-                src="{{ image.image.url }}"
-                class="thumbnail"
-                alt="{{ item.name }} image {{ forloop.counter }}"
-            >
-        </button>
-
-    {% endfor %}
-
-</div>
+                        {% for image in item.images.all %}
+                            <button
+                                type="button"
+                                class="thumbnail-wrapper {% if forloop.first %}active{% endif %}"
+                                data-image-url="{{ image.image.url }}"
+                            >
+                                <img
+                                    src="{{ image.image.url }}"
+                                    class="thumbnail"
+                                    alt="{{ item.name }} image {{ forloop.counter }}"
+                                >
+                            </button>
+                        {% endfor %}
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <h2 class="item-title">{{ item.name }}</h2>
