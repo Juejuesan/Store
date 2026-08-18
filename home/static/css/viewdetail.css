@@ -2055,3 +2055,27 @@
     font-size: 24px;
     border-radius: 50%;
 }
+
+/* Size Stock Display - BIGGER FONT */
+.size-stock-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background: #f8fafc;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #172033;
+}
+
+.size-stock-display i {
+    color: #2563eb;
+    font-size: 18px;
+}
+
+.size-stock-display .stock-text {
+    font-size: 16px;
+    font-weight: 700;
+}

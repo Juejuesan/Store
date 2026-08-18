@@ -1502,7 +1502,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =====================================================
+       /* =====================================================
        11C. RESET CURRENT ITEM CONTROLS
     ===================================================== */
 
@@ -1567,16 +1567,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        const sizeInfo =
+        /* Reset stock display */
+        const stockDisplay =
             slide.querySelector(
-                ".size-info"
+                '.size-stock-display .stock-text'
             );
 
 
-        if (sizeInfo) {
+        if (stockDisplay) {
 
-            sizeInfo.textContent =
-                "Select a size to see price and stock";
+            stockDisplay.textContent =
+                "Select a size";
         }
 
 
@@ -1695,7 +1696,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
-
 
     /* =====================================================
        11D. UPDATE ITEM NAVIGATION
@@ -1953,7 +1953,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateItemNavigation();
 
 
-    /* =====================================================
+        /* =====================================================
        12. SIZE SELECTION
     ===================================================== */
 
@@ -1965,35 +1965,29 @@ document.addEventListener("DOMContentLoaded", () => {
                     ".size-btn"
                 );
 
-
             const quantityInput =
                 slide.querySelector(
                     ".qty-input"
                 );
-
 
             const sizeVariantInput =
                 slide.querySelector(
                     'input[name="size_variant_id"]'
                 );
 
-
             const sizeInfo =
                 slide.querySelector(
                     ".size-info"
                 );
-
 
             const priceElement =
                 slide.querySelector(
                     ".item-price"
                 );
 
-
             if (!sizeButtons.length) {
                 return;
             }
-
 
             sizeButtons.forEach(
                 (sizeButton) => {
@@ -2008,10 +2002,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                 return;
                             }
 
-
                             const size =
                                 sizeButton.dataset.size;
-
 
                             const price =
                                 parseInt(
@@ -2019,21 +2011,17 @@ document.addEventListener("DOMContentLoaded", () => {
                                     10
                                 ) || 0;
 
-
                             const stock =
                                 parseInt(
                                     sizeButton.dataset.quantity,
                                     10
                                 ) || 0;
 
-
                             const variantId =
                                 sizeButton.dataset.variantId;
 
-
                             sizeButtons.forEach(
                                 (button) => {
-
                                     button.classList.remove(
                                         "selected",
                                         "active"
@@ -2041,53 +2029,34 @@ document.addEventListener("DOMContentLoaded", () => {
                                 }
                             );
 
-
                             sizeButton.classList.add(
                                 "selected",
                                 "active"
                             );
 
-
-                            if (
-                                sizeVariantInput
-                            ) {
-
+                            if (sizeVariantInput) {
                                 sizeVariantInput.value =
                                     variantId || "";
                             }
 
-
                             if (priceElement) {
-
                                 priceElement.textContent =
                                     `${price.toLocaleString()} MMK`;
                             }
 
-
                             if (quantityInput) {
-
-                                quantityInput.min =
-                                    "1";
-
-                                quantityInput.max =
-                                    String(stock);
-
-                                quantityInput.value =
-                                    stock > 0
-                                        ? "1"
-                                        : "0";
-
-                                quantityInput.disabled =
-                                    stock <= 0;
+                                quantityInput.min = "1";
+                                quantityInput.max = String(stock);
+                                quantityInput.value = stock > 0 ? "1" : "0";
+                                quantityInput.disabled = stock <= 0;
                             }
 
-
-                            if (sizeInfo) {
-
-                                sizeInfo.textContent =
+                             const stockDisplay = slide.querySelector('.size-stock-display .stock-text');
+                            if (stockDisplay) {
+                                stockDisplay.textContent =
                                     stock > 0
-                                        ? `${size} • ${price.toLocaleString()} MMK • ${stock} available`
-                                        : `${size} • Out of stock`;
+                                 ? `${stock} available`
+                                  : 'Out of stock';
                             }
                         }
                     );
@@ -2095,7 +2064,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
     );
-
 
     /* =====================================================
        13. INITIALIZE ALL SLIDES
@@ -2270,7 +2238,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =====================================================
+       /* =====================================================
        15. ADD TO CART
     ===================================================== */
 
@@ -2360,10 +2328,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         "";
 
 
-                    /* -----------------------------
-                       Size validation
-                    ----------------------------- */
-
+                    /* Size validation */
                     if (
                         sizeButtons.length > 0
                     ) {
@@ -2397,10 +2362,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    /* -----------------------------
-                       Quantity validation
-                    ----------------------------- */
-
+                    /* Quantity validation */
                     if (
                         quantity < 1
                     ) {
@@ -2438,10 +2400,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    /* -----------------------------
-                       Loading state
-                    ----------------------------- */
-
+                    /* Loading state */
                     button.dataset.busy =
                         "true";
 
@@ -2458,10 +2417,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
 
 
-                    /* -----------------------------
-                       Form data
-                    ----------------------------- */
-
+                    /* Form data */
                     const formData =
                         new FormData();
 
@@ -2542,10 +2498,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
 
 
-                        /* -----------------------------
-                           Success
-                        ----------------------------- */
-
+                        /* Success */
                         button.innerHTML =
                             '<i class="fa-solid fa-check"></i> Added';
 
@@ -2569,10 +2522,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
 
 
-                        /* -----------------------------
-                           Update stock
-                        ----------------------------- */
-
+                        /* Update stock display */
                         if (
                             selectedSize &&
                             sizeVariantId
@@ -2597,29 +2547,19 @@ document.addEventListener("DOMContentLoaded", () => {
                                 newQty;
 
 
-                            if (sizeInfoForSlide(
-                                slide
-                            )) {
-
-                                const info =
-                                    sizeInfoForSlide(
-                                        slide
-                                    );
+                            /* UPDATE STOCK TEXT */
+                            const stockDisplay =
+                                slide.querySelector(
+                                    '.size-stock-display .stock-text'
+                                );
 
 
-                                if (newQty > 0) {
+                            if (stockDisplay) {
 
-                                    info.textContent =
-                                        `${selectedSize.dataset.size} • ${parseInt(
-                                            selectedSize.dataset.price,
-                                            10
-                                        ).toLocaleString()} MMK • ${newQty} available`;
-
-                                } else {
-
-                                    info.textContent =
-                                        `${selectedSize.dataset.size} • Out of stock`;
-                                }
+                                stockDisplay.textContent =
+                                    newQty > 0
+                                        ? `${newQty} available`
+                                        : 'Out of stock';
                             }
 
 
@@ -2671,6 +2611,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         } else {
 
+                            /* For non-sized items */
                             const stockDisplay =
                                 slide.querySelector(
                                     ".stock-display"
@@ -2740,10 +2681,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
 
 
-                        /* -----------------------------
-                           Reset quantity
-                        ----------------------------- */
-
+                        /* Reset quantity */
                         if (quantityInput) {
 
                             quantityInput.value =
@@ -2801,18 +2739,12 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    function sizeInfoForSlide(
-        slide
-    ) {
-
-        if (!slide) {
-            return null;
-        }
-
-        return slide.querySelector(
-            ".size-info"
-        );
+  function sizeInfoForSlide(slide) {
+    if (!slide) {
+        return null;
     }
+    return slide.querySelector(".size-stock-display .stock-text");
+}
 
 
     /* =====================================================

@@ -57,86 +57,49 @@
 
 <div class="seller-profile">
 
-    <!-- SELLER PROFILE PHOTO -->
     <a href="{% url 'user:seller-profile' post.user.user.username %}"
        class="seller-avatar-link">
 
         <div class="seller-avatar">
-
             {% if post.user.profile_pic %}
-
-                <img
-                    src="{{ post.user.profile_pic.url }}"
-                    alt="{{ post.user.fullName }}"
-                >
-
+                <img src="{{ post.user.profile_pic.url }}" alt="{{ post.user.fullName }}">
             {% else %}
-
                 <div class="default-avatar-placeholder">
                     <i class="fa-solid fa-user"></i>
                 </div>
-
             {% endif %}
-
         </div>
-
     </a>
 
-    <!-- SELLER INFORMATION -->
     <div class="seller-info">
-
         <div class="seller-name-row">
-
-            <!-- CLICKABLE SELLER NAME -->
-            <a
-                href="{% url 'user:seller-profile' post.user.user.username %}"
-                class="seller-name-link"
-            >
-                <span class="seller-name">
-                    {{ post.user.fullName }}
-                </span>
+            <a href="{% url 'user:seller-profile' post.user.user.username %}" class="seller-name-link">
+                <span class="seller-name">{{ post.user.fullName }}</span>
             </a>
-
-            <span
-                class="verified-badge"
-                title="Verified seller"
-            >
+            <span class="verified-badge" title="Verified seller">
                 <i class="fa-solid fa-check"></i>
             </span>
-
         </div>
-
         <div class="seller-meta">
-
             <span>
                 <i class="fa-regular fa-clock"></i>
                 {{ post.created_at|timesince }} ago
             </span>
-
             <span class="meta-dot">•</span>
-
             <span>
                 <i class="fa-solid fa-box"></i>
                 {{ post.items.count }} items
             </span>
-
         </div>
-
     </div>
-
 </div>
 
     <div class="post-title-area">
-
         <span class="marketplace-label">
             <i class="fa-solid fa-store"></i>
             Trusty Marketplace
         </span>
-
-        <h3>
-            {{ post.description|truncatechars:60 }}
-        </h3>
-
+        <h3>{{ post.description|truncatechars:60 }}</h3>
     </div>
 
 </div>
@@ -195,10 +158,15 @@
                             {% endfor %}
                         </div>
                         <input type="hidden" name="size_variant_id" id="sizeVariantId{{ forloop.counter0 }}" value="">
-                        <small class="size-info text-muted mt-2" id="sizeInfo{{ forloop.counter0 }}">Select a size to see price and stock</small>
+                        <!-- Stock display - BIGGER FONT, QUANTITY ONLY -->
+                        <div class="size-stock-display" id="sizeStock{{ forloop.counter0 }}">
+                            <i class="fa-solid fa-box"></i>
+                            <span class="stock-text">Select a size</span>
+                        </div>
                     </div>
                     {% else %}
                         <p class="mt-3 stock-display" data-stock="{{ item.simple_quantity }}">
+                            <i class="fa-solid fa-box"></i>
                             <strong>Stock:</strong> {{ item.simple_quantity }} available
                         </p>
                     {% endif %}

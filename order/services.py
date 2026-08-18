@@ -9,9 +9,9 @@ from .models import Order, OrderItem
 from notifications.models import Notification
 
 class OrderService:
-    CANCELLATION_WINDOW_MINUTES = 180  # 3 hours in minutes
+    CANCELLATION_WINDOW_MINUTES = 3
     MAX_CANCELLATIONS_PER_MONTH = 3
-    AUTO_READY_MINUTES = 180  # 3 hours in minutes
+    AUTO_READY_MINUTES = 3
 
     @classmethod
     @transaction.atomic
