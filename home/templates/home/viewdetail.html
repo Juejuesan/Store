@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load humanize %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -138,7 +139,7 @@
                 </div>
                 <div class="col-md-6">
                     <h2 class="item-title">{{ item.name }}</h2>
-                    <h3 class="item-price" id="itemPrice{{ forloop.counter0 }}">{{ item.price }} MMK</h3>
+                    <h3 class="item-price" id="itemPrice{{ forloop.counter0 }}">{{ item.price|intcomma }} MMK</h3>
                     {% if item.description %}<p class="text-muted">{{ item.description }}</p>{% endif %}
 
                     {% if item.has_sizes and item.size_variants.all %}
