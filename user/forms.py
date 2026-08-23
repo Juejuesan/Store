@@ -54,18 +54,6 @@ class RegisterForm(forms.ModelForm):
         ),
     )
 
-    address = forms.CharField(
-        max_length=200,
-        required=True,
-        widget=forms.TextInput(
-            attrs={
-                "class": "form-input",
-                "placeholder": " ",
-                "autocomplete": "street-address",
-            }
-        ),
-    )
-
     gender = forms.ChoiceField(
         choices=[
             ("", "Select your gender"),
@@ -501,7 +489,6 @@ class ProfileEditForm(forms.ModelForm):
             fields = [
                 "fullName",
                 "phone_number",
-                "address",
                 "gender",
             ]
 
@@ -520,13 +507,6 @@ class ProfileEditForm(forms.ModelForm):
                     }
                 ),
 
-                "address": forms.Textarea(
-                    attrs={
-                        "class": "form-control",
-                        "placeholder": "Enter your address",
-                        "rows": 3,
-                    }
-                ),
 
                 "gender": forms.Select(
                     attrs={

@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/sale_detail.css' %}">
 
 <div class="sale-detail-page">
     <div class="container py-4">
-        
+
         <!-- Back & Header -->
         <a href="{% url 'order:sale_list' %}" class="back-btn mb-3">
             <i class="fa-solid fa-arrow-left"></i> Back to Sales
@@ -18,7 +19,7 @@
                 <p>Placed on {{ order.created_at|date:"F d, Y - H:i" }}</p>
             </div>
             <span class="status-badge status-{{ order.status }}">
-                {{ order.status|title }}
+                {{ order.get_status_display }}
             </span>
         </div>
 
@@ -28,9 +29,10 @@
                 <!-- Items -->
                 <div class="card-box">
                     <h4 class="card-title"><i class="fa-solid fa-box"></i> Items</h4>
-                    
+
                     {% for order_item in order.items.all %}
                     <div class="detail-item">
+                        <!-- Main Item Image -->
                         <div class="item-image">
                             {% with first_image=order_item.item.images.first %}
                                 {% if first_image %}
@@ -40,27 +42,44 @@
                                 {% endif %}
                             {% endwith %}
                         </div>
+
                         <div class="item-info">
                             <h5>{{ order_item.item_name }}</h5>
                             {% if order_item.size_variant %}
                                 <span class="size-tag">Size: {{ order_item.size_variant.size }}</span>
                             {% endif %}
-                            <p>{{ order_item.quantity }} × {{ order_item.unit_price }} MMK</p>
-                            <strong>{{ order_item.total_price }} MMK</strong>
+                            <p>{{ order_item.quantity }} × {{ order_item.unit_price|intcomma }} MMK</p>
+                            <strong>{{ order_item.total_price|intcomma }} MMK</strong>
                         </div>
                     </div>
+
+                    <!-- ALL ITEM IMAGES -->
+                    {% if order_item.item.images.count > 1 %}
+                    <div class="item-all-images">
+                        <span class="all-images-label"><i class="fa-solid fa-images"></i> All Photos:</span>
+                        <div class="all-images-row">
+                            {% for image in order_item.item.images.all %}
+                                <img
+                                    src="{{ image.image.url }}"
+                                    alt="{{ order_item.item_name }} image {{ forloop.counter }}"
+                                    class="thumb-image"
+                                >
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
                     {% endfor %}
 
                     <div class="total-row">
                         <span>Total Amount</span>
-                        <strong>{{ order.total_amount }} MMK</strong>
+                        <strong>{{ order.total_amount|intcomma }} MMK</strong>
                     </div>
                 </div>
 
                 <!-- Status Timeline -->
                 <div class="card-box mt-4">
                     <h4 class="card-title"><i class="fa-solid fa-route"></i> Order Status</h4>
-                    
+
                     <div class="timeline">
                         <div class="timeline-item {% if order.created_at %}done{% endif %}">
                             <div class="dot"></div>
@@ -69,7 +88,7 @@
                                 <small>{{ order.pending_at|date:"M d, Y H:i" }}</small>
                             </div>
                         </div>
-                        
+
                         <div class="timeline-item {% if order.ready_for_pickup_at %}done{% endif %}">
                             <div class="dot"></div>
                             <div>
@@ -77,7 +96,7 @@
                                 <small>{% if order.ready_for_pickup_at %}{{ order.ready_for_pickup_at|date:"M d, Y H:i" }}{% else %}Pending{% endif %}</small>
                             </div>
                         </div>
-                        
+
                         <div class="timeline-item {% if order.picked_up_at %}done{% endif %}">
                             <div class="dot"></div>
                             <div>
@@ -85,7 +104,7 @@
                                 <small>{% if order.picked_up_at %}{{ order.picked_up_at|date:"M d, Y H:i" }}{% else %}Pending{% endif %}</small>
                             </div>
                         </div>
-                        
+
                         <div class="timeline-item {% if order.completed_at %}done{% endif %}">
                             <div class="dot"></div>
                             <div>
@@ -93,7 +112,7 @@
                                 <small>{% if order.completed_at %}{{ order.completed_at|date:"M d, Y H:i" }}{% else %}Pending{% endif %}</small>
                             </div>
                         </div>
-                        
+
                         {% if order.cancelled_at %}
                         <div class="timeline-item cancelled">
                             <div class="dot"></div>
@@ -133,12 +152,12 @@
                     <div class="payment-info">
                         <p>
                             <span>Total:</span>
-                            <strong>{{ order.total_amount }} MMK</strong>
+                            <strong>{{ order.total_amount|intcomma }} MMK</strong>
                         </p>
                         <p>
                             <span>Status:</span>
                             <span class="payment-badge payment-{{ order.payment_status }}">
-                                {{ order.payment_status|title }}
+                                {{ order.get_payment_status_display }}
                             </span>
                         </p>
                     </div>

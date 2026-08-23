@@ -13,6 +13,8 @@ from cart.models import Cart
 
 from .models import Order
 from .services import OrderService
+from django.core.paginator import Paginator
+
 
 
 # =========================================================
@@ -157,68 +159,41 @@ def purchase_cart(request):
 
 @login_required
 def order_list(request):
-    """
-    Display all orders belonging to the current buyer.
-    """
+    """Display all orders belonging to the current buyer."""
 
-    # -----------------------------------------------------
-    # AUTO READY EXPIRED ORDERS
-    # -----------------------------------------------------
-
+    # Auto ready expired orders
     check_and_auto_ready_orders()
 
-    # -----------------------------------------------------
-    # STATUS FILTER
-    # -----------------------------------------------------
+    # Status filter
+    status_filter = request.GET.get("status", "all")
 
-    status_filter = request.GET.get(
-        "status",
-        "all"
-    )
-
-    # -----------------------------------------------------
-    # GET ORDERS
-    # -----------------------------------------------------
-
+    # Get orders
     orders = (
         Order.objects
-        .filter(
-            user=request.user.profile
-        )
-        .select_related(
-            "seller__user"
-        )
-        .prefetch_related(
-            "items__item__images"
-        )
+        .filter(user=request.user.profile)
+        .select_related("seller__user")
+        .prefetch_related("items__item__images")
+        .order_by("-created_at")
     )
 
-    # -----------------------------------------------------
-    # APPLY FILTER
-    # -----------------------------------------------------
-
+    # Apply filter
     if status_filter != "all":
+        orders = orders.filter(status=status_filter)
 
-        orders = orders.filter(
-            status=status_filter
-        )
+    # Pagination - 10 orders per page
+    paginator = Paginator(orders, 10)
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
 
-    # -----------------------------------------------------
-    # CONTEXT
-    # -----------------------------------------------------
-
+    # Context
     context = {
-        "orders": orders,
+        "orders": page_obj,
+        "page_obj": page_obj,
         "is_buyer_view": True,
         "current_status": status_filter,
     }
 
-    return render(
-        request,
-        "order_list.html",
-        context
-    )
-
+    return render(request, "order_list.html", context)
 
 # =========================================================
 # ORDER DETAIL
@@ -566,6 +541,9 @@ def mark_completed(request, order_id):
 # SELLER SALES LIST
 # =========================================================
 
+from django.core.paginator import Paginator
+from django.db.models import Sum
+
 @login_required
 def sale_list(request):
     """
@@ -573,21 +551,27 @@ def sale_list(request):
     """
 
     # -----------------------------------------------------
+    # STATUS FILTER
+    # -----------------------------------------------------
+
+    status_filter = request.GET.get("status", "all")
+
+    # -----------------------------------------------------
     # GET SALES
     # -----------------------------------------------------
 
     sales = (
         Order.objects
-        .filter(
-            seller=request.user.profile
-        )
-        .order_by(
-            "-created_at"
-        )
+        .filter(seller=request.user.profile)
+        .order_by("-created_at")
     )
 
+    # Apply status filter
+    if status_filter != "all":
+        sales = sales.filter(status=status_filter)
+
     # -----------------------------------------------------
-    # TOTAL EARNED
+    # TOTAL EARNED (released payments)
     # -----------------------------------------------------
 
     total_earned = (
@@ -596,25 +580,21 @@ def sale_list(request):
             seller=request.user.profile,
             payment_status="released"
         )
-        .aggregate(
-            Sum("total_amount")
-        )["total_amount__sum"]
+        .aggregate(Sum("total_amount"))["total_amount__sum"]
         or 0
     )
 
     # -----------------------------------------------------
-    # PENDING AMOUNT
+    # PENDING AMOUNT (ready_for_pickup status)
     # -----------------------------------------------------
 
     pending_amount = (
         Order.objects
         .filter(
             seller=request.user.profile,
-            status="pending"
+            status="ready_for_pickup"
         )
-        .aggregate(
-            Sum("total_amount")
-        )["total_amount__sum"]
+        .aggregate(Sum("total_amount"))["total_amount__sum"]
         or 0
     )
 
@@ -622,45 +602,49 @@ def sale_list(request):
     # STATUS COUNTS
     # -----------------------------------------------------
 
-    pending_count = sales.filter(
+    pending_count = Order.objects.filter(
+        seller=request.user.profile,
         status="pending"
     ).count()
 
-    ready_count = sales.filter(
+    ready_count = Order.objects.filter(
+        seller=request.user.profile,
         status="ready_for_pickup"
     ).count()
 
-    completed_count = sales.filter(
-        status__in=[
-            "picked_up",
-            "completed"
-        ]
+    completed_count = Order.objects.filter(
+        seller=request.user.profile,
+        status__in=["picked_up", "completed"]
     ).count()
 
-    cancelled_count = sales.filter(
+    cancelled_count = Order.objects.filter(
+        seller=request.user.profile,
         status="cancelled"
     ).count()
+
+    # -----------------------------------------------------
+    # PAGINATION (10 per page)
+    # -----------------------------------------------------
+
+    paginator = Paginator(sales, 10)
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
 
     # -----------------------------------------------------
     # CONTEXT
     # -----------------------------------------------------
 
     context = {
-        "sales": sales,
-
+        "sales": page_obj,
+        "page_obj": page_obj,
+        "current_status": status_filter,
         "total_earned": total_earned,
-
         "pending_amount": pending_amount,
-
         "pending_count": pending_count,
-
         "ready_count": ready_count,
-
         "completed_count": completed_count,
-
         "cancelled_count": cancelled_count,
-
-        "total_sales": sales.count(),
+        "total_sales": Order.objects.filter(seller=request.user.profile).count(),
     }
 
     return render(

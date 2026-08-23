@@ -29,7 +29,7 @@ def home(request):
         'items',
         'items__images',
         'items__size_variants',
-    )
+    ).order_by('-created_at')  # ADD THIS
 
     # =====================================================
     # NORMAL TEXT SEARCH

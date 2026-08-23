@@ -9,7 +9,7 @@
 
 {% block content %}
 <div class="order-detail-container">
-    
+
     <!-- Header -->
     <div class="order-detail-header">
         <div>
@@ -22,7 +22,7 @@
             {{ order.get_status_display }}
         </span>
     </div>
-    
+
     <div class="row">
         <!-- Left Column -->
         <div class="col-md-6">
@@ -64,7 +64,7 @@
                     </table>
                 </div>
             </div>
-            
+
             <!-- Timeline -->
             <div class="order-info-card">
                 <div class="card-header">
@@ -104,7 +104,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Right Column -->
         <div class="col-md-6">
             <!-- Buyer & Seller Info -->
@@ -129,7 +129,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Admin Actions -->
             <div class="order-info-card">
                 <div class="card-header">
@@ -138,7 +138,7 @@
                 <div class="card-body">
                     {% if order.status == 'pending' %}
                         {% if order.auto_ready_at and order.auto_ready_at > now %}
-                            <!-- Countdown still running - DISABLE READY BUTTON -->
+                            <!-- Countdown still running - DELETE BUTTON ONLY -->
                             <div class="countdown-warning mb-3">
                                 <i class="fa-solid fa-hourglass-half"></i>
                                 <div>
@@ -146,38 +146,36 @@
                                     <span class="countdown-timer" data-auto-ready-at="{{ order.auto_ready_at|date:'c' }}">
                                         <span class="countdown-text">Loading...</span>
                                     </span>
-                                    <small>You can mark as ready after the countdown ends.</small>
+                                    <small>Order will auto-ready after countdown ends.</small>
                                 </div>
                             </div>
 
                             <div class="d-grid gap-2">
-                                <button class="action-btn ready" disabled style="opacity: 0.5; cursor: not-allowed;">
-                                    <i class="fa-solid fa-box-open"></i> Mark as Ready for Pickup (Wait for countdown)
-                                </button>
-                                <a href="{% url 'admin_update_order_status' order.id 'cancelled' %}" class="action-btn cancel confirm-action" data-confirm-message="Cancel this order? Refund will be processed.">
-                                    <i class="fa-solid fa-ban"></i> Cancel Order & Refund
+                                <a href="{% url 'admin_pending_order' order.id %}" class="action-btn cancel confirm-action" data-confirm-message="Delete this order? This cannot be undone.">
+                                    <i class="fa-solid fa-trash"></i> Delete Order
                                 </a>
                             </div>
                         {% else %}
-                            <!-- Countdown finished - ENABLE READY BUTTON -->
+                            <!-- Countdown finished -->
                             <div class="alert alert-success mb-3">
-                                <i class="fa-solid fa-check-circle"></i> Waiting period complete. You can mark as ready.
+                                <i class="fa-solid fa-check-circle"></i> Waiting period complete.
                             </div>
 
                             <div class="d-grid gap-2">
-                                <a href="{% url 'admin_update_order_status' order.id 'ready_for_pickup' %}" class="action-btn ready confirm-action" data-confirm-message="Mark this order as ready for pickup?">
-                                    <i class="fa-solid fa-box-open"></i> Mark as Ready for Pickup
-                                </a>
-                                <a href="{% url 'admin_update_order_status' order.id 'cancelled' %}" class="action-btn cancel confirm-action" data-confirm-message="Cancel this order? Refund will be processed.">
-                                    <i class="fa-solid fa-ban"></i> Cancel Order & Refund
+                                <a href="{% url 'admin_delete_order' order.id %}" class="action-btn cancel confirm-action" data-confirm-message="Delete this order? This cannot be undone.">
+                                    <i class="fa-solid fa-trash"></i> Delete Order
                                 </a>
                             </div>
                         {% endif %}
 
                     {% elif order.status == 'ready_for_pickup' %}
+                    <!-- READY FOR PICKUP - Add Cancel Order button -->
                     <div class="d-grid gap-2">
                         <a href="{% url 'admin_update_order_status' order.id 'picked_up' %}" class="action-btn picked confirm-action" data-confirm-message="Mark this order as picked up? Money will be transferred to seller.">
                             <i class="fa-solid fa-hand"></i> Picked Up - Transfer Money to Seller
+                        </a>
+                        <a href="{% url 'admin_update_order_status' order.id 'cancelled' %}" class="action-btn cancel confirm-action" data-confirm-message="Cancel this order? Refund will be processed to buyer.">
+                            <i class="fa-solid fa-ban"></i> Cancel Order & Refund
                         </a>
                     </div>
                     {% elif order.status == 'picked_up' %}
@@ -199,7 +197,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Order Items -->
     <div class="order-info-card">
         <div class="card-header">
@@ -242,7 +240,7 @@
             </div>
         </div>
     </div>
-    
+
 </div>
 {% endblock %}
 

@@ -431,4 +431,123 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
+
+    /*=====================================================
+        CART COUNT - HIDE BADGE WHEN 0
+    ======================================================*/
+
+    function loadCartCount() {
+
+        fetch(
+            "/cart/count/",
+            {
+                method: "GET",
+                credentials: "same-origin",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            }
+        )
+
+        .then(function (response) {
+
+            if (!response.ok) {
+                throw new Error("Cart count request failed.");
+            }
+
+            return response.json();
+
+        })
+
+        .then(function (data) {
+
+            const cartBadge = document.getElementById("cartBadge");
+
+            if (!cartBadge) {
+                return;
+            }
+
+            const count = Number(data.cart_count || 0);
+
+            if (count > 0) {
+                cartBadge.textContent = count;
+                cartBadge.style.display = "inline-block";
+            } else {
+                cartBadge.textContent = "";
+                cartBadge.style.display = "none";
+            }
+
+        })
+
+        .catch(function (error) {
+            console.error("Cart count error:", error);
+        });
+
+    }
+
+
+    /*=====================================================
+        NOTIFICATION COUNT - HIDE BADGE WHEN 0
+    ======================================================*/
+
+    function loadNotificationCount() {
+
+        fetch(
+            "/notifications/count/",
+            {
+                method: "GET",
+                credentials: "same-origin",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            }
+        )
+
+        .then(function (response) {
+
+            if (!response.ok) {
+                throw new Error("Notification count request failed.");
+            }
+
+            return response.json();
+
+        })
+
+        .then(function (data) {
+
+            const badge = document.getElementById("notificationBadge");
+
+            if (!badge) {
+                return;
+            }
+
+            const count = Number(data.count || 0);
+
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = "flex";
+            } else {
+                badge.textContent = "";
+                badge.style.display = "none";
+            }
+
+        })
+
+        .catch(function (error) {
+            console.error("Notification count error:", error);
+        });
+
+    }
+
+
+    /*=====================================================
+        INITIAL LOAD + AUTO REFRESH
+    ======================================================*/
+
+    loadCartCount();
+    loadNotificationCount();
+
+    window.cartCountInterval = setInterval(loadCartCount, 5000);
+    window.notificationCountInterval = setInterval(loadNotificationCount, 5000);
+
 });

@@ -110,8 +110,6 @@ def register_view(request):
 
                 "phone_number": form.cleaned_data["phone_number"],
 
-                "address": form.cleaned_data["address"],
-
                 "gender": form.cleaned_data["gender"],
 
                 "verification_code": verification_code,

@@ -105,11 +105,7 @@
                             <span
                                 id="notificationBadge"
                                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                style="{% if user_notification_count > 0 %}display:flex;{% else %}display:none;{% endif %}">
-
-                                {% if user_notification_count > 0 %}
-                                    {{ user_notification_count }}
-                                {% endif %}
+                                style="display:none;">
 
                             </span>
 
@@ -165,7 +161,7 @@
 
                             Cart
 
-                            <span class="cart-count" id="cartBadge">0</span>
+                            <span class="cart-count" id="cartBadge" style="display:none;"></span>
 
                         </a>
 
@@ -358,8 +354,13 @@
 
             const count = Number(data.cart_count || 0);
 
-            cartBadge.textContent = count;
-            cartBadge.style.display = "inline-block";
+            if (count > 0) {
+                cartBadge.textContent = count;
+                cartBadge.style.display = "inline-block";
+            } else {
+                cartBadge.textContent = "";
+                cartBadge.style.display = "none";
+            }
 
         })
 
@@ -403,6 +404,16 @@
 
     window.notificationCountInterval = setInterval(
         loadNotificationCount,
+        5000
+    );
+
+
+    // =========================================================
+    // AUTO REFRESH CART COUNT EVERY 5 SECONDS
+    // =========================================================
+
+    window.cartCountInterval = setInterval(
+        loadCartCount,
         5000
     );
 
