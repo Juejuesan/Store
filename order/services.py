@@ -70,6 +70,10 @@ class OrderService:
             auto_ready_at=auto_ready_at,
             phone_number=phone_number or user_profile.phone_number,
             location=location or user_profile.address,
+            # Seller fields - ALL empty, seller will fill them
+            seller_phone=None,  # Seller will provide
+            seller_location=None,  # Seller will provide
+            seller_confirmed=False,
         )
 
         # Add ALL items to the SAME order
@@ -95,14 +99,17 @@ class OrderService:
             target_url=f"/orders/{order.id}/",
         )
 
-        # SELLER NOTIFICATIONS (notify all unique sellers)
+        # SELLER NOTIFICATIONS - Ask to confirm pickup details
         unique_sellers = set(cart_item.item.post.user for cart_item in cart_items)
         for seller_profile in unique_sellers:
             Notification.objects.create(
                 user=seller_profile.user,
-                message="You received a new order.",
+                message=(
+                    f"You received a new order (#{order.id}). "
+                    f"Please confirm your pickup location and phone number."
+                ),
                 notification_type="order_created",
-                target_url=f"/orders/{order.id}/",
+                target_url=f"/orders/{order.id}/confirm-pickup/",
             )
 
         # Update cart status
@@ -113,25 +120,34 @@ class OrderService:
 
     @classmethod
     @transaction.atomic
-    def cancel_order(cls, order_id, user_profile, reason=None):
+    def cancel_order(cls, order_id, user_profile=None, reason=None, by_admin=False):
         """Cancel order and process refund."""
         order = Order.objects.select_for_update().get(id=order_id)
 
-        if order.user != user_profile:
-            raise ValueError("Unauthorized to cancel this order")
+        if by_admin:
+            # Admin can cancel pending or ready_for_pickup
+            if order.status not in ['pending', 'ready_for_pickup']:
+                raise ValueError("Order cannot be cancelled at this stage")
+        else:
+            # User cancellation - requires authorization and valid window
+            if not user_profile:
+                raise ValueError("User profile is required")
 
-        if not order.can_cancel:
-            raise ValueError("Order cannot be cancelled - cancellation window has expired")
+            if order.user != user_profile:
+                raise ValueError("Unauthorized to cancel this order")
 
-        current_count = Order.get_user_cancellation_count_this_month(user_profile)
-        if current_count >= cls.MAX_CANCELLATIONS_PER_MONTH:
-            raise ValueError(
-                f"You have reached your monthly cancellation "
-                f"limit ({cls.MAX_CANCELLATIONS_PER_MONTH} "
-                f"cancellations). Please wait until next month."
-            )
+            if not order.can_cancel:
+                raise ValueError("Order cannot be cancelled - cancellation window has expired")
 
-        order.cancel_order(reason)
+            current_count = Order.get_user_cancellation_count_this_month(user_profile)
+            if current_count >= cls.MAX_CANCELLATIONS_PER_MONTH:
+                raise ValueError(
+                    f"You have reached your monthly cancellation "
+                    f"limit ({cls.MAX_CANCELLATIONS_PER_MONTH} "
+                    f"cancellations). Please wait until next month."
+                )
+
+        order.cancel_order(reason, by_admin=by_admin)
 
         # BUYER NOTIFICATION
         Notification.objects.create(
@@ -142,6 +158,30 @@ class OrderService:
                 f"has been refunded to your wallet."
             ),
             notification_type="order_cancelled",
+            target_url=f"/orders/{order.id}/",
+        )
+
+        return order
+
+    @classmethod
+    @transaction.atomic
+    def confirm_seller_pickup(cls, order_id, seller_profile, phone, location):
+        """Seller confirms their pickup details (BOTH phone and location required)"""
+        order = Order.objects.select_for_update().get(id=order_id)
+
+        if order.seller != seller_profile:
+            raise ValueError("Unauthorized to update this order")
+
+        if order.status != 'pending':
+            raise ValueError("Order is not pending")
+
+        order.confirm_seller_details(phone, location)
+
+        # Notify buyer that seller confirmed
+        Notification.objects.create(
+            user=order.user.user,
+            message="Seller confirmed pickup details. Your order is being processed.",
+            notification_type="order_updated",
             target_url=f"/orders/{order.id}/",
         )
 
@@ -202,10 +242,12 @@ class OrderService:
     @classmethod
     @transaction.atomic
     def auto_ready_orders(cls):
-        """Auto-change expired pending orders to ready for pickup."""
+        """Auto-ready orders where BOTH conditions are met"""
+        # Countdown done AND seller confirmed
         expired_orders = Order.objects.filter(
             status="pending",
-            auto_ready_at__lte=timezone.now()
+            auto_ready_at__lte=timezone.now(),
+            seller_confirmed=True  # Seller must confirm first
         )
 
         updated_count = 0

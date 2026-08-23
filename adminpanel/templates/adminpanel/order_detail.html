@@ -1,10 +1,12 @@
 {% extends "adminpanel/base_admin.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Order #{{ order.id }} | Admin Panel{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/admin_order.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin_order_detail.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -47,18 +49,67 @@
                         </tr>
                         <tr>
                             <th>Total Amount:</th>
-                            <td><strong>{{ order.total_amount }} Ks</strong></td>
+                            <td><strong>{{ order.total_amount|intcomma }} Ks</strong></td>
                         </tr>
                         <tr>
                             <th>Created:</th>
                             <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
                         </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pickup Details (Seller) -->
+            <div class="order-info-card mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5><i class="fa-solid fa-box-open"></i> Pickup Details</h5>
+                </div>
+                <div class="card-body">
+                    <table class="info-table">
                         <tr>
-                            <th>Phone:</th>
+                            <th>Seller Name:</th>
+                            <td>{{ order.seller.fullName|default:order.seller.user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>Seller Phone:</th>
+                            <td>{{ order.seller_phone|default:"Not provided yet" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Pickup Location:</th>
+                            <td>{{ order.seller_location|default:"Not provided yet" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Confirmed:</th>
+                            <td>
+                                {% if order.seller_confirmed %}
+                                    <span class="badge bg-success">Confirmed</span>
+                                    <small>{{ order.seller_confirmed_at|date:"M d, Y H:i" }}</small>
+                                {% else %}
+                                    <span class="badge bg-danger">Not Confirmed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Delivery Details (Buyer) -->
+            <div class="order-info-card mt-3">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fa-solid fa-truck"></i> Delivery Details</h5>
+                </div>
+                <div class="card-body">
+                    <table class="info-table">
+                        <tr>
+                            <th>Buyer Name:</th>
+                            <td>{{ order.user.fullName|default:order.user.user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>Buyer Phone:</th>
                             <td>{{ order.phone_number|default:"-" }}</td>
                         </tr>
                         <tr>
-                            <th>Location:</th>
+                            <th>Delivery Location:</th>
                             <td>{{ order.location|default:"-" }}</td>
                         </tr>
                     </table>
@@ -66,7 +117,7 @@
             </div>
 
             <!-- Timeline -->
-            <div class="order-info-card">
+            <div class="order-info-card mt-3">
                 <div class="card-header">
                     <h5><i class="fa-solid fa-history"></i> Order Timeline</h5>
                 </div>
@@ -107,29 +158,6 @@
 
         <!-- Right Column -->
         <div class="col-md-6">
-            <!-- Buyer & Seller Info -->
-            <div class="order-info-card">
-                <div class="card-header">
-                    <h5><i class="fa-solid fa-users"></i> Buyer & Seller</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <h6 class="text-primary">Buyer</h6>
-                            <p><strong>Username:</strong> {{ order.user.user.username }}</p>
-                            <p><strong>Name:</strong> {{ order.user.fullName|default:"-" }}</p>
-                            <p><strong>Phone:</strong> {{ order.user.phone_number|default:"-" }}</p>
-                        </div>
-                        <div class="col-6">
-                            <h6 class="text-success">Seller</h6>
-                            <p><strong>Username:</strong> {{ order.seller.user.username }}</p>
-                            <p><strong>Name:</strong> {{ order.seller.fullName|default:"-" }}</p>
-                            <p><strong>Phone:</strong> {{ order.seller.phone_number|default:"-" }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Admin Actions -->
             <div class="order-info-card">
                 <div class="card-header">
@@ -138,7 +166,6 @@
                 <div class="card-body">
                     {% if order.status == 'pending' %}
                         {% if order.auto_ready_at and order.auto_ready_at > now %}
-                            <!-- Countdown still running - DELETE BUTTON ONLY -->
                             <div class="countdown-warning mb-3">
                                 <i class="fa-solid fa-hourglass-half"></i>
                                 <div>
@@ -149,27 +176,24 @@
                                     <small>Order will auto-ready after countdown ends.</small>
                                 </div>
                             </div>
-
-                            <div class="d-grid gap-2">
-                                <a href="{% url 'admin_pending_order' order.id %}" class="action-btn cancel confirm-action" data-confirm-message="Delete this order? This cannot be undone.">
-                                    <i class="fa-solid fa-trash"></i> Delete Order
-                                </a>
+                            <div class="alert alert-info">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Waiting for countdown to complete.
                             </div>
                         {% else %}
-                            <!-- Countdown finished -->
                             <div class="alert alert-success mb-3">
                                 <i class="fa-solid fa-check-circle"></i> Waiting period complete.
                             </div>
+                        {% endif %}
 
-                            <div class="d-grid gap-2">
-                                <a href="{% url 'admin_delete_order' order.id %}" class="action-btn cancel confirm-action" data-confirm-message="Delete this order? This cannot be undone.">
-                                    <i class="fa-solid fa-trash"></i> Delete Order
-                                </a>
+                        {% if not order.seller_confirmed %}
+                            <div class="alert alert-warning">
+                                <i class="fa-solid fa-exclamation-triangle"></i>
+                                Waiting for seller to confirm pickup details.
                             </div>
                         {% endif %}
 
                     {% elif order.status == 'ready_for_pickup' %}
-                    <!-- READY FOR PICKUP - Add Cancel Order button -->
                     <div class="d-grid gap-2">
                         <a href="{% url 'admin_update_order_status' order.id 'picked_up' %}" class="action-btn picked confirm-action" data-confirm-message="Mark this order as picked up? Money will be transferred to seller.">
                             <i class="fa-solid fa-hand"></i> Picked Up - Transfer Money to Seller
@@ -195,48 +219,61 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Order Items -->
-    <div class="order-info-card">
-        <div class="card-header">
-            <h5><i class="fa-solid fa-list"></i> Order Items</h5>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="orders-table">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Size</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in order.items.all %}
-                        <tr>
-                            <td>{{ item.item_name }}</td>
-                            <td>{% if item.size_variant %}{{ item.size_variant.size }}{% else %}One Size{% endif %}</td>
-                            <td>{{ item.unit_price }} Ks</td>
-                            <td>{{ item.quantity }}</td>
-                            <td><strong>{{ item.total_price }} Ks</strong></td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center">No items found</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="4" class="text-end">Total:</th>
-                            <th><strong>{{ order.total_amount }} Ks</strong></th>
-                        </tr>
-                    </tfoot>
-                </table>
+            <!-- Order Items with Images -->
+            <div class="order-info-card mt-3">
+                <div class="card-header">
+                    <h5><i class="fa-solid fa-list"></i> Order Items</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in order.items.all %}
+                    <div class="order-item-row">
+                        <div class="item-images">
+                            {% with first_image=item.item.images.first %}
+                                {% if first_image %}
+                                    <img
+                                        src="{{ first_image.image.url }}"
+                                        alt="{{ item.item_name }}"
+                                        class="order-item-image"
+                                        data-lightbox="{{ first_image.image.url }}"
+                                    >
+                                {% else %}
+                                    <div class="no-image-placeholder">
+                                        <i class="fa-solid fa-image"></i>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+
+                            {% if item.item.images.count > 1 %}
+                            <div class="item-all-thumbs">
+                                {% for image in item.item.images.all %}
+                                    <img
+                                        src="{{ image.image.url }}"
+                                        alt="{{ item.item_name }} {{ forloop.counter }}"
+                                        class="item-thumb"
+                                        data-lightbox="{{ image.image.url }}"
+                                    >
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="item-details">
+                            <strong>{{ item.item_name }}</strong>
+                            <span class="size-tag">{% if item.size_variant %}{{ item.size_variant.size }}{% else %}One Size{% endif %}</span>
+                            <span>{{ item.quantity }} × {{ item.unit_price|intcomma }} Ks</span>
+                            <strong>{{ item.total_price|intcomma }} Ks</strong>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted">No items found</div>
+                    {% endfor %}
+
+                    <div class="total-row mt-3">
+                        <strong>Total:</strong>
+                        <strong>{{ order.total_amount|intcomma }} Ks</strong>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -246,4 +283,5 @@
 
 {% block extra_js %}
 <script src="{% static 'js/admin_order.js' %}"></script>
+<script src="{% static 'js/admin_order_detail.js' %}"></script>
 {% endblock %}
