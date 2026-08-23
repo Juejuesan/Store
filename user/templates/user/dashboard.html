@@ -13,7 +13,7 @@
     >
 
     <title>
-        {{ request.user.profile.fullName|default:request.user.username }}
+        {{ profile.fullName|default:seller.username }}
         | Trusty Shop
     </title>
 
@@ -82,11 +82,17 @@
 
         .profile-card {
             position: relative;
+
             background: #ffffff;
+
             border-radius: 24px;
+
             overflow: visible;
+
             border: 1px solid #e7edfa;
-            box-shadow: 0 12px 40px rgba(37, 99, 235, 0.08);
+
+            box-shadow:
+                0 12px 40px rgba(37, 99, 235, 0.08);
         }
 
 
@@ -96,6 +102,7 @@
 
         .profile-cover {
             position: relative;
+
             height: 180px;
 
             background:
@@ -106,6 +113,7 @@
                 );
 
             border-radius: 24px 24px 0 0;
+
             overflow: hidden;
         }
 
@@ -122,7 +130,8 @@
 
             border-radius: 50%;
 
-            background: rgba(255, 255, 255, 0.12);
+            background:
+                rgba(255, 255, 255, 0.12);
         }
 
 
@@ -132,7 +141,11 @@
 
         .profile-info {
             position: relative;
-            padding: 0 35px 30px;
+
+            padding:
+                0
+                35px
+                30px;
         }
 
 
@@ -172,6 +185,7 @@
             height: 130px;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -198,7 +212,6 @@
             margin-top: 15px;
         }
 
-
         .profile-username {
             color: #718096;
             font-size: 15px;
@@ -208,6 +221,7 @@
             margin-left: 5px;
 
             color: #2563eb;
+
             font-size: 17px;
         }
 
@@ -218,6 +232,7 @@
 
         .profile-actions {
             display: flex;
+
             flex-wrap: wrap;
 
             gap: 12px;
@@ -227,21 +242,26 @@
 
         .dashboard-btn {
             display: inline-flex;
+
             align-items: center;
             justify-content: center;
 
             gap: 8px;
 
-            padding: 11px 20px;
+            padding:
+                11px
+                20px;
 
             border: none;
+
             border-radius: 12px;
 
             font-weight: 700;
 
             text-decoration: none;
 
-            transition: 0.25s ease;
+            transition:
+                0.25s ease;
         }
 
 
@@ -256,9 +276,11 @@
 
         .create-btn:hover {
             background: #1d4ed8;
+
             color: #ffffff;
 
-            transform: translateY(-2px);
+            transform:
+                translateY(-2px);
         }
 
 
@@ -273,9 +295,11 @@
 
         .edit-btn:hover {
             background: #dbeafe;
+
             color: #1d4ed8;
 
-            transform: translateY(-2px);
+            transform:
+                translateY(-2px);
         }
 
 
@@ -290,14 +314,16 @@
 
         .back-home-btn:hover {
             background: #dbeafe;
+
             color: #1d4ed8;
 
-            transform: translateY(-2px);
+            transform:
+                translateY(-2px);
         }
 
 
         /* =====================================================
-           CHANGE PROFILE PHOTO
+           CHANGE PHOTO
         ===================================================== */
 
         .profile-photo-form {
@@ -336,27 +362,33 @@
             height: 46px;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
             border: none;
+
             border-radius: 50%;
 
             background: #f1f5f9;
+
             color: #334155;
 
             font-size: 19px;
 
             cursor: pointer;
 
-            transition: 0.25s ease;
+            transition:
+                0.25s ease;
         }
 
         .settings-btn:hover {
             background: #2563eb;
+
             color: #ffffff;
 
-            transform: rotate(25deg);
+            transform:
+                rotate(25deg);
         }
 
 
@@ -374,26 +406,35 @@
 
             padding: 10px;
 
-            background: rgba(255, 255, 255, 0.98);
+            background:
+                rgba(255, 255, 255, 0.98);
 
-            border: 1px solid #e2e8f0;
+            border:
+                1px solid #e2e8f0;
+
             border-radius: 18px;
 
             box-shadow:
-                0 20px 50px rgba(15, 23, 42, 0.16);
+                0
+                20px
+                50px
+                rgba(15, 23, 42, 0.16);
 
             opacity: 0;
+
             visibility: hidden;
 
             transform:
                 translateY(-8px)
                 scale(0.97);
 
-            transition: 0.2s ease;
+            transition:
+                0.2s ease;
         }
 
         .settings-menu.show {
             opacity: 1;
+
             visibility: visible;
 
             transform:
@@ -407,11 +448,15 @@
         ===================================================== */
 
         .settings-menu-header {
-            padding: 12px 13px 15px;
+            padding:
+                12px
+                13px
+                15px;
 
             margin-bottom: 5px;
 
-            border-bottom: 1px solid #eef2f7;
+            border-bottom:
+                1px solid #eef2f7;
         }
 
         .settings-menu-header strong {
@@ -433,6 +478,7 @@
 
         .settings-item {
             display: flex;
+
             align-items: center;
 
             gap: 12px;
@@ -445,17 +491,20 @@
 
             text-decoration: none;
 
-            transition: 0.2s ease;
+            transition:
+                0.2s ease;
         }
 
         .settings-item:hover {
             background: #f5f8ff;
 
-            transform: translateX(2px);
+            transform:
+                translateX(2px);
         }
 
         .settings-item > span:last-child {
             display: flex;
+
             flex-direction: column;
         }
 
@@ -483,6 +532,7 @@
             min-width: 38px;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -529,7 +579,9 @@
         .settings-divider {
             height: 1px;
 
-            margin: 7px 5px;
+            margin:
+                7px
+                5px;
 
             background: #eef2f7;
         }
@@ -568,6 +620,7 @@
             display: block;
 
             font-size: 21px;
+
             font-weight: 800;
         }
 
@@ -590,11 +643,143 @@
             margin-bottom: 0;
 
             font-size: 24px;
+
             font-weight: 800;
         }
 
         .section-subtitle {
             color: #718096;
+        }
+
+
+        /* =====================================================
+           POST TABS
+        ===================================================== */
+
+        .post-tabs {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-top: 30px;
+
+            margin-bottom: 30px;
+
+            padding: 6px;
+
+            width: fit-content;
+
+            background: #edf4ff;
+
+            border-radius: 14px;
+        }
+
+        .post-tab {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            padding:
+                11px
+                20px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: transparent;
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                0.25s ease;
+        }
+
+        .post-tab:hover {
+            color: #2563eb;
+
+            background: #dbeafe;
+        }
+
+        .post-tab.active {
+            background: #2563eb;
+
+            color: #ffffff;
+
+            box-shadow:
+                0
+                5px
+                15px
+                rgba(37, 99, 235, 0.20);
+        }
+
+        .post-tab.active:hover {
+            background: #1d4ed8;
+
+            color: #ffffff;
+        }
+
+        .post-tab-count {
+            min-width: 22px;
+
+            height: 22px;
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding:
+                0
+                6px;
+
+            border-radius: 20px;
+
+            background: rgba(255, 255, 255, 0.22);
+
+            font-size: 11px;
+
+            font-weight: 800;
+        }
+
+        .post-tab:not(.active) .post-tab-count {
+            background: #dbeafe;
+
+            color: #2563eb;
+        }
+
+
+        /* =====================================================
+           POST SUBSECTION
+        ===================================================== */
+
+        .post-subsection {
+            margin-top: 0;
+        }
+
+        .post-subsection-title {
+            font-size: 20px;
+
+            font-weight: 800;
+
+            margin-bottom: 5px;
+        }
+
+        .post-subsection-subtitle {
+            color: #718096;
+
+            margin-bottom: 20px;
         }
 
 
@@ -609,20 +794,30 @@
 
             background: #ffffff;
 
-            border: 1px solid #e7edfa;
+            border:
+                1px solid #e7edfa;
+
             border-radius: 18px;
 
             box-shadow:
-                0 8px 25px rgba(37, 99, 235, 0.06);
+                0
+                8px
+                25px
+                rgba(37, 99, 235, 0.06);
 
-            transition: 0.25s ease;
+            transition:
+                0.25s ease;
         }
 
         .user-post-card:hover {
-            transform: translateY(-5px);
+            transform:
+                translateY(-5px);
 
             box-shadow:
-                0 15px 35px rgba(37, 99, 235, 0.12);
+                0
+                15px
+                35px
+                rgba(37, 99, 235, 0.12);
         }
 
 
@@ -644,11 +839,13 @@
 
             object-fit: cover;
 
-            transition: 0.3s ease;
+            transition:
+                0.3s ease;
         }
 
         .user-post-card:hover .post-image {
-            transform: scale(1.05);
+            transform:
+                scale(1.05);
         }
 
 
@@ -664,6 +861,7 @@
             margin-bottom: 8px;
 
             font-size: 18px;
+
             font-weight: 800;
         }
 
@@ -671,7 +869,10 @@
             color: #64748b;
 
             font-size: 14px;
+
             line-height: 1.6;
+
+            min-height: 45px;
         }
 
 
@@ -681,6 +882,7 @@
 
         .post-meta {
             display: flex;
+
             align-items: center;
             justify-content: space-between;
 
@@ -690,21 +892,47 @@
         }
 
         .post-status {
-            padding: 5px 10px;
+            padding:
+                5px
+                10px;
 
             border-radius: 20px;
 
             background: #dcfce7;
+
             color: #15803d;
 
             font-size: 12px;
+
             font-weight: 700;
+        }
+
+        .pending-status {
+            background: #fef3c7;
+
+            color: #b45309;
+        }
+
+
+        /* =====================================================
+           POST ACTIONS
+        ===================================================== */
+
+        .post-actions {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 12px;
         }
 
         .view-post-btn {
             color: #2563eb;
 
             font-size: 14px;
+
             font-weight: 700;
 
             text-decoration: none;
@@ -714,19 +942,37 @@
             color: #1d4ed8;
         }
 
+        .edit-post-link {
+            color: #64748b;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .edit-post-link:hover {
+            color: #2563eb;
+        }
+
 
         /* =====================================================
            EMPTY POSTS
         ===================================================== */
 
         .empty-posts {
-            padding: 60px 20px;
+            padding:
+                60px
+                20px;
 
             text-align: center;
 
             background: #ffffff;
 
-            border: 1px dashed #cbd5e1;
+            border:
+                1px dashed #cbd5e1;
+
             border-radius: 20px;
         }
 
@@ -762,7 +1008,10 @@
             }
 
             .profile-info {
-                padding: 0 20px 25px;
+                padding:
+                    0
+                    20px
+                    25px;
             }
 
             .profile-photo-wrapper {
@@ -787,16 +1036,40 @@
 
             .settings-menu {
                 right: -10px;
+
                 width: 290px;
             }
 
             .profile-stats {
                 gap: 20px;
+
+                flex-wrap: wrap;
             }
 
             .profile-actions {
                 flex-direction: column;
+
                 align-items: flex-start;
+            }
+
+            .post-actions {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .post-tabs {
+                width: 100%;
+            }
+
+            .post-tab {
+                flex: 1;
+
+                padding:
+                    10px
+                    12px;
+
+                font-size: 13px;
             }
 
         }
@@ -817,7 +1090,7 @@
 
 
     <!-- =====================================================
-         DASHBOARD
+         DASHBOARD PAGE
     ====================================================== -->
 
     <div class="dashboard-page">
@@ -833,7 +1106,7 @@
 
 
                 <!-- =================================================
-                     COVER
+                     PROFILE COVER
                 ================================================== -->
 
                 <div class="profile-cover"></div>
@@ -912,37 +1185,51 @@
 
 
                         <!-- =================================================
-                             STATS
+                             PROFILE STATS
                         ================================================== -->
 
                         <div class="profile-stats">
 
 
-                            <!-- POSTS -->
+                            <!-- APPROVED POSTS -->
 
                             <div class="stat-item">
 
                                 <span class="stat-number">
-                                    {{ post_count }}
+                                    {{ approved_post_count }}
                                 </span>
 
                                 <span class="stat-label">
+
                                     {% if is_owner %}
-                                        Posts
-                                    {% else %}
                                         Approved Posts
+                                    {% else %}
+                                        Posts
                                     {% endif %}
+
                                 </span>
 
                             </div>
 
 
-                            <!-- =================================================
-                                 WISHLIST
-                                 OWNER ONLY
-                            ================================================== -->
+                            <!-- PENDING -->
 
                             {% if is_owner %}
+
+                                <div class="stat-item">
+
+                                    <span class="stat-number">
+                                        {{ pending_post_count }}
+                                    </span>
+
+                                    <span class="stat-label">
+                                        Pending
+                                    </span>
+
+                                </div>
+
+
+                                <!-- WISHLIST -->
 
                                 <div class="stat-item">
 
@@ -957,9 +1244,7 @@
                                 </div>
 
 
-                                <!-- =================================================
-                                     ORDERS
-                                ================================================== -->
+                                <!-- ORDERS -->
 
                                 <div class="stat-item">
 
@@ -980,7 +1265,7 @@
 
 
                         <!-- =================================================
-                             OWNER ACTIONS
+                             ACTIONS
                         ================================================== -->
 
                         {% if is_owner %}
@@ -1016,7 +1301,7 @@
                                 </a>
 
 
-                                <!-- CHANGE PROFILE PHOTO -->
+                                <!-- CHANGE PHOTO -->
 
                                 <form
                                     method="POST"
@@ -1038,7 +1323,6 @@
 
                                     </label>
 
-
                                     <input
                                         type="file"
                                         name="profile_pic"
@@ -1050,7 +1334,6 @@
                                 </form>
 
                             </div>
-
 
                         {% else %}
 
@@ -1076,13 +1359,11 @@
 
                         {% endif %}
 
-
                     </div>
 
 
                     <!-- =====================================================
-                         SETTINGS
-                         OWNER ONLY
+                         SETTINGS - OWNER ONLY
                     ====================================================== -->
 
                     {% if is_owner %}
@@ -1106,9 +1387,7 @@
                             </button>
 
 
-                            <!-- =================================================
-                                 SETTINGS MENU
-                            ================================================== -->
+                            <!-- SETTINGS MENU -->
 
                             <div
                                 class="settings-menu"
@@ -1337,7 +1616,6 @@
 
                     {% endif %}
 
-
                 </div>
 
             </div>
@@ -1386,122 +1664,222 @@
 
 
                 <!-- =================================================
-                     POST GRID
+                     POST SWITCH BUTTONS
+                     OWNER ONLY
                 ================================================== -->
 
-                <div class="row g-4">
+                {% if is_owner %}
+
+                    <div class="post-tabs">
 
 
-                    {% for post in user_posts %}
+                        <!-- APPROVED BUTTON -->
+
+                        <button
+                            type="button"
+                            class="post-tab active"
+                            id="approvedTab"
+                            onclick="showPostSection('approved')"
+                        >
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            <span>
+                                Approved Posts
+                            </span>
+
+                            <span class="post-tab-count">
+                                {{ approved_post_count }}
+                            </span>
+
+                        </button>
 
 
-                        <!-- =================================================
-                             POST
-                        ================================================== -->
+                        <!-- PENDING BUTTON -->
 
-                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                        <button
+                            type="button"
+                            class="post-tab"
+                            id="pendingTab"
+                            onclick="showPostSection('pending')"
+                        >
 
-                            <div class="user-post-card">
+                            <i class="fa-solid fa-hourglass-half"></i>
 
+                            <span>
+                                Pending Posts
+                            </span>
 
-                                <!-- =================================================
-                                     POST IMAGE
-                                ================================================== -->
+                            <span class="post-tab-count">
+                                {{ pending_post_count }}
+                            </span>
 
-                                <div class="post-image-wrapper">
+                        </button>
 
-                                    {% with first_item=post.items.first %}
+                    </div>
 
-                                        {% if first_item and first_item.images.first %}
-
-                                            <img
-                                                src="{{ first_item.images.first.image.url }}"
-                                                class="post-image"
-                                                alt="{{ first_item.name|default:'Product image' }}"
-                                            >
-
-                                        {% else %}
-
-                                            <img
-                                                src="{% static 'images/no-image.png' %}"
-                                                class="post-image"
-                                                alt="No image"
-                                            >
-
-                                        {% endif %}
-
-                                    {% endwith %}
-
-                                </div>
+                {% endif %}
 
 
-                                <!-- =================================================
-                                     POST CONTENT
-                                ================================================== -->
+                <!-- =================================================
+                     APPROVED POSTS SECTION
+                ================================================== -->
 
-                                <div class="post-content">
-
-
-                                    <!-- TITLE -->
-
-                                    <div class="post-title">
-
-                                        {{ post.category.name|default:"Product" }}
-
-                                    </div>
+                <div
+                    id="approvedPostsSection"
+                    class="post-subsection"
+                >
 
 
-                                    <!-- DESCRIPTION -->
+                    <h3 class="post-subsection-title">
 
-                                    <p class="post-description">
+                        {% if is_owner %}
+                            Approved Posts
+                        {% else %}
+                            Posts
+                        {% endif %}
 
-                                        {{ post.description|truncatewords:18 }}
-
-                                    </p>
-
-
-                                    <!-- =================================================
-                                         POST META
-                                    ================================================== -->
-
-                                    <div class="post-meta">
+                    </h3>
 
 
-                                        <!-- =================================================
-                                             STATUS
+                    <p class="post-subsection-subtitle">
 
-                                             OWNER CAN SEE ACTUAL STATUS.
-                                             VISITOR ONLY SEES APPROVED POSTS,
-                                             SO SHOW "Approved".
-                                        ================================================== -->
+                        {% if is_owner %}
 
-                                        <span class="post-status">
+                            Your approved products currently available on Trusty Shop.
 
-                                            {% if is_owner %}
+                        {% else %}
 
-                                                {{ post.status|title }}
+                            Approved products posted by this seller.
+
+                        {% endif %}
+
+                    </p>
+
+
+                    <div class="row g-4">
+
+
+                        {% for post in approved_posts %}
+
+
+                            <!-- =================================================
+                                 APPROVED POST CARD
+                            ================================================== -->
+
+                            <div
+                                class="col-xl-4 col-lg-4 col-md-6 col-sm-12"
+                            >
+
+                                <div class="user-post-card">
+
+
+                                    <!-- IMAGE -->
+
+                                    <div class="post-image-wrapper">
+
+                                        {% with first_item=post.items.first %}
+
+                                            {% if first_item and first_item.images.first %}
+
+                                                <img
+                                                    src="{{ first_item.images.first.image.url }}"
+                                                    class="post-image"
+                                                    alt="{{ first_item.name|default:'Product image' }}"
+                                                >
 
                                             {% else %}
 
-                                                Approved
+                                                <img
+                                                    src="{% static 'images/no-image.png' %}"
+                                                    class="post-image"
+                                                    alt="No image"
+                                                >
 
                                             {% endif %}
 
-                                        </span>
+                                        {% endwith %}
+
+                                    </div>
 
 
-                                        <!-- VIEW POST -->
+                                    <!-- CONTENT -->
 
-                                        <a
-                                            href="{% url 'viewdetail' post.id %}"
-                                            class="view-post-btn"
-                                        >
+                                    <div class="post-content">
 
-                                            View Post
 
-                                            <i class="fa-solid fa-arrow-right"></i>
+                                        <!-- TITLE -->
 
-                                        </a>
+                                        <div class="post-title">
+
+                                            {{ post.category.name|default:"Product" }}
+
+                                        </div>
+
+
+                                        <!-- DESCRIPTION -->
+
+                                        <p class="post-description">
+
+                                            {{ post.description|truncatewords:18 }}
+
+                                        </p>
+
+
+                                        <!-- STATUS -->
+
+                                        <div class="post-meta">
+
+                                            <span class="post-status">
+
+                                                Approved
+
+                                            </span>
+
+                                        </div>
+
+
+                                        <!-- ACTIONS -->
+
+                                        <div class="post-actions mt-3">
+
+
+                                            <!-- VIEW POST -->
+
+                                            <a
+                                                href="{% url 'viewdetail' post.id %}"
+                                                class="view-post-btn"
+                                            >
+
+                                                View Post
+
+                                                <i
+                                                    class="fa-solid fa-arrow-right"
+                                                ></i>
+
+                                            </a>
+
+
+                                            <!-- EDIT POST -->
+
+                                            {% if is_owner %}
+
+                                                <a
+                                                    href="{% url 'editPost' post.id %}"
+                                                    class="edit-post-link"
+                                                >
+
+                                                    <i
+                                                        class="fa-solid fa-pen"
+                                                    ></i>
+
+                                                    Edit Post
+
+                                                </a>
+
+                                            {% endif %}
+
+                                        </div>
 
                                     </div>
 
@@ -1509,74 +1887,268 @@
 
                             </div>
 
-                        </div>
+
+                        {% empty %}
 
 
-                    {% empty %}
+                            <!-- EMPTY APPROVED -->
+
+                            <div class="col-12">
+
+                                <div class="empty-posts">
+
+                                    <div class="empty-icon">
+
+                                        <i
+                                            class="fa-solid fa-box-open"
+                                        ></i>
+
+                                    </div>
 
 
-                        <!-- =================================================
-                             EMPTY POSTS
-                        ================================================== -->
+                                    {% if is_owner %}
 
-                        <div class="col-12">
+                                        <h4>
+                                            You don't have any approved posts yet.
+                                        </h4>
 
-                            <div class="empty-posts">
+                                        <p>
+                                            Your approved products will appear here.
+                                        </p>
+
+                                        <a
+                                            href="{% url 'createPost' %}"
+                                            class="dashboard-btn create-btn"
+                                        >
+
+                                            <i
+                                                class="fa-solid fa-plus"
+                                            ></i>
+
+                                            Create Post
+
+                                        </a>
+
+                                    {% else %}
+
+                                        <h4>
+                                            No approved posts yet.
+                                        </h4>
+
+                                        <p>
+                                            This seller doesn't have any approved products yet.
+                                        </p>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
 
 
-                                <div class="empty-icon">
+                <!-- =================================================
+                     PENDING POSTS SECTION
+                     OWNER ONLY
+                ================================================== -->
 
-                                    <i class="fa-solid fa-box-open"></i>
+                {% if is_owner %}
+
+                    <div
+                        id="pendingPostsSection"
+                        class="post-subsection"
+                        style="display: none;"
+                    >
+
+
+                        <h3 class="post-subsection-title">
+
+                            Pending Posts
+
+                        </h3>
+
+
+                        <p class="post-subsection-subtitle">
+
+                            Posts waiting for approval. You can view
+                            and edit them while they are pending.
+
+                        </p>
+
+
+                        <div class="row g-4">
+
+
+                            {% for post in pending_posts %}
+
+
+                                <!-- =================================================
+                                     PENDING POST CARD
+                                ================================================== -->
+
+                                <div
+                                    class="col-xl-4 col-lg-4 col-md-6 col-sm-12"
+                                >
+
+                                    <div class="user-post-card">
+
+
+                                        <!-- IMAGE -->
+
+                                        <div class="post-image-wrapper">
+
+                                            {% with first_item=post.items.first %}
+
+                                                {% if first_item and first_item.images.first %}
+
+                                                    <img
+                                                        src="{{ first_item.images.first.image.url }}"
+                                                        class="post-image"
+                                                        alt="{{ first_item.name|default:'Product image' }}"
+                                                    >
+
+                                                {% else %}
+
+                                                    <img
+                                                        src="{% static 'images/no-image.png' %}"
+                                                        class="post-image"
+                                                        alt="No image"
+                                                    >
+
+                                                {% endif %}
+
+                                            {% endwith %}
+
+                                        </div>
+
+
+                                        <!-- CONTENT -->
+
+                                        <div class="post-content">
+
+
+                                            <!-- TITLE -->
+
+                                            <div class="post-title">
+
+                                                {{ post.category.name|default:"Product" }}
+
+                                            </div>
+
+
+                                            <!-- DESCRIPTION -->
+
+                                            <p class="post-description">
+
+                                                {{ post.description|truncatewords:18 }}
+
+                                            </p>
+
+
+                                            <!-- STATUS -->
+
+                                            <div class="post-meta">
+
+                                                <span
+                                                    class="post-status pending-status"
+                                                >
+
+                                                    Pending
+
+                                                </span>
+
+                                            </div>
+
+
+                                            <!-- ACTIONS -->
+
+                                            <div class="post-actions mt-3">
+
+
+                                                <!-- VIEW POST -->
+
+                                                <a
+                                                    href="{% url 'viewdetail' post.id %}"
+                                                    class="view-post-btn"
+                                                >
+
+                                                    View Post
+
+                                                    <i
+                                                        class="fa-solid fa-arrow-right"
+                                                    ></i>
+
+                                                </a>
+
+
+                                                <!-- EDIT POST -->
+
+                                                <a
+                                                    href="{% url 'editPost' post.id %}"
+                                                    class="edit-post-link"
+                                                >
+
+                                                    <i
+                                                        class="fa-solid fa-pen"
+                                                    ></i>
+
+                                                    Edit Post
+
+                                                </a>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
 
-                                {% if is_owner %}
-
-                                    <h4>
-                                        You haven't created any posts yet.
-                                    </h4>
-
-                                    <p>
-                                        Start selling your products on Trusty Shop.
-                                    </p>
-
-                                    <a
-                                        href="{% url 'createPost' %}"
-                                        class="dashboard-btn create-btn"
-                                    >
-
-                                        <i class="fa-solid fa-plus"></i>
-
-                                        Create Your First Post
-
-                                    </a>
-
-                                {% else %}
-
-                                    <h4>
-                                        No approved posts yet.
-                                    </h4>
-
-                                    <p>
-                                        This seller doesn't have any approved products yet.
-                                    </p>
-
-                                {% endif %}
+                            {% empty %}
 
 
-                            </div>
+                                <!-- EMPTY PENDING -->
+
+                                <div class="col-12">
+
+                                    <div class="empty-posts">
+
+                                        <div class="empty-icon">
+
+                                            <i
+                                                class="fa-solid fa-hourglass-half"
+                                            ></i>
+
+                                        </div>
+
+                                        <h4>
+                                            No pending posts.
+                                        </h4>
+
+                                        <p>
+                                            Posts waiting for approval will appear here.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
 
                         </div>
 
+                    </div>
 
-                    {% endfor %}
+                {% endif %}
 
-
-                </div>
 
             </section>
-
 
         </div>
 
@@ -1608,11 +2180,12 @@
 
                 /* =================================================
                    PROFILE PHOTO UPLOAD
-                   OWNER ONLY
                 ================================================= */
 
                 const profilePicInput =
-                    document.getElementById("profilePicInput");
+                    document.getElementById(
+                        "profilePicInput"
+                    );
 
 
                 if (profilePicInput) {
@@ -1638,96 +2211,74 @@
 
                 /* =================================================
                    SETTINGS
-                   OWNER ONLY
                 ================================================= */
 
                 const settingsBtn =
-                    document.getElementById("settingsBtn");
+                    document.getElementById(
+                        "settingsBtn"
+                    );
 
                 const settingsMenu =
-                    document.getElementById("settingsMenu");
+                    document.getElementById(
+                        "settingsMenu"
+                    );
 
 
-                /*
-                 * If visitor is viewing another user's profile,
-                 * these elements do not exist.
-                 *
-                 * So simply stop here.
-                 */
-
-                if (!settingsBtn || !settingsMenu) {
-
-                    return;
-
-                }
+                if (
+                    settingsBtn &&
+                    settingsMenu
+                ) {
 
 
-                /* =================================================
-                   OPEN / CLOSE SETTINGS
-                ================================================= */
+                    /* =================================================
+                       OPEN / CLOSE SETTINGS
+                    ================================================= */
 
-                settingsBtn.addEventListener(
-                    "click",
-                    function (event) {
+                    settingsBtn.addEventListener(
+                        "click",
+                        function (event) {
 
-                        event.stopPropagation();
+                            event.stopPropagation();
 
-                        const isOpen =
-                            settingsMenu.classList.toggle("show");
+                            const isOpen =
+                                settingsMenu.classList.toggle(
+                                    "show"
+                                );
 
-                        settingsBtn.setAttribute(
-                            "aria-expanded",
-                            isOpen
-                        );
+                            settingsBtn.setAttribute(
+                                "aria-expanded",
+                                isOpen
+                            );
 
-                    }
-                );
-
-
-                /* =================================================
-                   PREVENT MENU CLICK FROM CLOSING
-                ================================================= */
-
-                settingsMenu.addEventListener(
-                    "click",
-                    function (event) {
-
-                        event.stopPropagation();
-
-                    }
-                );
+                        }
+                    );
 
 
-                /* =================================================
-                   CLICK OUTSIDE = CLOSE
-                ================================================= */
+                    /* =================================================
+                       PREVENT MENU CLICK FROM CLOSING
+                    ================================================= */
 
-                document.addEventListener(
-                    "click",
-                    function () {
+                    settingsMenu.addEventListener(
+                        "click",
+                        function (event) {
 
-                        settingsMenu.classList.remove("show");
+                            event.stopPropagation();
 
-                        settingsBtn.setAttribute(
-                            "aria-expanded",
-                            "false"
-                        );
-
-                    }
-                );
+                        }
+                    );
 
 
-                /* =================================================
-                   ESC KEY = CLOSE
-                ================================================= */
+                    /* =================================================
+                       CLICK OUTSIDE
+                    ================================================= */
 
-                document.addEventListener(
-                    "keydown",
-                    function (event) {
+                    document.addEventListener(
+                        "click",
+                        function () {
 
-                        if (event.key === "Escape") {
-
-                            settingsMenu.classList.remove("show");
+                            settingsMenu.classList.remove(
+                                "show"
+                            );
 
                             settingsBtn.setAttribute(
                                 "aria-expanded",
@@ -1735,12 +2286,155 @@
                             );
 
                         }
+                    );
 
-                    }
-                );
+
+                    /* =================================================
+                       ESC KEY
+                    ================================================= */
+
+                    document.addEventListener(
+                        "keydown",
+                        function (event) {
+
+                            if (
+                                event.key === "Escape"
+                            ) {
+
+                                settingsMenu.classList.remove(
+                                    "show"
+                                );
+
+                                settingsBtn.setAttribute(
+                                    "aria-expanded",
+                                    "false"
+                                );
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+                /* =================================================
+                   DEFAULT TAB
+                   APPROVED POSTS
+                ================================================= */
+
+                showPostSection("approved");
 
             }
+
         );
+
+
+        /* =====================================================
+           POST SECTION SWITCHER
+        ===================================================== */
+
+        function showPostSection(section) {
+
+            const approvedSection =
+                document.getElementById(
+                    "approvedPostsSection"
+                );
+
+            const pendingSection =
+                document.getElementById(
+                    "pendingPostsSection"
+                );
+
+            const approvedTab =
+                document.getElementById(
+                    "approvedTab"
+                );
+
+            const pendingTab =
+                document.getElementById(
+                    "pendingTab"
+                );
+
+
+            /* =================================================
+               APPROVED POSTS
+            ================================================= */
+
+            if (section === "approved") {
+
+                if (approvedSection) {
+
+                    approvedSection.style.display =
+                        "block";
+
+                }
+
+                if (pendingSection) {
+
+                    pendingSection.style.display =
+                        "none";
+
+                }
+
+                if (approvedTab) {
+
+                    approvedTab.classList.add(
+                        "active"
+                    );
+
+                }
+
+                if (pendingTab) {
+
+                    pendingTab.classList.remove(
+                        "active"
+                    );
+
+                }
+
+            }
+
+
+            /* =================================================
+               PENDING POSTS
+            ================================================= */
+
+            else if (section === "pending") {
+
+                if (approvedSection) {
+
+                    approvedSection.style.display =
+                        "none";
+
+                }
+
+                if (pendingSection) {
+
+                    pendingSection.style.display =
+                        "block";
+
+                }
+
+                if (approvedTab) {
+
+                    approvedTab.classList.remove(
+                        "active"
+                    );
+
+                }
+
+                if (pendingTab) {
+
+                    pendingTab.classList.add(
+                        "active"
+                    );
+
+                }
+
+            }
+
+        }
 
     </script>
 
