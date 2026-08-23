@@ -35,10 +35,6 @@ class Profile(models.Model):
         blank=True
     )
 
-    address = models.CharField(
-        max_length=200
-    )
-
     gender = models.CharField(
         max_length=10,
         choices=GENDER_CHOICES

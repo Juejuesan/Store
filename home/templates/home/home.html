@@ -1,8 +1,6 @@
-
 <!DOCTYPE html>
 {% load static %}
 {% load humanize %}
-
 
 <html lang="en">
 
@@ -64,7 +62,7 @@
 
 
     <!-- ==================================================
-         IMAGE SEARCH + WISHLIST STYLING
+         IMAGE SEARCH + WISHLIST + PAGINATION STYLING
     ================================================== -->
 
     <style>
@@ -141,7 +139,8 @@
 
         .image-search-loading i {
 
-            animation: imageSearchSpin 0.8s linear infinite;
+            animation:
+                imageSearchSpin 0.8s linear infinite;
 
         }
 
@@ -268,7 +267,6 @@
 
         /* =================================================
            WISHLIST BUTTON
-           FLOATING TOP-RIGHT OF EVERY PRODUCT CARD
         ================================================= */
 
         .wishlist-btn-home {
@@ -397,27 +395,19 @@
         @keyframes wishlistHeartPop {
 
             0% {
-
                 transform: scale(1);
-
             }
 
             35% {
-
                 transform: scale(1.45);
-
             }
 
             65% {
-
                 transform: scale(0.85);
-
             }
 
             100% {
-
                 transform: scale(1);
-
             }
 
         }
@@ -457,6 +447,97 @@
 
         }
 
+
+        /* =================================================
+           PAGINATION
+        ================================================= */
+
+        .pagination-container {
+
+            margin-top: 40px;
+
+            padding-bottom: 30px;
+
+        }
+
+
+        .pagination .page-link {
+
+            border: none;
+
+            margin: 0 4px;
+
+            border-radius: 10px;
+
+            padding: 10px 15px;
+
+            color: #2563eb;
+
+            background: #f8fafc;
+
+            font-weight: 600;
+
+            transition: all 0.25s ease;
+
+        }
+
+
+        .pagination .page-link:hover {
+
+            background: #2563eb;
+
+            color: #ffffff;
+
+            transform: translateY(-2px);
+
+        }
+
+
+        .pagination .page-item.active .page-link {
+
+            background: #2563eb;
+
+            color: #ffffff;
+
+        }
+
+
+        .pagination .page-item.disabled .page-link {
+
+            background: #f1f5f9;
+
+            color: #94a3b8;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .pagination-container .text-muted {
+
+            font-size: 14px;
+
+        }
+
+
+        /* =================================================
+           MOBILE PAGINATION
+        ================================================= */
+
+        @media (max-width: 576px) {
+
+            .pagination .page-link {
+
+                padding: 8px 11px;
+
+                margin: 0 2px;
+
+                font-size: 14px;
+
+            }
+
+        }
+
     </style>
 
 </head>
@@ -489,10 +570,6 @@
             >
 
                 {% if 'post-pending' in message.tags %}
-
-                    <!-- =================================================
-                         POST PENDING
-                    ================================================== -->
 
                     <div class="post-pending-icon">
 
@@ -579,10 +656,6 @@
 
                 {% elif 'success' in message.tags %}
 
-                    <!-- =================================================
-                         SUCCESS
-                    ================================================== -->
-
                     <div class="message-icon success">
 
                         <i class="fa-solid fa-check"></i>
@@ -608,10 +681,6 @@
 
 
                 {% elif 'error' in message.tags %}
-
-                    <!-- =================================================
-                         ERROR
-                    ================================================== -->
 
                     <div class="message-icon error">
 
@@ -639,10 +708,6 @@
 
                 {% elif 'warning' in message.tags %}
 
-                    <!-- =================================================
-                         WARNING
-                    ================================================== -->
-
                     <div class="message-icon warning">
 
                         <i class="fa-solid fa-triangle-exclamation"></i>
@@ -668,10 +733,6 @@
 
 
                 {% else %}
-
-                    <!-- =================================================
-                         INFO
-                    ================================================== -->
 
                     <div class="message-icon info">
 
@@ -1037,8 +1098,6 @@
 
                                 <div class="seller-card">
 
-                                    <!-- PRODUCT IMAGE -->
-
                                     <div class="product-image-box">
 
                                         <img
@@ -1058,8 +1117,6 @@
 
                                     </div>
 
-
-                                    <!-- PRODUCT BODY -->
 
                                     <div class="product-body">
 
@@ -1181,9 +1238,6 @@
 
                                 <!-- ==================================================
                                      WISHLIST BUTTON
-                                     IMPORTANT:
-                                     This is inside each post card.
-                                     There is NO duplicate ID.
                                 ================================================== -->
 
                                 {% if user.is_authenticated %}
@@ -1224,10 +1278,6 @@
 
                                 <!-- ==================================================
                                      SELLER
-                                     IMPORTANT:
-                                     post.user IS THE PROFILE OBJECT
-                                     because create_post uses:
-                                     post.user = request.user.profile
                                 ================================================== -->
 
                                 <div class="seller-top">
@@ -1244,8 +1294,6 @@
                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
                                             >
 
-
-                                            <!-- Hidden fallback icon -->
 
                                             <i
                                                 class="fa-solid fa-circle-user nav-profile-icon"
@@ -1267,9 +1315,7 @@
 
                                                 {{ post.user.fullName }}
 
-                                                <i
-                                                    class="fa-solid fa-circle-check verified"
-                                                ></i>
+
 
                                             </h5>
 
@@ -1510,105 +1556,326 @@
 
             </div>
 
+
+
+            <!-- ==================================================
+                 PAGINATION
+                 20 POSTS PER PAGE
+            ================================================== -->
+
+            {% if posts.paginator.num_pages > 1 %}
+
+                <div class="pagination-container">
+
+                    <nav
+                        aria-label="Post pagination"
+                    >
+
+                        <ul class="pagination justify-content-center">
+
+
+                            <!-- ==========================================
+                                 PREVIOUS
+                            =========================================== -->
+
+                            {% if posts.has_previous %}
+
+                                <li class="page-item">
+
+                                    <a
+                                        class="page-link"
+                                        href="?page={{ posts.previous_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}#searchResults"
+                                    >
+
+                                        <i
+                                            class="fa-solid fa-chevron-left"
+                                        ></i>
+
+                                        Previous
+
+                                    </a>
+
+                                </li>
+
+                            {% else %}
+
+                                <li class="page-item disabled">
+
+                                    <span class="page-link">
+
+                                        <i
+                                            class="fa-solid fa-chevron-left"
+                                        ></i>
+
+                                        Previous
+
+                                    </span>
+
+                                </li>
+
+                            {% endif %}
+
+
+
+                            <!-- ==========================================
+                                 PAGE NUMBERS
+                            =========================================== -->
+
+                            {% for num in posts.paginator.page_range %}
+
+                                {% if posts.number == num %}
+
+                                    <li class="page-item active">
+
+                                        <span class="page-link">
+
+                                            {{ num }}
+
+                                        </span>
+
+                                    </li>
+
+                                {% else %}
+
+                                    <li class="page-item">
+
+                                        <a
+                                            class="page-link"
+                                            href="?page={{ num }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}#searchResults"
+                                        >
+
+                                            {{ num }}
+
+                                        </a>
+
+                                    </li>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+
+
+                            <!-- ==========================================
+                                 NEXT
+                            =========================================== -->
+
+                            {% if posts.has_next %}
+
+                                <li class="page-item">
+
+                                    <a
+                                        class="page-link"
+                                        href="?page={{ posts.next_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}#searchResults"
+                                    >
+
+                                        Next
+
+                                        <i
+                                            class="fa-solid fa-chevron-right"
+                                        ></i>
+
+                                    </a>
+
+                                </li>
+
+                            {% else %}
+
+                                <li class="page-item disabled">
+
+                                    <span class="page-link">
+
+                                        Next
+
+                                        <i
+                                            class="fa-solid fa-chevron-right"
+                                        ></i>
+
+                                    </span>
+
+                                </li>
+
+                            {% endif %}
+
+                        </ul>
+
+                    </nav>
+
+
+
+                    <!-- ==========================================
+                         POST COUNT
+                    =========================================== -->
+
+                    <div class="text-center text-muted">
+
+                        Showing
+
+                        {{ posts.start_index }}
+
+                        –
+
+                        {{ posts.end_index }}
+
+                        of
+
+                        {{ posts.paginator.count }}
+
+                        posts
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
         {% endif %}
 
     </div>
 
 </section>
+
+
+
+<!-- ==================================================
+     TERMS & POLICIES
+================================================== -->
+
 {% if user.is_authenticated and not user.profile.terms_accepted %}
 
-<div class="terms-overlay" id="termsOverlay">
+    <div
+        class="terms-overlay"
+        id="termsOverlay"
+    >
 
-    <div class="terms-modal">
+        <div class="terms-modal">
 
-        <div class="terms-icon">
-            <i class="fa-solid fa-shield-halved"></i>
-        </div>
+            <div class="terms-icon">
 
-        <h2>
-            Welcome to TrustyShop
-        </h2>
+                <i class="fa-solid fa-shield-halved"></i>
 
-        <p class="terms-subtitle">
-            Before you continue, please review and accept
-            our Terms & Policies.
-        </p>
+            </div>
 
-        <div class="terms-content">
 
-            <h3>
-                <i class="fa-solid fa-file-contract"></i>
-                Terms of Use
-            </h3>
+            <h2>
+                Welcome to TrustyShop
+            </h2>
 
-            <p>
-                By using TrustyShop, you agree to use the
-                platform responsibly and provide accurate
-                information when creating listings or
-                interacting with other users.
+
+            <p class="terms-subtitle">
+
+                Before you continue, please review and accept
+                our Terms & Policies.
+
             </p>
 
-            <h3>
-                <i class="fa-solid fa-user-shield"></i>
-                Privacy Policy
-            </h3>
 
-            <p>
-                We respect your privacy and protect the
-                information associated with your TrustyShop
-                account.
-            </p>
+            <div class="terms-content">
 
-            <h3>
-                <i class="fa-solid fa-handshake"></i>
-                Safe Marketplace
-            </h3>
+                <h3>
 
-            <p>
-                Please communicate honestly, avoid fraudulent
-                activity, and report suspicious behavior.
-            </p>
+                    <i class="fa-solid fa-file-contract"></i>
 
-        </div>
+                    Terms of Use
 
-        <div class="terms-check">
+                </h3>
 
-            <input
-                type="checkbox"
-                id="termsCheckbox"
+
+                <p>
+
+                    By using TrustyShop, you agree to use the
+                    platform responsibly and provide accurate
+                    information when creating listings or
+                    interacting with other users.
+
+                </p>
+
+
+                <h3>
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                    Privacy Policy
+
+                </h3>
+
+
+                <p>
+
+                    We respect your privacy and protect the
+                    information associated with your TrustyShop
+                    account.
+
+                </p>
+
+
+                <h3>
+
+                    <i class="fa-solid fa-handshake"></i>
+
+                    Safe Marketplace
+
+                </h3>
+
+
+                <p>
+
+                    Please communicate honestly, avoid fraudulent
+                    activity, and report suspicious behavior.
+
+                </p>
+
+            </div>
+
+
+            <div class="terms-check">
+
+                <input
+                    type="checkbox"
+                    id="termsCheckbox"
+                >
+
+
+                <label for="termsCheckbox">
+
+                    I have read and agree to the TrustyShop
+                    Terms & Policies.
+
+                </label>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{% url 'user:accept_terms_policy' %}"
+                id="termsForm"
             >
 
-            <label for="termsCheckbox">
-                I have read and agree to the TrustyShop
-                Terms & Policies.
-            </label>
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="terms-agree-btn"
+                    id="agreeButton"
+                    disabled
+                >
+
+                    <i class="fa-solid fa-check"></i>
+
+                    Agree & Continue
+
+                </button>
+
+            </form>
 
         </div>
-
-        <form
-            method="POST"
-            action="{% url 'user:accept_terms_policy' %}"
-            id="termsForm"
-        >
-
-            {% csrf_token %}
-
-            <button
-                type="submit"
-                class="terms-agree-btn"
-                id="agreeButton"
-                disabled>
-                <i class="fa-solid fa-check"></i>
-                Agree & Continue
-            </button>
-
-        </form>
 
     </div>
 
-</div>
-
 {% endif %}
+
 
 
 <!-- ==================================================
@@ -1616,6 +1883,7 @@
 ================================================== -->
 
 {% include "includes/footer.html" %}
+
 
 <script src="{% static 'js/header-footer.js' %}"></script>
 
@@ -1642,7 +1910,7 @@
 
 
 <!-- ==================================================
-     SEARCH JAVASCRIPT
+     SEARCH + PAGINATION + WISHLIST JAVASCRIPT
 ================================================== -->
 
 <script>
@@ -1737,7 +2005,7 @@ document.addEventListener(
 
 
                     /* ---------------------------------------------
-                       Submit hidden image-search form
+                       Submit image-search form
                     --------------------------------------------- */
 
                     imageSearchForm.submit();
@@ -1751,6 +2019,50 @@ document.addEventListener(
 
         /* =====================================================
            SCROLL TO SEARCH RESULTS
+           
+           This handles:
+           
+           /home/?page=2#searchResults
+           
+           /home/?page=3#searchResults
+           
+           so when the user clicks Next/page number,
+           the page automatically returns to the
+           Latest Seller Products section.
+        ===================================================== */
+
+        const searchResults =
+            document.getElementById(
+                "searchResults"
+            );
+
+
+        if (
+            searchResults &&
+            window.location.hash === "#searchResults"
+        ) {
+
+            setTimeout(
+                function () {
+
+                    searchResults.scrollIntoView({
+
+                        behavior: "smooth",
+
+                        block: "start"
+
+                    });
+
+                },
+                100
+            );
+
+        }
+
+
+
+        /* =====================================================
+           NORMAL SEARCH / IMAGE SEARCH SCROLL
         ===================================================== */
 
         const searchQuery =
@@ -1765,19 +2077,14 @@ document.addEventListener(
             "{{ searched|yesno:'true,false' }}";
 
 
-        const searchResults =
-            document.getElementById(
-                "searchResults"
-            );
-
-
         if (
             searchResults &&
             (
                 searchQuery ||
                 imageSearch === "true" ||
                 searched === "true"
-            )
+            ) &&
+            window.location.hash !== "#searchResults"
         ) {
 
             setTimeout(
@@ -1801,7 +2108,6 @@ document.addEventListener(
 
         /* =====================================================
            WISHLIST
-           Handles EVERY wishlist button independently.
         ===================================================== */
 
         document
@@ -1818,12 +2124,8 @@ document.addEventListener(
 
 
                             /*
-                             * VERY IMPORTANT:
-                             * The wishlist button is inside
-                             * the product-card <a>.
-                             *
-                             * Prevent the card from opening
-                             * when the heart is clicked.
+                             * Prevent product card link
+                             * from opening.
                              */
 
                             event.preventDefault();
@@ -1842,8 +2144,7 @@ document.addEventListener(
 
 
                             /*
-                             * If this is the login link,
-                             * allow normal navigation.
+                             * Login link
                              */
 
                             if (
@@ -1890,7 +2191,6 @@ document.addEventListener(
 
                             try {
 
-
                                 const response =
                                     await fetch(
                                         url,
@@ -1898,12 +2198,15 @@ document.addEventListener(
                                             method: "GET",
 
                                             headers: {
+
                                                 "X-Requested-With":
                                                     "XMLHttpRequest"
+
                                             },
 
                                             credentials:
                                                 "same-origin"
+
                                         }
                                     );
 
@@ -1931,15 +2234,6 @@ document.addEventListener(
                                 }
 
 
-                                /*
-                                 * Backend returns:
-                                 *
-                                 * {
-                                 *     success: true,
-                                 *     wishlisted: true/false
-                                 * }
-                                 */
-
                                 const newState =
                                     Boolean(
                                         data.wishlisted
@@ -1952,20 +2246,11 @@ document.addEventListener(
                                         : "false";
 
 
-                                /*
-                                 * RED STATE
-                                 */
-
                                 wishlistButton.classList.toggle(
                                     "liked",
                                     newState
                                 );
 
-
-                                /*
-                                 * Find the heart belonging
-                                 * to THIS button only.
-                                 */
 
                                 const wishlistIcon =
                                     wishlistButton.querySelector(
@@ -1987,10 +2272,6 @@ document.addEventListener(
                                     );
 
 
-                                    /*
-                                     * Heart animation
-                                     */
-
                                     wishlistIcon.classList.remove(
                                         "wishlist-heart-pop"
                                     );
@@ -2005,10 +2286,6 @@ document.addEventListener(
 
                                 }
 
-
-                                /*
-                                 * Update accessibility text.
-                                 */
 
                                 wishlistButton.setAttribute(
                                     "aria-label",
@@ -2028,17 +2305,11 @@ document.addEventListener(
 
                             } catch (error) {
 
-
                                 console.error(
                                     "Wishlist error:",
                                     error
                                 );
 
-
-                                /*
-                                 * Use existing TrustyShop
-                                 * message system if available.
-                                 */
 
                                 if (
                                     typeof showTemporaryMessage ===
@@ -2078,7 +2349,6 @@ document.addEventListener(
 
         /* =====================================================
            WISHLIST BUTTON HOVER
-           Make cursor follower work with wishlist buttons.
         ===================================================== */
 
         if (
@@ -2102,6 +2372,7 @@ document.addEventListener(
                                         "cursorFollower"
                                     );
 
+
                                 if (follower) {
 
                                     follower.classList.add(
@@ -2122,6 +2393,7 @@ document.addEventListener(
                                     document.getElementById(
                                         "cursorFollower"
                                     );
+
 
                                 if (follower) {
 
@@ -2151,7 +2423,6 @@ document.addEventListener(
 function searchProduct(
     category
 ) {
-
 
     const searchInput =
         document.getElementById(
@@ -2191,4 +2462,3 @@ function searchProduct(
 </body>
 
 </html>
-

@@ -1,10 +1,73 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}My Orders{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/order_list.css' %}">
+<style>
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin-top: 30px;
+        margin-bottom: 20px;
+    }
+
+    .pagination-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #475569;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .pagination-btn:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+
+    .pagination-btn.active {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+    }
+
+    .pagination-btn.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .pagination-ellipsis {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        font-weight: 600;
+    }
+
+    @media (max-width: 576px) {
+        .pagination-btn {
+            width: 35px;
+            height: 35px;
+            font-size: 12px;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -53,7 +116,7 @@
                         <span class="item-qty">Qty: {{ order_item.quantity }}</span>
                     </div>
                     <div class="item-price">
-                        <span>{{ order_item.total_price }} Ks</span>
+                        <span>{{ order_item.total_price|intcomma }} Ks</span>
                     </div>
                 </div>
                 {% endfor %}
@@ -63,7 +126,7 @@
             <div class="order-card-footer">
                 <div class="order-total">
                     <span>Total:</span>
-                    <strong>{{ order.total_amount }} Ks</strong>
+                    <strong>{{ order.total_amount|intcomma }} Ks</strong>
                 </div>
                 <a href="{% url 'order:order_detail' order.id %}" class="view-btn">
                     View Details
@@ -72,6 +135,51 @@
         </div>
         {% endfor %}
     </div>
+
+    <!-- PAGINATION -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination-container">
+        <!-- Previous Arrow -->
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" class="pagination-btn">
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
+        {% else %}
+            <span class="pagination-btn disabled">
+                <i class="fa-solid fa-chevron-left"></i>
+            </span>
+        {% endif %}
+
+        <!-- Page Numbers -->
+        {% for num in page_obj.paginator.page_range %}
+            {% if num == page_obj.number %}
+                <span class="pagination-btn active">{{ num }}</span>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" class="pagination-btn">
+                    {{ num }}
+                </a>
+            {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                <a href="?page={{ num }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" class="pagination-btn">
+                    {{ num }}
+                </a>
+            {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                <span class="pagination-ellipsis">...</span>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Next Arrow -->
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" class="pagination-btn">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        {% else %}
+            <span class="pagination-btn disabled">
+                <i class="fa-solid fa-chevron-right"></i>
+            </span>
+        {% endif %}
+    </div>
+    {% endif %}
+
     {% else %}
     <div class="empty-orders">
         <i class="fa-solid fa-box-open"></i>

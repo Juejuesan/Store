@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 {% load static %}
+{% load humanize %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Cart | Trusty Shop</title>
+
+    <!-- ==================================================
+         BOOTSTRAP ICONS
+    ================================================== -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -70,7 +79,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <span class="unit-price">{{ item.unit_price }}</span> MMK
+                            <span class="unit-price">{{ item.unit_price|intcomma }}</span> MMK
                         </td>
                         <td>
                             <div class="quantity-controls">
@@ -92,7 +101,7 @@
                             </div>
                         </td>
                         <td>
-                            <strong class="subtotal">{{ item.line_total }} MMK</strong>
+                            <strong class="subtotal">{{ item.line_total|intcomma }} MMK</strong>
                         </td>
                         <td>
                             {% if item.active_hold %}
@@ -120,7 +129,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="4" class="text-end"><strong>Total:</strong></td>
-                        <td><strong class="text-success cart-total">{{ cart_total }} MMK</strong></td>
+                        <td><strong class="text-success cart-total">{{ cart_total|intcomma }} MMK</strong></td>
                         <td colspan="2"></td>
                     </tr>
                 </tfoot>
@@ -135,20 +144,20 @@
                         <div class="col-md-4">
                             <div class="wallet-balance-box">
                                 <h6>Wallet Balance</h6>
-                                <h4>{{ wallet_balance }} MMK</h4>
+                                <h4>{{ wallet_balance|intcomma }} MMK</h4>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="wallet-balance-box">
                                 <h6>Cart Total</h6>
-                                <h4 class="wallet-cart-total">{{ cart_total }} MMK</h4>
+                                <h4 class="wallet-cart-total">{{ cart_total|intcomma }} MMK</h4>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="wallet-balance-box">
                                 <h6>Remaining Balance</h6>
                                 <h4 class="remaining-balance {% if has_sufficient_balance %}text-success{% else %}text-danger{% endif %}">
-                                    {{ remaining_balance }} MMK
+                                    {{ remaining_balance|intcomma }} MMK
                                 </h4>
                             </div>
                         </div>
@@ -163,14 +172,14 @@
             </a>
 
             <button type="button" id="purchaseBtn" class="btn btn-success btn-lg" {% if not has_sufficient_balance %}disabled{% endif %}>
-                <i class="fa-solid fa-lock"></i> Purchase (<span class="cart-total">{{ cart_total }}</span> MMK)
+                <i class="fa-solid fa-lock"></i> Purchase (<span class="cart-total">{{ cart_total|intcomma }}</span> MMK)
             </button>
         </div>
 
         {% if not has_sufficient_balance %}
         <div class="alert alert-danger mt-3" id="insufficientBalanceAlert">
             <i class="fa-solid fa-exclamation-circle"></i>
-            Insufficient balance. You need <span class="cart-total">{{ cart_total }}</span> MMK but only have {{ wallet_balance }} MMK.
+            Insufficient balance. You need <span class="cart-total">{{ cart_total|intcomma }}</span> MMK but only have {{ wallet_balance|intcomma }} MMK.
             <a href="{% url 'wallet:deposit' %}" class="alert-link">Deposit now</a>
         </div>
         {% endif %}
@@ -256,15 +265,15 @@
 
                         <div class="d-flex justify-content-between mb-2">
                             <span>Cart Total:</span>
-                            <strong class="cart-total">{{ cart_total }} MMK</strong>
+                            <strong class="cart-total">{{ cart_total|intcomma }} MMK</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Wallet Balance:</span>
-                            <span>{{ wallet_balance }} MMK</span>
+                            <span>{{ wallet_balance|intcomma }} MMK</span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>Remaining Balance After Purchase:</span>
-                            <strong class="remaining-balance text-success">{{ remaining_balance }} MMK</strong>
+                            <strong class="remaining-balance text-success">{{ remaining_balance|intcomma }} MMK</strong>
                         </div>
                     </div>
 

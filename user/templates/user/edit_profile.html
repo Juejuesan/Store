@@ -1,6 +1,6 @@
+<!DOCTYPE html>
 {% load static %}
 
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -14,202 +14,420 @@
 
     <title>Edit Profile | Trusty Shop</title>
 
+
+    <!-- =====================================================
+         BOOTSTRAP
+    ====================================================== -->
+
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
 
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
+
     <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
 
         * {
             box-sizing: border-box;
         }
 
+
         body {
             margin: 0;
+
             background: #f4f8ff;
+
             font-family: Arial, sans-serif;
         }
 
+
         /* =====================================================
-           MAIN
+           MAIN CONTAINER
         ===================================================== */
 
         .edit-container {
+
             max-width: 720px;
+
             margin: 70px auto;
+
             padding: 20px;
         }
 
+
+        /* =====================================================
+           EDIT CARD
+        ===================================================== */
+
         .edit-card {
+
             background: #ffffff;
+
             border-radius: 24px;
+
             padding: 35px;
+
             box-shadow:
-                0 20px 50px rgba(21, 101, 192, 0.10);
+                0 20px 50px
+                rgba(21, 101, 192, 0.10);
         }
 
+
+        /* =====================================================
+           TITLE
+        ===================================================== */
+
         .edit-title {
+
             color: #1565c0;
+
             font-weight: 700;
         }
 
+
         /* =====================================================
-           PROFILE PHOTO
+           PROFILE PHOTO SECTION
         ===================================================== */
 
         .profile-photo-section {
+
             text-align: center;
+
             margin-bottom: 35px;
         }
 
+
+        /* =====================================================
+           PROFILE PHOTO WRAPPER
+        ===================================================== */
+
         .profile-photo-wrapper {
+
             position: relative;
+
             width: 130px;
             height: 130px;
+
             margin: 0 auto 15px;
         }
 
+
+        /* =====================================================
+           PROFILE IMAGE
+        ===================================================== */
+
         .profile-preview {
+
             width: 130px;
             height: 130px;
+
             border-radius: 50%;
+
             object-fit: cover;
+
             border: 4px solid #1976d2;
+
             background: #eaf3ff;
+
+            display: block;
         }
 
+
+        /* =====================================================
+           DEFAULT PROFILE ICON
+        ===================================================== */
+
         .default-profile {
+
             width: 130px;
             height: 130px;
+
             border-radius: 50%;
+
             border: 4px solid #1976d2;
+
             background: #eaf3ff;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
             color: #1976d2;
+
+            position: relative;
+
+            z-index: 1;
         }
+
 
         /* =====================================================
            CAMERA BUTTON
         ===================================================== */
 
         .photo-change-btn {
-            position: absolute;
-            right: 0;
-            bottom: 5px;
 
-            width: 42px;
-            height: 42px;
+            position: absolute;
+
+            right: -5px;
+
+            bottom: 0;
+
+            width: 44px;
+
+            height: 44px;
 
             border-radius: 50%;
-            border: 3px solid white;
+
+            border: 3px solid #ffffff;
 
             background: #1976d2;
-            color: white;
+
+            color: #ffffff;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
             cursor: pointer;
 
-            transition: 0.2s ease;
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+
+            z-index: 9999;
+
+            padding: 0;
+
+            outline: none;
+
+            box-shadow:
+                0 4px 12px
+                rgba(25, 118, 210, 0.30);
         }
 
+
         .photo-change-btn:hover {
+
             background: #0d47a1;
+
             transform: scale(1.08);
         }
 
-        /* Hide Django file input */
 
-        .profile-file-input {
-            display: none;
+        .photo-change-btn:active {
+
+            transform: scale(0.95);
         }
 
-        .photo-help {
-            color: #777;
-            font-size: 14px;
+
+        .photo-change-btn i {
+
+            font-size: 17px;
+
+            pointer-events: none;
         }
+
 
         /* =====================================================
-           DELETE BUTTON
+           HIDDEN FILE INPUT
+        ===================================================== */
+
+        .photo-upload-input {
+
+            display: none !important;
+        }
+
+
+        /* =====================================================
+           PHOTO HELP
+        ===================================================== */
+
+        .photo-help {
+
+            color: #777;
+
+            font-size: 14px;
+
+            margin-top: 5px;
+        }
+
+
+        /* =====================================================
+           SELECTED PHOTO MESSAGE
+        ===================================================== */
+
+        .photo-selected-message {
+
+            display: none;
+
+            margin-top: 8px;
+
+            color: #1565c0;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        .photo-selected-message i {
+
+            margin-right: 5px;
+        }
+
+
+        /* =====================================================
+           DELETE PHOTO BUTTON
         ===================================================== */
 
         .delete-photo-btn {
+
             border: none;
+
             background: transparent;
+
             color: #dc3545;
+
             font-size: 14px;
+
             font-weight: 600;
+
             cursor: pointer;
         }
 
+
         .delete-photo-btn:hover {
+
             text-decoration: underline;
         }
 
+
         /* =====================================================
-           FORM
+           FORM LABEL
         ===================================================== */
 
         .form-label {
+
             font-weight: 600;
+
             margin-top: 10px;
         }
 
+
+        /* =====================================================
+           FORM INPUTS
+        ===================================================== */
+
         .form-control,
         .form-select {
+
             border-radius: 12px;
+
             padding: 12px 15px;
+
             border: 1px solid #d9e3f0;
         }
 
+
         .form-control:focus,
         .form-select:focus {
+
             border-color: #1976d2;
-            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.10);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(25, 118, 210, 0.10);
         }
 
+
         /* =====================================================
-           BUTTONS
+           SAVE BUTTON
         ===================================================== */
 
         .save-btn {
+
             border: none;
+
             border-radius: 12px;
+
             padding: 13px 25px;
 
-            background: linear-gradient(
-                135deg,
-                #1565c0,
-                #42a5f5
-            );
+            background:
+                linear-gradient(
+                    135deg,
+                    #1565c0,
+                    #42a5f5
+                );
 
             color: white;
+
             font-weight: 600;
 
             transition: 0.2s ease;
         }
 
+
         .save-btn:hover {
+
             transform: translateY(-1px);
+
             box-shadow:
-                0 8px 20px rgba(21, 101, 192, 0.25);
+                0 8px 20px
+                rgba(21, 101, 192, 0.25);
         }
 
+
+        /* =====================================================
+           BACK BUTTON
+        ===================================================== */
+
         .back-btn {
+
             border-radius: 12px;
+
             padding: 12px 22px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 576px) {
+
+            .edit-container {
+
+                margin: 30px auto;
+
+                padding: 15px;
+            }
+
+
+            .edit-card {
+
+                padding: 25px 20px;
+
+                border-radius: 20px;
+            }
+
         }
 
     </style>
@@ -218,6 +436,7 @@
 
 
 <body>
+
 
 <div class="edit-container">
 
@@ -231,125 +450,213 @@
         <div class="text-center mb-4">
 
             <h2 class="edit-title">
-                Edit Profile
+                Edit Personal information
             </h2>
 
             <p class="text-muted">
-                Update your Trusty Shop profile
+                Update your Trusty Shop personal information
             </p>
 
         </div>
 
 
         <!-- =================================================
-             PROFILE PHOTO
-        ================================================= -->
+             MAIN PROFILE FORM
 
-        <div class="profile-photo-section">
+             IMPORTANT:
 
-            <div class="profile-photo-wrapper">
+             The PHOTO INPUT is INSIDE this form.
 
-                {% if profile.profile_pic %}
+             Therefore:
 
-                    <img
-                        id="profilePreview"
-                        src="{{ profile.profile_pic.url }}"
-                        class="profile-preview"
-                        alt="Profile Photo"
-                    >
-
-                {% else %}
-
-                    <div
-                        id="defaultProfile"
-                        class="default-profile"
-                    >
-
-                        <i class="fa-solid fa-user fa-4x"></i>
-
-                    </div>
-
-                    <img
-                        id="profilePreview"
-                        class="profile-preview"
-                        style="display: none;"
-                        alt="Profile Preview"
-                    >
-
-                {% endif %}
-
-
-                <!-- CAMERA BUTTON -->
-
-                <label
-                    for="id_profile_pic"
-                    class="photo-change-btn"
-                    title="Change profile photo"
-                >
-
-                    <i class="fa-solid fa-camera"></i>
-
-                </label>
-
-            </div>
-
-
-            <!-- HIDDEN DJANGO FILE INPUT -->
-
-            <div style="display: none;">
-
-                {{ form.profile_pic }}
-
-            </div>
-
-
-            <div class="photo-help">
-                Click the camera button to change your photo
-            </div>
-
-
-            {% if profile.profile_pic %}
-
-                <form
-                    method="POST"
-                    action="{% url 'user:delete_profile_pic' %}"
-                    class="mt-2"
-                    onsubmit="return confirm('Are you sure you want to delete your profile photo?');"
-                >
-
-                    {% csrf_token %}
-
-                    <button
-                        type="submit"
-                        class="delete-photo-btn"
-                    >
-
-                        <i class="fa-solid fa-trash"></i>
-
-                        Delete Profile Photo
-
-                    </button>
-
-                </form>
-
-            {% endif %}
-
-        </div>
-
-
-        <!-- =================================================
-             PROFILE FORM
+             Camera click
+                    ↓
+             Choose photo
+                    ↓
+             Preview only
+                    ↓
+             Save Changes
+                    ↓
+             Everything is submitted together
         ================================================= -->
 
         <form
             method="POST"
             enctype="multipart/form-data"
+            id="profileEditForm"
         >
 
             {% csrf_token %}
 
 
-            <!-- FULL NAME -->
+<!--            &lt;!&ndash; =================================================-->
+<!--                 PROFILE PHOTO-->
+<!--            ================================================= &ndash;&gt;-->
+
+<!--            <div class="profile-photo-section">-->
+
+
+<!--                <div class="profile-photo-wrapper">-->
+
+
+<!--                    &lt;!&ndash; =================================================-->
+<!--                         EXISTING PROFILE PHOTO-->
+<!--                    ================================================= &ndash;&gt;-->
+
+<!--                    {% if profile.profile_pic %}-->
+
+<!--                        <img-->
+<!--                            id="profilePreview"-->
+<!--                            src="{{ profile.profile_pic.url }}"-->
+<!--                            class="profile-preview"-->
+<!--                            alt="Profile Photo"-->
+<!--                        >-->
+
+<!--                    {% else %}-->
+
+
+<!--                        &lt;!&ndash; =================================================-->
+<!--                             DEFAULT USER ICON-->
+<!--                        ================================================= &ndash;&gt;-->
+
+<!--                        <div-->
+<!--                            id="defaultProfile"-->
+<!--                            class="default-profile"-->
+<!--                        >-->
+
+<!--                            <i class="fa-solid fa-user fa-4x"></i>-->
+
+<!--                        </div>-->
+
+
+<!--                        &lt;!&ndash; =================================================-->
+<!--                             HIDDEN PREVIEW-->
+
+<!--                             This becomes visible after selecting-->
+<!--                             a new photo.-->
+<!--                        ================================================= &ndash;&gt;-->
+
+<!--                        <img-->
+<!--                            id="profilePreview"-->
+<!--                            class="profile-preview"-->
+<!--                            style="display: none;"-->
+<!--                            alt="Profile Preview"-->
+<!--                        >-->
+
+<!--                    {% endif %}-->
+
+
+<!--                    &lt;!&ndash; =================================================-->
+<!--                         CAMERA BUTTON-->
+
+<!--                         IMPORTANT:-->
+
+<!--                         This does NOT submit the form.-->
+
+<!--                         It ONLY opens the file picker.-->
+<!--                    ================================================= &ndash;&gt;-->
+
+<!--                    <button-->
+<!--                        type="button"-->
+<!--                        id="cameraButton"-->
+<!--                        class="photo-change-btn"-->
+<!--                        title="Change profile photo"-->
+<!--                        aria-label="Change profile photo"-->
+<!--                    >-->
+
+<!--                        <i class="fa-solid fa-camera"></i>-->
+
+<!--                    </button>-->
+
+
+<!--                </div>-->
+
+
+<!--                &lt;!&ndash; =================================================-->
+<!--                     DJANGO PROFILE PHOTO INPUT-->
+
+<!--                     This input is INSIDE the MAIN FORM.-->
+
+<!--                     Django should generate something like:-->
+
+<!--                     <input-->
+<!--                         type="file"-->
+<!--                         name="profile_pic"-->
+<!--                         id="id_profile_pic"-->
+<!--                     >-->
+<!--                ================================================= &ndash;&gt;-->
+
+<!--                <div>-->
+
+<!--                    {{ form.profile_pic }}-->
+
+<!--                </div>-->
+
+
+<!--                &lt;!&ndash; =================================================-->
+<!--                     HELP TEXT-->
+<!--                ================================================= &ndash;&gt;-->
+
+<!--                <div class="photo-help">-->
+
+<!--                    Click the camera button to choose a new photo-->
+
+<!--                </div>-->
+
+
+<!--                &lt;!&ndash; =================================================-->
+<!--                     SELECTED PHOTO MESSAGE-->
+<!--                ================================================= &ndash;&gt;-->
+
+<!--                <div-->
+<!--                    id="photoSelectedMessage"-->
+<!--                    class="photo-selected-message"-->
+<!--                >-->
+
+<!--                    <i class="fa-solid fa-image"></i>-->
+
+<!--                    New photo selected. Click-->
+<!--                    <strong>Save Changes</strong>-->
+<!--                    to update your profile.-->
+
+<!--                </div>-->
+
+
+<!--                &lt;!&ndash; =================================================-->
+<!--                     DELETE PHOTO-->
+<!--                ================================================= &ndash;&gt;-->
+
+<!--                {% if profile.profile_pic %}-->
+
+<!--                    <div class="mt-2">-->
+
+<!--                        <a-->
+<!--                            href="{% url 'user:delete_profile_pic' %}"-->
+<!--                            class="delete-photo-btn"-->
+<!--                            onclick="-->
+<!--                                return confirm(-->
+<!--                                    'Are you sure you want to delete your profile photo?'-->
+<!--                                );-->
+<!--                            "-->
+<!--                        >-->
+
+<!--                            <i class="fa-solid fa-trash"></i>-->
+
+<!--                            Delete Profile Photo-->
+
+<!--                        </a>-->
+
+<!--                    </div>-->
+
+<!--                {% endif %}-->
+
+
+<!--            </div>-->
+
+
+            <!-- =================================================
+                 FULL NAME
+            ================================================= -->
 
             <div class="mb-3">
 
@@ -357,15 +664,21 @@
                     for="{{ form.fullName.id_for_label }}"
                     class="form-label"
                 >
+
                     Full Name
+
                 </label>
 
+
                 {{ form.fullName }}
+
 
                 {% if form.fullName.errors %}
 
                     <div class="text-danger small mt-1">
+
                         {{ form.fullName.errors }}
+
                     </div>
 
                 {% endif %}
@@ -373,7 +686,9 @@
             </div>
 
 
-            <!-- PHONE -->
+            <!-- =================================================
+                 PHONE NUMBER
+            ================================================= -->
 
             <div class="mb-3">
 
@@ -381,15 +696,21 @@
                     for="{{ form.phone_number.id_for_label }}"
                     class="form-label"
                 >
+
                     Phone Number
+
                 </label>
 
+
                 {{ form.phone_number }}
+
 
                 {% if form.phone_number.errors %}
 
                     <div class="text-danger small mt-1">
+
                         {{ form.phone_number.errors }}
+
                     </div>
 
                 {% endif %}
@@ -397,7 +718,9 @@
             </div>
 
 
-            <!-- ADDRESS -->
+            <!-- =================================================
+                 ADDRESS
+            ================================================= -->
 
             <div class="mb-3">
 
@@ -405,15 +728,21 @@
                     for="{{ form.address.id_for_label }}"
                     class="form-label"
                 >
+
                     Address
+
                 </label>
 
+
                 {{ form.address }}
+
 
                 {% if form.address.errors %}
 
                     <div class="text-danger small mt-1">
+
                         {{ form.address.errors }}
+
                     </div>
 
                 {% endif %}
@@ -421,7 +750,9 @@
             </div>
 
 
-            <!-- GENDER -->
+            <!-- =================================================
+                 GENDER
+            ================================================= -->
 
             <div class="mb-3">
 
@@ -429,15 +760,21 @@
                     for="{{ form.gender.id_for_label }}"
                     class="form-label"
                 >
+
                     Gender
+
                 </label>
 
+
                 {{ form.gender }}
+
 
                 {% if form.gender.errors %}
 
                     <div class="text-danger small mt-1">
+
                         {{ form.gender.errors }}
+
                     </div>
 
                 {% endif %}
@@ -451,6 +788,11 @@
 
             <div class="d-flex gap-2 mt-4">
 
+
+                <!-- =================================================
+                     BACK
+                ================================================= -->
+
                 <a
                     href="{% url 'user:dashboard' %}"
                     class="btn btn-light back-btn"
@@ -463,9 +805,17 @@
                 </a>
 
 
+                <!-- =================================================
+                     SAVE CHANGES
+
+                     THIS IS THE ONLY THING THAT SUBMITS
+                     THE PROFILE FORM.
+                ================================================= -->
+
                 <button
                     type="submit"
                     class="save-btn flex-grow-1"
+                    id="saveChangesButton"
                 >
 
                     <i class="fa-solid fa-check"></i>
@@ -474,9 +824,12 @@
 
                 </button>
 
+
             </div>
 
+
         </form>
+
 
     </div>
 
@@ -484,79 +837,270 @@
 
 
 <!-- =========================================================
-     PROFILE PHOTO PREVIEW
+     PROFILE PHOTO JAVASCRIPT
 ========================================================= -->
 
 <script>
 
-    const profileInput =
-        document.getElementById("id_profile_pic");
-
-    const profilePreview =
-        document.getElementById("profilePreview");
-
-    const defaultProfile =
-        document.getElementById("defaultProfile");
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
 
-    if (profileInput) {
+        /* =====================================================
+           CAMERA BUTTON
+        ===================================================== */
 
-        profileInput.addEventListener(
-            "change",
-            function () {
+        const cameraButton =
+            document.getElementById(
+                "cameraButton"
+            );
 
-                const file = this.files[0];
 
-                if (!file) {
-                    return;
+        /* =====================================================
+           DJANGO FILE INPUT
+
+           Django's ModelForm should generate:
+
+           id="id_profile_pic"
+        ===================================================== */
+
+        const profileInput =
+            document.getElementById(
+                "id_profile_pic"
+            );
+
+
+        /* =====================================================
+           PROFILE PREVIEW
+        ===================================================== */
+
+        const profilePreview =
+            document.getElementById(
+                "profilePreview"
+            );
+
+
+        /* =====================================================
+           DEFAULT PROFILE ICON
+        ===================================================== */
+
+        const defaultProfile =
+            document.getElementById(
+                "defaultProfile"
+            );
+
+
+        /* =====================================================
+           SELECTED PHOTO MESSAGE
+        ===================================================== */
+
+        const photoSelectedMessage =
+            document.getElementById(
+                "photoSelectedMessage"
+            );
+
+
+        /* =====================================================
+           CAMERA BUTTON CLICK
+
+           IMPORTANT:
+
+           DO NOT submit the form here.
+
+           Just open the file picker.
+        ===================================================== */
+
+        if (
+            cameraButton &&
+            profileInput
+        ) {
+
+            cameraButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    /*
+                     * Open the normal computer
+                     * file selection window.
+                     */
+
+                    profileInput.click();
+
                 }
+            );
+
+        }
 
 
-                /* Only allow images */
+        /* =====================================================
+           PHOTO SELECTED
+        ===================================================== */
 
-                if (!file.type.startsWith("image/")) {
+        if (profileInput) {
 
-                    alert(
-                        "Please select an image file."
-                    );
-
-                    this.value = "";
-
-                    return;
-                }
+            profileInput.addEventListener(
+                "change",
+                function () {
 
 
-                /* Create preview */
-
-                const reader =
-                    new FileReader();
+                    const file =
+                        this.files[0];
 
 
-                reader.onload = function (event) {
+                    /* =============================================
+                       NO FILE SELECTED
+                    ============================================= */
 
-                    profilePreview.src =
-                        event.target.result;
+                    if (!file) {
 
-                    profilePreview.style.display =
-                        "block";
-
-
-                    if (defaultProfile) {
-
-                        defaultProfile.style.display =
-                            "none";
+                        return;
 
                     }
 
-                };
+
+                    /* =============================================
+                       CHECK FILE TYPE
+                    ============================================= */
+
+                    if (
+                        !file.type.startsWith(
+                            "image/"
+                        )
+                    ) {
+
+                        alert(
+                            "Please select an image file."
+                        );
+
+                        this.value = "";
+
+                        return;
+
+                    }
 
 
-                reader.readAsDataURL(file);
+                    /* =============================================
+                       CREATE LOCAL PREVIEW
 
-            }
-        );
+                       IMPORTANT:
+
+                       This DOES NOT upload the photo.
+
+                       FileReader only displays the selected
+                       image in the browser.
+                    ============================================= */
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        function (event) {
+
+
+                            /* =================================
+                               SHOW SELECTED PHOTO
+                            ================================= */
+
+                            if (profilePreview) {
+
+                                profilePreview.src =
+                                    event.target.result;
+
+                                profilePreview.style.display =
+                                    "block";
+
+                            }
+
+
+                            /* =================================
+                               HIDE DEFAULT USER ICON
+                            ================================= */
+
+                            if (defaultProfile) {
+
+                                defaultProfile.style.display =
+                                    "none";
+
+                            }
+
+
+                            /* =================================
+                               SHOW MESSAGE
+                            ================================= */
+
+                            if (photoSelectedMessage) {
+
+                                photoSelectedMessage.style.display =
+                                    "block";
+
+                            }
+
+                        };
+
+
+                    reader.readAsDataURL(file);
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           SAVE BUTTON
+
+           The normal form submission handles:
+
+           - Full Name
+           - Phone Number
+           - Address
+           - Gender
+           - Profile Photo
+
+           No JavaScript submit is required.
+        ===================================================== */
+
+        const profileEditForm =
+            document.getElementById(
+                "profileEditForm"
+            );
+
+
+        if (profileEditForm) {
+
+            profileEditForm.addEventListener(
+                "submit",
+                function () {
+
+                    const saveButton =
+                        document.getElementById(
+                            "saveChangesButton"
+                        );
+
+
+                    if (saveButton) {
+
+                        saveButton.disabled = true;
+
+                        saveButton.innerHTML =
+                            '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+                    }
+
+                }
+            );
+
+        }
 
     }
+);
 
 </script>
 

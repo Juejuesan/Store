@@ -163,21 +163,77 @@ function removeImage(itemIdx, fileIndex) {
 // ============================================
 function updateAllSizeCharts() {
     const condition = document.getElementById('conditionSelect').value;
+    const categorySelect = document.getElementById('categorySelect');
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    const sizeType = selectedOption ? selectedOption.getAttribute('data-size-type') : null;
+    const shouldShowSizes = condition === 'new' && sizeType && sizeType !== 'none' && sizeOptions.length > 0;
+
     document.querySelectorAll('.item-section').forEach(function(item) {
         const itemId = item.id.replace('item', '');
         const sizeChart = document.getElementById('sizeChart' + itemId);
         const addMoreBtn = document.getElementById('addMoreSizes' + itemId);
-        if (sizeChart && addMoreBtn) {
-            if (condition === 'new' && sizeOptions.length > 0) {
-                sizeChart.style.display = 'block';
-                addMoreBtn.style.display = 'inline-flex';
-                populateSizeButtons(itemId);
-            } else {
-                sizeChart.style.display = 'none';
-                addMoreBtn.style.display = 'none';
-                var ss = document.getElementById('selectedSizes' + itemId);
-                if (ss) ss.style.display = 'none';
-                if (selectedSizes[itemId]) selectedSizes[itemId] = [];
+        const qtyCard = document.getElementById('itemQtyCard' + itemId);
+        const priceInput = item.querySelector('input[name="item_price_' + itemId + '"]');
+        const priceCard = priceInput ? priceInput.closest('.input-card') : null;
+
+        if (shouldShowSizes) {
+            // SHOW SIZE CHART, HIDE MAIN QTY AND PRICE
+            if (sizeChart) sizeChart.style.display = 'block';
+            if (addMoreBtn) addMoreBtn.style.display = 'inline-flex';
+
+            // Hide main quantity card
+            if (qtyCard) {
+                qtyCard.style.display = 'none';
+                const qtyInput = qtyCard.querySelector('input');
+                if (qtyInput) {
+                    qtyInput.disabled = true;
+                    qtyInput.removeAttribute('required');
+                }
+            }
+
+            // Hide main price card
+            if (priceCard) {
+                priceCard.style.display = 'none';
+                if (priceInput) {
+                    priceInput.disabled = true;
+                    priceInput.removeAttribute('required');
+                }
+            }
+
+            populateSizeButtons(itemId);
+
+        } else {
+            // HIDE SIZE CHART, SHOW MAIN QTY AND PRICE
+            if (sizeChart) sizeChart.style.display = 'none';
+            if (addMoreBtn) addMoreBtn.style.display = 'none';
+
+            // Show main quantity card
+            if (qtyCard) {
+                qtyCard.style.display = 'block';
+                const qtyInput = qtyCard.querySelector('input');
+                if (qtyInput) {
+                    qtyInput.disabled = false;
+                    qtyInput.setAttribute('required', '');
+                }
+            }
+
+            // Show main price card
+            if (priceCard) {
+                priceCard.style.display = 'block';
+                if (priceInput) {
+                    priceInput.disabled = false;
+                    priceInput.setAttribute('required', '');
+                }
+            }
+
+            // Hide selected sizes
+            const selectedSizesDiv = document.getElementById('selectedSizes' + itemId);
+            if (selectedSizesDiv) {
+                selectedSizesDiv.style.display = 'none';
+            }
+
+            if (selectedSizes[itemId]) {
+                selectedSizes[itemId] = [];
             }
         }
     });
@@ -277,12 +333,12 @@ function updateSelectedSizesDisplay(itemIdx) {
     var html = '<h4><i class="fa-solid fa-circle-check"></i> Selected Sizes</h4><input type="hidden" name="size_count_' + itemIdx + '" value="' + selectedSizes[itemIdx].length + '">';
     selectedSizes[itemIdx].forEach(function(so, j) {
         html += '<div class="size-row">' +
-            '<span class="size-label">' + so.size + '</span>' +
-            '<input type="number" class="quantity-input" name="quantity_' + itemIdx + '_' + j + '" placeholder="Qty" value="' + (so.quantity || 0) + '" min="0" required oninput="saveQuantity(' + itemIdx + ',' + j + ',this.value)">' +
-            '<input type="number" class="price-input" name="size_price_' + itemIdx + '_' + j + '" placeholder="Price" value="' + (so.price || '') + '" min="0" required oninput="saveSizePrice(' + itemIdx + ',' + j + ',this.value)">' +
-            '<input type="hidden" name="size_' + itemIdx + '_' + j + '" value="' + so.size + '">' +
-            '<button type="button" class="remove-size-btn" onclick="removeSize(' + itemIdx + ',' + j + ',\'' + so.size + '\')"><i class="fa-solid fa-times"></i></button>' +
-            '</div>';
+    '<span class="size-label">' + so.size + '</span>' +
+    '<input type="number" class="quantity-input" name="quantity_' + itemIdx + '_' + j + '" placeholder="Quantity" value="' + (so.quantity || 0) + '" min="0" required oninput="saveQuantity(' + itemIdx + ',' + j + ',this.value)" style="flex:1; min-width:120px; padding:12px 16px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px;">' +
+    '<input type="number" class="price-input" name="size_price_' + itemIdx + '_' + j + '" placeholder="Price (MMK)" value="' + (so.price || '') + '" min="0" required oninput="saveSizePrice(' + itemIdx + ',' + j + ',this.value)" style="flex:1; min-width:120px; padding:12px 16px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px;">' +
+    '<input type="hidden" name="size_' + itemIdx + '_' + j + '" value="' + so.size + '">' +
+    '<button type="button" class="remove-size-btn" onclick="removeSize(' + itemIdx + ',' + j + ',\'' + so.size + '\')"><i class="fa-solid fa-times"></i></button>' +
+    '</div>';
     });
     div.innerHTML = html;
 }

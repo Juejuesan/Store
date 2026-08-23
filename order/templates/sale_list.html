@@ -64,24 +64,24 @@
 
         <!-- Status Filter Tabs -->
         <div class="status-tabs mb-4">
-            <button class="tab-btn active" data-status="all" onclick="filterSales('all')">
+            <a href="?status=all" class="tab-btn {% if current_status == 'all' or not current_status %}active{% endif %}">
                 All ({{ total_sales }})
-            </button>
-            <button class="tab-btn" data-status="pending" onclick="filterSales('pending')">
+            </a>
+            <a href="?status=pending" class="tab-btn {% if current_status == 'pending' %}active{% endif %}">
                 Pending ({{ pending_count }})
-            </button>
-            <button class="tab-btn" data-status="ready_for_pickup" onclick="filterSales('ready_for_pickup')">
+            </a>
+            <a href="?status=ready_for_pickup" class="tab-btn {% if current_status == 'ready_for_pickup' %}active{% endif %}">
                 Ready ({{ ready_count }})
-            </button>
-            <button class="tab-btn" data-status="picked_up" onclick="filterSales('picked_up')">
+            </a>
+            <a href="?status=picked_up" class="tab-btn {% if current_status == 'picked_up' %}active{% endif %}">
                 Picked Up
-            </button>
-            <button class="tab-btn" data-status="completed" onclick="filterSales('completed')">
+            </a>
+            <a href="?status=completed" class="tab-btn {% if current_status == 'completed' %}active{% endif %}">
                 Completed
-            </button>
-            <button class="tab-btn" data-status="cancelled" onclick="filterSales('cancelled')">
+            </a>
+            <a href="?status=cancelled" class="tab-btn {% if current_status == 'cancelled' %}active{% endif %}">
                 Cancelled ({{ cancelled_count }})
-            </button>
+            </a>
         </div>
 
         <!-- Sales List -->
@@ -153,6 +153,43 @@
             </div>
             {% endfor %}
         </div>
+
+        <!-- PAGINATION -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-container" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:30px; margin-bottom:20px;">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+            {% else %}
+                <span style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; opacity:0.3; pointer-events:none;">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </span>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if num == page_obj.number %}
+                    <span style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #2563eb; border-radius:8px; background:#2563eb; color:#ffffff; font-size:14px; font-weight:600;">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">{{ num }}</a>
+                {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                    <a href="?page={{ num }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">{{ num }}</a>
+                {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                    <span style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-weight:600;">...</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            {% else %}
+                <span style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; opacity:0.3; pointer-events:none;">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </span>
+            {% endif %}
+        </div>
+        {% endif %}
 
     </div>
 </div>

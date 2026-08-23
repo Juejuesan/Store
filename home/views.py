@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-
+from django.core.paginator import Paginator
 from posts.models import Post
 from wishlist.models import Wishlist
 from cart.models import StockHold
@@ -29,7 +29,7 @@ def home(request):
         'items',
         'items__images',
         'items__size_variants',
-    )
+    ).order_by('-created_at')  # ADD THIS
 
     # =====================================================
     # NORMAL TEXT SEARCH
@@ -42,6 +42,17 @@ def home(request):
             Q(items__name__icontains=search_query) |
             Q(category__name__icontains=search_query)
         ).distinct()
+
+    # =====================================================
+    # PAGINATION
+    # 20 POSTS PER PAGE
+    # =====================================================
+
+    paginator = Paginator(posts, 5)
+
+    page_number = request.GET.get('page')
+
+    posts = paginator.get_page(page_number)
 
     # =====================================================
     # IMAGE SEARCH

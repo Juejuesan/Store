@@ -1,446 +1,181 @@
 {% extends "adminpanel/base_admin.html" %}
 {% load static %}
+{% load humanize %}
 {% load custom_filters %}
 
-{% block title %}
-    Review Post | Trusty Shop Admin
-{% endblock %}
-
+{% block title %}Review Post | Trusty Shop Admin{% endblock %}
 
 {% block extra_css %}
-    <link
-        rel="stylesheet"
-        href="{% static 'css/post_detail.css' %}"
-    >
+<link rel="stylesheet" href="{% static 'css/post_detail.css' %}">
 {% endblock %}
 
-
 {% block content %}
-
 <div class="review-page">
-
-    <!-- ==================================================
-         REVIEW HEADER
-    =================================================== -->
-
+    <!-- REVIEW HEADER -->
     <div class="review-header">
-
         <div>
-            <span class="post-id">
-                Post #{{ post.id }}
-            </span>
-
-            <h1>
-                Review Product
-            </h1>
-
-            <p>
-                Review seller's submitted product before publishing.
-            </p>
+            <span class="post-id">Post #{{ post.id }}</span>
+            <h1>Review Product</h1>
+            <p>Review seller's submitted product before publishing.</p>
         </div>
-
-
         <div class="header-actions">
-
-            <span class="badge pending">
-                Pending Review
-            </span>
-
-            <a
-                href="{% url 'posts' %}"
-                class="back-btn"
-            >
-                <i class="fa-solid fa-arrow-left"></i>
-                Back
+            <span class="badge pending">Pending Review</span>
+            <a href="{% url 'posts' %}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Back
             </a>
-
         </div>
-
     </div>
 
-
-    <!-- ==================================================
-         POST INFORMATION
-    =================================================== -->
-
+    <!-- POST INFORMATION -->
     <div class="info-strip">
-
-
-        <!-- SELLER -->
-
         <div class="info-item">
-
-            <div class="info-icon">
-                <i class="fa-solid fa-user"></i>
-            </div>
-
+            <div class="info-icon"><i class="fa-solid fa-user"></i></div>
             <div>
                 <span>Seller</span>
-
-                <strong>
-                    {{ post.user.fullName }}
-                </strong>
+                <strong>{{ post.user.fullName }}</strong>
             </div>
-
         </div>
-
-
-        <!-- CATEGORY -->
-
         <div class="info-item">
-
-            <div class="info-icon">
-                <i class="fa-solid fa-layer-group"></i>
-            </div>
-
+            <div class="info-icon"><i class="fa-solid fa-layer-group"></i></div>
             <div>
                 <span>Category</span>
-
-                <strong>
-                    {{ post.category.name }}
-                </strong>
+                <strong>{{ post.category.name }}</strong>
             </div>
-
         </div>
-
-
-        <!-- CONDITION -->
-
         <div class="info-item">
-
-            <div class="info-icon">
-                <i class="fa-solid fa-tag"></i>
-            </div>
-
+            <div class="info-icon"><i class="fa-solid fa-tag"></i></div>
             <div>
                 <span>Condition</span>
-
                 <strong>
-
                     {% if post.condition == "new" %}
-
-                        <span class="text-green">
-                            Brand New
-                        </span>
-
+                        <span class="text-green">Brand New</span>
                     {% else %}
-
-                        <span class="text-orange">
-                            Second Hand
-                        </span>
-
+                        <span class="text-orange">Second Hand</span>
                     {% endif %}
-
                 </strong>
             </div>
-
         </div>
-
-
-        <!-- ITEMS -->
-
         <div class="info-item">
-
-            <div class="info-icon">
-                <i class="fa-solid fa-boxes-stacked"></i>
-            </div>
-
+            <div class="info-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
             <div>
                 <span>Items</span>
-
-                <strong>
-                    {{ post.items.count }}
-                </strong>
+                <strong>{{ post.items.count }}</strong>
             </div>
-
         </div>
-
-
-        <!-- SUBMITTED DATE -->
-
         <div class="info-item">
-
-            <div class="info-icon">
-                <i class="fa-solid fa-calendar"></i>
-            </div>
-
+            <div class="info-icon"><i class="fa-solid fa-calendar"></i></div>
             <div>
                 <span>Submitted</span>
-
-                <strong>
-                    {{ post.created_at|date:"M d, Y" }}
-                </strong>
+                <strong>{{ post.created_at|date:"M d, Y" }}</strong>
             </div>
-
         </div>
-
     </div>
 
-
-    <!-- ==================================================
-         POST DESCRIPTION
-    =================================================== -->
-
+    <!-- POST DESCRIPTION -->
     {% if post.description %}
-
     <div class="description-card">
-
-        <h3>
-            <i class="fa-solid fa-align-left"></i>
-            Post Description
-        </h3>
-
-        <p>
-            {{ post.description }}
-        </p>
-
+        <h3><i class="fa-solid fa-align-left"></i> Post Description</h3>
+        <p>{{ post.description }}</p>
     </div>
-
     {% endif %}
 
-
-    <!-- ==================================================
-         ITEMS SECTION
-    =================================================== -->
-
+    <!-- ITEMS SECTION -->
     <div class="items-section">
-
-        <h2>
-            <i class="fa-solid fa-list-check"></i>
-            Items ({{ post.items.count }})
-        </h2>
-
+        <h2><i class="fa-solid fa-list-check"></i> Items ({{ post.items.count }})</h2>
 
         {% for item in post.items.all %}
-
         <div class="item-detail-card">
-
             <div class="item-main">
-
-
-                <!-- ==================================================
-                     ITEM IMAGE
-                =================================================== -->
-
+                <!-- ITEM IMAGE -->
                 <div class="item-image-box">
-
                     {% with first_image=item.images.first %}
-
                         {% if first_image %}
-
-                            <img
-                                src="{{ first_image.image.url }}"
-                                alt="{{ item.name }}"
-                            >
-
+                            <img src="{{ first_image.image.url }}" alt="{{ item.name }}" data-lightbox="{{ first_image.image.url }}">
                         {% else %}
-
-                            <div class="no-image">
-
-                                <i class="fa-solid fa-image"></i>
-
-                            </div>
-
+                            <div class="no-image"><i class="fa-solid fa-image"></i></div>
                         {% endif %}
-
                     {% endwith %}
-
                 </div>
 
-
-                <!-- ==================================================
-                     ITEM CONTENT
-                =================================================== -->
-
-                <div class="item-content">
-
-
-                    <!-- ITEM NAME + PRICE -->
-
-                    <div class="item-top">
-
-                        <div>
-
-                            <h3>
-                                {{ item.name }}
-                            </h3>
-
-                            <span class="item-number">
-                                Item #{{ forloop.counter }}
-                            </span>
-
-                        </div>
-
-
-                        <span class="item-price">
-                            {{ item.price }} MMK
-                        </span>
-
-                    </div>
-
-
-                    <!-- ITEM DESCRIPTION -->
-
-                    {% if item.description %}
-
-                    <p class="item-desc">
-                        {{ item.description }}
-                    </p>
-
-                    {% endif %}
-
-
-                    <!-- ==================================================
-                         ALL ITEM IMAGES
-                    =================================================== -->
-
-                    {% if item.images.count > 1 %}
-
-                    <div class="item-all-images">
-
-                        {% for image in item.images.all %}
-
+                <!-- THUMBNAIL ROW -->
+                {% if item.images.count > 1 %}
+                <div class="thumbnail-row">
+                    {% for image in item.images.all %}
+                        <button
+                            type="button"
+                            class="thumbnail-wrapper {% if forloop.first %}active{% endif %}"
+                            data-image-url="{{ image.image.url }}"
+                        >
                             <img
                                 src="{{ image.image.url }}"
-                                alt="{{ item.name }}"
-                                class="thumb-image"
+                                class="thumbnail"
+                                alt="{{ item.name }} image {{ forloop.counter }}"
                             >
-
-                        {% endfor %}
-
-                    </div>
-
-                    {% endif %}
-
-
-                    <!-- ==================================================
-                         SIZE VARIANTS
-                    =================================================== -->
-
-                    {% if item.has_sizes and item.size_variants.all %}
-
-                    <div class="size-section">
-
-                        <h4>
-                            <i class="fa-solid fa-ruler"></i>
-                            Sizes & Pricing
-                        </h4>
-
-
-                        <table class="size-table">
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        Size
-                                    </th>
-
-                                    <th>
-                                        Qty
-                                    </th>
-
-                                    <th>
-                                        Price
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody>
-
-                                {% for variant in item.size_variants.all %}
-
-                                <tr>
-
-                                    <td>
-                                        <span class="size-badge">
-                                            {{ variant.size }}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        {{ variant.quantity }}
-                                    </td>
-
-                                    <td>
-                                        {{ variant.price }} MMK
-                                    </td>
-
-                                </tr>
-
-                                {% endfor %}
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-
-                    <!-- ==================================================
-                         SIMPLE QUANTITY
-                    =================================================== -->
-
-                    {% else %}
-
-                    <div class="simple-qty">
-
-                        <i class="fa-solid fa-box"></i>
-
-                        Quantity:
-
-                        <strong>
-                            {{ item.simple_quantity }}
-                        </strong>
-
-                    </div>
-
-                    {% endif %}
-
+                        </button>
+                    {% endfor %}
                 </div>
+                {% endif %}
 
+                <!-- ITEM CONTENT -->
+                <div class="item-content">
+                    <div class="item-top">
+                        <div>
+                            <h3>{{ item.name }}</h3>
+                            <span class="item-number">Item #{{ forloop.counter }}</span>
+                        </div>
+                        <span class="item-price">{{ item.price|intcomma }} MMK</span>
+                    </div>
+
+                    {% if item.description %}
+                    <p class="item-desc">{{ item.description }}</p>
+                    {% endif %}
+
+                    <!-- SIZE VARIANTS -->
+                    {% if item.has_sizes and item.size_variants.all %}
+                    <div class="size-section">
+                        <h4><i class="fa-solid fa-ruler"></i> Sizes & Pricing</h4>
+                        <table class="size-table">
+                            <thead>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for variant in item.size_variants.all %}
+                                <tr>
+                                    <td><span class="size-badge">{{ variant.size }}</span></td>
+                                    <td>{{ variant.quantity }}</td>
+                                    <td>{{ variant.price|intcomma }} MMK</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="simple-qty">
+                        <i class="fa-solid fa-box"></i> Quantity: <strong>{{ item.simple_quantity }}</strong>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
 
-
-    <!-- ==================================================
-         REVIEW ACTIONS
-    =================================================== -->
-
+    <!-- REVIEW ACTIONS -->
     <div class="action-area">
-
-        <!-- APPROVE -->
-
-        <a
-            href="{% url 'approve_post' post.id %}"
-            class="approve-btn"
-        >
-            <i class="fa-solid fa-check"></i>
-            Approve Post
+        <a href="{% url 'approve_post' post.id %}" class="approve-btn">
+            <i class="fa-solid fa-check"></i> Approve Post
         </a>
-
-
-        <!-- REJECT -->
-
-        <a
-            href="{% url 'reject_post' post.id %}"
-            class="reject-btn"
-        >
-            <i class="fa-solid fa-xmark"></i>
-            Reject Post
+        <a href="{% url 'reject_post' post.id %}" class="reject-btn">
+            <i class="fa-solid fa-xmark"></i> Reject Post
         </a>
-
     </div>
-
 </div>
+{% endblock %}
 
+{% block extra_js %}
+<script src="{% static 'js/post_detail.js' %}"></script>
 {% endblock %}

@@ -2,6 +2,7 @@
             REVIEW PAGE
 ==================================================*/
 @import url('admin.css');
+
 .review-page {
     width: 100%;
     padding: 30px;
@@ -116,13 +117,8 @@
     font-size: 14px;
 }
 
-.text-green {
-    color: #16a34a;
-}
-
-.text-orange {
-    color: #ea580c;
-}
+.text-green { color: #16a34a; }
+.text-orange { color: #ea580c; }
 
 /* Description */
 .description-card {
@@ -187,6 +183,12 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.item-image-box img:hover {
+    transform: scale(1.05);
 }
 
 .no-image {
@@ -236,22 +238,6 @@
     font-size: 13px;
     line-height: 1.6;
     margin-bottom: 14px;
-}
-
-/* All Images */
-.item-all-images {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-}
-
-.thumb-image {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 2px solid #f1f5f9;
 }
 
 /* Size Table */
@@ -317,38 +303,155 @@
     margin-bottom: 30px;
 }
 
-.approve-btn {
-    padding: 14px 30px;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    text-decoration: none;
-    background: #16a34a;
-    color: #fff;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.approve-btn:hover {
-    background: #15803d;
-}
-
+.approve-btn,
 .reject-btn {
     padding: 14px 30px;
     border-radius: 12px;
     font-size: 15px;
     font-weight: 600;
     text-decoration: none;
-    background: #dc2626;
-    color: #fff;
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    transition: transform 0.3s ease;
+}
+
+.approve-btn {
+    background: #16a34a;
+    color: #fff;
+}
+
+.approve-btn:hover {
+    background: #15803d;
+    transform: translateY(-5px);
+}
+
+.reject-btn {
+    background: #dc2626;
+    color: #fff;
 }
 
 .reject-btn:hover {
     background: #b91c1c;
+    transform: translateY(-5px);
+}
+
+/* =========================================================
+   THUMBNAIL ROW
+========================================================= */
+
+.thumbnail-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 10px;
+}
+
+.thumbnail-wrapper {
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.thumbnail-wrapper:hover {
+    border-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.thumbnail-wrapper.active {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.thumbnail-wrapper.active .thumbnail {
+    opacity: 1;
+}
+
+.thumbnail-wrapper:not(.active) .thumbnail {
+    opacity: 0.7;
+}
+
+.thumbnail-wrapper:not(.active):hover .thumbnail {
+    opacity: 1;
+}
+
+/* =========================================================
+   LIGHTBOX
+========================================================= */
+
+.admin-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    cursor: pointer;
+    animation: lightboxFadeIn 0.3s ease;
+}
+
+.admin-lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.65);
+}
+
+.admin-lightbox-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1000000;
+}
+
+.admin-lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: rotate(90deg) scale(1.1);
+}
+
+@keyframes lightboxFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+body.lightbox-active {
+    overflow: hidden;
 }
 
 /* Responsive */
@@ -362,6 +465,7 @@
     .item-image-box {
         width: 100%;
         height: 200px;
+        min-width: auto;
     }
     .action-area {
         flex-direction: column;
@@ -373,181 +477,53 @@
     }
 }
 
-/* Override admin table styles for review page */
-.review-page .size-table {
-    table-layout: auto !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-}
+/* =========================================================
+   THUMBNAIL - FORCE FIX (OVERRIDE BOOTSTRAP)
+========================================================= */
 
-.review-page .size-table thead {
-    background: #f8fafc !important;
-    color: #64748b !important;
-}
-
-.review-page .size-table th {
-    padding: 9px 12px !important;
-    text-align: left !important;
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    border-bottom: 2px solid #e2e8f0 !important;
-    background: #f8fafc !important;
-    color: #64748b !important;
-}
-
-.review-page .size-table td {
-    padding: 9px 12px !important;
-    text-align: left !important;
-    border-bottom: 1px solid #f1f5f9 !important;
-    color: #334155 !important;
-    word-break: normal !important;
-}
-
-.review-page .size-table tbody tr:hover {
-    background: transparent !important;
-}
-
-/* Also fix info strip items */
-.review-page .info-strip {
+.thumbnail-row {
     display: flex !important;
-    gap: 12px !important;
     flex-wrap: wrap !important;
-    margin-bottom: 25px !important;
-}
-
-.review-page .info-item {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    background: #fff !important;
-    padding: 14px 18px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 1px 6px rgba(0,0,0,.08) !important;
-    border: 1px solid #e2e8f0 !important;
-    flex: 1 !important;
-    min-width: 150px !important;
-}
-
-.review-page .info-item span {
-    display: block !important;
-    font-size: 11px !important;
-    color: #94a3b8 !important;
-}
-
-.review-page .info-item strong {
-    color: #1e293b !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-}
-
-.review-page .info-icon {
-    width: 38px !important;
-    height: 38px !important;
-    border-radius: 10px !important;
-    background: #eff6ff !important;
-    color: #2563eb !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 15px !important;
-}
-
-/* Fix item card */
-.review-page .item-detail-card {
-    background: #fff !important;
-    border-radius: 14px !important;
-    padding: 20px !important;
-    margin-bottom: 16px !important;
-    box-shadow: 0 1px 6px rgba(0,0,0,.08) !important;
-    border: 1px solid #e2e8f0 !important;
-}
-
-.review-page .item-main {
-    display: flex !important;
-    gap: 20px !important;
-}
-
-.review-page .item-image-box {
-    width: 180px !important;
-    height: 180px !important;
-    min-width: 180px !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
+    gap: 8px !important;
+    margin-top: 12px !important;
+    padding: 8px !important;
     background: #f8fafc !important;
+    border-radius: 10px !important;
 }
 
-.review-page .item-image-box img {
+.thumbnail-wrapper {
+    width: 60px !important;
+    height: 60px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 2px solid transparent !important;
+    border-radius: 8px !important;
+    background: none !important;
+    cursor: pointer !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+    line-height: 0 !important;
+    font-size: 0 !important;
+}
+
+.thumbnail-wrapper:hover {
+    border-color: #2563eb !important;
+}
+
+.thumbnail-wrapper.active {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
+}
+
+.thumbnail {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-}
-
-.review-page .item-content {
-    flex: 1 !important;
-    min-width: 0 !important;
-}
-
-.review-page .item-top {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: flex-start !important;
-    margin-bottom: 8px !important;
-    flex-wrap: wrap !important;
-    gap: 10px !important;
-}
-
-.review-page .item-top h3 {
-    font-size: 17px !important;
-    color: #1e293b !important;
-}
-
-.review-page .item-price {
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    color: #2563eb !important;
-}
-
-.review-page .size-badge {
-    display: inline-block !important;
-    background: #eff6ff !important;
-    color: #2563eb !important;
-    padding: 3px 10px !important;
+    display: block !important;
     border-radius: 6px !important;
-    font-weight: 700 !important;
-    font-size: 12px !important;
-}
-
-.review-page .action-area {
-    display: flex !important;
-    justify-content: center !important;
-    gap: 15px !important;
-    flex-wrap: wrap !important;
-    margin-top: 30px !important;
-    margin-bottom: 30px !important;
-}
-
-.review-page .approve-btn {
-    padding: 14px 30px !important;
-    border-radius: 12px !important;
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    text-decoration: none !important;
-    background: #16a34a !important;
-    color: #fff !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-}
-
-.review-page .reject-btn {
-    padding: 14px 30px !important;
-    border-radius: 12px !important;
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    text-decoration: none !important;
-    background: #dc2626 !important;
-    color: #fff !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
 }

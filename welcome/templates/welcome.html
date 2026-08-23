@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 {% load static %}
+{% load humanize %}
 <html lang="en">
 
 <head>
@@ -15,40 +15,28 @@
     <title>Trusty Shop | Secure Online Marketplace</title>
 
 
-    <!-- ==================================================
-         BOOTSTRAP
-    ================================================== -->
-
+    <!-- BOOTSTRAP -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
 
 
-    <!-- ==================================================
-         BOOTSTRAP ICONS
-    ================================================== -->
-
+    <!-- BOOTSTRAP ICONS -->
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     >
 
 
-    <!-- ==================================================
-         AOS ANIMATION
-    ================================================== -->
-
+    <!-- AOS ANIMATION -->
     <link
         href="https://unpkg.com/aos@2.3.1/dist/aos.css"
         rel="stylesheet"
     >
 
 
-    <!-- ==================================================
-         CUSTOM CSS
-    ================================================== -->
-
+    <!-- CUSTOM CSS -->
     <link
         rel="stylesheet"
         href="{% static 'css/welcome.css' %}"
@@ -65,225 +53,139 @@
     >
 
 
-    <!-- ==================================================
-         FONT AWESOME
-    ================================================== -->
-
+    <!-- FONT AWESOME -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
 
-    <!-- ==================================================
-         WELCOME PAGE EXTRA STYLING
-    ================================================== -->
-
+    <!-- WELCOME PAGE EXTRA STYLING -->
     <style>
 
-        /* =================================================
-           SEE MORE BUTTON
-        ================================================= */
-
         .more-btn-container {
-
             text-align: center;
-
             margin-top: 40px;
-
         }
 
 
         .more-btn-container .see-more-btn {
-
             padding: 12px 40px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #1565C0,
-                    #0D47A1
-                );
-
+            background: linear-gradient(135deg, #1565C0, #0D47A1);
             color: white;
-
             border: none;
-
             border-radius: 50px;
-
             font-weight: 600;
-
             font-size: 16px;
-
-            transition:
-                all 0.3s ease;
-
+            transition: all 0.3s ease;
             cursor: pointer;
-
             text-decoration: none;
-
             display: inline-block;
-
         }
 
 
         .more-btn-container .see-more-btn:hover {
-
-            transform:
-                translateY(-3px);
-
-            box-shadow:
-                0 10px 30px
-                rgba(
-                    21,
-                    101,
-                    192,
-                    0.3
-                );
-
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(21, 101, 192, 0.3);
         }
 
 
         .more-btn-container .see-more-btn i {
-
             margin-left: 8px;
-
         }
 
 
-
-        /* =================================================
-           SELLER PROFILE CLICK AREA
-        ================================================= */
+        /* =====================================================
+           SELLER PROFILE
+           ONLY PROFILE PHOTO + NAME ARE CLICKABLE
+        ===================================================== */
 
         .seller-profile-clickable {
-
             cursor: pointer;
-
             position: relative;
-
             z-index: 20;
-
-            transition:
-                transform 0.25s ease;
-
+            transition: transform 0.25s ease;
         }
 
 
         .seller-profile-clickable:hover {
-
-            transform:
-                translateY(-2px);
-
+            transform: translateY(-2px);
         }
 
 
-        /* =================================================
-           SELLER PROFILE IMAGE
-        ================================================= */
-
         .seller-profile-clickable .seller-profile {
-
             cursor: pointer;
-
             transition:
                 transform 0.25s ease,
                 box-shadow 0.25s ease;
-
         }
 
 
         .seller-profile-clickable:hover .seller-profile {
-
-            transform:
-                scale(1.06);
-
+            transform: scale(1.06);
             box-shadow:
-                0 6px 18px
-                rgba(
-                    21,
-                    101,
-                    192,
-                    0.25
-                );
-
+                0 6px 18px rgba(21, 101, 192, 0.25);
         }
 
-
-        /* =================================================
-           SELLER NAME
-        ================================================= */
 
         .seller-profile-clickable h5 {
-
             cursor: pointer;
-
         }
 
 
-        /* =================================================
-           PROFILE FALLBACK ICON
-        ================================================= */
-
-        .seller-profile-clickable
-        .nav-profile-icon {
-
+        .seller-profile-clickable .nav-profile-icon {
             cursor: pointer;
-
             font-size: 42px;
-
             transition:
                 transform 0.25s ease,
                 color 0.25s ease;
-
         }
 
 
-        .seller-profile-clickable:hover
-        .nav-profile-icon {
-
-            transform:
-                scale(1.06);
-
-            color:
-                #1565C0;
-
+        .seller-profile-clickable:hover .nav-profile-icon {
+            transform: scale(1.06);
+            color: #1565C0;
         }
 
-
-        /* =================================================
-           KEYBOARD ACCESSIBILITY
-        ================================================= */
 
         .seller-profile-clickable:focus {
-
-            outline:
-                3px solid
-                rgba(
-                    21,
-                    101,
-                    192,
-                    0.25
-                );
-
-            outline-offset:
-                4px;
-
-            border-radius:
-                12px;
-
+            outline: 3px solid rgba(21, 101, 192, 0.25);
+            outline-offset: 4px;
+            border-radius: 12px;
         }
 
 
-        /* =================================================
-           PREVENT PRODUCT CARD HOVER
-           FROM INTERFERING WITH PROFILE
-        ================================================= */
-
         .seller-profile-clickable * {
-
             pointer-events: auto;
+        }
 
+
+        /* =====================================================
+           PROFILE NAME LINK
+           Keeps the original design
+        ===================================================== */
+
+        .seller-name-clickable {
+            cursor: pointer;
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        .seller-name-clickable:hover {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        .seller-name-clickable h5 {
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+
+
+        .seller-name-clickable span {
+            cursor: pointer;
         }
 
     </style>
@@ -293,10 +195,6 @@
 
 <body>
 
-
-<!-- =========================================================
-     NAVBAR
-========================================================= -->
 
 {% include "includes/navbar.html" %}
 
@@ -313,9 +211,7 @@
         <div class="row align-items-center">
 
 
-            <!-- =================================================
-                 LEFT CONTENT
-            ================================================= -->
+            <!-- LEFT CONTENT -->
 
             <div
                 class="col-lg-6"
@@ -350,10 +246,6 @@
 
                 </p>
 
-
-                <!-- =================================================
-                     HERO BUTTONS
-                ================================================= -->
 
                 <div class="hero-buttons">
 
@@ -418,9 +310,7 @@
 
 
 
-            <!-- =================================================
-                 RIGHT HERO IMAGE
-            ================================================= -->
+            <!-- RIGHT HERO IMAGE -->
 
             <div
                 class="col-lg-6 text-center"
@@ -459,10 +349,6 @@
     <div class="container">
 
 
-        <!-- =================================================
-             SECTION TITLE
-        ================================================= -->
-
         <div
             class="section-title"
             data-aos="fade-up"
@@ -480,14 +366,8 @@
 
 
 
-        <!-- =================================================
-             FEATURE CARDS
-        ================================================= -->
-
         <div class="row g-4">
 
-
-            <!-- ESCROW -->
 
             <div
                 class="col-md-3"
@@ -511,8 +391,6 @@
             </div>
 
 
-
-            <!-- WALLET -->
 
             <div
                 class="col-md-3"
@@ -538,8 +416,6 @@
 
 
 
-            <!-- DELIVERY -->
-
             <div
                 class="col-md-3"
                 data-aos="fade-up"
@@ -563,8 +439,6 @@
             </div>
 
 
-
-            <!-- VERIFIED SELLER -->
 
             <div
                 class="col-md-3"
@@ -618,23 +492,14 @@
     <div class="container">
 
 
-        <!-- =================================================
-             SECTION TITLE
-        ================================================= -->
-
         <div class="section-title mb-5">
 
             <div
-                class="
-                    d-flex
-                    justify-content-between
-                    align-items-center
-                    flex-wrap
-                    gap-3
-                "
+                class="d-flex justify-content-between align-items-center flex-wrap gap-3"
             >
 
                 <div>
+
 
                     <span class="section-badge">
 
@@ -654,8 +519,7 @@
 
                     <p class="mb-0">
 
-                        Discover quality products posted
-                        by verified sellers.
+                        Discover quality products posted by verified sellers.
 
                     </p>
 
@@ -679,27 +543,12 @@
 
 
                 <div
-                    class="
-                        col-xl-4
-                        col-lg-4
-                        col-md-6
-                        col-sm-12
-                    "
+                    class="col-xl-4 col-lg-4 col-md-6 col-sm-12"
                 >
 
 
-                    <!-- =================================================
-                         PRODUCT CARD LINK
-                    ================================================= -->
-
                     <a
-                        href="
-                            {% if request.user.is_authenticated %}
-                                {% url 'viewdetail' post.id %}
-                            {% else %}
-                                {% url 'user:register' %}
-                            {% endif %}
-                        "
+                        href="{% if request.user.is_authenticated %}{% url 'viewdetail' post.id %}{% else %}{% url 'user:register' %}{% endif %}"
                         class="post-card-link"
                     >
 
@@ -709,118 +558,183 @@
 
                             <!-- =================================================
                                  SELLER PROFILE
-                                 IMPORTANT:
-                                 post.user IS PROFILE OBJECT
+                                 UPDATED ONLY THIS PART
                             ================================================= -->
 
-                            <div
-                                class="seller-top seller-profile-clickable"
-                                onclick="
-                                    openSellerProfile(
-                                        event,
-                                        '{{ post.user.id }}'
-                                    );
-                                "
-                                onkeydown="
-                                    handleSellerProfileKeydown(
-                                        event,
-                                        '{{ post.user.id }}'
-                                    );
-                                "
-                                role="button"
-                                tabindex="0"
-                                title="
-                                    View {{ post.user.fullName }}'s profile
-                                "
-                            >
+                            <div class="seller-top">
+
 
                                 <div class="seller-left">
 
 
-                                    <!-- =================================================
+                                    <!-- =========================================
                                          PROFILE PHOTO
-                                    ================================================= -->
+                                         LOGGED IN → USER DASHBOARD
+                                         LOGGED OUT → REGISTER
+                                    ========================================== -->
 
-                                    {% if post.user.profile_pic %}
 
+                                    {% if request.user.is_authenticated %}
 
-                                        <img
-                                            src="{{ post.user.profile_pic.url }}"
-                                            class="seller-profile"
-                                            alt="{{ post.user.fullName }}"
-                                            onerror="
-                                                this.style.display='none';
-                                                this.nextElementSibling.style.display='inline-block';
-                                            "
+                                        <div
+                                            class="seller-profile-clickable"
+                                            onclick="goToUserDashboard(event);"
+                                            onkeydown="handleDashboardKeydown(event);"
+                                            role="button"
+                                            tabindex="0"
+                                            title="Go to your dashboard"
                                         >
 
+                                            {% if post.user.profile_pic %}
 
-                                        <!-- FALLBACK ICON -->
+                                                <img
+                                                    src="{{ post.user.profile_pic.url }}"
+                                                    class="seller-profile"
+                                                    alt="{{ post.user.fullName }}"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
+                                                >
 
-                                        <i
-                                            class="
-                                                fa-solid
-                                                fa-circle-user
-                                                nav-profile-icon
-                                            "
-                                            style="display:none;"
-                                        ></i>
+
+                                                <i
+                                                    class="fa-solid fa-circle-user nav-profile-icon"
+                                                    style="display:none;"
+                                                ></i>
+
+                                            {% else %}
+
+                                                <i
+                                                    class="fa-solid fa-circle-user nav-profile-icon"
+                                                ></i>
+
+                                            {% endif %}
+
+                                        </div>
 
 
                                     {% else %}
 
 
-                                        <!-- DEFAULT ICON -->
+                                        <div
+                                            class="seller-profile-clickable"
+                                            onclick="goToRegister(event);"
+                                            onkeydown="handleRegisterKeydown(event);"
+                                            role="button"
+                                            tabindex="0"
+                                            title="Register to view seller"
+                                        >
 
-                                        <i
-                                            class="
-                                                fa-solid
-                                                fa-circle-user
-                                                nav-profile-icon
-                                            "
-                                        ></i>
+                                            {% if post.user.profile_pic %}
+
+                                                <img
+                                                    src="{{ post.user.profile_pic.url }}"
+                                                    class="seller-profile"
+                                                    alt="{{ post.user.fullName }}"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
+                                                >
+
+
+                                                <i
+                                                    class="fa-solid fa-circle-user nav-profile-icon"
+                                                    style="display:none;"
+                                                ></i>
+
+                                            {% else %}
+
+                                                <i
+                                                    class="fa-solid fa-circle-user nav-profile-icon"
+                                                ></i>
+
+                                            {% endif %}
+
+                                        </div>
 
 
                                     {% endif %}
 
 
 
-                                    <!-- =================================================
-                                         SELLER INFORMATION
-                                    ================================================= -->
-
-                                    <div>
-
-                                        <h5>
-
-                                            {{ post.user.fullName }}
-
-                                            <i
-                                                class="
-                                                    fa-solid
-                                                    fa-circle-check
-                                                    verified
-                                                "
-                                            ></i>
-
-                                        </h5>
+                                    <!-- =========================================
+                                         SELLER NAME
+                                         LOGGED IN → USER DASHBOARD
+                                         LOGGED OUT → REGISTER
+                                    ========================================== -->
 
 
-                                        <span>
+                                    {% if request.user.is_authenticated %}
 
-                                            <i
-                                                class="
-                                                    fa-regular
-                                                    fa-clock
-                                                "
-                                            ></i>
+                                        <div
+                                            class="seller-name-clickable"
+                                            onclick="goToUserDashboard(event);"
+                                            onkeydown="handleDashboardKeydown(event);"
+                                            role="button"
+                                            tabindex="0"
+                                            title="Go to your dashboard"
+                                        >
 
-                                            {{ post.created_at|timesince }}
-                                            ago
+                                            <h5>
 
-                                        </span>
+                                                {{ post.user.fullName }}
 
-                                    </div>
+                                                <i
+                                                    class="fa-solid fa-circle-check verified"
+                                                ></i>
+
+                                            </h5>
+
+
+                                            <span>
+
+                                                <i
+                                                    class="fa-regular fa-clock"
+                                                ></i>
+
+                                                {{ post.created_at|timesince }}
+                                                ago
+
+                                            </span>
+
+                                        </div>
+
+
+                                    {% else %}
+
+
+                                        <div
+                                            class="seller-name-clickable"
+                                            onclick="goToRegister(event);"
+                                            onkeydown="handleRegisterKeydown(event);"
+                                            role="button"
+                                            tabindex="0"
+                                            title="Register to view seller"
+                                        >
+
+                                            <h5>
+
+                                                {{ post.user.fullName }}
+
+                                                <i
+                                                    class="fa-solid fa-circle-check verified"
+                                                ></i>
+
+                                            </h5>
+
+
+                                            <span>
+
+                                                <i
+                                                    class="fa-regular fa-clock"
+                                                ></i>
+
+                                                {{ post.created_at|timesince }}
+                                                ago
+
+                                            </span>
+
+                                        </div>
+
+
+                                    {% endif %}
+
 
                                 </div>
 
@@ -837,15 +751,11 @@
 
                                 <div
                                     class="post-image-slider"
-                                    data-images="
-                                        {% for item in post.items.all %}
-                                            {% if item.images.first %}
-                                                {{ item.images.first.image.url }}
-                                                {% if not forloop.last %},{% endif %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    "
+
+                                    data-images="{% for item in post.items.all %}{% if item.images.first %}{{ item.images.first.image.url }}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}"
+
                                     onmouseenter="startSlide(this)"
+
                                     onmouseleave="stopSlide(this)"
                                 >
 
@@ -855,18 +765,13 @@
 
                                         {% if first_item.images.first %}
 
-
                                             <img
                                                 src="{{ first_item.images.first.image.url }}"
                                                 class="product-image"
-                                                alt="
-                                                    {{ post.category.name|default:'Product' }}
-                                                "
+                                                alt="{{ post.category.name|default:'Product' }}"
                                             >
 
-
                                         {% else %}
-
 
                                             <img
                                                 src="{% static 'images/no-image.png' %}"
@@ -874,17 +779,14 @@
                                                 alt="No image"
                                             >
 
-
                                         {% endif %}
 
 
                                     {% endwith %}
 
+
                                 </div>
 
-
-
-                                <!-- PRODUCT COUNT -->
 
                                 <span class="product-tag">
 
@@ -892,6 +794,7 @@
                                     items
 
                                 </span>
+
 
                             </div>
 
@@ -904,10 +807,6 @@
                             <div class="product-body">
 
 
-                                <!-- =================================================
-                                     TITLE + PRICE
-                                ================================================= -->
-
                                 <div class="title-price">
 
 
@@ -918,34 +817,27 @@
                                     </h4>
 
 
-
                                     {% with first_item=post.items.first %}
 
 
                                         {% if first_item %}
 
-
                                             <span class="price">
 
                                                 From
-                                                {{ first_item.price }}
+                                                {{ first_item.price|intcomma }}
                                                 MMK
 
                                             </span>
-
 
                                         {% endif %}
 
 
                                     {% endwith %}
 
+
                                 </div>
 
-
-
-                                <!-- =================================================
-                                     DESCRIPTION
-                                ================================================= -->
 
                                 <p>
 
@@ -954,19 +846,12 @@
                                 </p>
 
 
-
-                                <!-- =================================================
-                                     FEATURES
-                                ================================================= -->
-
                                 <div class="product-features">
 
 
                                     <span>
 
-                                        <i
-                                            class="fa-solid fa-box"
-                                        ></i>
+                                        <i class="fa-solid fa-box"></i>
 
                                         {{ post.items.count }}
                                         items
@@ -974,15 +859,9 @@
                                     </span>
 
 
-
                                     <span>
 
-                                        <i
-                                            class="
-                                                fa-solid
-                                                fa-check-circle
-                                            "
-                                        ></i>
+                                        <i class="fa-solid fa-check-circle"></i>
 
                                         {{ post.condition|default:"New" }}
 
@@ -992,10 +871,6 @@
                                 </div>
 
 
-
-                                <!-- =================================================
-                                     SIZES
-                                ================================================= -->
 
                                 {% with first_item=post.items.first %}
 
@@ -1033,10 +908,12 @@
 
                                 {% endwith %}
 
+
                             </div>
 
 
                         </div>
+
 
                     </a>
 
@@ -1047,22 +924,12 @@
             {% empty %}
 
 
-                <!-- =================================================
-                     NO POSTS
-                ================================================== -->
-
                 <div class="col-12 text-center py-5">
 
 
                     <i
-                        class="
-                            fa-solid
-                            fa-box-open
-                        "
-                        style="
-                            font-size:60px;
-                            color:#94a3b8;
-                        "
+                        class="fa-solid fa-box-open"
+                        style="font-size:60px;color:#94a3b8;"
                     ></i>
 
 
@@ -1077,28 +944,40 @@
 
                         Be the first to
 
+
                         {% if request.user.is_authenticated %}
 
+
                             <a href="{% url 'createPost' %}">
+
                                 create a post
+
                             </a>
+
 
                         {% else %}
 
+
                             <a href="{% url 'user:register' %}">
+
                                 create a post
+
                             </a>
 
+
                         {% endif %}
+
 
                         !
 
                     </p>
 
+
                 </div>
 
 
             {% endfor %}
+
 
         </div>
 
@@ -1124,9 +1003,7 @@
 
                         See More Products
 
-                        <i
-                            class="fas fa-arrow-right"
-                        ></i>
+                        <i class="fas fa-arrow-right"></i>
 
                     </a>
 
@@ -1141,9 +1018,7 @@
 
                         See More Products
 
-                        <i
-                            class="fas fa-arrow-right"
-                        ></i>
+                        <i class="fas fa-arrow-right"></i>
 
                     </a>
 
@@ -1155,6 +1030,7 @@
 
 
         {% endif %}
+
 
     </div>
 
@@ -1174,10 +1050,6 @@
     <div class="container">
 
 
-        <!-- =================================================
-             SECTION TITLE
-        ================================================= -->
-
         <div class="section-title">
 
             <h2>
@@ -1188,11 +1060,6 @@
 
         </div>
 
-
-
-        <!-- =================================================
-             STEPS
-        ================================================= -->
 
         <div class="steps">
 
@@ -1303,20 +1170,11 @@
      CUSTOM JAVASCRIPT
 ========================================================= -->
 
-<script
-    src="{% static 'js/welcome.js' %}"
-></script>
+<script src="{% static 'js/welcome.js' %}"></script>
+
+<script src="{% static 'js/header-footer.js' %}"></script>
 
 
-<script
-    src="{% static 'js/header-footer.js' %}"
-></script>
-
-
-
-<!-- =========================================================
-     WELCOME PAGE JAVASCRIPT
-========================================================= -->
 
 <script>
 
@@ -1326,10 +1184,12 @@ document.addEventListener(
 
 
         /* =====================================================
-           INITIALIZE AOS
+           AOS
         ===================================================== */
 
-        if (typeof AOS !== "undefined") {
+        if (
+            typeof AOS !== "undefined"
+        ) {
 
             AOS.init({
 
@@ -1349,89 +1209,39 @@ document.addEventListener(
 
 
 /* =========================================================
-   SELLER PROFILE NAVIGATION
+   LOGGED IN
+   PROFILE PHOTO / NAME
+   → USER DASHBOARD
 ========================================================= */
 
-/*
- * IMPORTANT:
- *
- * post.user is your Profile object.
- *
- * Therefore:
- *
- *     {{ post.user.id }}
- *
- * is the Profile ID.
- *
- * This function sends the user to:
- *
- *     /user/profile/<profile_id>/
- *
- * Make sure your urls.py contains:
- *
- * path(
- *     "profile/<int:profile_id>/",
- *     views.profile,
- *     name="profile"
- * )
- *
- * inside the user namespace.
- */
-
-function openSellerProfile(
-    event,
-    profileId
+function goToUserDashboard(
+    event
 ) {
 
+    if (event) {
 
-    /* ---------------------------------------------
-       Stop product-card link
-    --------------------------------------------- */
+        event.preventDefault();
 
-    event.preventDefault();
-
-    event.stopPropagation();
-
-
-
-    /* ---------------------------------------------
-       Make sure profile ID exists
-    --------------------------------------------- */
-
-    if (!profileId) {
-
-        console.error(
-            "Seller profile ID is missing."
-        );
-
-        return;
+        event.stopPropagation();
 
     }
 
 
-
-    /* ---------------------------------------------
-       Open seller profile
-    --------------------------------------------- */
-
     window.location.href =
-        "/user/profile/" +
-        profileId +
-        "/";
+        "{% url 'user:dashboard' %}";
 
 }
 
 
 
 /* =========================================================
-   KEYBOARD ACCESSIBILITY
+   LOGGED IN
+   KEYBOARD
 ========================================================= */
 
-function handleSellerProfileKeydown(
-    event,
-    profileId
+function handleDashboardKeydown(
+    event
 ) {
-
 
     if (
         event.key === "Enter" ||
@@ -1440,9 +1250,10 @@ function handleSellerProfileKeydown(
 
         event.preventDefault();
 
-        openSellerProfile(
-            event,
-            profileId
+        event.stopPropagation();
+
+        goToUserDashboard(
+            event
         );
 
     }
@@ -1452,11 +1263,66 @@ function handleSellerProfileKeydown(
 
 
 /* =========================================================
-   SAVE POST FUNCTION
+   NOT LOGGED IN
+   PROFILE PHOTO / NAME
+   → REGISTER
 ========================================================= */
 
-function savePost(btn) {
+function goToRegister(
+    event
+) {
 
+    if (event) {
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+    }
+
+
+    window.location.href =
+        "{% url 'user:register' %}";
+
+}
+
+
+
+/* =========================================================
+   NOT LOGGED IN
+   KEYBOARD
+========================================================= */
+
+function handleRegisterKeydown(
+    event
+) {
+
+    if (
+        event.key === "Enter" ||
+        event.key === " "
+    ) {
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+        goToRegister(
+            event
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SAVE POST
+========================================================= */
+
+function savePost(
+    btn
+) {
 
     const box =
         btn.nextElementSibling;
@@ -1479,20 +1345,18 @@ function savePost(btn) {
 
 
 /* =========================================================
-   CLOSE SAVE BOX WHEN CLICKING OUTSIDE
+   CLOSE SAVE BOX
 ========================================================= */
 
 document.addEventListener(
     "click",
     function (event) {
 
-
         if (
             !event.target.closest(
                 ".seller-right"
             )
         ) {
-
 
             document
                 .querySelectorAll(
@@ -1513,7 +1377,6 @@ document.addEventListener(
 );
 
 </script>
-
 
 
 </body>

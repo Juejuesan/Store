@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Order #{{ order.id }}{% endblock %}
 
@@ -107,13 +108,7 @@
     <div class="order-detail-header">
 
         <div class="header-left">
-
-            <a
-                href="{% if is_buyer %}{% url 'order:order_list' %}{% else %}{% url 'order:seller_orders' %}{% endif %}"
-                class="back-link"
-            >
-                ← Back to Orders
-            </a>
+            
 
             <h2>
                 Order #{{ order.id }}
@@ -403,7 +398,7 @@
                 </span>
 
                 <span class="total-amount">
-                    {{ order.total_amount }} Ks
+                    {{ order.total_amount|intcomma }} Ks
                 </span>
 
             </div>
@@ -735,7 +730,7 @@
                     <div class="price-row">
                         <span>
                             Unit:
-                            {{ order_item.unit_price }} Ks
+                            {{ order_item.unit_price|intcomma }} Ks
                         </span>
                     </div>
 
@@ -750,7 +745,7 @@
 
                     <div class="price-row total">
                         <span>
-                            {{ order_item.total_price }} Ks
+                            {{ order_item.total_price|intcomma }} Ks
                         </span>
                     </div>
 
@@ -770,7 +765,7 @@
             </span>
 
             <span class="grand-total">
-                {{ order.total_amount }} Ks
+                {{ order.total_amount|intcomma }} Ks
             </span>
 
         </div>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load humanize %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,16 +13,65 @@
     <link rel="stylesheet" href="{% static 'css/viewdetail.css' %}">
 
     <!-- ==================================================
-         BOOTSTRAP
+         BOOTSTRAP ICONS
     ================================================== -->
-
-
-
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     >
+
+    <style>
+        /* Item navigation arrows beside content */
+        .item-viewer-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .arrow-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #2563eb;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .arrow-btn:hover:not(:disabled) {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #2563eb;
+        }
+
+        .arrow-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .item-counter-badge {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 10;
+        }
+    </style>
 </head>
+
 <body>
 
 {% include "includes/navbar.html" %}
@@ -29,213 +79,481 @@
 <div class="pd-page">
 <div class="container py-4">
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    {% if user.is_authenticated and request.user.profile != post.user %}
-        <button
-            type="button"
-            class="wishlist-btn {% if post.id in wishlist_post_ids %}liked{% endif %}"
-            id="wishlistBtn"
-            data-post-id="{{ post.id }}"
-            data-add-url="{% url 'wishlist:add' post.id %}"
-            data-remove-url="{% url 'wishlist:remove' post.id %}"
-            data-wishlisted="{% if post.id in wishlist_post_ids %}true{% else %}false{% endif %}"
-        >
-            <i
-                id="wishlistIcon"
-                class="{% if post.id in wishlist_post_ids %}fa-solid{% else %}fa-regular{% endif %} fa-heart"
-            ></i>
-            <span id="wishlistText">
-                Wishlist
+        {% if user.is_authenticated and request.user.profile != post.user %}
+            <button
+                type="button"
+                class="wishlist-btn {% if post.id in wishlist_post_ids %}liked{% endif %}"
+                id="wishlistBtn"
+                data-post-id="{{ post.id }}"
+                data-add-url="{% url 'wishlist:add' post.id %}"
+                data-remove-url="{% url 'wishlist:remove' post.id %}"
+                data-wishlisted="{% if post.id in wishlist_post_ids %}true{% else %}false{% endif %}"
+            >
+                <i
+                    id="wishlistIcon"
+                    class="{% if post.id in wishlist_post_ids %}fa-solid{% else %}fa-regular{% endif %} fa-heart"
+                ></i>
+
+                <span id="wishlistText">
+                    Wishlist
+                </span>
+            </button>
+
+        {% elif user.is_authenticated and request.user.profile == post.user %}
+
+            <span class="own-post-badge">
+                <i class="fa-solid fa-store"></i> This is your own post
             </span>
-        </button>
-    {% elif user.is_authenticated and request.user.profile == post.user %}
-        <span class="own-post-badge">
-            <i class="fa-solid fa-store"></i> This is your own post
-        </span>
-    {% else %}
-        <a
-            href="{% url 'login' %}"
-            class="wishlist-btn text-decoration-none"
-        >
-            <i class="fa-regular fa-heart"></i>
-            <span>Wishlist</span>
-        </a>
-    {% endif %}
 
-</div>
+        {% else %}
+
+            <a
+                href="{% url 'login' %}"
+                class="wishlist-btn text-decoration-none"
+            >
+                <i class="fa-regular fa-heart"></i>
+                <span>Wishlist</span>
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
     <div class="post-header mb-4">
 
-<div class="seller-profile">
+        <div class="seller-profile">
 
-    <a href="{% url 'user:seller-profile' post.user.user.username %}"
-       class="seller-avatar-link">
+            <a
+                href="{% url 'user:seller-profile' post.user.user.username %}"
+                class="seller-avatar-link"
+            >
 
-        <div class="seller-avatar">
-            {% if post.user.profile_pic %}
-                <img src="{{ post.user.profile_pic.url }}" alt="{{ post.user.fullName }}">
-            {% else %}
-                <div class="default-avatar-placeholder">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-            {% endif %}
-        </div>
-    </a>
+                <div class="seller-avatar">
 
-    <div class="seller-info">
-        <div class="seller-name-row">
-            <a href="{% url 'user:seller-profile' post.user.user.username %}" class="seller-name-link">
-                <span class="seller-name">{{ post.user.fullName }}</span>
-            </a>
-            <span class="verified-badge" title="Verified seller">
-                <i class="fa-solid fa-check"></i>
-            </span>
-        </div>
-        <div class="seller-meta">
-            <span>
-                <i class="fa-regular fa-clock"></i>
-                {{ post.created_at|timesince }} ago
-            </span>
-            <span class="meta-dot">•</span>
-            <span>
-                <i class="fa-solid fa-box"></i>
-                {{ post.items.count }} items
-            </span>
-        </div>
-    </div>
-</div>
+                    {% if post.user.profile_pic %}
 
-    <div class="post-title-area">
-        <span class="marketplace-label">
-            <i class="fa-solid fa-store"></i>
-            Trusty Marketplace
-        </span>
-        <h3>{{ post.description|truncatechars:60 }}</h3>
-    </div>
-
-</div>
-
-    <div class="item-viewer" id="itemViewer">
-        {% for item in post.items.all %}
-        <div class="item-slide" id="itemSlide{{ forloop.counter0 }}"
-             data-item-id="{{ item.id }}"
-             style="display: {% if forloop.first %}block{% else %}none{% endif %};">
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="main-image-box">
-                        {% with first_image=item.images.first %}
                         <img
-                            src="{% if first_image %}{{ first_image.image.url }}{% else %}{% static 'images/no-image.png' %}{% endif %}"
-                            class="main-image"
-                            alt="{{ item.name }}"
+                            src="{{ post.user.profile_pic.url }}"
+                            alt="{{ post.user.fullName }}"
                         >
-                        {% endwith %}
-                    </div>
-                    <div class="thumbnail-row">
-                        {% for image in item.images.all %}
+
+                    {% else %}
+
+                        <div class="default-avatar-placeholder">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </a>
+
+
+            <div class="seller-info">
+
+                <div class="seller-name-row">
+
+                    <a
+                        href="{% url 'user:seller-profile' post.user.user.username %}"
+                        class="seller-name-link"
+                    >
+                        <span class="seller-name">
+                            {{ post.user.fullName }}
+                        </span>
+                    </a>
+
+                    <span
+                        class="verified-badge"
+                        title="Verified seller"
+                    >
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+
+                </div>
+
+
+                <div class="seller-meta">
+
+                    <span>
+                        <i class="fa-regular fa-clock"></i>
+                        {{ post.created_at|timesince }} ago
+                    </span>
+
+                    <span class="meta-dot">•</span>
+
+                    <span>
+                        <i class="fa-solid fa-box"></i>
+                        {{ post.items.count }} items
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="post-title-area">
+
+            <span class="marketplace-label">
+                <i class="fa-solid fa-store"></i>
+                Trusty Marketplace
+            </span>
+
+            <h3>
+                {{ post.description|truncatechars:60 }}
+            </h3>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         ITEM VIEWER WITH ARROWS BESIDE
+    ================================================== -->
+
+    <div class="item-viewer-wrapper">
+
+        <!-- PREVIOUS ARROW -->
+        <button
+            class="arrow-btn"
+            id="prevBtn"
+            disabled
+        >
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+
+        <div
+            class="item-viewer"
+            id="itemViewer"
+            style="flex: 1;"
+        >
+
+            {% for item in post.items.all %}
+
+            <div
+                class="item-slide"
+                id="itemSlide{{ forloop.counter0 }}"
+                data-item-id="{{ item.id }}"
+                style="display: {% if forloop.first %}block{% else %}none{% endif %};"
+            >
+
+                <div class="row g-4">
+
+                    <!-- ==================================================
+                         ITEM IMAGE
+                    ================================================== -->
+
+                    <div class="col-md-6">
+
+                        <div class="main-image-box">
+
+                            {% with first_image=item.images.first %}
+
+                            <img
+                                src="{% if first_image %}{{ first_image.image.url }}{% else %}{% static 'images/no-image.png' %}{% endif %}"
+                                class="main-image"
+                                alt="{{ item.name }}"
+                            >
+
+                            {% endwith %}
+
+                        </div>
+
+
+                        <!-- THUMBNAILS -->
+
+                        <div
+                            class="thumbnail-row"
+                            style="display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;"
+                        >
+
+                            {% for image in item.images.all %}
+
                             <button
                                 type="button"
                                 class="thumbnail-wrapper {% if forloop.first %}active{% endif %}"
                                 data-image-url="{{ image.image.url }}"
+                                style="
+                                    width: 60px;
+                                    height: 60px;
+                                    padding: 0;
+                                    margin: 0;
+                                    border: 2px solid {% if forloop.first %}#2563eb{% else %}#e2e8f0{% endif %};
+                                    border-radius: 8px;
+                                    background: none;
+                                    cursor: pointer;
+                                    overflow: hidden;
+                                    flex-shrink: 0;
+                                    display: block;
+                                    line-height: 0;
+                                    font-size: 0;
+                                "
                             >
+
                                 <img
                                     src="{{ image.image.url }}"
                                     class="thumbnail"
                                     alt="{{ item.name }} image {{ forloop.counter }}"
+                                    style="
+                                        width: 100%;
+                                        height: 100%;
+                                        object-fit: cover;
+                                        display: block;
+                                        border-radius: 6px;
+                                        padding: 0;
+                                        margin: 0;
+                                    "
                                 >
-                            </button>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h2 class="item-title">{{ item.name }}</h2>
-                    <h3 class="item-price" id="itemPrice{{ forloop.counter0 }}">{{ item.price }} MMK</h3>
-                    {% if item.description %}<p class="text-muted">{{ item.description }}</p>{% endif %}
 
-                    {% if item.has_sizes and item.size_variants.all %}
-                    <div class="size-section">
-                        <label class="fw-bold mb-2">Select Size:</label>
-                        <div class="size-buttons" id="sizeButtons{{ forloop.counter0 }}">
-                            {% for variant in item.size_variants.all %}
-                                <button type="button"
-                                        class="size-btn {% if variant.quantity == 0 %}sold-out{% endif %}"
-                                        data-size="{{ variant.size }}"
-                                        data-price="{{ variant.price }}"
-                                        data-quantity="{{ variant.quantity }}"
-                                        data-variant-id="{{ variant.id }}"
-                                        {% if variant.quantity == 0 %}disabled{% endif %}>
+                            </button>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================================================
+                         ITEM INFORMATION
+                    ================================================== -->
+
+                    <div class="col-md-6">
+
+                        <h2 class="item-title">
+                            {{ item.name }}
+                        </h2>
+
+
+                        <h3
+                            class="item-price"
+                            id="itemPrice{{ forloop.counter0 }}"
+                        >
+                            {{ item.price|intcomma }} MMK
+                        </h3>
+
+
+                        {% if item.description %}
+
+                        <p class="text-muted">
+                            {{ item.description }}
+                        </p>
+
+                        {% endif %}
+
+
+                        <!-- ==================================================
+                             SIZE VARIANTS
+                        ================================================== -->
+
+                        {% if item.has_sizes and item.size_variants.all %}
+
+                        <div class="size-section">
+
+                            <label class="fw-bold mb-2">
+                                Select Size:
+                            </label>
+
+
+                            <div
+                                class="size-buttons"
+                                id="sizeButtons{{ forloop.counter0 }}"
+                            >
+
+                                {% for variant in item.size_variants.all %}
+
+                                <button
+                                    type="button"
+                                    class="size-btn {% if variant.quantity == 0 %}sold-out{% endif %}"
+                                    data-size="{{ variant.size }}"
+                                    data-price="{{ variant.price }}"
+                                    data-quantity="{{ variant.quantity }}"
+                                    data-variant-id="{{ variant.id }}"
+                                    {% if variant.quantity == 0 %}disabled{% endif %}
+                                >
                                     {{ variant.size }}
                                 </button>
-                            {% endfor %}
-                        </div>
-                        <input type="hidden" name="size_variant_id" id="sizeVariantId{{ forloop.counter0 }}" value="">
-                        <!-- Stock display - BIGGER FONT, QUANTITY ONLY -->
-                        <div class="size-stock-display" id="sizeStock{{ forloop.counter0 }}">
-                            <i class="fa-solid fa-box"></i>
-                            <span class="stock-text">Select a size</span>
-                        </div>
-                    </div>
-                    {% else %}
-                        <p class="mt-3 stock-display" data-stock="{{ item.simple_quantity }}">
-                            <i class="fa-solid fa-box"></i>
-                            <strong>Stock:</strong> {{ item.simple_quantity }} available
-                        </p>
-                    {% endif %}
 
-                    {% if request.user.profile != post.user %}
-                    <div class="mt-4">
-                        <div class="d-flex gap-2 align-items-center">
-                            <div class="qty-selector">
-                                <button type="button" class="qty-btn qty-minus">−</button>
-                                <input type="number"
-                                       class="qty-input"
-                                       id="qty{{ forloop.counter0 }}"
-                                       value="1"
-                                       min="1"
-                                       max="{% if item.has_sizes %}1{% else %}{{ item.simple_quantity }}{% endif %}"
-                                       data-default-max="{% if item.has_sizes %}1{% else %}{{ item.simple_quantity }}{% endif %}"
-                                       readonly>
-                                <button type="button" class="qty-btn qty-plus">+</button>
+                                {% endfor %}
+
                             </div>
-                            <button type="button"
+
+
+                            <input
+                                type="hidden"
+                                name="size_variant_id"
+                                id="sizeVariantId{{ forloop.counter0 }}"
+                                value=""
+                            >
+
+
+                            <div
+                                class="size-stock-display"
+                                id="sizeStock{{ forloop.counter0 }}"
+                            >
+
+                                <i class="fa-solid fa-box"></i>
+
+                                <span class="stock-text">
+                                    Select a size
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        {% else %}
+
+                        <p
+                            class="mt-3 stock-display"
+                            data-stock="{{ item.simple_quantity }}"
+                        >
+
+                            <i class="fa-solid fa-box"></i>
+
+                            <strong>Stock:</strong>
+                            {{ item.simple_quantity }} available
+
+                        </p>
+
+                        {% endif %}
+
+
+                        <!-- ==================================================
+                             ADD TO CART
+                        ================================================== -->
+
+                        {% if request.user.profile != post.user %}
+
+                        <div class="mt-4">
+
+                            <div class="d-flex gap-2 align-items-center">
+
+                                <div class="qty-selector">
+
+                                    <button
+                                        type="button"
+                                        class="qty-btn qty-minus"
+                                    >
+                                        −
+                                    </button>
+
+
+                                    <input
+                                        type="number"
+                                        class="qty-input"
+                                        id="qty{{ forloop.counter0 }}"
+                                        value="1"
+                                        min="1"
+                                        max="{% if item.has_sizes %}1{% else %}{{ item.simple_quantity }}{% endif %}"
+                                        data-default-max="{% if item.has_sizes %}1{% else %}{{ item.simple_quantity }}{% endif %}"
+                                        readonly
+                                    >
+
+
+                                    <button
+                                        type="button"
+                                        class="qty-btn qty-plus"
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
+
+
+                                <button
+                                    type="button"
                                     class="add-cart-btn flex-grow-1 add-to-cart-btn"
                                     data-item-id="{{ item.id }}"
-                                    data-slide-index="{{ forloop.counter0 }}">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                                Add to Cart
-                            </button>
+                                    data-slide-index="{{ forloop.counter0 }}"
+                                >
+
+                                    <i class="fa-solid fa-cart-shopping"></i>
+
+                                    Add to Cart
+
+                                </button>
+
+                            </div>
+
                         </div>
+
+
+                        {% else %}
+
+                        <div class="own-item-notice mt-4">
+
+                            <i class="fa-solid fa-store"></i>
+
+                            This is your own item.
+                            You cannot buy your own items.
+
+                        </div>
+
+                        {% endif %}
+
                     </div>
-                    {% else %}
-                    <div class="own-item-notice mt-4">
-                        <i class="fa-solid fa-store"></i>
-                        This is your own item. You cannot buy your own items.
-                    </div>
-                    {% endif %}
+
                 </div>
+
             </div>
+
+            {% endfor %}
+
         </div>
-        {% endfor %}
-    </div>
 
-    {% if post.items.count > 1 %}
-    <div class="item-navigation">
-        <button class="nav-btn" id="prevBtn" disabled>
-            <i class="fa-solid fa-chevron-left"></i> Previous Item
+
+        <!-- ==================================================
+             NEXT ARROW
+        ================================================== -->
+
+        <button
+            class="arrow-btn"
+            id="nextBtn"
+            {% if post.items.count <= 1 %}disabled{% endif %}
+        >
+            <i class="fa-solid fa-chevron-right"></i>
         </button>
-        <span class="item-counter" id="itemCounter">Item 1 of {{ post.items.count }}</span>
-        <button class="nav-btn" id="nextBtn" {% if post.items.count <= 1 %}disabled{% endif %}>
-            Next Item <i class="fa-solid fa-chevron-right"></i>
-        </button>
+
+
+        <!-- ==================================================
+             ITEM COUNTER
+        ================================================== -->
+
+        {% if post.items.count > 1 %}
+
+        <span
+            class="item-counter-badge"
+            id="itemCounter"
+        >
+            Item 1 of {{ post.items.count }}
+        </span>
+
+        {% endif %}
+
     </div>
-    {% endif %}
 
 </div>
 </div>
+
 
 {% include "includes/footer.html" %}
 
+
+<!-- ==================================================
+     JAVASCRIPT
+================================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="{% static 'js/viewdetail.js' %}"></script>
 
 </body>

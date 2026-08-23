@@ -19,6 +19,7 @@ urlpatterns = [
         name="register",
     ),
 
+
     # =====================================================
     # LOGIN
     # =====================================================
@@ -28,6 +29,7 @@ urlpatterns = [
         views.login_view,
         name="login",
     ),
+
 
     # =====================================================
     # LOGOUT
@@ -39,6 +41,7 @@ urlpatterns = [
         name="logout",
     ),
 
+
     # =====================================================
     # DASHBOARD
     # =====================================================
@@ -49,11 +52,17 @@ urlpatterns = [
         name="dashboard",
     ),
 
-path(
-    "profile/<str:username>/",
-    views.seller_profile,
-    name="seller-profile",
-),
+
+    # =====================================================
+    # PUBLIC SELLER PROFILE
+    # =====================================================
+
+    path(
+        "profile/<str:username>/",
+        views.seller_profile,
+        name="seller-profile",
+    ),
+
 
     # =====================================================
     # PROFILE PICTURE
@@ -102,7 +111,9 @@ path(
     # =====================================================
     # TERMS & POLICY
     #
-    # Shown after successful email verification.
+    # Used for:
+    # 1. Terms card after email verification
+    # 2. Terms & Policy link from footer
     # =====================================================
 
     path(
@@ -136,6 +147,7 @@ path(
         name="forgot_password",
     ),
 
+
     # =====================================================
     # VERIFY PASSWORD RESET OTP
     # =====================================================
@@ -145,6 +157,7 @@ path(
         views.verify_reset_otp,
         name="verify_reset_otp",
     ),
+
 
     # =====================================================
     # RESET PASSWORD
@@ -156,19 +169,4 @@ path(
         name="reset_password",
     ),
 
-# =====================================================
-# EDIT PROFILE
-# =====================================================
-
-path(
-    "terms-policy/",
-    views.terms_policy,
-    name="terms_policy",
-),
-
-path(
-    "accept-terms/",
-    views.accept_terms_policy,
-    name="accept_terms_policy",
-),
 ]
