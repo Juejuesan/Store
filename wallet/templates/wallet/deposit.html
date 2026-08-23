@@ -1,5 +1,6 @@
 {% extends "base1.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}
 Deposit Wallet
@@ -82,7 +83,7 @@ Deposit Wallet
 
                     <strong>
 
-                        {{ wallet.balance }}
+                        {{ wallet.balance|intcomma }}
 
                     </strong>
 
@@ -141,147 +142,104 @@ Deposit Wallet
                         id="depositForm">
 
                         {% csrf_token %}
-                                                <div class="row g-4">
 
-                            <select
-    name="{{ form.payment_method.html_name }}"
-    id="{{ form.payment_method.id_for_label }}"
-    class="form-select modern-input"
-    required
->
-    <option value="" disabled selected>
-        Choose Payment Method
-    </option>
+                        <div class="row g-4">
 
-    <option value="KBZ Pay">KBZ Pay</option>
-    <option value="Wave Pay">Wave Pay</option>
-    <option value="AYA Pay">AYA Pay</option>
-    <option value="CB Pay">CB Pay</option>
-</select>
-
-                            <!-- Sender Name -->
-                            <div class="mb-4">
+                            <!-- Payment Method -->
+                            <div class="col-12">
                                 <label class="form-label">
-                                     Sender Name
+                                    Payment Method
                                 </label>
 
+                                <select
+                                    name="{{ form.payment_method.html_name }}"
+                                    id="{{ form.payment_method.id_for_label }}"
+                                    class="form-select modern-input"
+                                    required
+                                >
+                                    <option value="" disabled selected>
+                                        Choose Payment Method
+                                    </option>
+
+                                    <option value="KBZ Pay">KBZ Pay</option>
+                                    <option value="Wave Pay">Wave Pay</option>
+                                    <option value="AYA Pay">AYA Pay</option>
+                                    <option value="CB Pay">CB Pay</option>
+                                </select>
+                            </div>
+
+                            <!-- Sender Name -->
+                            <div class="col-12">
+                                <label class="form-label">
+                                    Sender Name
+                                </label>
                                 {{ form.sender_name }}
-
-
                             </div>
 
                             <!-- Sender Phone -->
-
                             <div class="col-md-6">
-
                                 <label class="form-label">
-
                                     Sender Phone
-
                                 </label>
-
                                 {{ form.sender_phone }}
-
-
                             </div>
 
                             <!-- Amount -->
-
                             <div class="col-md-6">
-
                                 <label class="form-label">
-
                                     Deposit Amount
-
                                 </label>
-
                                 {{ form.amount }}
-
-
                             </div>
 
                             <!-- Transaction ID -->
-
                             <div class="col-md-6">
-
                                 <label class="form-label">
-
                                     Transaction ID
-
                                 </label>
-
                                 {{ form.transaction_id }}
-
-
-
                             </div>
 
                             <!-- Screenshot -->
-
                             <div class="col-12">
-
                                 <label class="form-label">
-
                                     Payment Screenshot
-
                                 </label>
 
                                 <div class="upload-box">
-
                                     {{ form.screenshot }}
 
                                     <div class="upload-text">
-
                                         <i class="fa-solid fa-cloud-arrow-up"></i>
 
                                         <h5>
-
                                             Upload Payment Screenshot
-
                                         </h5>
 
                                         <p>
-
                                             JPG, PNG or WEBP (Maximum 5 MB)
-
                                         </p>
-
                                     </div>
-
                                 </div>
-
-
-
                             </div>
 
                             <!-- Image Preview -->
-
                             <div class="col-12">
-
                                 <img
                                     id="previewImage"
                                     class="preview-image d-none">
-
                             </div>
 
                             <!-- Note -->
-
                             <div class="col-12">
-
                                 <label class="form-label">
-
                                     Note (Optional)
-
                                 </label>
-
                                 {{ form.note }}
-
                             </div>
 
                             <!-- Submit -->
-
                             <div class="col-12">
-
                                 <button
                                     type="submit"
                                     class="deposit-btn"
@@ -290,9 +248,7 @@ Deposit Wallet
                                     <i class="fa-solid fa-paper-plane"></i>
 
                                     Submit Deposit Request
-
                                 </button>
-
                             </div>
 
                         </div>
@@ -302,7 +258,8 @@ Deposit Wallet
                 </div>
 
             </div>
-                        <!-- RIGHT COLUMN -->
+
+            <!-- RIGHT COLUMN -->
 
             <div class="col-lg-4">
 
@@ -484,7 +441,8 @@ Deposit Wallet
             </div>
 
         </div>
-                <!-- ==========================================
+
+        <!-- ==========================================
             RECENT DEPOSIT REQUESTS
         =========================================== -->
 
@@ -550,7 +508,7 @@ Deposit Wallet
 
                             <td>
 
-                                MMK {{ deposit.amount }}
+                                MMK {{ deposit.amount|intcomma }}
 
                             </td>
 

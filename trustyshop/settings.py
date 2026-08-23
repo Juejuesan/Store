@@ -174,3 +174,9 @@ EMAIL_HOST_USER = 'trustyshop064@gmail.com'
 EMAIL_HOST_PASSWORD = 'vwjaldffphkbhoia'
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+import os
+
+os.environ['HF_TOKEN'] = 'your_huggingface_token'
+HF_HOME = os.path.join(BASE_DIR, 'hf_cache')
+os.environ['HF_HOME'] = HF_HOME

@@ -1,5 +1,6 @@
 {% extends "base1.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}
 Wallet Dashboard
@@ -66,7 +67,8 @@ Wallet Dashboard
             </div>
 
         </div>
-                <!-- ==========================================
+
+        <!-- ==========================================
                 WALLET BALANCE CARD
         =========================================== -->
 
@@ -86,7 +88,7 @@ Wallet Dashboard
                         id="balanceCounter"
                         data-balance="{{ wallet.balance }}">
 
-                        {{ wallet.balance }}
+                        {{ wallet.balance|intcomma }}
 
                     </strong>
 
@@ -212,7 +214,8 @@ Wallet Dashboard
             </div>
 
         </div>
-                <!-- ==========================================
+
+        <!-- ==========================================
                 WALLET OVERVIEW
         =========================================== -->
 
@@ -234,7 +237,7 @@ Wallet Dashboard
 
                         <h3>
 
-                            MMK {{ wallet.balance }}
+                            MMK {{ wallet.balance|intcomma }}
 
                         </h3>
 
@@ -373,7 +376,8 @@ Wallet Dashboard
             </div>
 
         </div>
-                <!-- ==========================================
+
+        <!-- ==========================================
      RECENT ACTIVITY
 =========================================== -->
 
@@ -425,8 +429,6 @@ Wallet Dashboard
                     Deposit
                 </h5>
 
-                <!-- REAL DEPOSIT DATE + TIME -->
-
                 <small>
                     {{ deposit.created_at|date:"d M Y h:i A" }}
                 </small>
@@ -440,7 +442,7 @@ Wallet Dashboard
 
             <span class="amount plus">
 
-                + MMK {{ deposit.amount }}
+                + MMK {{ deposit.amount|intcomma }}
 
             </span>
 
@@ -497,8 +499,6 @@ Wallet Dashboard
                     Withdrawal
                 </h5>
 
-                <!-- REAL WITHDRAWAL DATE + TIME -->
-
                 <small>
                     {{ withdraw.created_at|date:"d M Y h:i A" }}
                 </small>
@@ -512,7 +512,7 @@ Wallet Dashboard
 
             <span class="amount minus">
 
-                - MMK {{ withdraw.amount }}
+                - MMK {{ withdraw.amount|intcomma }}
 
             </span>
 
@@ -663,7 +663,7 @@ Wallet Dashboard
 
                             <strong class="transaction-amount positive">
 
-                                + MMK {{ t.amount }}
+                                + MMK {{ t.amount|intcomma }}
 
                             </strong>
 
@@ -671,7 +671,7 @@ Wallet Dashboard
 
                             <strong class="transaction-amount negative">
 
-                                - MMK {{ t.amount }}
+                                - MMK {{ t.amount|intcomma }}
 
                             </strong>
 
@@ -753,7 +753,8 @@ Wallet Dashboard
     </div>
 
 </div>
-                <!-- ==========================================
+
+        <!-- ==========================================
                 SMART WALLET TIPS
         =========================================== -->
 

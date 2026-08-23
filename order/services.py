@@ -9,9 +9,9 @@ from .models import Order, OrderItem
 from notifications.models import Notification
 
 class OrderService:
-    CANCELLATION_WINDOW_MINUTES = 3
+    CANCELLATION_WINDOW_MINUTES = 1
     MAX_CANCELLATIONS_PER_MONTH = 3
-    AUTO_READY_MINUTES = 3
+    AUTO_READY_MINUTES = 1
 
     @classmethod
     @transaction.atomic
@@ -106,7 +106,7 @@ class OrderService:
                 user=seller_profile.user,
                 message=(
                     f"You received a new order (#{order.id}). "
-                    f"Please confirm your pickup location and phone number."
+                    f"Please confirm your deliver location and phone number."
                 ),
                 notification_type="order_created",
                 target_url=f"/orders/{order.id}/confirm-pickup/",

@@ -1,5 +1,6 @@
 {% extends "base1.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Wallet History{% endblock %}
 
@@ -80,7 +81,7 @@
 
                 <h2>
 
-                    {{ wallet.balance }}
+                    {{ wallet.balance|intcomma }}
 
                     <strong>MMK</strong>
 
@@ -183,7 +184,7 @@
 
                     <h3>
 
-                        {{ wallet.balance }}
+                        {{ wallet.balance|intcomma }}
 
                     </h3>
 
@@ -198,7 +199,8 @@
             </div>
 
         </div>
-                <!-- ======================================
+
+        <!-- ======================================
                 FILTER & SEARCH
         ======================================= -->
 
@@ -286,7 +288,8 @@
             </div>
 
         </div>
-                <!-- ======================================
+
+        <!-- ======================================
                 TRANSACTION HISTORY TABLE
         ======================================= -->
 
@@ -396,7 +399,7 @@
 
                                 <strong>
 
-                                    {{ transaction.amount }}
+                                    {{ transaction.amount|intcomma }}
 
                                     MMK
 
