@@ -22,7 +22,7 @@
                         <i class="fa-solid fa-wallet"></i>
                     </div>
                     <div>
-                        <span>Total Earned</span>
+                        <span>Total Earned (After 10% Fee)</span>
                         <h3>{{ total_earned|intcomma }} MMK</h3>
                     </div>
                 </div>
@@ -103,7 +103,6 @@
                 <div class="sale-items">
                     {% for order_item in sale.items.all %}
                     <div class="sale-item">
-                        <!-- Item Image -->
                         <div class="sale-image">
                             {% with first_image=order_item.item.images.first %}
                                 {% if first_image %}
@@ -114,7 +113,6 @@
                             {% endwith %}
                         </div>
 
-                        <!-- Item Info -->
                         <div class="sale-info">
                             <h4>{{ order_item.item_name }}</h4>
                             {% if order_item.size_variant %}
@@ -132,13 +130,13 @@
                     <div>
                         <span>Buyer:</span>
                         <strong>{{ sale.user.user.username }}</strong>
-                        {% if sale.phone_number %}
-                            <small class="ms-2">{{ sale.phone_number }}</small>
-                        {% endif %}
                     </div>
                     <div class="sale-total">
-                        <span>Total:</span>
-                        <strong>{{ sale.total_amount|intcomma }} MMK</strong>
+                        <span>You Earn (after 10% fee):</span>
+                        <strong>
+                            {% widthratio sale.total_amount 100 90 as payout %}
+                            {{ payout|intcomma }} MMK
+                        </strong>
                     </div>
                     <a href="{% url 'order:sale_detail' sale.id %}" class="detail-btn">
                         <i class="fa-solid fa-eye"></i> Details
@@ -154,37 +152,37 @@
             {% endfor %}
         </div>
 
-        <!-- PAGINATION -->
+        <!-- Pagination -->
         {% if page_obj.has_other_pages %}
-        <div class="pagination-container" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:30px; margin-bottom:20px;">
+        <div class="pagination-container">
             {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">
+                <a href="?page={{ page_obj.previous_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" class="pagination-btn">
                     <i class="fa-solid fa-chevron-left"></i>
                 </a>
             {% else %}
-                <span style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; opacity:0.3; pointer-events:none;">
+                <span class="pagination-btn disabled">
                     <i class="fa-solid fa-chevron-left"></i>
                 </span>
             {% endif %}
 
             {% for num in page_obj.paginator.page_range %}
                 {% if num == page_obj.number %}
-                    <span style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #2563eb; border-radius:8px; background:#2563eb; color:#ffffff; font-size:14px; font-weight:600;">{{ num }}</span>
+                    <span class="pagination-btn active">{{ num }}</span>
                 {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <a href="?page={{ num }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">{{ num }}</a>
+                    <a href="?page={{ num }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" class="pagination-btn">{{ num }}</a>
                 {% elif num == 1 or num == page_obj.paginator.num_pages %}
-                    <a href="?page={{ num }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">{{ num }}</a>
+                    <a href="?page={{ num }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" class="pagination-btn">{{ num }}</a>
                 {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
-                    <span style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-weight:600;">...</span>
+                    <span class="pagination-ellipsis">...</span>
                 {% endif %}
             {% endfor %}
 
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none;">
+                <a href="?page={{ page_obj.next_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}" class="pagination-btn">
                     <i class="fa-solid fa-chevron-right"></i>
                 </a>
             {% else %}
-                <span style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; border-radius:8px; background:#ffffff; color:#475569; font-size:14px; font-weight:600; opacity:0.3; pointer-events:none;">
+                <span class="pagination-btn disabled">
                     <i class="fa-solid fa-chevron-right"></i>
                 </span>
             {% endif %}

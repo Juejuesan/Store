@@ -537,6 +537,7 @@ def mark_completed(request, order_id):
 from django.core.paginator import Paginator
 from django.db.models import Sum
 
+
 @login_required
 def sale_list(request):
     """
@@ -564,32 +565,38 @@ def sale_list(request):
         sales = sales.filter(status=status_filter)
 
     # -----------------------------------------------------
-    # TOTAL EARNED (released payments)
+    # TOTAL EARNED (90% of released payments)
     # -----------------------------------------------------
 
-    total_earned = (
-        Order.objects
-        .filter(
-            seller=request.user.profile,
-            payment_status="released"
-        )
-        .aggregate(Sum("total_amount"))["total_amount__sum"]
-        or 0
+    total_earned_full = (
+            Order.objects
+            .filter(
+                seller=request.user.profile,
+                payment_status="released"
+            )
+            .aggregate(Sum("total_amount"))["total_amount__sum"]
+            or 0
     )
 
+    # Calculate 90% payout (after 10% platform fee)
+    total_earned = (total_earned_full * 90) // 100
+
     # -----------------------------------------------------
-    # PENDING AMOUNT (ready_for_pickup status)
+    # PENDING AMOUNT (ready_for_pickup status - 90% estimate)
     # -----------------------------------------------------
 
-    pending_amount = (
-        Order.objects
-        .filter(
-            seller=request.user.profile,
-            status="ready_for_pickup"
-        )
-        .aggregate(Sum("total_amount"))["total_amount__sum"]
-        or 0
+    pending_amount_full = (
+            Order.objects
+            .filter(
+                seller=request.user.profile,
+                status="ready_for_pickup"
+            )
+            .aggregate(Sum("total_amount"))["total_amount__sum"]
+            or 0
     )
+
+    # Calculate 90% payout
+    pending_amount = (pending_amount_full * 90) // 100
 
     # -----------------------------------------------------
     # STATUS COUNTS
@@ -645,7 +652,6 @@ def sale_list(request):
         "sale_list.html",
         context
     )
-
 
 # =========================================================
 # SALE DETAIL

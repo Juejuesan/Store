@@ -1,3 +1,8 @@
+/* =========================================================
+   SALE LIST CSS
+   CLEAN • MODERN • RESPONSIVE
+========================================================= */
+
 .sale-page {
     min-height: 100vh;
     background: #f4f8ff;
@@ -73,6 +78,7 @@
     color: #64748b;
     transition: all .3s;
     font-family: inherit;
+    text-decoration: none;
 }
 
 .tab-btn:hover {
@@ -211,9 +217,21 @@
     font-size: 14px;
 }
 
+/* You Earn - Green */
+.sale-total {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sale-total span {
+    color: #64748b;
+}
+
 .sale-total strong {
-    color: #2563eb;
+    color: #16a34a;
     font-size: 16px;
+    font-weight: 700;
 }
 
 /* Status Badges */
@@ -231,7 +249,7 @@
 .status-completed { background: #dcfce7; color: #15803d; }
 .status-cancelled { background: #fee2e2; color: #dc2626; }
 
-/* Detail Button - FIXED */
+/* Detail Button */
 .detail-btn {
     display: inline-flex;
     align-items: center;
@@ -276,29 +294,7 @@
     font-size: 20px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .sale-card-footer {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .detail-btn {
-        width: auto;
-    }
-    .status-tabs {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding-bottom: 5px;
-    }
-    .tab-btn {
-        white-space: nowrap;
-    }
-}
-
-/* =========================================================
-   PAGINATION
-========================================================= */
-
+/* Pagination */
 .pagination-container {
     display: flex;
     justify-content: center;
@@ -353,6 +349,24 @@
 }
 
 /* Responsive */
+@media (max-width: 768px) {
+    .sale-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .detail-btn {
+        width: auto;
+    }
+    .status-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 5px;
+    }
+    .tab-btn {
+        white-space: nowrap;
+    }
+}
+
 @media (max-width: 576px) {
     .pagination-btn {
         width: 35px;
