@@ -1,0 +1,476 @@
+/* ==================================================
+   SOLD POST DETAIL SECTION
+================================================== */
+
+.sold-detail-section {
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+/* ==================================================
+   BACK BUTTON
+================================================== */
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.back-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    transform: translateX(-2px);
+}
+
+/* ==================================================
+   SOLD BANNER
+================================================== */
+
+.sold-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #bbf7d0;
+    box-shadow: 0 2px 12px rgba(16, 185, 129, 0.1);
+}
+
+.sold-banner-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.sold-banner-content {
+    flex: 1;
+}
+
+.sold-banner-content h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #065f46;
+    margin: 0 0 4px 0;
+}
+
+.sold-banner-content p {
+    font-size: 14px;
+    color: #047857;
+    margin: 0;
+}
+
+.sold-banner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+}
+
+/* ==================================================
+   DETAIL CARD
+================================================== */
+
+.detail-card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.detail-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fafafa;
+}
+
+.detail-card-header h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detail-card-header h4 i {
+    color: #10b981;
+}
+
+.detail-card-body {
+    padding: 20px;
+}
+
+/* ==================================================
+   INFO ROWS
+================================================== */
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #f8fafc;
+    gap: 16px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    min-width: 100px;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #1e293b;
+    text-align: right;
+    flex: 1;
+}
+
+/* ==================================================
+   STATUS BADGE
+================================================== */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-badge.sold {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+/* ==================================================
+   BUYER INFO
+================================================== */
+
+.buyer-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.buyer-avatar {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #f1f5f9;
+    flex-shrink: 0;
+}
+
+.buyer-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.buyer-avatar i {
+    font-size: 40px;
+    color: #94a3b8;
+}
+
+.buyer-details h5 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 2px 0;
+}
+
+.buyer-details span {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.no-buyer {
+    text-align: center;
+    padding: 20px;
+    color: #94a3b8;
+}
+
+.no-buyer i {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.no-buyer p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ==================================================
+   ITEM CARD
+================================================== */
+
+.item-card {
+    padding: 16px;
+    border-radius: 12px;
+    background: #f8fafc;
+    margin-bottom: 12px;
+}
+
+.item-card:last-child {
+    margin-bottom: 0;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.item-header h5 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.item-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #10b981;
+    white-space: nowrap;
+}
+
+.item-description {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+/* ==================================================
+   SIZE TABLE
+================================================== */
+
+.size-table {
+    overflow-x: auto;
+}
+
+.size-table .table {
+    margin: 0;
+    font-size: 14px;
+}
+
+.size-table .table thead th {
+    background: #dcfce7;
+    color: #065f46;
+    font-weight: 600;
+    border: none;
+    padding: 10px 12px;
+}
+
+.size-table .table tbody td {
+    padding: 10px 12px;
+    border-color: #f8fafc;
+    color: #1e293b;
+}
+
+/* ==================================================
+   SIMPLE QUANTITY
+================================================== */
+
+.simple-quantity {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #ffffff;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.simple-quantity strong {
+    color: #1e293b;
+}
+
+/* ==================================================
+   IMAGE GALLERY
+================================================== */
+
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.gallery-image {
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    background: #f1f5f9;
+}
+
+.gallery-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+}
+
+.gallery-image img:hover {
+    transform: scale(1.05);
+}
+
+.no-image {
+    grid-column: span 2;
+    text-align: center;
+    padding: 30px 20px;
+    color: #94a3b8;
+}
+
+.no-image i {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.no-image p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ==================================================
+   SALE SUMMARY
+================================================== */
+
+.sale-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f8fafc;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-row span {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.summary-row strong {
+    font-size: 14px;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+/* ==================================================
+   BACK BUTTON
+================================================== */
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    background: #f8fafc;
+    color: #64748b;
+    width: 100%;
+}
+
+.btn-back:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+    transform: translateY(-1px);
+}
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+
+@media (max-width: 768px) {
+    .sold-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .sold-banner-badge {
+        align-self: center;
+    }
+
+    .info-row {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .info-value {
+        text-align: left;
+    }
+
+    .image-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .no-image {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 576px) {
+    .detail-card-body {
+        padding: 15px;
+    }
+
+    .item-header {
+        flex-direction: column;
+    }
+
+    .buyer-info {
+        flex-direction: column;
+        text-align: center;
+    }
+}

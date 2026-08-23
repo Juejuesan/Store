@@ -48,7 +48,7 @@ def home(request):
     # 20 POSTS PER PAGE
     # =====================================================
 
-    paginator = Paginator(posts, 5)
+    paginator = Paginator(posts, 6)
 
     page_number = request.GET.get('page')
 

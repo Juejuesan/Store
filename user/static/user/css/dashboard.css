@@ -1,0 +1,643 @@
+/* =========================================================
+   TRUSTY SHOP DASHBOARD CSS
+   CLEAN • MODERN • RESPONSIVE
+========================================================= */
+
+body {
+    background: #f5f8ff;
+    color: #172033;
+    font-family: Arial, sans-serif;
+}
+
+.dashboard-page {
+    padding-top: 110px;
+    padding-bottom: 70px;
+}
+
+/* =========================================================
+   PROFILE CARD
+========================================================= */
+
+.profile-card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 24px;
+    overflow: visible;
+    border: 1px solid #e7edfa;
+    box-shadow: 0 12px 40px rgba(37, 99, 235, 0.08);
+}
+
+.profile-cover {
+    position: relative;
+    height: 180px;
+    background: linear-gradient(135deg, #2563eb, #38bdf8);
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+}
+
+.profile-cover::after {
+    content: "";
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    right: -70px;
+    top: -100px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.profile-info {
+    position: relative;
+    padding: 0 35px 30px;
+}
+
+/* =========================================================
+   PROFILE PHOTO
+========================================================= */
+
+.profile-photo-wrapper {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    margin-top: -65px;
+    z-index: 5;
+}
+
+.profile-photo,
+.profile-default {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 6px solid #ffffff;
+    background: #eef4ff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.profile-photo {
+    object-fit: cover;
+}
+
+.profile-default {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563eb;
+    font-size: 55px;
+}
+
+/* =========================================================
+   PROFILE DETAILS
+========================================================= */
+
+.profile-details {
+    margin-top: 15px;
+}
+
+.profile-username {
+    color: #718096;
+    font-size: 15px;
+}
+
+.verified-icon {
+    margin-left: 5px;
+    color: #2563eb;
+    font-size: 17px;
+}
+
+/* =========================================================
+   PROFILE ACTIONS
+========================================================= */
+
+.profile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.dashboard-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+
+.create-btn {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.create-btn:hover {
+    background: #1d4ed8;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.edit-btn {
+    background: #edf4ff;
+    color: #2563eb;
+}
+
+.edit-btn:hover {
+    background: #dbeafe;
+    color: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.back-home-btn {
+    background: #edf4ff;
+    color: #2563eb;
+}
+
+.back-home-btn:hover {
+    background: #dbeafe;
+    color: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.profile-photo-form {
+    display: inline-flex;
+}
+
+.photo-upload-label {
+    cursor: pointer;
+}
+
+.photo-upload-input {
+    display: none;
+}
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+.settings-wrapper {
+    position: absolute;
+    right: 30px;
+    top: 205px;
+    z-index: 1000;
+}
+
+.settings-btn {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #334155;
+    font-size: 19px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.settings-btn:hover {
+    background: #2563eb;
+    color: #ffffff;
+    transform: rotate(25deg);
+}
+
+.settings-menu {
+    position: absolute;
+    top: 58px;
+    right: 0;
+    width: 310px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.97);
+    transition: 0.2s ease;
+}
+
+.settings-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.settings-menu-header {
+    padding: 12px 13px 15px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.settings-menu-header strong {
+    display: block;
+    font-size: 15px;
+}
+
+.settings-menu-header small {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.settings-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px;
+    border-radius: 12px;
+    color: #172033;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.settings-item:hover {
+    background: #f5f8ff;
+    transform: translateX(2px);
+}
+
+.settings-item > span:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-item strong {
+    font-size: 14px;
+}
+
+.settings-item small {
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.settings-icon {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.settings-icon.blue { background: #dbeafe; color: #2563eb; }
+.settings-icon.pink { background: #fce7f3; color: #db2777; }
+.settings-icon.green { background: #dcfce7; color: #16a34a; }
+.settings-icon.orange { background: #ffedd5; color: #ea580c; }
+.settings-icon.purple { background: #ede9fe; color: #7c3aed; }
+.settings-icon.red { background: #fee2e2; color: #dc2626; }
+
+.settings-divider {
+    height: 1px;
+    margin: 7px 5px;
+    background: #eef2f7;
+}
+
+.logout-item {
+    color: #dc2626;
+}
+
+.logout-item:hover {
+    background: #fff1f2;
+}
+
+/* =========================================================
+   PROFILE STATS
+========================================================= */
+
+.profile-stats {
+    display: flex;
+    gap: 35px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    text-align: left;
+}
+
+.stat-number {
+    display: block;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.stat-label {
+    color: #718096;
+    font-size: 13px;
+}
+
+/* =========================================================
+   POSTS SECTION
+========================================================= */
+
+.posts-section {
+    margin-top: 45px;
+}
+
+.section-title {
+    margin-bottom: 0;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.section-subtitle {
+    color: #718096;
+}
+
+/* =========================================================
+   POST TABS
+========================================================= */
+
+.post-tabs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 6px;
+    width: fit-content;
+    background: #edf4ff;
+    border-radius: 14px;
+    flex-wrap: wrap;
+}
+
+.post-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+    font-family: inherit;
+}
+
+.post-tab:hover {
+    color: #2563eb;
+    background: #dbeafe;
+}
+
+.post-tab.active {
+    background: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.20);
+}
+
+.post-tab-count {
+    min-width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.22);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.post-tab:not(.active) .post-tab-count {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+/* Tab Colors */
+#approvedTab.active { background: #10b981; }
+#pendingTab.active { background: #f59e0b; }
+#soldTab.active { background: #3b82f6; }
+#rejectedTab.active { background: #ef4444; }
+
+/* =========================================================
+   POST SUBSECTION
+========================================================= */
+
+.post-subsection {
+    margin-top: 0;
+}
+
+.post-subsection-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.post-subsection-subtitle {
+    color: #718096;
+    margin-bottom: 20px;
+}
+
+/* =========================================================
+   POST CARD
+========================================================= */
+
+.user-post-card {
+    height: 100%;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e7edfa;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.06);
+    transition: 0.25s ease;
+}
+
+.user-post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(37, 99, 235, 0.12);
+}
+
+.post-image-wrapper {
+    height: 220px;
+    overflow: hidden;
+    background: #f1f5f9;
+}
+
+.post-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.3s ease;
+}
+
+.user-post-card:hover .post-image {
+    transform: scale(1.05);
+}
+
+.post-content {
+    padding: 20px;
+}
+
+.post-title {
+    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.post-description {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 45px;
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.post-status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.pending-status {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.sold-status {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.rejected-status {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.post-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.view-post-btn {
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.view-post-btn:hover {
+    color: #1d4ed8;
+}
+
+.edit-post-link {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.edit-post-link:hover {
+    color: #2563eb;
+}
+
+/* =========================================================
+   EMPTY POSTS
+========================================================= */
+
+.empty-posts {
+    padding: 60px 20px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 20px;
+}
+
+.empty-icon {
+    color: #94a3b8;
+    font-size: 55px;
+}
+
+.empty-posts h4 {
+    margin-top: 18px;
+    font-weight: 800;
+}
+
+.empty-posts p {
+    color: #718096;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+    .dashboard-page {
+        padding-top: 90px;
+    }
+
+    .profile-cover {
+        height: 140px;
+    }
+
+    .profile-info {
+        padding: 0 20px 25px;
+    }
+
+    .profile-photo-wrapper,
+    .profile-photo,
+    .profile-default {
+        width: 105px;
+        height: 105px;
+    }
+
+    .profile-name {
+        font-size: 23px;
+    }
+
+    .settings-wrapper {
+        right: 20px;
+        top: 160px;
+    }
+
+    .settings-menu {
+        right: -10px;
+        width: 290px;
+    }
+
+    .profile-stats {
+        gap: 20px;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .post-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .post-tabs {
+        width: 100%;
+    }
+
+    .post-tab {
+        flex: 1;
+        padding: 10px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+}

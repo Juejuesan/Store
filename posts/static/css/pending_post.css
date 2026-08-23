@@ -1,0 +1,407 @@
+/* ==================================================
+   PENDING POST DETAIL SECTION
+================================================== */
+
+.pending-detail-section {
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+/* ==================================================
+   BACK BUTTON
+================================================== */
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.back-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    transform: translateX(-2px);
+}
+
+/* ==================================================
+   PENDING BANNER
+================================================== */
+
+.pending-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1px solid #fde68a;
+    box-shadow: 0 2px 12px rgba(245, 158, 11, 0.1);
+}
+
+.pending-banner-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.pending-banner-icon i {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.pending-banner-content {
+    flex: 1;
+}
+
+.pending-banner-content h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #92400e;
+    margin: 0 0 4px 0;
+}
+
+.pending-banner-content p {
+    font-size: 14px;
+    color: #b45309;
+    margin: 0;
+}
+
+.pending-banner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* ==================================================
+   DETAIL CARD
+================================================== */
+
+.detail-card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.detail-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fafafa;
+}
+
+.detail-card-header h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detail-card-header h4 i {
+    color: #f59e0b;
+}
+
+.detail-card-body {
+    padding: 20px;
+}
+
+/* ==================================================
+   INFO ROWS
+================================================== */
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #f8fafc;
+    gap: 16px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    min-width: 100px;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #1e293b;
+    text-align: right;
+    flex: 1;
+}
+
+/* ==================================================
+   STATUS BADGE
+================================================== */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-badge.pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+/* ==================================================
+   ITEM CARD
+================================================== */
+
+.item-card {
+    padding: 16px;
+    border-radius: 12px;
+    background: #f8fafc;
+    margin-bottom: 12px;
+}
+
+.item-card:last-child {
+    margin-bottom: 0;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.item-header h5 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.item-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #f59e0b;
+    white-space: nowrap;
+}
+
+.item-description {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+/* ==================================================
+   SIZE TABLE
+================================================== */
+
+.size-table {
+    overflow-x: auto;
+}
+
+.size-table .table {
+    margin: 0;
+    font-size: 14px;
+}
+
+.size-table .table thead th {
+    background: #fef3c7;
+    color: #92400e;
+    font-weight: 600;
+    border: none;
+    padding: 10px 12px;
+}
+
+.size-table .table tbody td {
+    padding: 10px 12px;
+    border-color: #f8fafc;
+    color: #1e293b;
+}
+
+/* ==================================================
+   SIMPLE QUANTITY
+================================================== */
+
+.simple-quantity {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #ffffff;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.simple-quantity strong {
+    color: #1e293b;
+}
+
+/* ==================================================
+   IMAGE GALLERY
+================================================== */
+
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.gallery-image {
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    background: #f1f5f9;
+}
+
+.gallery-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+}
+
+.gallery-image img:hover {
+    transform: scale(1.05);
+}
+
+.no-image {
+    grid-column: span 2;
+    text-align: center;
+    padding: 30px 20px;
+    color: #94a3b8;
+}
+
+.no-image i {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.no-image p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ==================================================
+   ACTION BUTTONS
+================================================== */
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-edit,
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.btn-edit {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.btn-edit:hover {
+    background: #dbeafe;
+    transform: translateY(-1px);
+}
+
+.btn-back {
+    background: #f8fafc;
+    color: #64748b;
+}
+
+.btn-back:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+
+@media (max-width: 768px) {
+    .pending-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .pending-banner-badge {
+        align-self: center;
+    }
+
+    .info-row {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .info-value {
+        text-align: left;
+    }
+
+    .image-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .no-image {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 576px) {
+    .detail-card-body {
+        padding: 15px;
+    }
+
+    .item-header {
+        flex-direction: column;
+    }
+}

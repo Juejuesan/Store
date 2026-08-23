@@ -2501,4 +2501,58 @@ RESPONSIVE
     }
 }
 
+/* =====================================================
+   SOLD POST STATUS
+===================================================== */
+
+.sold-status {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* =====================================================
+   REJECTED POST STATUS
+===================================================== */
+
+.rejected-status {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* =====================================================
+   POST TABS - WRAP FOR MULTIPLE TABS
+===================================================== */
+
+.post-tabs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 6px;
+    width: fit-content;
+    background: #edf4ff;
+    border-radius: 14px;
+    flex-wrap: wrap;  /* ADD THIS - allows tabs to wrap on mobile */
+}
+
+/* =====================================================
+   RESPONSIVE TABS
+===================================================== */
+
+@media (max-width: 768px) {
+    .post-tabs {
+        width: 100%;
+    }
+
+    .post-tab {
+        flex: 1;
+        padding: 10px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+}
+
+
+
 

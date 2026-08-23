@@ -4,2440 +4,409 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.fullName|default:seller.username }} | Trusty Shop</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <title>
-        {{ profile.fullName|default:seller.username }}
-        | Trusty Shop
-    </title>
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+    <!-- BOOTSTRAP ICONS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- =====================================================
-         BOOTSTRAP
-    ====================================================== -->
+    <!-- HEADER / FOOTER CSS -->
+    <link rel="stylesheet" href="{% static 'css/header-footer.css' %}">
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
-
-    <!-- =====================================================
-         FONT AWESOME
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
-
-
-    <!-- =====================================================
-         BOOTSTRAP ICONS
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    >
-
-
-    <!-- =====================================================
-         HEADER / FOOTER CSS
-    ====================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="{% static 'css/header-footer.css' %}"
-    >
-
+    <!-- DASHBOARD CSS -->
+    <link rel="stylesheet" href="{% static 'user/css/dashboard.css' %}">
 
     <style>
-
-        /* =====================================================
-           PAGE
-        ===================================================== */
-
-        body {
-            background: #f5f8ff;
-            color: #172033;
-            font-family: Arial, sans-serif;
-        }
-
-        .dashboard-page {
-            padding-top: 110px;
-            padding-bottom: 70px;
-        }
-
-
-        /* =====================================================
-           PROFILE CARD
-        ===================================================== */
-
-        .profile-card {
-            position: relative;
-
-            background: #ffffff;
-
-            border-radius: 24px;
-
-            overflow: visible;
-
-            border: 1px solid #e7edfa;
-
-            box-shadow:
-                0 12px 40px rgba(37, 99, 235, 0.08);
-        }
-
-
-        /* =====================================================
-           PROFILE COVER
-        ===================================================== */
-
-        .profile-cover {
-            position: relative;
-
-            height: 180px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #2563eb,
-                    #38bdf8
-                );
-
-            border-radius: 24px 24px 0 0;
-
-            overflow: hidden;
-        }
-
-        .profile-cover::after {
-            content: "";
-
-            position: absolute;
-
-            width: 250px;
-            height: 250px;
-
-            right: -70px;
-            top: -100px;
-
-            border-radius: 50%;
-
-            background:
-                rgba(255, 255, 255, 0.12);
-        }
-
-
-        /* =====================================================
-           PROFILE INFO
-        ===================================================== */
-
-        .profile-info {
-            position: relative;
-
-            padding:
-                0
-                35px
-                30px;
-        }
-
-
-        /* =====================================================
-           PROFILE PHOTO
-        ===================================================== */
-
-        .profile-photo-wrapper {
-            position: relative;
-
-            width: 130px;
-            height: 130px;
-
-            margin-top: -65px;
-
-            z-index: 5;
-        }
-
-        .profile-photo {
-            width: 130px;
-            height: 130px;
-
-            object-fit: cover;
-
-            border-radius: 50%;
-
-            border: 6px solid #ffffff;
-
-            background: #eef4ff;
-
-            box-shadow:
-                0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .profile-default {
-            width: 130px;
-            height: 130px;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            border: 6px solid #ffffff;
-
-            background: #eef4ff;
-
-            color: #2563eb;
-
-            font-size: 55px;
-
-            box-shadow:
-                0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-
-        /* =====================================================
-           PROFILE DETAILS
-        ===================================================== */
-
-        .profile-details {
-            margin-top: 15px;
-        }
-
-        .profile-username {
-            color: #718096;
-            font-size: 15px;
-        }
-
-        .verified-icon {
-            margin-left: 5px;
-
-            color: #2563eb;
-
-            font-size: 17px;
-        }
-
-
-        /* =====================================================
-           PROFILE ACTIONS
-        ===================================================== */
-
-        .profile-actions {
-            display: flex;
-
-            flex-wrap: wrap;
-
-            gap: 12px;
-
-            margin-top: 20px;
-        }
-
-        .dashboard-btn {
-            display: inline-flex;
-
-            align-items: center;
-            justify-content: center;
-
-            gap: 8px;
-
-            padding:
-                11px
-                20px;
-
-            border: none;
-
-            border-radius: 12px;
-
-            font-weight: 700;
-
+        .post-card-link {
             text-decoration: none;
-
-            transition:
-                0.25s ease;
-        }
-
-
-        /* =====================================================
-           CREATE BUTTON
-        ===================================================== */
-
-        .create-btn {
-            background: #2563eb;
-            color: #ffffff;
-        }
-
-        .create-btn:hover {
-            background: #1d4ed8;
-
-            color: #ffffff;
-
-            transform:
-                translateY(-2px);
-        }
-
-
-        /* =====================================================
-           EDIT BUTTON
-        ===================================================== */
-
-        .edit-btn {
-            background: #edf4ff;
-            color: #2563eb;
-        }
-
-        .edit-btn:hover {
-            background: #dbeafe;
-
-            color: #1d4ed8;
-
-            transform:
-                translateY(-2px);
-        }
-
-
-        /* =====================================================
-           BACK HOME BUTTON
-        ===================================================== */
-
-        .back-home-btn {
-            background: #edf4ff;
-            color: #2563eb;
-        }
-
-        .back-home-btn:hover {
-            background: #dbeafe;
-
-            color: #1d4ed8;
-
-            transform:
-                translateY(-2px);
-        }
-
-
-        /* =====================================================
-           CHANGE PHOTO
-        ===================================================== */
-
-        .profile-photo-form {
-            display: inline-flex;
-        }
-
-        .photo-upload-label {
-            cursor: pointer;
-        }
-
-        .photo-upload-input {
-            display: none;
-        }
-
-
-        /* =====================================================
-           SETTINGS WRAPPER
-        ===================================================== */
-
-        .settings-wrapper {
-            position: absolute;
-
-            right: 30px;
-            top: 205px;
-
-            z-index: 1000;
-        }
-
-
-        /* =====================================================
-           SETTINGS BUTTON
-        ===================================================== */
-
-        .settings-btn {
-            width: 46px;
-            height: 46px;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            border: none;
-
-            border-radius: 50%;
-
-            background: #f1f5f9;
-
-            color: #334155;
-
-            font-size: 19px;
-
-            cursor: pointer;
-
-            transition:
-                0.25s ease;
-        }
-
-        .settings-btn:hover {
-            background: #2563eb;
-
-            color: #ffffff;
-
-            transform:
-                rotate(25deg);
-        }
-
-
-        /* =====================================================
-           SETTINGS MENU
-        ===================================================== */
-
-        .settings-menu {
-            position: absolute;
-
-            top: 58px;
-            right: 0;
-
-            width: 310px;
-
-            padding: 10px;
-
-            background:
-                rgba(255, 255, 255, 0.98);
-
-            border:
-                1px solid #e2e8f0;
-
-            border-radius: 18px;
-
-            box-shadow:
-                0
-                20px
-                50px
-                rgba(15, 23, 42, 0.16);
-
-            opacity: 0;
-
-            visibility: hidden;
-
-            transform:
-                translateY(-8px)
-                scale(0.97);
-
-            transition:
-                0.2s ease;
-        }
-
-        .settings-menu.show {
-            opacity: 1;
-
-            visibility: visible;
-
-            transform:
-                translateY(0)
-                scale(1);
-        }
-
-
-        /* =====================================================
-           SETTINGS HEADER
-        ===================================================== */
-
-        .settings-menu-header {
-            padding:
-                12px
-                13px
-                15px;
-
-            margin-bottom: 5px;
-
-            border-bottom:
-                1px solid #eef2f7;
-        }
-
-        .settings-menu-header strong {
+            color: inherit;
             display: block;
-
-            font-size: 15px;
+            height: 100%;
         }
 
-        .settings-menu-header small {
-            color: #94a3b8;
-
-            font-size: 12px;
+        .post-card-link:hover .user-post-card {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
-
-
-        /* =====================================================
-           SETTINGS ITEM
-        ===================================================== */
-
-        .settings-item {
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            padding: 11px;
-
-            border-radius: 12px;
-
-            color: #172033;
-
-            text-decoration: none;
-
-            transition:
-                0.2s ease;
-        }
-
-        .settings-item:hover {
-            background: #f5f8ff;
-
-            transform:
-                translateX(2px);
-        }
-
-        .settings-item > span:last-child {
-            display: flex;
-
-            flex-direction: column;
-        }
-
-        .settings-item strong {
-            font-size: 14px;
-        }
-
-        .settings-item small {
-            margin-top: 2px;
-
-            color: #94a3b8;
-
-            font-size: 11px;
-        }
-
-
-        /* =====================================================
-           SETTINGS ICON
-        ===================================================== */
-
-        .settings-icon {
-            width: 38px;
-            height: 38px;
-
-            min-width: 38px;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 10px;
-
-            font-size: 15px;
-        }
-
-        .settings-icon.blue {
-            background: #dbeafe;
-            color: #2563eb;
-        }
-
-        .settings-icon.pink {
-            background: #fce7f3;
-            color: #db2777;
-        }
-
-        .settings-icon.green {
-            background: #dcfce7;
-            color: #16a34a;
-        }
-
-        .settings-icon.orange {
-            background: #ffedd5;
-            color: #ea580c;
-        }
-
-        .settings-icon.purple {
-            background: #ede9fe;
-            color: #7c3aed;
-        }
-
-        .settings-icon.red {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-
-        /* =====================================================
-           SETTINGS DIVIDER
-        ===================================================== */
-
-        .settings-divider {
-            height: 1px;
-
-            margin:
-                7px
-                5px;
-
-            background: #eef2f7;
-        }
-
-
-        /* =====================================================
-           LOGOUT
-        ===================================================== */
-
-        .logout-item {
-            color: #dc2626;
-        }
-
-        .logout-item:hover {
-            background: #fff1f2;
-        }
-
-
-        /* =====================================================
-           PROFILE STATS
-        ===================================================== */
-
-        .profile-stats {
-            display: flex;
-
-            gap: 35px;
-
-            margin-top: 25px;
-        }
-
-        .stat-item {
-            text-align: left;
-        }
-
-        .stat-number {
-            display: block;
-
-            font-size: 21px;
-
-            font-weight: 800;
-        }
-
-        .stat-label {
-            color: #718096;
-
-            font-size: 13px;
-        }
-
-
-        /* =====================================================
-           POSTS SECTION
-        ===================================================== */
-
-        .posts-section {
-            margin-top: 45px;
-        }
-
-        .section-title {
-            margin-bottom: 0;
-
-            font-size: 24px;
-
-            font-weight: 800;
-        }
-
-        .section-subtitle {
-            color: #718096;
-        }
-
-
-        /* =====================================================
-           POST TABS
-        ===================================================== */
-
-        .post-tabs {
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-            margin-top: 30px;
-
-            margin-bottom: 30px;
-
-            padding: 6px;
-
-            width: fit-content;
-
-            background: #edf4ff;
-
-            border-radius: 14px;
-        }
-
-        .post-tab {
-            display: inline-flex;
-
-            align-items: center;
-            justify-content: center;
-
-            gap: 8px;
-
-            padding:
-                11px
-                20px;
-
-            border: none;
-
-            border-radius: 10px;
-
-            background: transparent;
-
-            color: #64748b;
-
-            font-size: 14px;
-
-            font-weight: 700;
-
-            cursor: pointer;
-
-            transition:
-                0.25s ease;
-        }
-
-        .post-tab:hover {
-            color: #2563eb;
-
-            background: #dbeafe;
-        }
-
-        .post-tab.active {
-            background: #2563eb;
-
-            color: #ffffff;
-
-            box-shadow:
-                0
-                5px
-                15px
-                rgba(37, 99, 235, 0.20);
-        }
-
-        .post-tab.active:hover {
-            background: #1d4ed8;
-
-            color: #ffffff;
-        }
-
-        .post-tab-count {
-            min-width: 22px;
-
-            height: 22px;
-
-            display: inline-flex;
-
-            align-items: center;
-            justify-content: center;
-
-            padding:
-                0
-                6px;
-
-            border-radius: 20px;
-
-            background: rgba(255, 255, 255, 0.22);
-
-            font-size: 11px;
-
-            font-weight: 800;
-        }
-
-        .post-tab:not(.active) .post-tab-count {
-            background: #dbeafe;
-
-            color: #2563eb;
-        }
-
-
-        /* =====================================================
-           POST SUBSECTION
-        ===================================================== */
-
-        .post-subsection {
-            margin-top: 0;
-        }
-
-        .post-subsection-title {
-            font-size: 20px;
-
-            font-weight: 800;
-
-            margin-bottom: 5px;
-        }
-
-        .post-subsection-subtitle {
-            color: #718096;
-
-            margin-bottom: 20px;
-        }
-
-
-        /* =====================================================
-           POST CARD
-        ===================================================== */
 
         .user-post-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            cursor: pointer;
             height: 100%;
-
-            overflow: hidden;
-
-            background: #ffffff;
-
-            border:
-                1px solid #e7edfa;
-
-            border-radius: 18px;
-
-            box-shadow:
-                0
-                8px
-                25px
-                rgba(37, 99, 235, 0.06);
-
-            transition:
-                0.25s ease;
         }
-
-        .user-post-card:hover {
-            transform:
-                translateY(-5px);
-
-            box-shadow:
-                0
-                15px
-                35px
-                rgba(37, 99, 235, 0.12);
-        }
-
-
-        /* =====================================================
-           POST IMAGE
-        ===================================================== */
-
-        .post-image-wrapper {
-            height: 220px;
-
-            overflow: hidden;
-
-            background: #f1f5f9;
-        }
-
-        .post-image {
-            width: 100%;
-            height: 100%;
-
-            object-fit: cover;
-
-            transition:
-                0.3s ease;
-        }
-
-        .user-post-card:hover .post-image {
-            transform:
-                scale(1.05);
-        }
-
-
-        /* =====================================================
-           POST CONTENT
-        ===================================================== */
-
-        .post-content {
-            padding: 20px;
-        }
-
-        .post-title {
-            margin-bottom: 8px;
-
-            font-size: 18px;
-
-            font-weight: 800;
-        }
-
-        .post-description {
-            color: #64748b;
-
-            font-size: 14px;
-
-            line-height: 1.6;
-
-            min-height: 45px;
-        }
-
-
-        /* =====================================================
-           POST META
-        ===================================================== */
-
-        .post-meta {
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 10px;
-
-            margin-top: 15px;
-        }
-
-        .post-status {
-            padding:
-                5px
-                10px;
-
-            border-radius: 20px;
-
-            background: #dcfce7;
-
-            color: #15803d;
-
-            font-size: 12px;
-
-            font-weight: 700;
-        }
-
-        .pending-status {
-            background: #fef3c7;
-
-            color: #b45309;
-        }
-
-
-        /* =====================================================
-           POST ACTIONS
-        ===================================================== */
-
-        .post-actions {
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 12px;
-        }
-
-        .view-post-btn {
-            color: #2563eb;
-
-            font-size: 14px;
-
-            font-weight: 700;
-
-            text-decoration: none;
-        }
-
-        .view-post-btn:hover {
-            color: #1d4ed8;
-        }
-
-        .edit-post-link {
-            color: #64748b;
-
-            font-size: 14px;
-
-            font-weight: 700;
-
-            text-decoration: none;
-        }
-
-        .edit-post-link:hover {
-            color: #2563eb;
-        }
-
-
-        /* =====================================================
-           EMPTY POSTS
-        ===================================================== */
-
-        .empty-posts {
-            padding:
-                60px
-                20px;
-
-            text-align: center;
-
-            background: #ffffff;
-
-            border:
-                1px dashed #cbd5e1;
-
-            border-radius: 20px;
-        }
-
-        .empty-icon {
-            color: #94a3b8;
-
-            font-size: 55px;
-        }
-
-        .empty-posts h4 {
-            margin-top: 18px;
-
-            font-weight: 800;
-        }
-
-        .empty-posts p {
-            color: #718096;
-        }
-
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
-
-        @media (max-width: 768px) {
-
-            .dashboard-page {
-                padding-top: 90px;
-            }
-
-            .profile-cover {
-                height: 140px;
-            }
-
-            .profile-info {
-                padding:
-                    0
-                    20px
-                    25px;
-            }
-
-            .profile-photo-wrapper {
-                width: 105px;
-                height: 105px;
-            }
-
-            .profile-photo,
-            .profile-default {
-                width: 105px;
-                height: 105px;
-            }
-
-            .profile-name {
-                font-size: 23px;
-            }
-
-            .settings-wrapper {
-                right: 20px;
-                top: 160px;
-            }
-
-            .settings-menu {
-                right: -10px;
-
-                width: 290px;
-            }
-
-            .profile-stats {
-                gap: 20px;
-
-                flex-wrap: wrap;
-            }
-
-            .profile-actions {
-                flex-direction: column;
-
-                align-items: flex-start;
-            }
-
-            .post-actions {
-                flex-direction: column;
-
-                align-items: flex-start;
-            }
-
-            .post-tabs {
-                width: 100%;
-            }
-
-            .post-tab {
-                flex: 1;
-
-                padding:
-                    10px
-                    12px;
-
-                font-size: 13px;
-            }
-
-        }
-
     </style>
-
 </head>
-
 
 <body>
 
-
-    <!-- =====================================================
-         NAVBAR
-    ====================================================== -->
-
     {% include "includes/navbar.html" %}
 
-
-    <!-- =====================================================
-         DASHBOARD PAGE
-    ====================================================== -->
-
     <div class="dashboard-page">
-
         <div class="container">
 
-
-            <!-- =================================================
-                 PROFILE CARD
-            ================================================== -->
-
+            <!-- PROFILE CARD -->
             <div class="profile-card">
-
-
-                <!-- =================================================
-                     PROFILE COVER
-                ================================================== -->
-
                 <div class="profile-cover"></div>
 
-
-                <!-- =================================================
-                     PROFILE INFORMATION
-                ================================================== -->
-
                 <div class="profile-info">
-
-
-                    <!-- =================================================
-                         PROFILE PHOTO
-                    ================================================== -->
-
                     <div class="profile-photo-wrapper">
-
                         {% if profile.profile_pic %}
-
-                            <img
-                                src="{{ profile.profile_pic.url }}"
-                                alt="{{ profile.fullName|default:seller.username }}"
-                                class="profile-photo"
-                            >
-
+                            <img src="{{ profile.profile_pic.url }}" alt="{{ profile.fullName|default:seller.username }}" class="profile-photo">
                         {% else %}
-
-                            <div class="profile-default">
-
-                                <i class="fa-solid fa-user"></i>
-
-                            </div>
-
+                            <div class="profile-default"><i class="fa-solid fa-user"></i></div>
                         {% endif %}
-
                     </div>
-
-
-                    <!-- =================================================
-                         PROFILE DETAILS
-                    ================================================== -->
 
                     <div class="profile-details">
-
-
-                        <!-- =================================================
-                             NAME
-                        ================================================== -->
-
                         <div class="profile-name">
-
                             {{ profile.fullName|default:seller.username }}
-
                             {% if profile.email_verified %}
-
-                                <i
-                                    class="fa-solid fa-circle-check verified-icon"
-                                    title="Verified"
-                                ></i>
-
+                                <i class="fa-solid fa-circle-check verified-icon" title="Verified"></i>
                             {% endif %}
-
                         </div>
 
+                        <div class="profile-username">@{{ seller.username }}</div>
 
-                        <!-- =================================================
-                             USERNAME
-                        ================================================== -->
-
-                        <div class="profile-username">
-
-                            @{{ seller.username }}
-
-                        </div>
-
-
-                        <!-- =================================================
-                             PROFILE STATS
-                        ================================================== -->
-
+                        <!-- PROFILE STATS -->
                         <div class="profile-stats">
-
-
-                            <!-- APPROVED POSTS -->
-
                             <div class="stat-item">
-
-                                <span class="stat-number">
-                                    {{ approved_post_count }}
-                                </span>
-
-                                <span class="stat-label">
-
-                                    {% if is_owner %}
-                                        Approved Posts
-                                    {% else %}
-                                        Posts
-                                    {% endif %}
-
-                                </span>
-
+                                <span class="stat-number">{{ approved_post_count }}</span>
+                                <span class="stat-label">{% if is_owner %}Approved Posts{% else %}Posts{% endif %}</span>
                             </div>
-
-
-                            <!-- PENDING -->
 
                             {% if is_owner %}
-
                                 <div class="stat-item">
-
-                                    <span class="stat-number">
-                                        {{ pending_post_count }}
-                                    </span>
-
-                                    <span class="stat-label">
-                                        Pending
-                                    </span>
-
+                                    <span class="stat-number">{{ pending_post_count }}</span>
+                                    <span class="stat-label">Pending</span>
                                 </div>
 
-
-                                <!-- WISHLIST -->
-
                                 <div class="stat-item">
-
-                                    <span class="stat-number">
-                                        {{ wishlist_count }}
-                                    </span>
-
-                                    <span class="stat-label">
-                                        Wishlist
-                                    </span>
-
+                                    <span class="stat-number">{{ sold_post_count }}</span>
+                                    <span class="stat-label">Sold</span>
                                 </div>
 
-
-                                <!-- ORDERS -->
-
                                 <div class="stat-item">
-
-                                    <span class="stat-number">
-                                        0
-                                    </span>
-
-                                    <span class="stat-label">
-                                        Orders
-                                    </span>
-
+                                    <span class="stat-number">{{ rejected_post_count }}</span>
+                                    <span class="stat-label">Rejected</span>
                                 </div>
 
+                                <div class="stat-item">
+                                    <span class="stat-number">{{ wishlist_count }}</span>
+                                    <span class="stat-label">Wishlist</span>
+                                </div>
                             {% endif %}
-
-
                         </div>
 
-
-                        <!-- =================================================
-                             ACTIONS
-                        ================================================== -->
-
+                        <!-- ACTIONS -->
                         {% if is_owner %}
-
                             <div class="profile-actions">
-
-
-                                <!-- CREATE POST -->
-
-                                <a
-                                    href="{% url 'createPost' %}"
-                                    class="dashboard-btn create-btn"
-                                >
-
-                                    <i class="fa-solid fa-plus"></i>
-
-                                    Create Post
-
+                                <a href="{% url 'createPost' %}" class="dashboard-btn create-btn">
+                                    <i class="fa-solid fa-plus"></i> Create Post
                                 </a>
-
-
-                                <!-- EDIT PROFILE -->
-
-                                <a
-                                    href="{% url 'user:edit_profile' %}"
-                                    class="dashboard-btn edit-btn"
-                                >
-
-                                    <i class="fa-solid fa-user-pen"></i>
-
-                                    Edit Profile
-
+                                <a href="{% url 'user:edit_profile' %}" class="dashboard-btn edit-btn">
+                                    <i class="fa-solid fa-user-pen"></i> Edit Profile
                                 </a>
-
-
-                                <!-- CHANGE PHOTO -->
-
-                                <form
-                                    method="POST"
-                                    action="{% url 'user:update_profile_pic' %}"
-                                    enctype="multipart/form-data"
-                                    class="profile-photo-form"
-                                >
-
+                                <form method="POST" action="{% url 'user:update_profile_pic' %}" enctype="multipart/form-data" class="profile-photo-form">
                                     {% csrf_token %}
-
-                                    <label
-                                        for="profilePicInput"
-                                        class="dashboard-btn edit-btn photo-upload-label"
-                                    >
-
-                                        <i class="fa-solid fa-camera"></i>
-
-                                        Change Photo
-
+                                    <label for="profilePicInput" class="dashboard-btn edit-btn photo-upload-label">
+                                        <i class="fa-solid fa-camera"></i> Change Photo
                                     </label>
-
-                                    <input
-                                        type="file"
-                                        name="profile_pic"
-                                        id="profilePicInput"
-                                        class="photo-upload-input"
-                                        accept="image/*"
-                                    >
-
+                                    <input type="file" name="profile_pic" id="profilePicInput" class="photo-upload-input" accept="image/*">
                                 </form>
-
                             </div>
-
                         {% else %}
-
-
-                            <!-- =================================================
-                                 VISITOR ACTION
-                            ================================================== -->
-
                             <div class="profile-actions">
-
-                                <a
-                                    href="{% url 'home' %}"
-                                    class="dashboard-btn back-home-btn"
-                                >
-
-                                    <i class="fa-solid fa-arrow-left"></i>
-
-                                    Back to Home
-
+                                <a href="{% url 'home' %}" class="dashboard-btn back-home-btn">
+                                    <i class="fa-solid fa-arrow-left"></i> Back to Home
                                 </a>
-
                             </div>
-
                         {% endif %}
-
                     </div>
 
-
-                    <!-- =====================================================
-                         SETTINGS - OWNER ONLY
-                    ====================================================== -->
-
+                    <!-- SETTINGS -->
                     {% if is_owner %}
-
                         <div class="settings-wrapper">
-
-
-                            <!-- SETTINGS BUTTON -->
-
-                            <button
-                                type="button"
-                                class="settings-btn"
-                                id="settingsBtn"
-                                title="Settings"
-                                aria-label="Open account settings"
-                                aria-expanded="false"
-                            >
-
+                            <button type="button" class="settings-btn" id="settingsBtn" title="Settings" aria-label="Open account settings" aria-expanded="false">
                                 <i class="fa-solid fa-gear"></i>
-
                             </button>
 
-
-                            <!-- SETTINGS MENU -->
-
-                            <div
-                                class="settings-menu"
-                                id="settingsMenu"
-                            >
-
-
-                                <!-- HEADER -->
-
+                            <div class="settings-menu" id="settingsMenu">
                                 <div class="settings-menu-header">
-
-                                    <strong>
-                                        Account Settings
-                                    </strong>
-
-                                    <small>
-                                        Manage your Trusty Shop account
-                                    </small>
-
+                                    <strong>Account Settings</strong>
+                                    <small>Manage your Trusty Shop account</small>
                                 </div>
 
-
-                                <!-- EDIT PROFILE -->
-
-                                <a
-                                    href="{% url 'user:edit_profile' %}"
-                                    class="settings-item"
-                                >
-
-                                    <span class="settings-icon blue">
-
-                                        <i class="fa-solid fa-user-pen"></i>
-
-                                    </span>
-
-                                    <span>
-
-                                        <strong>
-                                            Edit Profile
-                                        </strong>
-
-                                        <small>
-                                            Update your personal information
-                                        </small>
-
-                                    </span>
-
+                                <a href="{% url 'user:edit_profile' %}" class="settings-item">
+                                    <span class="settings-icon blue"><i class="fa-solid fa-user-pen"></i></span>
+                                    <span><strong>Edit Profile</strong><small>Update your personal information</small></span>
                                 </a>
 
-
-                                <!-- WISHLIST -->
-
-                                <a
-                                    href="{% url 'wishlist:wishlist' %}"
-                                    class="settings-item"
-                                >
-
-                                    <span class="settings-icon pink">
-
-                                        <i class="fa-solid fa-heart"></i>
-
-                                    </span>
-
-                                    <span>
-
-                                        <strong>
-                                            Wishlist
-                                        </strong>
-
-                                        <small>
-                                            Your saved products
-                                        </small>
-
-                                    </span>
-
+                                <a href="{% url 'wishlist:wishlist' %}" class="settings-item">
+                                    <span class="settings-icon pink"><i class="fa-solid fa-heart"></i></span>
+                                    <span><strong>Wishlist</strong><small>Your saved products</small></span>
                                 </a>
 
-
-                                <!-- WALLET -->
-
-                                <a
-                                    href="{% url 'wallet:dashboard' %}"
-                                    class="settings-item"
-                                >
-
-                                    <span class="settings-icon green">
-
-                                        <i class="fa-solid fa-wallet"></i>
-
-                                    </span>
-
-                                    <span>
-
-                                        <strong>
-                                            Top Up / Wallet
-                                        </strong>
-
-                                        <small>
-                                            Manage your balance
-                                        </small>
-
-                                    </span>
-
+                                <a href="{% url 'wallet:dashboard' %}" class="settings-item">
+                                    <span class="settings-icon green"><i class="fa-solid fa-wallet"></i></span>
+                                    <span><strong>Top Up / Wallet</strong><small>Manage your balance</small></span>
                                 </a>
 
-
-                                <!-- ORDERS -->
-
-                                <a
-                                    href="{% url 'order:order_list' %}"
-                                    class="settings-item"
-                                >
-
-                                    <span class="settings-icon orange">
-
-                                        <i class="fa-solid fa-box"></i>
-
-                                    </span>
-
-                                    <span>
-
-                                        <strong>
-                                            My Orders
-                                        </strong>
-
-                                        <small>
-                                            Track your purchases
-                                        </small>
-
-                                    </span>
-
+                                <a href="{% url 'order:order_list' %}" class="settings-item">
+                                    <span class="settings-icon orange"><i class="fa-solid fa-box"></i></span>
+                                    <span><strong>My Orders</strong><small>Track your purchases</small></span>
                                 </a>
 
-
-                                <!-- MY SALES -->
-
-                                <a
-                                    href="{% url 'order:sale_list' %}"
-                                    class="settings-item"
-                                >
-
-                                    <span class="settings-icon pink">
-
-                                        <i class="fa-solid fa-sack-dollar"></i>
-
-                                    </span>
-
-                                    <span>
-
-                                        <strong>
-                                            My Sales
-                                        </strong>
-
-                                        <small>
-                                            Your sale lists
-                                        </small>
-
-                                    </span>
-
+                                <a href="{% url 'order:sale_list' %}" class="settings-item">
+                                    <span class="settings-icon pink"><i class="fa-solid fa-sack-dollar"></i></span>
+                                    <span><strong>My Sales</strong><small>Your sale lists</small></span>
                                 </a>
 
-
-                                <!-- NOTIFICATIONS -->
-
-                                <a
-                                    href="{% url 'notifications' %}"
-                                    class="settings-item"
-                                >
-
-                                    <span class="settings-icon purple">
-
-                                        <i class="fa-solid fa-bell"></i>
-
-                                    </span>
-
-                                    <span>
-
-                                        <strong>
-                                            Notifications
-                                        </strong>
-
-                                        <small>
-                                            View your notifications
-                                        </small>
-
-                                    </span>
-
+                                <a href="{% url 'notifications' %}" class="settings-item">
+                                    <span class="settings-icon purple"><i class="fa-solid fa-bell"></i></span>
+                                    <span><strong>Notifications</strong><small>View your notifications</small></span>
                                 </a>
-
-
-                                <!-- DIVIDER -->
 
                                 <div class="settings-divider"></div>
 
-
-                                <!-- LOGOUT -->
-
-                                <a
-                                    href="{% url 'user:logout' %}"
-                                    class="settings-item logout-item"
-                                >
-
-                                    <span class="settings-icon red">
-
-                                        <i class="fa-solid fa-right-from-bracket"></i>
-
-                                    </span>
-
-                                    <span>
-
-                                        <strong>
-                                            Logout
-                                        </strong>
-
-                                        <small>
-                                            Sign out of your account
-                                        </small>
-
-                                    </span>
-
+                                <a href="{% url 'user:logout' %}" class="settings-item logout-item">
+                                    <span class="settings-icon red"><i class="fa-solid fa-right-from-bracket"></i></span>
+                                    <span><strong>Logout</strong><small>Sign out of your account</small></span>
                                 </a>
-
                             </div>
-
                         </div>
-
                     {% endif %}
-
                 </div>
-
             </div>
 
-
-            <!-- =================================================
-                 POSTS SECTION
-            ================================================== -->
-
+            <!-- POSTS SECTION -->
             <section class="posts-section">
-
-
-                <!-- =================================================
-                     SECTION HEADER
-                ================================================== -->
-
                 <div class="mb-4">
-
                     {% if is_owner %}
-
-                        <h2 class="section-title mb-1">
-                            My Posts
-                        </h2>
-
-                        <p class="section-subtitle mb-0">
-                            Products you have posted on Trusty Shop.
-                        </p>
-
+                        <h2 class="section-title mb-1">My Posts</h2>
+                        <p class="section-subtitle mb-0">Products you have posted on Trusty Shop.</p>
                     {% else %}
-
-                        <h2 class="section-title mb-1">
-
-                            {{ profile.fullName|default:seller.username }}'s Posts
-
-                        </h2>
-
-                        <p class="section-subtitle mb-0">
-
-                            Approved products posted by this seller on Trusty Shop.
-
-                        </p>
-
+                        <h2 class="section-title mb-1">{{ profile.fullName|default:seller.username }}'s Posts</h2>
+                        <p class="section-subtitle mb-0">Approved products posted by this seller on Trusty Shop.</p>
                     {% endif %}
-
                 </div>
 
-
-                <!-- =================================================
-                     POST SWITCH BUTTONS
-                     OWNER ONLY
-                ================================================== -->
-
+                <!-- POST TABS -->
                 {% if is_owner %}
-
                     <div class="post-tabs">
-
-
-                        <!-- APPROVED BUTTON -->
-
-                        <button
-                            type="button"
-                            class="post-tab active"
-                            id="approvedTab"
-                            onclick="showPostSection('approved')"
-                        >
-
+                        <button type="button" class="post-tab active" id="approvedTab" onclick="showPostSection('approved')">
                             <i class="fa-solid fa-circle-check"></i>
-
-                            <span>
-                                Approved Posts
-                            </span>
-
-                            <span class="post-tab-count">
-                                {{ approved_post_count }}
-                            </span>
-
+                            <span>Approved Posts</span>
+                            <span class="post-tab-count">{{ approved_post_count }}</span>
                         </button>
 
-
-                        <!-- PENDING BUTTON -->
-
-                        <button
-                            type="button"
-                            class="post-tab"
-                            id="pendingTab"
-                            onclick="showPostSection('pending')"
-                        >
-
+                        <button type="button" class="post-tab" id="pendingTab" onclick="showPostSection('pending')">
                             <i class="fa-solid fa-hourglass-half"></i>
-
-                            <span>
-                                Pending Posts
-                            </span>
-
-                            <span class="post-tab-count">
-                                {{ pending_post_count }}
-                            </span>
-
+                            <span>Pending Posts</span>
+                            <span class="post-tab-count">{{ pending_post_count }}</span>
                         </button>
 
-                    </div>
+                        <button type="button" class="post-tab" id="soldTab" onclick="showPostSection('sold')">
+                            <i class="fa-solid fa-box"></i>
+                            <span>Sold Posts</span>
+                            <span class="post-tab-count">{{ sold_post_count }}</span>
+                        </button>
 
+                        <button type="button" class="post-tab" id="rejectedTab" onclick="showPostSection('rejected')">
+                            <i class="fa-solid fa-xmark"></i>
+                            <span>Rejected Posts</span>
+                            <span class="post-tab-count">{{ rejected_post_count }}</span>
+                        </button>
+                    </div>
                 {% endif %}
 
-
-                <!-- =================================================
-                     APPROVED POSTS SECTION
-                ================================================== -->
-
-                <div
-                    id="approvedPostsSection"
-                    class="post-subsection"
-                >
-
-
-                    <h3 class="post-subsection-title">
-
-                        {% if is_owner %}
-                            Approved Posts
-                        {% else %}
-                            Posts
-                        {% endif %}
-
-                    </h3>
-
-
+                <!-- APPROVED SECTION -->
+                <div id="approvedPostsSection" class="post-subsection">
+                    <h3 class="post-subsection-title">{% if is_owner %}Approved Posts{% else %}Posts{% endif %}</h3>
                     <p class="post-subsection-subtitle">
-
-                        {% if is_owner %}
-
-                            Your approved products currently available on Trusty Shop.
-
-                        {% else %}
-
-                            Approved products posted by this seller.
-
-                        {% endif %}
-
+                        {% if is_owner %}Your approved products currently available on Trusty Shop.{% else %}Approved products posted by this seller.{% endif %}
                     </p>
 
-
                     <div class="row g-4">
-
-
                         {% for post in approved_posts %}
-
-
-                            <!-- =================================================
-                                 APPROVED POST CARD
-                            ================================================== -->
-
-                            <div
-                                class="col-xl-4 col-lg-4 col-md-6 col-sm-12"
-                            >
-
-                                <div class="user-post-card">
-
-
-                                    <!-- IMAGE -->
-
-                                    <div class="post-image-wrapper">
-
-                                        {% with first_item=post.items.first %}
-
-                                            {% if first_item and first_item.images.first %}
-
-                                                <img
-                                                    src="{{ first_item.images.first.image.url }}"
-                                                    class="post-image"
-                                                    alt="{{ first_item.name|default:'Product image' }}"
-                                                >
-
-                                            {% else %}
-
-                                                <img
-                                                    src="{% static 'images/no-image.png' %}"
-                                                    class="post-image"
-                                                    alt="No image"
-                                                >
-
-                                            {% endif %}
-
-                                        {% endwith %}
-
+                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                                <a href="{% url 'viewdetail' post.id %}" class="post-card-link">
+                                    <div class="user-post-card">
+                                        <div class="post-image-wrapper">
+                                            {% with first_item=post.items.first %}
+                                                {% if first_item and first_item.images.first %}
+                                                    <img src="{{ first_item.images.first.image.url }}" class="post-image" alt="{{ first_item.name|default:'Product image' }}">
+                                                {% else %}
+                                                    <img src="{% static 'images/no-image.png' %}" class="post-image" alt="No image">
+                                                {% endif %}
+                                            {% endwith %}
+                                        </div>
+                                        <div class="post-content">
+                                            <div class="post-title">{{ post.category.name|default:"Product" }}</div>
+                                            <p class="post-description">{{ post.description|truncatewords:18 }}</p>
+                                            <div class="post-meta">
+                                                <span class="post-status">Approved</span>
+                                            </div>
+                                        </div>
                                     </div>
-
-
-                                    <!-- CONTENT -->
-
-                                    <div class="post-content">
-
-
-                                        <!-- TITLE -->
-
-                                        <div class="post-title">
-
-                                            {{ post.category.name|default:"Product" }}
-
-                                        </div>
-
-
-                                        <!-- DESCRIPTION -->
-
-                                        <p class="post-description">
-
-                                            {{ post.description|truncatewords:18 }}
-
-                                        </p>
-
-
-                                        <!-- STATUS -->
-
-                                        <div class="post-meta">
-
-                                            <span class="post-status">
-
-                                                Approved
-
-                                            </span>
-
-                                        </div>
-
-
-                                        <!-- ACTIONS -->
-
-                                        <div class="post-actions mt-3">
-
-
-                                            <!-- VIEW POST -->
-
-                                            <a
-                                                href="{% url 'viewdetail' post.id %}"
-                                                class="view-post-btn"
-                                            >
-
-                                                View Post
-
-                                                <i
-                                                    class="fa-solid fa-arrow-right"
-                                                ></i>
-
-                                            </a>
-
-
-                                            <!-- EDIT POST -->
-
-                                            {% if is_owner %}
-
-                                                <a
-                                                    href="{% url 'editPost' post.id %}"
-                                                    class="edit-post-link"
-                                                >
-
-                                                    <i
-                                                        class="fa-solid fa-pen"
-                                                    ></i>
-
-                                                    Edit Post
-
-                                                </a>
-
-                                            {% endif %}
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
+                                </a>
                             </div>
-
-
                         {% empty %}
-
-
-                            <!-- EMPTY APPROVED -->
-
                             <div class="col-12">
-
                                 <div class="empty-posts">
-
-                                    <div class="empty-icon">
-
-                                        <i
-                                            class="fa-solid fa-box-open"
-                                        ></i>
-
-                                    </div>
-
-
+                                    <div class="empty-icon"><i class="fa-solid fa-box-open"></i></div>
                                     {% if is_owner %}
-
-                                        <h4>
-                                            You don't have any approved posts yet.
-                                        </h4>
-
-                                        <p>
-                                            Your approved products will appear here.
-                                        </p>
-
-                                        <a
-                                            href="{% url 'createPost' %}"
-                                            class="dashboard-btn create-btn"
-                                        >
-
-                                            <i
-                                                class="fa-solid fa-plus"
-                                            ></i>
-
-                                            Create Post
-
-                                        </a>
-
+                                        <h4>You don't have any approved posts yet.</h4>
+                                        <p>Your approved products will appear here.</p>
+                                        <a href="{% url 'createPost' %}" class="dashboard-btn create-btn"><i class="fa-solid fa-plus"></i> Create Post</a>
                                     {% else %}
-
-                                        <h4>
-                                            No approved posts yet.
-                                        </h4>
-
-                                        <p>
-                                            This seller doesn't have any approved products yet.
-                                        </p>
-
+                                        <h4>No approved posts yet.</h4>
+                                        <p>This seller doesn't have any approved products yet.</p>
                                     {% endif %}
-
                                 </div>
-
                             </div>
-
                         {% endfor %}
-
                     </div>
-
                 </div>
 
-
-                <!-- =================================================
-                     PENDING POSTS SECTION
-                     OWNER ONLY
-                ================================================== -->
-
                 {% if is_owner %}
-
-                    <div
-                        id="pendingPostsSection"
-                        class="post-subsection"
-                        style="display: none;"
-                    >
-
-
-                        <h3 class="post-subsection-title">
-
-                            Pending Posts
-
-                        </h3>
-
-
-                        <p class="post-subsection-subtitle">
-
-                            Posts waiting for approval. You can view
-                            and edit them while they are pending.
-
-                        </p>
-
+                    <!-- PENDING SECTION -->
+                    <div id="pendingPostsSection" class="post-subsection" style="display: none;">
+                        <h3 class="post-subsection-title">Pending Posts</h3>
+                        <p class="post-subsection-subtitle">Posts waiting for approval.</p>
 
                         <div class="row g-4">
-
-
                             {% for post in pending_posts %}
-
-
-                                <!-- =================================================
-                                     PENDING POST CARD
-                                ================================================== -->
-
-                                <div
-                                    class="col-xl-4 col-lg-4 col-md-6 col-sm-12"
-                                >
-
-                                    <div class="user-post-card">
-
-
-                                        <!-- IMAGE -->
-
-                                        <div class="post-image-wrapper">
-
-                                            {% with first_item=post.items.first %}
-
-                                                {% if first_item and first_item.images.first %}
-
-                                                    <img
-                                                        src="{{ first_item.images.first.image.url }}"
-                                                        class="post-image"
-                                                        alt="{{ first_item.name|default:'Product image' }}"
-                                                    >
-
-                                                {% else %}
-
-                                                    <img
-                                                        src="{% static 'images/no-image.png' %}"
-                                                        class="post-image"
-                                                        alt="No image"
-                                                    >
-
-                                                {% endif %}
-
-                                            {% endwith %}
-
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                                    <a href="{% url 'pending_post_detail' post.id %}" class="post-card-link">
+                                        <div class="user-post-card">
+                                            <div class="post-image-wrapper">
+                                                {% with first_item=post.items.first %}
+                                                    {% if first_item and first_item.images.first %}
+                                                        <img src="{{ first_item.images.first.image.url }}" class="post-image" alt="{{ first_item.name|default:'Product image' }}">
+                                                    {% else %}
+                                                        <img src="{% static 'images/no-image.png' %}" class="post-image" alt="No image">
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                            <div class="post-content">
+                                                <div class="post-title">{{ post.category.name|default:"Product" }}</div>
+                                                <p class="post-description">{{ post.description|truncatewords:18 }}</p>
+                                                <div class="post-meta">
+                                                    <span class="post-status pending-status">Pending</span>
+                                                </div>
+                                            </div>
                                         </div>
-
-
-                                        <!-- CONTENT -->
-
-                                        <div class="post-content">
-
-
-                                            <!-- TITLE -->
-
-                                            <div class="post-title">
-
-                                                {{ post.category.name|default:"Product" }}
-
-                                            </div>
-
-
-                                            <!-- DESCRIPTION -->
-
-                                            <p class="post-description">
-
-                                                {{ post.description|truncatewords:18 }}
-
-                                            </p>
-
-
-                                            <!-- STATUS -->
-
-                                            <div class="post-meta">
-
-                                                <span
-                                                    class="post-status pending-status"
-                                                >
-
-                                                    Pending
-
-                                                </span>
-
-                                            </div>
-
-
-                                            <!-- ACTIONS -->
-
-                                            <div class="post-actions mt-3">
-
-
-                                                <!-- VIEW POST -->
-
-                                                <a
-                                                    href="{% url 'viewdetail' post.id %}"
-                                                    class="view-post-btn"
-                                                >
-
-                                                    View Post
-
-                                                    <i
-                                                        class="fa-solid fa-arrow-right"
-                                                    ></i>
-
-                                                </a>
-
-
-                                                <!-- EDIT POST -->
-
-                                                <a
-                                                    href="{% url 'editPost' post.id %}"
-                                                    class="edit-post-link"
-                                                >
-
-                                                    <i
-                                                        class="fa-solid fa-pen"
-                                                    ></i>
-
-                                                    Edit Post
-
-                                                </a>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
+                                    </a>
                                 </div>
-
-
                             {% empty %}
-
-
-                                <!-- EMPTY PENDING -->
-
                                 <div class="col-12">
-
                                     <div class="empty-posts">
-
-                                        <div class="empty-icon">
-
-                                            <i
-                                                class="fa-solid fa-hourglass-half"
-                                            ></i>
-
-                                        </div>
-
-                                        <h4>
-                                            No pending posts.
-                                        </h4>
-
-                                        <p>
-                                            Posts waiting for approval will appear here.
-                                        </p>
-
+                                        <div class="empty-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                                        <h4>No pending posts.</h4>
+                                        <p>Posts waiting for approval will appear here.</p>
                                     </div>
-
                                 </div>
-
                             {% endfor %}
-
                         </div>
-
                     </div>
 
+                    <!-- SOLD SECTION -->
+                    <div id="soldPostsSection" class="post-subsection" style="display: none;">
+                        <h3 class="post-subsection-title">Sold Posts</h3>
+                        <p class="post-subsection-subtitle">Posts that have been sold out.</p>
+
+                        <div class="row g-4">
+                            {% for post in sold_posts %}
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                                    <a href="{% url 'sold_post_detail' post.id %}" class="post-card-link">
+                                        <div class="user-post-card">
+                                            <div class="post-image-wrapper">
+                                                {% with first_item=post.items.first %}
+                                                    {% if first_item and first_item.images.first %}
+                                                        <img src="{{ first_item.images.first.image.url }}" class="post-image" alt="{{ first_item.name|default:'Product image' }}">
+                                                    {% else %}
+                                                        <img src="{% static 'images/no-image.png' %}" class="post-image" alt="No image">
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                            <div class="post-content">
+                                                <div class="post-title">{{ post.category.name|default:"Product" }}</div>
+                                                <p class="post-description">{{ post.description|truncatewords:18 }}</p>
+                                                <div class="post-meta">
+                                                    <span class="post-status sold-status">Sold</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% empty %}
+                                <div class="col-12">
+                                    <div class="empty-posts">
+                                        <div class="empty-icon"><i class="fa-solid fa-box"></i></div>
+                                        <h4>No sold posts.</h4>
+                                        <p>Posts that are sold out will appear here.</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- REJECTED SECTION -->
+                    <div id="rejectedPostsSection" class="post-subsection" style="display: none;">
+                        <h3 class="post-subsection-title">Rejected Posts</h3>
+                        <p class="post-subsection-subtitle">Posts that were rejected by admin.</p>
+
+                        <div class="row g-4">
+                            {% for post in rejected_posts %}
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                                    <a href="{% url 'rejected_post_detail' post.id %}" class="post-card-link">
+                                        <div class="user-post-card">
+                                            <div class="post-image-wrapper">
+                                                {% with first_item=post.items.first %}
+                                                    {% if first_item and first_item.images.first %}
+                                                        <img src="{{ first_item.images.first.image.url }}" class="post-image" alt="{{ first_item.name|default:'Product image' }}">
+                                                    {% else %}
+                                                        <img src="{% static 'images/no-image.png' %}" class="post-image" alt="No image">
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                            <div class="post-content">
+                                                <div class="post-title">{{ post.category.name|default:"Product" }}</div>
+                                                <p class="post-description">{{ post.description|truncatewords:18 }}</p>
+                                                <div class="post-meta">
+                                                    <span class="post-status rejected-status">Rejected</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% empty %}
+                                <div class="col-12">
+                                    <div class="empty-posts">
+                                        <div class="empty-icon"><i class="fa-solid fa-xmark"></i></div>
+                                        <h4>No rejected posts.</h4>
+                                        <p>Rejected posts will appear here.</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 {% endif %}
-
-
             </section>
-
         </div>
-
     </div>
-
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
 
     {% include "includes/footer.html" %}
 
-
-    <!-- =====================================================
-         BOOTSTRAP JS
-    ====================================================== -->
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
-
-
-    <script>
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
-
-
-                /* =================================================
-                   PROFILE PHOTO UPLOAD
-                ================================================= */
-
-                const profilePicInput =
-                    document.getElementById(
-                        "profilePicInput"
-                    );
-
-
-                if (profilePicInput) {
-
-                    profilePicInput.addEventListener(
-                        "change",
-                        function () {
-
-                            if (
-                                this.files &&
-                                this.files.length > 0
-                            ) {
-
-                                this.form.submit();
-
-                            }
-
-                        }
-                    );
-
-                }
-
-
-                /* =================================================
-                   SETTINGS
-                ================================================= */
-
-                const settingsBtn =
-                    document.getElementById(
-                        "settingsBtn"
-                    );
-
-                const settingsMenu =
-                    document.getElementById(
-                        "settingsMenu"
-                    );
-
-
-                if (
-                    settingsBtn &&
-                    settingsMenu
-                ) {
-
-
-                    /* =================================================
-                       OPEN / CLOSE SETTINGS
-                    ================================================= */
-
-                    settingsBtn.addEventListener(
-                        "click",
-                        function (event) {
-
-                            event.stopPropagation();
-
-                            const isOpen =
-                                settingsMenu.classList.toggle(
-                                    "show"
-                                );
-
-                            settingsBtn.setAttribute(
-                                "aria-expanded",
-                                isOpen
-                            );
-
-                        }
-                    );
-
-
-                    /* =================================================
-                       PREVENT MENU CLICK FROM CLOSING
-                    ================================================= */
-
-                    settingsMenu.addEventListener(
-                        "click",
-                        function (event) {
-
-                            event.stopPropagation();
-
-                        }
-                    );
-
-
-                    /* =================================================
-                       CLICK OUTSIDE
-                    ================================================= */
-
-                    document.addEventListener(
-                        "click",
-                        function () {
-
-                            settingsMenu.classList.remove(
-                                "show"
-                            );
-
-                            settingsBtn.setAttribute(
-                                "aria-expanded",
-                                "false"
-                            );
-
-                        }
-                    );
-
-
-                    /* =================================================
-                       ESC KEY
-                    ================================================= */
-
-                    document.addEventListener(
-                        "keydown",
-                        function (event) {
-
-                            if (
-                                event.key === "Escape"
-                            ) {
-
-                                settingsMenu.classList.remove(
-                                    "show"
-                                );
-
-                                settingsBtn.setAttribute(
-                                    "aria-expanded",
-                                    "false"
-                                );
-
-                            }
-
-                        }
-                    );
-
-                }
-
-
-                /* =================================================
-                   DEFAULT TAB
-                   APPROVED POSTS
-                ================================================= */
-
-                showPostSection("approved");
-
-            }
-
-        );
-
-
-        /* =====================================================
-           POST SECTION SWITCHER
-        ===================================================== */
-
-        function showPostSection(section) {
-
-            const approvedSection =
-                document.getElementById(
-                    "approvedPostsSection"
-                );
-
-            const pendingSection =
-                document.getElementById(
-                    "pendingPostsSection"
-                );
-
-            const approvedTab =
-                document.getElementById(
-                    "approvedTab"
-                );
-
-            const pendingTab =
-                document.getElementById(
-                    "pendingTab"
-                );
-
-
-            /* =================================================
-               APPROVED POSTS
-            ================================================= */
-
-            if (section === "approved") {
-
-                if (approvedSection) {
-
-                    approvedSection.style.display =
-                        "block";
-
-                }
-
-                if (pendingSection) {
-
-                    pendingSection.style.display =
-                        "none";
-
-                }
-
-                if (approvedTab) {
-
-                    approvedTab.classList.add(
-                        "active"
-                    );
-
-                }
-
-                if (pendingTab) {
-
-                    pendingTab.classList.remove(
-                        "active"
-                    );
-
-                }
-
-            }
-
-
-            /* =================================================
-               PENDING POSTS
-            ================================================= */
-
-            else if (section === "pending") {
-
-                if (approvedSection) {
-
-                    approvedSection.style.display =
-                        "none";
-
-                }
-
-                if (pendingSection) {
-
-                    pendingSection.style.display =
-                        "block";
-
-                }
-
-                if (approvedTab) {
-
-                    approvedTab.classList.remove(
-                        "active"
-                    );
-
-                }
-
-                if (pendingTab) {
-
-                    pendingTab.classList.add(
-                        "active"
-                    );
-
-                }
-
-            }
-
-        }
-
-    </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'user/js/dashboard.js' %}"></script>
 
 </body>
 

@@ -1,2464 +1,734 @@
 <!DOCTYPE html>
 {% load static %}
 {% load humanize %}
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trusty Shop | Home</title>
-
-
-    <!-- ==================================================
-         BOOTSTRAP
-    ================================================== -->
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    >
-
-
-    <!-- ==================================================
-         FONT AWESOME
-    ================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
-
-
-    <!-- ==================================================
-         CUSTOM CSS
-    ================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="{% static 'css/style.css' %}"
-    >
-
-    <link
-        rel="stylesheet"
-        href="{% static 'css/header-footer.css' %}"
-    >
-
-    <link
-        rel="stylesheet"
-        href="{% static 'css/post.css' %}"
-    >
-
-
-    <!-- ==================================================
-         IMAGE SEARCH + WISHLIST + PAGINATION STYLING
-    ================================================== -->
-
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- CUSTOM CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header-footer.css' %}">
+    <link rel="stylesheet" href="{% static 'css/post.css' %}">
     <style>
-
-        /* =================================================
-           CAMERA BUTTON
-        ================================================= */
-
         .image-search-btn {
-
             width: 44px;
             height: 44px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             flex-shrink: 0;
-
             border: none;
             background: transparent;
-
             color: #1565c0;
-
             cursor: pointer;
-
             border-radius: 50%;
-
-            transition:
-                background 0.25s ease,
-                color 0.25s ease,
-                transform 0.25s ease;
-
+            transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
         }
-
-
         .image-search-btn:hover {
-
             background: rgba(21, 101, 192, 0.10);
-
             color: #0d47a1;
-
             transform: scale(1.08);
-
         }
-
-
         .image-search-btn:active {
-
             transform: scale(0.95);
-
         }
-
-
         .image-search-btn i {
-
             font-size: 18px;
-
         }
-
-
-        /* =================================================
-           IMAGE SEARCH LOADING
-        ================================================= */
-
         .image-search-loading {
-
             pointer-events: none;
-
             opacity: 0.65;
-
         }
-
-
         .image-search-loading i {
-
-            animation:
-                imageSearchSpin 0.8s linear infinite;
-
+            animation: imageSearchSpin 0.8s linear infinite;
         }
-
-
         @keyframes imageSearchSpin {
-
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
-
-
-        /* =================================================
-           IMAGE SEARCH RESULT HEADER
-        ================================================= */
-
         .image-search-result-header {
-
             margin-bottom: 25px;
-
         }
-
-
         .image-search-result-badge {
-
             display: inline-flex;
-
             align-items: center;
-
             gap: 8px;
-
             padding: 8px 14px;
-
             border-radius: 999px;
-
             background: rgba(21, 101, 192, 0.08);
-
             color: #1565c0;
-
             font-size: 14px;
-
             font-weight: 600;
-
         }
-
-
-        /* =================================================
-           IMAGE SEARCH SCORE
-        ================================================= */
-
         .image-similarity {
-
             display: inline-flex;
-
             align-items: center;
-
             gap: 6px;
-
             margin-top: 8px;
-
             padding: 6px 10px;
-
             border-radius: 8px;
-
             background: rgba(21, 101, 192, 0.08);
-
             color: #1565c0;
-
             font-size: 13px;
-
             font-weight: 700;
-
         }
-
-
-        /* =================================================
-           NO IMAGE RESULTS
-        ================================================= */
-
         .image-no-results {
-
             text-align: center;
-
             padding: 60px 20px;
-
             background: rgba(255, 255, 255, 0.75);
-
             border-radius: 20px;
-
         }
-
-
         .image-no-results i {
-
             font-size: 55px;
-
             color: #94a3b8;
-
             margin-bottom: 18px;
-
         }
-
-
         .image-no-results h3 {
-
             margin-bottom: 8px;
-
         }
-
-
         .image-no-results p {
-
             color: #64748b;
-
             margin-bottom: 0;
-
         }
-
-
-        /* =================================================
-           WISHLIST BUTTON
-        ================================================= */
-
         .wishlist-btn-home {
-
             position: absolute;
-
             top: 16px;
             right: 16px;
-
             z-index: 30;
-
             width: 44px;
             height: 44px;
-
             display: flex;
-
             align-items: center;
             justify-content: center;
-
             border: none;
-
             border-radius: 50%;
-
             background: rgba(255, 255, 255, 0.95);
-
             color: #64748b;
-
             font-size: 20px;
-
             cursor: pointer;
-
-            box-shadow:
-                0 8px 22px rgba(15, 23, 42, 0.14);
-
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.14);
             backdrop-filter: blur(10px);
-
             -webkit-backdrop-filter: blur(10px);
-
-            transition:
-                transform 0.25s ease,
-                background 0.25s ease,
-                color 0.25s ease,
-                box-shadow 0.25s ease;
-
+            transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
         }
-
-
         .wishlist-btn-home:hover {
-
             transform: scale(1.10);
-
             color: #ef4444;
-
             background: #ffffff;
-
-            box-shadow:
-                0 10px 28px rgba(239, 68, 68, 0.22);
-
+            box-shadow: 0 10px 28px rgba(239, 68, 68, 0.22);
         }
-
-
         .wishlist-btn-home:active {
-
             transform: scale(0.92);
-
         }
-
-
-        /* =================================================
-           SAVED / LIKED STATE
-        ================================================= */
-
         .wishlist-btn-home.liked {
-
             background: #ef4444;
-
             color: #ffffff;
-
-            box-shadow:
-                0 8px 24px rgba(239, 68, 68, 0.35);
-
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.35);
         }
-
-
         .wishlist-btn-home.liked:hover {
-
             background: #dc2626;
-
             color: #ffffff;
-
-            box-shadow:
-                0 10px 30px rgba(220, 38, 38, 0.42);
-
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.42);
         }
-
-
         .wishlist-btn-home i {
-
             pointer-events: none;
-
-            transition:
-                transform 0.25s ease;
-
+            transition: transform 0.25s ease;
         }
-
-
         .wishlist-btn-home.liked i {
-
             transform: scale(1.08);
-
         }
-
-
-        /* =================================================
-           HEART POP ANIMATION
-        ================================================= */
-
         .wishlist-heart-pop {
-
-            animation:
-                wishlistHeartPop 0.42s ease;
-
+            animation: wishlistHeartPop 0.42s ease;
         }
-
-
         @keyframes wishlistHeartPop {
-
-            0% {
-                transform: scale(1);
-            }
-
-            35% {
-                transform: scale(1.45);
-            }
-
-            65% {
-                transform: scale(0.85);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-
+            0% { transform: scale(1); }
+            35% { transform: scale(1.45); }
+            65% { transform: scale(0.85); }
+            100% { transform: scale(1); }
         }
-
-
-        /* =================================================
-           PREVENT CARD LINK FROM COVERING BUTTON
-        ================================================= */
-
         .wishlist-btn-home {
-
             -webkit-user-select: none;
             user-select: none;
-
             -webkit-touch-callout: none;
-
         }
-
-
-        /* =================================================
-           MOBILE WISHLIST
-        ================================================= */
-
         @media (max-width: 600px) {
-
             .wishlist-btn-home {
-
                 top: 12px;
                 right: 12px;
-
                 width: 40px;
                 height: 40px;
-
                 font-size: 18px;
-
             }
-
         }
-
-
-        /* =================================================
-           PAGINATION
-        ================================================= */
-
         .pagination-container {
-
             margin-top: 40px;
-
             padding-bottom: 30px;
-
         }
-
-
         .pagination .page-link {
-
             border: none;
-
             margin: 0 4px;
-
             border-radius: 10px;
-
             padding: 10px 15px;
-
             color: #2563eb;
-
             background: #f8fafc;
-
             font-weight: 600;
-
             transition: all 0.25s ease;
-
         }
-
-
         .pagination .page-link:hover {
-
             background: #2563eb;
-
             color: #ffffff;
-
             transform: translateY(-2px);
-
         }
-
-
         .pagination .page-item.active .page-link {
-
             background: #2563eb;
-
             color: #ffffff;
-
         }
-
-
         .pagination .page-item.disabled .page-link {
-
             background: #f1f5f9;
-
             color: #94a3b8;
-
             cursor: not-allowed;
-
         }
-
-
         .pagination-container .text-muted {
-
             font-size: 14px;
-
         }
-
-
-        /* =================================================
-           MOBILE PAGINATION
-        ================================================= */
-
         @media (max-width: 576px) {
-
             .pagination .page-link {
-
                 padding: 8px 11px;
-
                 margin: 0 2px;
-
                 font-size: 14px;
-
             }
-
         }
-
     </style>
-
 </head>
-
-
 <body>
-
-
-<!-- =========================================================
-     DJANGO MESSAGE ALERT
-========================================================= -->
-
 {% if messages %}
-
     {% for message in messages %}
-
-        <div
-            class="message-overlay"
-            id="messageOverlay"
-            data-message-type="{% if 'post-pending' in message.tags %}pending{% else %}normal{% endif %}"
-        >
-
-            <div
-                class="
-                    message-modal
-                    {% if 'post-pending' in message.tags %}
-                        post-pending-modal
-                    {% endif %}
-                "
-            >
-
+        <div class="message-overlay" id="messageOverlay" data-message-type="{% if 'post-pending' in message.tags %}pending{% else %}normal{% endif %}">
+            <div class="message-modal {% if 'post-pending' in message.tags %}post-pending-modal{% endif %}">
                 {% if 'post-pending' in message.tags %}
-
                     <div class="post-pending-icon">
-
                         <i class="fa-solid fa-clock"></i>
-
                     </div>
-
-
                     <div class="post-pending-badge">
-
                         <i class="fa-solid fa-shield-halved"></i>
-
                         ADMIN REVIEW
-
                     </div>
-
-
-                    <h3>
-                        Post Submitted!
-                    </h3>
-
-
-                    <p>
-                        {{ message }}
-                    </p>
-
-
+                    <h3>Post Submitted!</h3>
+                    <p>{{ message }}</p>
                     <div class="post-pending-info">
-
                         <div>
-
                             <i class="fa-solid fa-clock"></i>
-
-                            <span>
-                                Your post is currently waiting for admin approval.
-                            </span>
-
+                            <span>Your post is currently waiting for admin approval.</span>
                         </div>
-
-
                         <div>
-
                             <i class="fa-solid fa-eye"></i>
-
-                            <span>
-                                Once approved, your product will appear in the marketplace.
-                            </span>
-
+                            <span>Once approved, your product will appear in the marketplace.</span>
                         </div>
-
-
                         <div>
-
                             <i class="fa-solid fa-bell"></i>
-
-                            <span>
-                                You will be notified when the review is completed.
-                            </span>
-
+                            <span>You will be notified when the review is completed.</span>
                         </div>
-
                     </div>
-
-
-                    <button
-                        type="button"
-                        class="post-pending-btn"
-                        onclick="closeSuccessAlert()"
-                    >
-
+                    <button type="button" class="post-pending-btn" onclick="closeSuccessAlert()">
                         <i class="fa-solid fa-check"></i>
-
                         Got it
-
                     </button>
-
-
                     <div class="message-progress pending-progress">
-
                         <span></span>
-
                     </div>
-
-
                 {% elif 'success' in message.tags %}
-
                     <div class="message-icon success">
-
                         <i class="fa-solid fa-check"></i>
-
                     </div>
-
-
-                    <h3>
-                        Success
-                    </h3>
-
-
-                    <p>
-                        {{ message }}
-                    </p>
-
-
+                    <h3>Success</h3>
+                    <p>{{ message }}</p>
                     <div class="message-progress">
-
                         <span></span>
-
                     </div>
-
-
                 {% elif 'error' in message.tags %}
-
                     <div class="message-icon error">
-
                         <i class="fa-solid fa-xmark"></i>
-
                     </div>
-
-
-                    <h3>
-                        Please check
-                    </h3>
-
-
-                    <p>
-                        {{ message }}
-                    </p>
-
-
+                    <h3>Please check</h3>
+                    <p>{{ message }}</p>
                     <div class="message-progress error-progress">
-
                         <span></span>
-
                     </div>
-
-
                 {% elif 'warning' in message.tags %}
-
                     <div class="message-icon warning">
-
                         <i class="fa-solid fa-triangle-exclamation"></i>
-
                     </div>
-
-
-                    <h3>
-                        Warning
-                    </h3>
-
-
-                    <p>
-                        {{ message }}
-                    </p>
-
-
+                    <h3>Warning</h3>
+                    <p>{{ message }}</p>
                     <div class="message-progress warning-progress">
-
                         <span></span>
-
                     </div>
-
-
                 {% else %}
-
                     <div class="message-icon info">
-
                         <i class="fa-solid fa-info"></i>
-
                     </div>
-
-
-                    <h3>
-                        Notice
-                    </h3>
-
-
-                    <p>
-                        {{ message }}
-                    </p>
-
-
+                    <h3>Notice</h3>
+                    <p>{{ message }}</p>
                     <div class="message-progress info-progress">
-
                         <span></span>
-
                     </div>
-
                 {% endif %}
-
             </div>
-
         </div>
-
     {% endfor %}
-
 {% endif %}
-
-
-
-<!-- ==================================================
-     NAVBAR
-================================================== -->
-
 {% include "includes/navbar.html" %}
-
-
-
-<!-- ==================================================
-     HERO
-================================================== -->
-
 <section class="hero">
-
     <div class="floating-background">
-
         <div class="bubble"></div>
-
         <div class="bubble"></div>
-
         <div class="bubble"></div>
-
-
-        <div class="floating-item">
-            🛍️
-        </div>
-
-        <div class="floating-item">
-            👟
-        </div>
-
-        <div class="floating-item">
-            ⌚
-        </div>
-
-        <div class="floating-item">
-            🎧
-        </div>
-
-        <div class="floating-item">
-            📱
-        </div>
-
+        <div class="floating-item">🛍️</div>
+        <div class="floating-item">👟</div>
+        <div class="floating-item">⌚</div>
+        <div class="floating-item">🎧</div>
+        <div class="floating-item">📱</div>
     </div>
-
-
     <div class="container hero-content">
-
         <div class="row align-items-center">
-
             <div class="col-lg-6">
-
                 <h1>
-
                     Shop Smart with
-
-                    <span>
-                        Trusty Shop
-                    </span>
-
+                    <span>Trusty Shop</span>
                 </h1>
-
-
                 <p>
-
                     Discover amazing products with trusted quality,
                     beautiful designs, and affordable prices.
-
                 </p>
-
-
-                <!-- ==================================================
-                     NORMAL TEXT SEARCH
-                ================================================== -->
-
-                <form
-                    method="GET"
-                    action="{% url 'home' %}"
-                    class="modern-search"
-                    id="textSearchForm"
-                >
-
+                <form method="GET" action="{% url 'home' %}" class="modern-search" id="textSearchForm">
                     <div class="search-icon">
-
                         <i class="fa-solid fa-magnifying-glass"></i>
-
                     </div>
-
-
-                    <input
-                        type="text"
-                        name="q"
-                        id="searchInput"
-                        placeholder="Search products..."
-                        value="{{ search_query|default:'' }}"
-                        autocomplete="off"
-                    >
-
-
-                    <!-- IMAGE SEARCH BUTTON -->
-
-                    <label
-                        for="imageSearchInput"
-                        class="image-search-btn"
-                        id="imageSearchButton"
-                        title="Search by image"
-                        aria-label="Search by image"
-                    >
-
+                    <input type="text" name="q" id="searchInput" placeholder="Search products..." value="{{ search_query|default:'' }}" autocomplete="off">
+                    <label for="imageSearchInput" class="image-search-btn" id="imageSearchButton" title="Search by image" aria-label="Search by image">
                         <i class="fa-solid fa-camera"></i>
-
                     </label>
-
-
-                    <button
-                        type="submit"
-                        class="search-submit-btn"
-                    >
-
+                    <button type="submit" class="search-submit-btn">
                         <i class="fa-solid fa-magnifying-glass"></i>
-
                         Search
-
                     </button>
-
                 </form>
-
-
-                <!-- ==================================================
-                     HIDDEN IMAGE SEARCH FORM
-                ================================================== -->
-
-                <form
-                    method="POST"
-                    action="{% url 'home' %}"
-                    enctype="multipart/form-data"
-                    id="imageSearchForm"
-                    style="display: none;"
-                >
-
+                <form method="POST" action="{% url 'home' %}" enctype="multipart/form-data" id="imageSearchForm" style="display: none;">
                     {% csrf_token %}
-
-                    <input
-                        type="file"
-                        id="imageSearchInput"
-                        name="image"
-                        accept="image/*"
-                    >
-
+                    <input type="file" id="imageSearchInput" name="image" accept="image/*">
                 </form>
-
-
-                <!-- ==================================================
-                     TRENDING SEARCH
-                ================================================== -->
-
                 <div class="search-suggestions">
-
-                    <span>
-                        🔥 Trending:
-                    </span>
-
-
-                    <button
-                        type="button"
-                        onclick="searchProduct('Shoes')"
-                    >
-                        Shoes
-                    </button>
-
-
-                    <button
-                        type="button"
-                        onclick="searchProduct('Watch')"
-                    >
-                        Watch
-                    </button>
-
-
-                    <button
-                        type="button"
-                        onclick="searchProduct('Laptop')"
-                    >
-                        Laptop
-                    </button>
-
-
-                    <button
-                        type="button"
-                        onclick="searchProduct('Perfume')"
-                    >
-                        Perfume
-                    </button>
-
+                    <span>🔥 Trending:</span>
+                    <button type="button" onclick="searchProduct('Shoes')">Shoes</button>
+                    <button type="button" onclick="searchProduct('Watch')">Watch</button>
+                    <button type="button" onclick="searchProduct('Laptop')">Laptop</button>
+                    <button type="button" onclick="searchProduct('Perfume')">Perfume</button>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </section>
-
-
-
-<!-- ==================================================
-     BACKGROUND EFFECTS
-================================================== -->
-
 <div id="marketParticles"></div>
-
 <div id="mouseGlow"></div>
-
-
-
-<!-- ==================================================
-     SELLER POSTS / SEARCH RESULTS
-================================================== -->
-
-<section
-    id="searchResults"
-    class="seller-posts py-5"
->
-
+<section id="searchResults" class="seller-posts py-5">
     <div class="container">
-
-
-        <!-- ==================================================
-             SECTION HEADER
-        ================================================== -->
-
         <div class="section-title mb-5">
-
-            <div
-                class="d-flex justify-content-between align-items-center flex-wrap gap-3"
-            >
-
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div>
-
                     <span class="section-badge">
-
                         <i class="fa-solid fa-store"></i>
-
                         Trusted Marketplace
-
                     </span>
-
-
                     {% if searched and image_search %}
-
-                        <h2 class="mt-3 mb-2">
-                            Similar Products
-                        </h2>
-
-
-                        <p class="mb-0">
-
-                            Products visually similar to your uploaded image.
-
-                        </p>
-
-
+                        <h2 class="mt-3 mb-2">Similar Products</h2>
+                        <p class="mb-0">Products visually similar to your uploaded image.</p>
                     {% elif search_query %}
-
-                        <h2 class="mt-3 mb-2">
-                            Search Results
-                        </h2>
-
-
-                        <p class="mb-0">
-
-                            Showing products matching
-
-                            <strong>
-                                "{{ search_query }}"
-                            </strong>
-
-                        </p>
-
-
+                        <h2 class="mt-3 mb-2">Search Results</h2>
+                        <p class="mb-0">Showing products matching <strong>"{{ search_query }}"</strong></p>
                     {% else %}
-
-                        <h2 class="mt-3 mb-2">
-                            Latest Seller Products
-                        </h2>
-
-
-                        <p class="mb-0">
-
-                            Discover quality products posted
-                            by verified sellers.
-
-                        </p>
-
+                        <h2 class="mt-3 mb-2">Latest Seller Products</h2>
+                        <p class="mb-0">Discover quality products posted by verified sellers.</p>
                     {% endif %}
-
                 </div>
-
             </div>
-
         </div>
-
-
-
-        <!-- ==================================================
-             IMAGE SEARCH RESULTS
-        ================================================== -->
-
         {% if searched and image_search %}
-
-
             {% if image_results %}
-
                 <div class="row g-4">
-
                     {% for item, score, image in image_results %}
-
-                        <div
-                            class="col-xl-4 col-lg-4 col-md-6 col-sm-12"
-                        >
-
-                            <a
-                                href="{% url 'viewdetail' item.post.id %}"
-                                class="post-card-link"
-                            >
-
+                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                            <a href="{% url 'viewdetail' item.post.id %}" class="post-card-link">
                                 <div class="seller-card">
-
                                     <div class="product-image-box">
-
-                                        <img
-                                            src="{{ image.image.url }}"
-                                            class="product-image"
-                                            alt="{{ item.name }}"
-                                        >
-
-
+                                        <img src="{{ image.image.url }}" class="product-image" alt="{{ item.name }}">
                                         <span class="product-tag">
-
                                             <i class="fa-solid fa-camera"></i>
-
                                             Image Match
-
                                         </span>
-
                                     </div>
-
-
                                     <div class="product-body">
-
                                         <div class="title-price">
-
-                                            <h4>
-                                                {{ item.name }}
-                                            </h4>
-
-
-                                            <span class="price">
-
-                                                {{ item.price|intcomma }}
-                                                MMK
-
-                                            </span>
-
+                                            <h4>{{ item.name }}</h4>
+                                            <span class="price">{{ item.price|intcomma }} MMK</span>
                                         </div>
-
-
-                                        <p>
-
-                                            {{ item.description|truncatewords:20 }}
-
-                                        </p>
-
-
+                                        <p>{{ item.description|truncatewords:20 }}</p>
                                         <div class="product-features">
-
                                             <span>
-
                                                 <i class="fa-solid fa-box"></i>
-
                                                 Product
-
                                             </span>
-
-
                                             <span>
-
-                                                <i
-                                                    class="fa-solid fa-check-circle"
-                                                ></i>
-
+                                                <i class="fa-solid fa-check-circle"></i>
                                                 Visual Match
-
                                             </span>
-
                                         </div>
-
-
                                         <div class="image-similarity">
-
                                             <i class="fa-solid fa-wand-magic-sparkles"></i>
-
-                                            Similarity:
-
-                                            {{ score|floatformat:3 }}
-
+                                            Similarity: {{ score|floatformat:3 }}
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </a>
-
                         </div>
-
                     {% endfor %}
-
                 </div>
-
-
             {% else %}
-
                 <div class="image-no-results">
-
                     <i class="fa-solid fa-image"></i>
-
-
-                    <h3>
-                        No similar products found
-                    </h3>
-
-
-                    <p>
-                        Try uploading another product image.
-                    </p>
-
+                    <h3>No similar products found</h3>
+                    <p>Try uploading another product image.</p>
                 </div>
-
             {% endif %}
-
-
-
         {% else %}
-
-
-            <!-- ==================================================
-                 NORMAL HOME / TEXT SEARCH RESULTS
-            ================================================== -->
-
             <div class="row g-4">
-
                 {% for post in posts %}
-
-                    <div
-                        class="col-xl-4 col-lg-4 col-md-6 col-sm-12"
-                    >
-
-                        <a
-                            href="{% url 'viewdetail' post.id %}"
-                            class="post-card-link"
-                        >
-
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                        <a href="{% url 'viewdetail' post.id %}" class="post-card-link">
                             <div class="seller-card">
-
-
-                                <!-- ==================================================
-                                     WISHLIST BUTTON
-                                ================================================== -->
-
                                 {% if user.is_authenticated %}
-
-                                    <button
-                                        type="button"
-                                        class="wishlist-btn-home {% if post.id in wishlist_post_ids %}liked{% endif %}"
-                                        data-post-id="{{ post.id }}"
-                                        data-add-url="{% url 'wishlist:add' post.id %}"
-                                        data-remove-url="{% url 'wishlist:remove' post.id %}"
-                                        data-wishlisted="{% if post.id in wishlist_post_ids %}true{% else %}false{% endif %}"
-                                        aria-label="{% if post.id in wishlist_post_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}"
-                                        title="{% if post.id in wishlist_post_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}"
-                                    >
-
-                                        <i
-                                            class="wishlist-icon-home {% if post.id in wishlist_post_ids %}fa-solid{% else %}fa-regular{% endif %} fa-heart"
-                                        ></i>
-
+                                    <button type="button" class="wishlist-btn-home {% if post.id in wishlist_post_ids %}liked{% endif %}" data-post-id="{{ post.id }}" data-add-url="{% url 'wishlist:add' post.id %}" data-remove-url="{% url 'wishlist:remove' post.id %}" data-wishlisted="{% if post.id in wishlist_post_ids %}true{% else %}false{% endif %}" aria-label="{% if post.id in wishlist_post_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}" title="{% if post.id in wishlist_post_ids %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
+                                        <i class="wishlist-icon-home {% if post.id in wishlist_post_ids %}fa-solid{% else %}fa-regular{% endif %} fa-heart"></i>
                                     </button>
-
                                 {% else %}
-
-                                    <a
-                                        href="{% url 'login' %}"
-                                        class="wishlist-btn-home"
-                                        aria-label="Login to use wishlist"
-                                        title="Login to use wishlist"
-                                    >
-
+                                    <a href="{% url 'login' %}" class="wishlist-btn-home" aria-label="Login to use wishlist" title="Login to use wishlist">
                                         <i class="fa-regular fa-heart"></i>
-
                                     </a>
-
                                 {% endif %}
-
-
-
-                                <!-- ==================================================
-                                     SELLER
-                                ================================================== -->
-
                                 <div class="seller-top">
-
                                     <div class="seller-left">
-
-
                                         {% if post.user.profile_pic %}
-
-                                            <img
-                                                src="{{ post.user.profile_pic.url }}"
-                                                class="seller-profile"
-                                                alt="{{ post.user.fullName }}"
-                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
-                                            >
-
-
-                                            <i
-                                                class="fa-solid fa-circle-user nav-profile-icon"
-                                                style="display:none;"
-                                            ></i>
-
+                                            <img src="{{ post.user.profile_pic.url }}" class="seller-profile" alt="{{ post.user.fullName }}" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                                            <i class="fa-solid fa-circle-user nav-profile-icon" style="display:none;"></i>
                                         {% else %}
-
-                                            <i
-                                                class="fa-solid fa-circle-user nav-profile-icon"
-                                            ></i>
-
+                                            <i class="fa-solid fa-circle-user nav-profile-icon"></i>
                                         {% endif %}
-
-
                                         <div>
-
-                                            <h5>
-
-                                                {{ post.user.fullName }}
-
-
-
-                                            </h5>
-
-
+                                            <h5>{{ post.user.fullName }}</h5>
                                             <span>
-
-                                                <i
-                                                    class="fa-regular fa-clock"
-                                                ></i>
-
-                                                {{ post.created_at|timesince }}
-                                                ago
-
+                                                <i class="fa-regular fa-clock"></i>
+                                                {{ post.created_at|timesince }} ago
                                             </span>
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
-
-
-                                <!-- ==================================================
-                                     PRODUCT IMAGE
-                                ================================================== -->
-
                                 <div class="product-image-box">
-
-                                    <div
-                                        class="post-image-slider"
-                                        data-images="{% for item in post.items.all %}{% if item.images.first %}{{ item.images.first.image.url }}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}"
-                                    >
-
+                                    <div class="post-image-slider" data-images="{% for item in post.items.all %}{% if item.images.first %}{{ item.images.first.image.url }}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}">
                                         {% with first_item=post.items.first %}
-
                                             {% if first_item.images.first %}
-
-                                                <img
-                                                    src="{{ first_item.images.first.image.url }}"
-                                                    class="product-image"
-                                                    alt="{{ post.category.name|default:'Product' }}"
-                                                >
-
+                                                <img src="{{ first_item.images.first.image.url }}" class="product-image" alt="{{ post.category.name|default:'Product' }}">
                                             {% else %}
-
-                                                <img
-                                                    src="{% static 'images/no-image.png' %}"
-                                                    class="product-image"
-                                                    alt="No image"
-                                                >
-
+                                                <img src="{% static 'images/no-image.png' %}" class="product-image" alt="No image">
                                             {% endif %}
-
                                         {% endwith %}
-
-
-                                        <!-- SLIDER DOTS -->
-
                                         {% with image_count=post.items.first.images.all|length %}
-
                                             {% if image_count > 1 %}
-
                                                 <div class="slider-dots">
-
                                                     {% for item in post.items.all %}
-
                                                         {% if item.images.first %}
-
-                                                            <span
-                                                                class="slider-dot {% if forloop.first %}active{% endif %}"
-                                                            ></span>
-
+                                                            <span class="slider-dot {% if forloop.first %}active{% endif %}"></span>
                                                         {% endif %}
-
                                                     {% endfor %}
-
                                                 </div>
-
                                             {% endif %}
-
                                         {% endwith %}
-
                                     </div>
-
-
-                                    <span class="product-tag">
-
-                                        {{ post.items.count }}
-                                        items
-
-                                    </span>
-
+                                    <span class="product-tag">{{ post.items.count }} items</span>
                                 </div>
-
-
-
-                                <!-- ==================================================
-                                     PRODUCT BODY
-                                ================================================== -->
-
                                 <div class="product-body">
-
                                     <div class="title-price">
-
-                                        <h4>
-
-                                            {{ post.category.name|default:"Product" }}
-
-                                        </h4>
-
-
+                                        <h4>{{ post.category.name|default:"Product" }}</h4>
                                         {% with first_item=post.items.first %}
-
                                             {% if first_item %}
-
-                                                <span class="price">
-
-                                                    From
-                                                    {{ first_item.price|intcomma }}
-                                                    MMK
-
-                                                </span>
-
+                                                <span class="price">From {{ first_item.price|intcomma }} MMK</span>
                                             {% endif %}
-
                                         {% endwith %}
-
                                     </div>
-
-
-                                    <p>
-
-                                        {{ post.description|truncatewords:20 }}
-
-                                    </p>
-
-
-                                    <!-- FEATURES -->
-
+                                    <p>{{ post.description|truncatewords:20 }}</p>
                                     <div class="product-features">
-
                                         <span>
-
                                             <i class="fa-solid fa-box"></i>
-
-                                            {{ post.items.count }}
-                                            items
-
+                                            {{ post.items.count }} items
                                         </span>
-
-
                                         <span>
-
-                                            <i
-                                                class="fa-solid fa-check-circle"
-                                            ></i>
-
+                                            <i class="fa-solid fa-check-circle"></i>
                                             {{ post.condition|default:"New" }}
-
                                         </span>
-
                                     </div>
-
-
-
-                                    <!-- SIZES -->
-
                                     {% with first_item=post.items.first %}
-
                                         {% if first_item.has_sizes and first_item.size_variants.all %}
-
                                             <div class="size-tags mt-2">
-
                                                 {% for variant in first_item.size_variants.all %}
-
                                                     {% if variant.quantity > 0 %}
-
-                                                        <span class="size-tag">
-
-                                                            {{ variant.size }}
-
-                                                        </span>
-
+                                                        <span class="size-tag">{{ variant.size }}</span>
                                                     {% endif %}
-
                                                 {% endfor %}
-
                                             </div>
-
                                         {% endif %}
-
                                     {% endwith %}
-
                                 </div>
-
                             </div>
-
                         </a>
-
                     </div>
-
-
                 {% empty %}
-
-                    <!-- ==================================================
-                         NO NORMAL POSTS
-                    ================================================== -->
-
                     <div class="col-12 text-center py-5">
-
-                        <i
-                            class="fa-solid fa-box-open"
-                            style="font-size:60px;color:#94a3b8;"
-                        ></i>
-
-
-                        <h3 class="mt-3">
-
-                            No posts available
-
-                        </h3>
-
-
-                        <p>
-
-                            Be the first to
-
-                            <a href="{% url 'createPost' %}">
-                                create a post
-                            </a>!
-
-                        </p>
-
+                        <i class="fa-solid fa-box-open" style="font-size:60px;color:#94a3b8;"></i>
+                        <h3 class="mt-3">No posts available</h3>
+                        <p>Be the first to <a href="{% url 'createPost' %}">create a post</a>!</p>
                     </div>
-
                 {% endfor %}
-
             </div>
-
-
-
-            <!-- ==================================================
-                 PAGINATION
-                 20 POSTS PER PAGE
-            ================================================== -->
-
             {% if posts.paginator.num_pages > 1 %}
-
                 <div class="pagination-container">
-
-                    <nav
-                        aria-label="Post pagination"
-                    >
-
+                    <nav aria-label="Post pagination">
                         <ul class="pagination justify-content-center">
-
-
-                            <!-- ==========================================
-                                 PREVIOUS
-                            =========================================== -->
-
                             {% if posts.has_previous %}
-
                                 <li class="page-item">
-
-                                    <a
-                                        class="page-link"
-                                        href="?page={{ posts.previous_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}#searchResults"
-                                    >
-
-                                        <i
-                                            class="fa-solid fa-chevron-left"
-                                        ></i>
-
+                                    <a class="page-link" href="?page={{ posts.previous_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}#searchResults">
+                                        <i class="fa-solid fa-chevron-left"></i>
                                         Previous
-
                                     </a>
-
                                 </li>
-
                             {% else %}
-
                                 <li class="page-item disabled">
-
                                     <span class="page-link">
-
-                                        <i
-                                            class="fa-solid fa-chevron-left"
-                                        ></i>
-
+                                        <i class="fa-solid fa-chevron-left"></i>
                                         Previous
-
                                     </span>
-
                                 </li>
-
                             {% endif %}
-
-
-
-                            <!-- ==========================================
-                                 PAGE NUMBERS
-                            =========================================== -->
-
                             {% for num in posts.paginator.page_range %}
-
                                 {% if posts.number == num %}
-
                                     <li class="page-item active">
-
-                                        <span class="page-link">
-
-                                            {{ num }}
-
-                                        </span>
-
+                                        <span class="page-link">{{ num }}</span>
                                     </li>
-
                                 {% else %}
-
                                     <li class="page-item">
-
-                                        <a
-                                            class="page-link"
-                                            href="?page={{ num }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}#searchResults"
-                                        >
-
-                                            {{ num }}
-
-                                        </a>
-
+                                        <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}#searchResults">{{ num }}</a>
                                     </li>
-
                                 {% endif %}
-
                             {% endfor %}
-
-
-
-                            <!-- ==========================================
-                                 NEXT
-                            =========================================== -->
-
                             {% if posts.has_next %}
-
                                 <li class="page-item">
-
-                                    <a
-                                        class="page-link"
-                                        href="?page={{ posts.next_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}#searchResults"
-                                    >
-
+                                    <a class="page-link" href="?page={{ posts.next_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}#searchResults">
                                         Next
-
-                                        <i
-                                            class="fa-solid fa-chevron-right"
-                                        ></i>
-
+                                        <i class="fa-solid fa-chevron-right"></i>
                                     </a>
-
                                 </li>
-
                             {% else %}
-
                                 <li class="page-item disabled">
-
                                     <span class="page-link">
-
                                         Next
-
-                                        <i
-                                            class="fa-solid fa-chevron-right"
-                                        ></i>
-
+                                        <i class="fa-solid fa-chevron-right"></i>
                                     </span>
-
                                 </li>
-
                             {% endif %}
-
                         </ul>
-
                     </nav>
-
-
-
-                    <!-- ==========================================
-                         POST COUNT
-                    =========================================== -->
-
-                    <div class="text-center text-muted">
-
-                        Showing
-
-                        {{ posts.start_index }}
-
-                        –
-
-                        {{ posts.end_index }}
-
-                        of
-
-                        {{ posts.paginator.count }}
-
-                        posts
-
-                    </div>
-
                 </div>
-
             {% endif %}
-
-
         {% endif %}
-
     </div>
-
 </section>
-
-
-
-<!-- ==================================================
-     TERMS & POLICIES
-================================================== -->
-
 {% if user.is_authenticated and not user.profile.terms_accepted %}
-
-    <div
-        class="terms-overlay"
-        id="termsOverlay"
-    >
-
+    <div class="terms-overlay" id="termsOverlay">
         <div class="terms-modal">
-
             <div class="terms-icon">
-
                 <i class="fa-solid fa-shield-halved"></i>
-
             </div>
-
-
-            <h2>
-                Welcome to TrustyShop
-            </h2>
-
-
-            <p class="terms-subtitle">
-
-                Before you continue, please review and accept
-                our Terms & Policies.
-
-            </p>
-
-
+            <h2>Welcome to TrustyShop</h2>
+            <p class="terms-subtitle">Before you continue, please review and accept our Terms & Policies.</p>
             <div class="terms-content">
-
                 <h3>
-
                     <i class="fa-solid fa-file-contract"></i>
-
                     Terms of Use
-
                 </h3>
-
-
-                <p>
-
-                    By using TrustyShop, you agree to use the
-                    platform responsibly and provide accurate
-                    information when creating listings or
-                    interacting with other users.
-
-                </p>
-
-
+                <p>By using TrustyShop, you agree to use the platform responsibly and provide accurate information when creating listings or interacting with other users.</p>
                 <h3>
-
                     <i class="fa-solid fa-user-shield"></i>
-
                     Privacy Policy
-
                 </h3>
-
-
-                <p>
-
-                    We respect your privacy and protect the
-                    information associated with your TrustyShop
-                    account.
-
-                </p>
-
-
+                <p>We respect your privacy and protect the information associated with your TrustyShop account.</p>
                 <h3>
-
                     <i class="fa-solid fa-handshake"></i>
-
                     Safe Marketplace
-
                 </h3>
-
-
-                <p>
-
-                    Please communicate honestly, avoid fraudulent
-                    activity, and report suspicious behavior.
-
-                </p>
-
+                <p>Please communicate honestly, avoid fraudulent activity, and report suspicious behavior.</p>
             </div>
-
-
             <div class="terms-check">
-
-                <input
-                    type="checkbox"
-                    id="termsCheckbox"
-                >
-
-
-                <label for="termsCheckbox">
-
-                    I have read and agree to the TrustyShop
-                    Terms & Policies.
-
-                </label>
-
+                <input type="checkbox" id="termsCheckbox">
+                <label for="termsCheckbox">I have read and agree to the TrustyShop Terms & Policies.</label>
             </div>
-
-
-            <form
-                method="POST"
-                action="{% url 'user:accept_terms_policy' %}"
-                id="termsForm"
-            >
-
+            <form method="POST" action="{% url 'user:accept_terms_policy' %}" id="termsForm">
                 {% csrf_token %}
-
-                <button
-                    type="submit"
-                    class="terms-agree-btn"
-                    id="agreeButton"
-                    disabled
-                >
-
+                <button type="submit" class="terms-agree-btn" id="agreeButton" disabled>
                     <i class="fa-solid fa-check"></i>
-
                     Agree & Continue
-
                 </button>
-
             </form>
-
         </div>
-
     </div>
-
 {% endif %}
-
-
-
-<!-- ==================================================
-     FOOTER
-================================================== -->
-
 {% include "includes/footer.html" %}
-
-
 <script src="{% static 'js/header-footer.js' %}"></script>
-
-
-<!-- ==================================================
-     BOOTSTRAP JS
-================================================== -->
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
-
-
-<!-- ==================================================
-     CUSTOM JS
-================================================== -->
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'js/about.js' %}"></script>
-
 <script src="{% static 'js/home-slider.js' %}"></script>
-
 <script src="{% static 'js/script.js' %}"></script>
-
-
-
-<!-- ==================================================
-     SEARCH + PAGINATION + WISHLIST JAVASCRIPT
-================================================== -->
-
 <script>
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-
-        /* =====================================================
-           IMAGE SEARCH
-        ===================================================== */
-
-        const imageInput =
-            document.getElementById(
-                "imageSearchInput"
-            );
-
-
-        const imageSearchButton =
-            document.getElementById(
-                "imageSearchButton"
-            );
-
-
-        const imageSearchForm =
-            document.getElementById(
-                "imageSearchForm"
-            );
-
-
-        if (
-            imageInput &&
-            imageSearchButton &&
-            imageSearchForm
-        ) {
-
-            imageInput.addEventListener(
-                "change",
-                function () {
-
-                    if (
-                        !this.files ||
-                        this.files.length === 0
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    const selectedFile =
-                        this.files[0];
-
-
-                    /* ---------------------------------------------
-                       Validate image
-                    --------------------------------------------- */
-
-                    if (
-                        !selectedFile.type.startsWith(
-                            "image/"
-                        )
-                    ) {
-
-                        alert(
-                            "Please select a valid image file."
-                        );
-
-                        this.value = "";
-
-                        return;
-
-                    }
-
-
-                    /* ---------------------------------------------
-                       Loading state
-                    --------------------------------------------- */
-
-                    imageSearchButton.classList.add(
-                        "image-search-loading"
-                    );
-
-
-                    imageSearchButton.innerHTML =
-                        '<i class="fa-solid fa-spinner"></i>';
-
-
-                    imageSearchButton.title =
-                        "Searching...";
-
-
-                    /* ---------------------------------------------
-                       Submit image-search form
-                    --------------------------------------------- */
-
-                    imageSearchForm.submit();
-
-                }
-            );
-
-        }
-
-
-
-        /* =====================================================
-           SCROLL TO SEARCH RESULTS
-           
-           This handles:
-           
-           /home/?page=2#searchResults
-           
-           /home/?page=3#searchResults
-           
-           so when the user clicks Next/page number,
-           the page automatically returns to the
-           Latest Seller Products section.
-        ===================================================== */
-
-        const searchResults =
-            document.getElementById(
-                "searchResults"
-            );
-
-
-        if (
-            searchResults &&
-            window.location.hash === "#searchResults"
-        ) {
-
-            setTimeout(
-                function () {
-
-                    searchResults.scrollIntoView({
-
-                        behavior: "smooth",
-
-                        block: "start"
-
-                    });
-
-                },
-                100
-            );
-
-        }
-
-
-
-        /* =====================================================
-           NORMAL SEARCH / IMAGE SEARCH SCROLL
-        ===================================================== */
-
-        const searchQuery =
-            "{{ search_query|escapejs }}";
-
-
-        const imageSearch =
-            "{{ image_search|yesno:'true,false' }}";
-
-
-        const searched =
-            "{{ searched|yesno:'true,false' }}";
-
-
-        if (
-            searchResults &&
-            (
-                searchQuery ||
-                imageSearch === "true" ||
-                searched === "true"
-            ) &&
-            window.location.hash !== "#searchResults"
-        ) {
-
-            setTimeout(
-                function () {
-
-                    searchResults.scrollIntoView({
-
-                        behavior: "smooth",
-
-                        block: "start"
-
-                    });
-
-                },
-                150
-            );
-
-        }
-
-
-
-        /* =====================================================
-           WISHLIST
-        ===================================================== */
-
-        document
-            .querySelectorAll(
-                ".wishlist-btn-home"
-            )
-            .forEach(
-                function (wishlistButton) {
-
-
-                    wishlistButton.addEventListener(
-                        "click",
-                        async function (event) {
-
-
-                            /*
-                             * Prevent product card link
-                             * from opening.
-                             */
-
-                            event.preventDefault();
-
-                            event.stopPropagation();
-
-
-                            if (
-                                wishlistButton.dataset.busy ===
-                                "true"
-                            ) {
-
-                                return;
-
-                            }
-
-
-                            /*
-                             * Login link
-                             */
-
-                            if (
-                                wishlistButton.tagName.toLowerCase() ===
-                                "a"
-                            ) {
-
-                                window.location.href =
-                                    wishlistButton.href;
-
-                                return;
-
-                            }
-
-
-                            wishlistButton.dataset.busy =
-                                "true";
-
-
-                            const isWishlisted =
-                                wishlistButton.dataset.wishlisted ===
-                                "true";
-
-
-                            const url =
-                                isWishlisted
-                                    ? wishlistButton.dataset.removeUrl
-                                    : wishlistButton.dataset.addUrl;
-
-
-                            if (!url) {
-
-                                console.error(
-                                    "Wishlist URL is missing."
-                                );
-
-                                wishlistButton.dataset.busy =
-                                    "false";
-
-                                return;
-
-                            }
-
-
-                            try {
-
-                                const response =
-                                    await fetch(
-                                        url,
-                                        {
-                                            method: "GET",
-
-                                            headers: {
-
-                                                "X-Requested-With":
-                                                    "XMLHttpRequest"
-
-                                            },
-
-                                            credentials:
-                                                "same-origin"
-
-                                        }
-                                    );
-
-
-                                if (!response.ok) {
-
-                                    throw new Error(
-                                        "Wishlist request failed."
-                                    );
-
-                                }
-
-
-                                const data =
-                                    await response.json();
-
-
-                                if (!data.success) {
-
-                                    throw new Error(
-                                        data.message ||
-                                        "Wishlist update failed."
-                                    );
-
-                                }
-
-
-                                const newState =
-                                    Boolean(
-                                        data.wishlisted
-                                    );
-
-
-                                wishlistButton.dataset.wishlisted =
-                                    newState
-                                        ? "true"
-                                        : "false";
-
-
-                                wishlistButton.classList.toggle(
-                                    "liked",
-                                    newState
-                                );
-
-
-                                const wishlistIcon =
-                                    wishlistButton.querySelector(
-                                        ".wishlist-icon-home"
-                                    );
-
-
-                                if (wishlistIcon) {
-
-                                    wishlistIcon.classList.toggle(
-                                        "fa-solid",
-                                        newState
-                                    );
-
-
-                                    wishlistIcon.classList.toggle(
-                                        "fa-regular",
-                                        !newState
-                                    );
-
-
-                                    wishlistIcon.classList.remove(
-                                        "wishlist-heart-pop"
-                                    );
-
-
-                                    void wishlistIcon.offsetWidth;
-
-
-                                    wishlistIcon.classList.add(
-                                        "wishlist-heart-pop"
-                                    );
-
-                                }
-
-
-                                wishlistButton.setAttribute(
-                                    "aria-label",
-                                    newState
-                                        ? "Remove from wishlist"
-                                        : "Add to wishlist"
-                                );
-
-
-                                wishlistButton.setAttribute(
-                                    "title",
-                                    newState
-                                        ? "Remove from wishlist"
-                                        : "Add to wishlist"
-                                );
-
-
-                            } catch (error) {
-
-                                console.error(
-                                    "Wishlist error:",
-                                    error
-                                );
-
-
-                                if (
-                                    typeof showTemporaryMessage ===
-                                    "function"
-                                ) {
-
-                                    showTemporaryMessage(
-                                        error.message ||
-                                        "Wishlist update failed.",
-                                        "error"
-                                    );
-
-                                } else {
-
-                                    alert(
-                                        error.message ||
-                                        "Wishlist update failed."
-                                    );
-
-                                }
-
-
-                            } finally {
-
-                                wishlistButton.dataset.busy =
-                                    "false";
-
-                            }
-
-                        }
-                    );
-
-                }
-            );
-
-
-
-        /* =====================================================
-           WISHLIST BUTTON HOVER
-        ===================================================== */
-
-        if (
-            typeof window.finePointer !==
-            "undefined"
-        ) {
-
-            document
-                .querySelectorAll(
-                    ".wishlist-btn-home"
-                )
-                .forEach(
-                    function (button) {
-
-                        button.addEventListener(
-                            "mouseenter",
-                            function () {
-
-                                const follower =
-                                    document.getElementById(
-                                        "cursorFollower"
-                                    );
-
-
-                                if (follower) {
-
-                                    follower.classList.add(
-                                        "cursor-hover"
-                                    );
-
-                                }
-
-                            }
-                        );
-
-
-                        button.addEventListener(
-                            "mouseleave",
-                            function () {
-
-                                const follower =
-                                    document.getElementById(
-                                        "cursorFollower"
-                                    );
-
-
-                                if (follower) {
-
-                                    follower.classList.remove(
-                                        "cursor-hover"
-                                    );
-
-                                }
-
-                            }
-                        );
-
-                    }
-                );
-
-        }
-
+document.addEventListener("DOMContentLoaded", function () {
+    const imageInput = document.getElementById("imageSearchInput");
+    const imageSearchButton = document.getElementById("imageSearchButton");
+    const imageSearchForm = document.getElementById("imageSearchForm");
+    if (imageInput && imageSearchButton && imageSearchForm) {
+        imageInput.addEventListener("change", function () {
+            if (!this.files || this.files.length === 0) {
+                return;
+            }
+            const selectedFile = this.files[0];
+            if (!selectedFile.type.startsWith("image/")) {
+                alert("Please select a valid image file.");
+                this.value = "";
+                return;
+            }
+            imageSearchButton.classList.add("image-search-loading");
+            imageSearchButton.innerHTML = '<i class="fa-solid fa-spinner"></i>';
+            imageSearchButton.title = "Searching...";
+            imageSearchForm.submit();
+        });
     }
-);
-
-
-
-/* =========================================================
-   TRENDING SEARCH
-========================================================= */
-
-function searchProduct(
-    category
-) {
-
-    const searchInput =
-        document.getElementById(
-            "searchInput"
-        );
-
-
+    const searchResults = document.getElementById("searchResults");
+    if (searchResults && window.location.hash === "#searchResults") {
+        setTimeout(function () {
+            searchResults.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }, 100);
+    }
+    const searchQuery = "{{ search_query|escapejs }}";
+    const imageSearch = "{{ image_search|yesno:'true,false' }}";
+    const searched = "{{ searched|yesno:'true,false' }}";
+    if (searchResults && (searchQuery || imageSearch === "true" || searched === "true") && window.location.hash !== "#searchResults") {
+        setTimeout(function () {
+            searchResults.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }, 150);
+    }
+    document.querySelectorAll(".wishlist-btn-home").forEach(function (wishlistButton) {
+        wishlistButton.addEventListener("click", async function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (wishlistButton.dataset.busy === "true") {
+                return;
+            }
+            if (wishlistButton.tagName.toLowerCase() === "a") {
+                window.location.href = wishlistButton.href;
+                return;
+            }
+            wishlistButton.dataset.busy = "true";
+            const isWishlisted = wishlistButton.dataset.wishlisted === "true";
+            const url = isWishlisted ? wishlistButton.dataset.removeUrl : wishlistButton.dataset.addUrl;
+            if (!url) {
+                console.error("Wishlist URL is missing.");
+                wishlistButton.dataset.busy = "false";
+                return;
+            }
+            try {
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    credentials: "same-origin"
+                });
+                if (!response.ok) {
+                    throw new Error("Wishlist request failed.");
+                }
+                const data = await response.json();
+                if (!data.success) {
+                    throw new Error(data.message || "Wishlist update failed.");
+                }
+                const newState = Boolean(data.wishlisted);
+                wishlistButton.dataset.wishlisted = newState ? "true" : "false";
+                wishlistButton.classList.toggle("liked", newState);
+                const wishlistIcon = wishlistButton.querySelector(".wishlist-icon-home");
+                if (wishlistIcon) {
+                    wishlistIcon.classList.toggle("fa-solid", newState);
+                    wishlistIcon.classList.toggle("fa-regular", !newState);
+                    wishlistIcon.classList.remove("wishlist-heart-pop");
+                    void wishlistIcon.offsetWidth;
+                    wishlistIcon.classList.add("wishlist-heart-pop");
+                }
+                wishlistButton.setAttribute("aria-label", newState ? "Remove from wishlist" : "Add to wishlist");
+                wishlistButton.setAttribute("title", newState ? "Remove from wishlist" : "Add to wishlist");
+            } catch (error) {
+                console.error("Wishlist error:", error);
+                if (typeof showTemporaryMessage === "function") {
+                    showTemporaryMessage(error.message || "Wishlist update failed.", "error");
+                } else {
+                    alert(error.message || "Wishlist update failed.");
+                }
+            } finally {
+                wishlistButton.dataset.busy = "false";
+            }
+        });
+    });
+    if (typeof window.finePointer !== "undefined") {
+        document.querySelectorAll(".wishlist-btn-home").forEach(function (button) {
+            button.addEventListener("mouseenter", function () {
+                const follower = document.getElementById("cursorFollower");
+                if (follower) {
+                    follower.classList.add("cursor-hover");
+                }
+            });
+            button.addEventListener("mouseleave", function () {
+                const follower = document.getElementById("cursorFollower");
+                if (follower) {
+                    follower.classList.remove("cursor-hover");
+                }
+            });
+        });
+    }
+});
+function searchProduct(category) {
+    const searchInput = document.getElementById("searchInput");
     if (!searchInput) {
-
         return;
-
     }
-
-
-    searchInput.value =
-        category;
-
-
-    const form =
-        document.getElementById(
-            "textSearchForm"
-        );
-
-
+    searchInput.value = category;
+    const form = document.getElementById("textSearchForm");
     if (form) {
-
         form.submit();
-
     }
-
 }
-
 </script>
-
-
-
 </body>
-
 </html>
