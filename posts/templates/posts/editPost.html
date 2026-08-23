@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Product | Trusty Shop</title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/createPost.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+
+        /* =====================================================
+           EXISTING IMAGES
+        ===================================================== */
+
+        .existing-images {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fill, minmax(130px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .existing-image-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+        }
+
+        .existing-image-card img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .existing-image-label {
+            padding: 7px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .cover-label {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #111827;
+            color: white;
+            font-size: 11px;
+            z-index: 2;
+        }
+
+
+        /* =====================================================
+           DELETE IMAGE
+        ===================================================== */
+
+        .delete-image-check {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+
+            width: 30px;
+            height: 30px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(220, 38, 38, 0.9);
+
+            color: white;
+
+            cursor: pointer;
+
+            z-index: 3;
+
+            transition: 0.2s;
+        }
+
+        .delete-image-check:hover {
+            background: #dc2626;
+            transform: scale(1.08);
+        }
+
+        .delete-image-check input {
+            display: none;
+        }
+
+        .delete-image-check i {
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           SIZE ROW
+        ===================================================== */
+
+        .existing-size-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            margin-bottom: 10px;
+            padding: 10px;
+
+            background: #f8fafc;
+
+            border-radius: 10px;
+        }
+
+        .existing-size-name {
+            min-width: 60px;
+            font-weight: 600;
+        }
+
+        .existing-size-row input {
+            flex: 1;
+            min-width: 100px;
+
+            padding: 10px 12px;
+
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+
+            outline: none;
+        }
+
+        .existing-size-row input:focus {
+            border-color: #6366f1;
+        }
+
+
+        /* =====================================================
+           NEW IMAGE PREVIEW
+        ===================================================== */
+
+        .new-preview-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fill, minmax(130px, 1fr));
+
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .new-preview-card {
+            position: relative;
+            overflow: hidden;
+
+            border-radius: 12px;
+
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+
+        .new-preview-card img {
+            width: 100%;
+            height: 130px;
+
+            object-fit: cover;
+
+            display: block;
+        }
+
+        .new-preview-remove {
+            position: absolute;
+
+            top: 7px;
+            right: 7px;
+
+            width: 28px;
+            height: 28px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: rgba(220, 38, 38, 0.9);
+
+            color: white;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        /* =====================================================
+           EDIT NOTICE
+        ===================================================== */
+
+        .edit-notice {
+            display: flex;
+            align-items: flex-start;
+
+            gap: 15px;
+
+            padding: 18px;
+            margin-bottom: 25px;
+
+            border-radius: 14px;
+
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+        }
+
+        .edit-notice i {
+            font-size: 22px;
+            color: #ea580c;
+        }
+
+        .edit-notice h4 {
+            margin: 0 0 5px;
+        }
+
+        .edit-notice p {
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           SAVE BUTTON
+        ===================================================== */
+
+        .save-btn {
+            border: none;
+            cursor: pointer;
+        }
+
+        .save-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+
+        /* =====================================================
+           ERROR BOX
+        ===================================================== */
+
+        .edit-error-box {
+            display: none;
+
+            margin-bottom: 20px;
+            padding: 15px 18px;
+
+            border-radius: 12px;
+
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+
+            color: #991b1b;
+        }
+
+        .edit-error-box.show {
+            display: block;
+        }
+
+        .edit-error-box ul {
+            margin: 8px 0 0 20px;
+            padding: 0;
+        }
+
+
+        /* =====================================================
+           SIZE CHART
+        ===================================================== */
+
+        .size-chart {
+            margin-top: 20px;
+            padding: 15px;
+
+            border-radius: 12px;
+
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .size-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+
+            margin-top: 12px;
+        }
+
+        .size-button {
+            padding: 8px 14px;
+
+            border-radius: 8px;
+
+            border: 1px solid #cbd5e1;
+
+            background: white;
+
+            cursor: pointer;
+        }
+
+        .size-button.active {
+            background: #111827;
+            color: white;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .existing-size-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .existing-size-name {
+                min-width: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     ALERT OVERLAY
+========================================================= -->
+
+<div id="alertOverlay"
+     class="alert-overlay">
+</div>
+
+
+<div id="mouseGlow">
+</div>
+
+
+<div class="bg-circle bg1">
+</div>
+
+<div class="bg-circle bg2">
+</div>
+
+<div class="bg-circle bg3">
+</div>
+
+
+<section class="create-page">
+
+<div class="container">
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<div class="create-header">
+
+    <div class="header-left">
+
+        <span class="small-title">
+            Trusty Shop Marketplace
+        </span>
+
+        <h1>
+            Edit Your Product
+        </h1>
+
+        <p>
+            Update your product information,
+            items, prices, quantities and photos.
+        </p>
+
+        <div class="feature-list">
+
+            <div class="feature">
+
+                <i class="fa-solid fa-pen-to-square"></i>
+
+                Easy Editing
+
+            </div>
+
+
+            <div class="feature">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                Secure Update
+
+            </div>
+
+
+            <div class="feature">
+
+                <i class="fa-solid fa-box"></i>
+
+                Manage Items
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="header-right">
+
+        <div class="hero-card">
+
+            <i class="fa-solid fa-store"></i>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DJANGO MESSAGES
+========================================================= -->
+
+<div id="alertContainer">
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="custom-alert success-alert">
+
+                <div class="alert-icon">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                </div>
+
+
+                <div class="alert-content">
+
+                    <strong>
+                        Success
+                    </strong>
+
+                    <span>
+                        {{ message }}
+                    </span>
+
+                </div>
+
+
+                <button type="button"
+                        class="alert-close"
+                        onclick="closeAlert(this)">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT ERROR BOX
+========================================================= -->
+
+<div id="editErrorBox"
+     class="edit-error-box">
+
+    <strong>
+        Please check the following:
+    </strong>
+
+    <ul id="editErrorList">
+    </ul>
+
+</div>
+
+
+<div class="glass-card">
+
+
+<!-- =========================================================
+     APPROVAL NOTICE
+========================================================= -->
+
+{% if post.status == "approved" %}
+
+<div class="edit-notice">
+
+    <i class="fa-solid fa-circle-info"></i>
+
+    <div>
+
+        <h4>
+            Approval Required
+        </h4>
+
+        <p>
+
+            Because this post is already approved,
+            editing it will send the post back to
+            <strong>Pending</strong>
+            status for admin approval.
+
+        </p>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<!-- =========================================================
+     FORM
+========================================================= -->
+
+<form method="POST"
+      action="{% url 'editPost' post.id %}"
+      enctype="multipart/form-data"
+      id="editPostForm">
+
+    {% csrf_token %}
+
+
+    <!-- =====================================================
+         CATEGORY & CONDITION
+    ===================================================== -->
+
+    <div class="section-title">
+
+        <i class="fa-solid fa-layer-group"></i>
+
+        <div>
+
+            <h2>
+                Category & Condition
+            </h2>
+
+            <p>
+                Update the category and condition
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="product-grid">
+
+
+        <!-- CATEGORY -->
+
+        <div class="input-card">
+
+            <label>
+
+                <i class="fa-solid fa-layer-group"></i>
+
+                Category
+
+            </label>
+
+
+            <select name="category"
+                    id="categorySelect"
+                    required
+                    onchange="checkSizeVisibility()">
+
+                <option value="">
+                    Choose category...
+                </option>
+
+
+                {% for category in categories %}
+
+                    <option
+                        value="{{ category.id }}"
+                        data-size-type="{{ category.size_type }}"
+
+                        {% if post.category.id == category.id %}
+                            selected
+                        {% endif %}
+                    >
+
+                        {{ category.name }}
+
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <!-- CONDITION -->
+
+        <div class="input-card">
+
+            <label>
+
+                <i class="fa-solid fa-tag"></i>
+
+                Product Condition
+
+            </label>
+
+
+            <select name="condition"
+                    id="conditionSelect"
+                    required
+                    onchange="checkSizeVisibility()">
+
+                <option value="new"
+
+                    {% if post.condition == "new" %}
+                        selected
+                    {% endif %}
+
+                >
+
+                    Brand New
+
+                </option>
+
+
+                <option value="used"
+
+                    {% if post.condition == "used" %}
+                        selected
+                    {% endif %}
+
+                >
+
+                    Second Hand
+
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         POST DESCRIPTION
+    ===================================================== -->
+
+    <div class="description-card">
+
+        <label>
+
+            <i class="fa-solid fa-align-left"></i>
+
+            Post Description
+
+        </label>
+
+
+        <textarea
+            name="description"
+            placeholder="Describe your post..."
+            required>{{ post.description }}</textarea>
+
+
+        <small>
+
+            Provide a general description for all items
+            in this post
+
+        </small>
+
+    </div>
+
+
+    <!-- =====================================================
+         ITEMS
+    ===================================================== -->
+
+    <div class="section-title">
+
+        <i class="fa-solid fa-boxes-stacked"></i>
+
+        <div>
+
+            <h2>
+                Items
+            </h2>
+
+            <p>
+                Edit the items included in this post
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div id="itemsContainer">
+
+
+    {% for item in items %}
+
+    <div class="glass-card item-section"
+         id="item{{ forloop.counter0 }}"
+         data-item-id="{{ item.id }}">
+
+
+        <!-- =================================================
+             ITEM HEADER
+        ================================================= -->
+
+        <div class="item-header">
+
+            <h3>
+
+                <i class="fa-solid fa-box"></i>
+
+                Item {{ forloop.counter }}
+
+            </h3>
+
+        </div>
+
+
+        <!-- =================================================
+             ITEM NAME + PRICE
+        ================================================= -->
+
+        <div class="product-grid">
+
+
+            <!-- ITEM NAME -->
+
+            <div class="input-card">
+
+                <label>
+
+                    <i class="fa-solid fa-tag"></i>
+
+                    Item Name *
+
+                </label>
+
+
+                <input
+                    type="text"
+                    name="item_name_{{ forloop.counter0 }}"
+                    value="{{ item.name }}"
+                    required>
+
+            </div>
+
+
+            <!-- PRICE -->
+
+            <div class="input-card">
+
+                <label>
+
+                    <i class="fa-solid fa-money-bill-wave"></i>
+
+                    Price (MMK) *
+
+                </label>
+
+
+                <input
+                    type="number"
+                    name="item_price_{{ forloop.counter0 }}"
+                    value="{{ item.price }}"
+                    min="1"
+                    required>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SIMPLE QUANTITY
+        ================================================= -->
+
+        <div class="product-grid">
+
+            <div class="input-card">
+
+                <label>
+
+                    <i class="fa-solid fa-boxes-stacked"></i>
+
+                    Quantity *
+
+                </label>
+
+
+                <input
+                    type="number"
+                    name="simple_quantity_{{ forloop.counter0 }}"
+                    value="{{ item.simple_quantity }}"
+                    min="1"
+                    required>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             ITEM DESCRIPTION
+        ================================================= -->
+
+        <div class="description-card">
+
+            <label>
+
+                <i class="fa-solid fa-align-left"></i>
+
+                Item Description
+
+            </label>
+
+
+            <textarea
+                name="item_description_{{ forloop.counter0 }}"
+                required>{{ item.description }}</textarea>
+
+        </div>
+
+
+        <!-- =================================================
+             EXISTING IMAGES
+        ================================================= -->
+
+        <div class="description-card">
+
+            <label>
+
+                <i class="fa-solid fa-images"></i>
+
+                Existing Photos
+
+            </label>
+
+
+            {% if item.images.all %}
+
+                <div class="existing-images">
+
+                    {% for image in item.images.all %}
+
+                        <div class="existing-image-card">
+
+
+                            {% if forloop.first %}
+
+                                <span class="cover-label">
+
+                                    <i class="fa-solid fa-star"></i>
+
+                                    Cover
+
+                                </span>
+
+                            {% endif %}
+
+
+                            <img
+                                src="{{ image.image.url }}"
+                                alt="{{ item.name }}">
+
+
+                            <label
+                                class="delete-image-check"
+                                title="Delete this image">
+
+
+                                <input
+                                    type="checkbox"
+                                    name="delete_image_{{ image.id }}"
+                                    value="{{ image.id }}">
+
+
+                                <i class="fa-solid fa-trash"></i>
+
+                            </label>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p>
+                    No existing images.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             ADD NEW IMAGES
+        ================================================= -->
+
+        <label
+            class="item-upload-area"
+            for="fileInput{{ forloop.counter0 }}">
+
+
+            <div class="upload-icon">
+
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+
+            </div>
+
+
+            <h3>
+                Add New Photos
+            </h3>
+
+
+            <p>
+                Click to browse
+            </p>
+
+
+            <span>
+                Choose Files
+            </span>
+
+        </label>
+
+
+        <input
+            type="file"
+            id="fileInput{{ forloop.counter0 }}"
+            name="images_{{ forloop.counter0 }}"
+            multiple
+            accept="image/*"
+            style="display:none"
+            onchange="handleFileSelect(
+                this,
+                {{ forloop.counter0 }}
+            )">
+
+
+        <div
+            class="new-preview-grid"
+            id="previewGrid{{ forloop.counter0 }}">
+
+        </div>
+
+
+        <!-- =================================================
+             SIZE CHART
+        ================================================= -->
+
+        <div
+            id="sizeChart{{ forloop.counter0 }}"
+            class="size-chart"
+            style="display:none">
+
+
+            <label>
+
+                <i class="fa-solid fa-ruler"></i>
+
+                Available Sizes
+
+            </label>
+
+
+            <div
+                class="size-buttons"
+                id="sizeButtons{{ forloop.counter0 }}">
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             EXISTING SIZE VARIANTS
+        ================================================= -->
+
+        {% if item.size_variants.all %}
+
+        <div
+            id="selectedSizes{{ forloop.counter0 }}"
+            class="selected-sizes">
+
+
+            <h4>
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Existing Sizes
+
+            </h4>
+
+
+            {% for variant in item.size_variants.all %}
+
+                <div class="existing-size-row">
+
+
+                    <span class="existing-size-name">
+
+                        {{ variant.size }}
+
+                    </span>
+
+
+                    <input
+                        type="number"
+                        name="quantity_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}"
+                        value="{{ variant.quantity }}"
+                        min="0"
+                        placeholder="Quantity">
+
+
+                    <input
+                        type="number"
+                        name="size_price_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}"
+                        value="{{ variant.price }}"
+                        min="0"
+                        placeholder="Price (MMK)">
+
+
+                    <input
+                        type="hidden"
+                        name="size_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}"
+                        value="{{ variant.size }}">
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+    </div>
+
+
+    {% empty %}
+
+        <p>
+            No items found.
+        </p>
+
+    {% endfor %}
+
+
+    </div>
+
+
+    <!-- =====================================================
+         SAVE BUTTON
+    ===================================================== -->
+
+    <div class="submit-area">
+
+        <button
+            type="submit"
+            id="saveBtn"
+            class="publish-btn save-btn">
+
+            <i class="fa-solid fa-floppy-disk"></i>
+
+            Save Changes
+
+        </button>
+
+    </div>
+
+
+</form>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+
+/* =========================================================
+   CLOSE ALERT
+========================================================= */
+
+function closeAlert(button) {
+
+    const alert = button.closest(".custom-alert");
+
+    if (alert) {
+
+        alert.remove();
+
+    }
+
+}
+
+
+/* =========================================================
+   FILE STORAGE
+========================================================= */
+
+let editFiles = {};
+
+
+/* =========================================================
+   HANDLE FILE SELECT
+========================================================= */
+
+function handleFileSelect(input, itemIdx) {
+
+    const newFiles = Array.from(input.files);
+
+
+    if (!editFiles[itemIdx]) {
+
+        editFiles[itemIdx] = [];
+
+    }
+
+
+    for (const file of newFiles) {
+
+
+        if (!file.type.startsWith("image/")) {
+
+            continue;
+
+        }
+
+
+        if (editFiles[itemIdx].length >= 5) {
+
+            alert(
+                "You can upload a maximum of 5 new images per item."
+            );
+
+            break;
+
+        }
+
+
+        editFiles[itemIdx].push(file);
+
+    }
+
+
+    updatePreview(itemIdx);
+
+
+    /*
+     * Do NOT clear the input here.
+     *
+     * The form will submit the actual file input.
+     *
+     * The JavaScript file list is used for preview only.
+     */
+
+}
+
+
+/* =========================================================
+   UPDATE IMAGE PREVIEW
+========================================================= */
+
+function updatePreview(itemIdx) {
+
+    const preview =
+        document.getElementById(
+            "previewGrid" + itemIdx
+        );
+
+
+    if (!preview) {
+
+        return;
+
+    }
+
+
+    preview.innerHTML = "";
+
+
+    if (!editFiles[itemIdx]) {
+
+        return;
+
+    }
+
+
+    editFiles[itemIdx].forEach(
+        function(file, index) {
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(e) {
+
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "new-preview-card";
+
+
+                    card.innerHTML = `
+
+                        <img
+                            src="${e.target.result}"
+                            alt="New image">
+
+                        <button
+                            type="button"
+                            class="new-preview-remove"
+                            onclick="removeNewImage(
+                                ${itemIdx},
+                                ${index}
+                            )">
+
+                            <i class="fa-solid fa-xmark"></i>
+
+                        </button>
+
+                    `;
+
+
+                    preview.appendChild(card);
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   REMOVE NEW IMAGE FROM PREVIEW
+========================================================= */
+
+function removeNewImage(itemIdx, imageIndex) {
+
+
+    if (!editFiles[itemIdx]) {
+
+        return;
+
+    }
+
+
+    editFiles[itemIdx].splice(
+        imageIndex,
+        1
+    );
+
+
+    updatePreview(itemIdx);
+
+}
+
+
+/* =========================================================
+   CHECK SIZE VISIBILITY
+========================================================= */
+
+function checkSizeVisibility() {
+
+
+    const categorySelect =
+        document.getElementById(
+            "categorySelect"
+        );
+
+
+    const conditionSelect =
+        document.getElementById(
+            "conditionSelect"
+        );
+
+
+    if (!categorySelect ||
+        !conditionSelect) {
+
+        return;
+
+    }
+
+
+    const selectedOption =
+        categorySelect.options[
+            categorySelect.selectedIndex
+        ];
+
+
+    if (!selectedOption) {
+
+        return;
+
+    }
+
+
+    const sizeType =
+        selectedOption.dataset.sizeType;
+
+
+    const condition =
+        conditionSelect.value;
+
+
+    const supportsSizes =
+        sizeType &&
+        sizeType !== "none";
+
+
+    const shouldShowSizes =
+        supportsSizes &&
+        condition === "new";
+
+
+    document
+        .querySelectorAll(".size-chart")
+        .forEach(
+            function(chart) {
+
+                chart.style.display =
+                    shouldShowSizes
+                        ? "block"
+                        : "none";
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   LOAD CATEGORY SIZES
+========================================================= */
+
+function loadSizes() {
+
+    checkSizeVisibility();
+
+}
+
+
+/* =========================================================
+   FORM SUBMIT
+========================================================= */
+
+document
+    .getElementById("editPostForm")
+    .addEventListener(
+        "submit",
+        function() {
+
+
+            const saveBtn =
+                document.getElementById(
+                    "saveBtn"
+                );
+
+
+            /*
+             * IMPORTANT:
+             *
+             * We intentionally do NOT use fetch()
+             * here.
+             *
+             * Your Django edit_post() view currently
+             * returns an HTML redirect response.
+             *
+             * fetch() + response.json() caused:
+             *
+             * JSON.parse:
+             * unexpected character at line 1 column 1
+             *
+             * Normal form submission allows Django
+             * to redirect correctly.
+             */
+
+
+            saveBtn.disabled = true;
+
+
+            saveBtn.innerHTML = `
+
+                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                Saving...
+
+            `;
+
+
+        }
+    );
+
+
+/* =========================================================
+   DELETE IMAGE VISUAL FEEDBACK
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".delete-image-check input"
+    )
+    .forEach(
+        function(checkbox) {
+
+
+            checkbox.addEventListener(
+                "change",
+                function() {
+
+
+                    const card =
+                        this.closest(
+                            ".existing-image-card"
+                        );
+
+
+                    if (!card) {
+
+                        return;
+
+                    }
+
+
+                    if (this.checked) {
+
+                        card.style.opacity =
+                            "0.45";
+
+                        card.style.filter =
+                            "grayscale(1)";
+
+                    } else {
+
+                        card.style.opacity =
+                            "1";
+
+                        card.style.filter =
+                            "none";
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   MOUSE GLOW
+========================================================= */
+
+document.addEventListener(
+    "mousemove",
+    function(e) {
+
+
+        const glow =
+            document.getElementById(
+                "mouseGlow"
+            );
+
+
+        if (glow) {
+
+            glow.style.left =
+                e.clientX + "px";
+
+            glow.style.top =
+                e.clientY + "px";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        checkSizeVisibility();
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>

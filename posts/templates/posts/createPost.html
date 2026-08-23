@@ -62,7 +62,7 @@
 <div class="glass-card">
 
 
-<form method="POST" enctype="multipart/form-data" id="createPostForm">
+<form method="POST" action="{% url 'createPost' %}" enctype="multipart/form-data" id="createPostForm">
 {% csrf_token %}
 
 <div class="section-title">
