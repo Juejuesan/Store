@@ -15,13 +15,71 @@
 
         <div class="detail-header mb-4">
             <div>
-                <h2><i class="fa-solid fa-receipt"></i> Order #{{ order.id }}</h2>
+                <h2><i class="fa-solid fa-receipt"></i> Sale #{{ order.id }}</h2>
                 <p>Placed on {{ order.created_at|date:"F d, Y - H:i" }}</p>
             </div>
             <span class="status-badge status-{{ order.status }}">
                 {{ order.get_status_display }}
             </span>
         </div>
+
+        <!-- Seller Confirmation Section -->
+        {% if order.status == 'pending' and not order.seller_confirmed %}
+        <div class="confirm-section">
+            <div class="confirm-header">
+                <i class="fa-solid fa-location-dot"></i>
+                <h4>Action Required: Confirm Your Pickup Details</h4>
+            </div>
+            <p>Your item has been sold! Please provide your phone number and pickup location so our team can collect the item.</p>
+
+            <form method="POST" action="{% url 'order:confirm_seller_pickup' order.id %}" id="confirmPickupForm">
+                {% csrf_token %}
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="sellerPhone" class="form-label">Phone Number *</label>
+                        <input
+                            type="tel"
+                            name="phone"
+                            id="sellerPhone"
+                            class="form-control"
+                            required
+                            pattern="[0-9]{10,11}"
+                            minlength="10"
+                            maxlength="11"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)"
+                            placeholder="Enter 10-11 digit phone number"
+                        >
+                    </div>
+                    <div class="col-md-6">
+                        <label for="sellerLocation" class="form-label">Pickup Location *</label>
+                        <input
+                            type="text"
+                            name="location"
+                            id="sellerLocation"
+                            class="form-control"
+                            required
+                            maxlength="200"
+                            placeholder="Enter your pickup address"
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3" id="confirmBtn">
+                    <i class="fa-solid fa-check"></i> Confirm Pickup Details
+                </button>
+            </form>
+        </div>
+        {% elif order.seller_confirmed %}
+        <div class="confirmed-info">
+            <i class="fa-solid fa-check-circle"></i>
+            <div>
+                <strong>Pickup Details Confirmed!</strong>
+                <p><strong>Phone:</strong> {{ order.seller_phone }}</p>
+                <p><strong>Location:</strong> {{ order.seller_location }}</p>
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Order Info -->
         <div class="row g-4">
@@ -32,11 +90,10 @@
 
                     {% for order_item in order.items.all %}
                     <div class="detail-item">
-                        <!-- Main Item Image -->
                         <div class="item-image">
                             {% with first_image=order_item.item.images.first %}
                                 {% if first_image %}
-                                    <img src="{{ first_image.image.url }}" alt="{{ order_item.item_name }}">
+                                    <img src="{{ first_image.image.url }}" alt="{{ order_item.item_name }}" class="main-item-image" data-lightbox="{{ first_image.image.url }}">
                                 {% else %}
                                     <div class="no-image"><i class="fa-solid fa-image"></i></div>
                                 {% endif %}
@@ -53,7 +110,6 @@
                         </div>
                     </div>
 
-                    <!-- ALL ITEM IMAGES -->
                     {% if order_item.item.images.count > 1 %}
                     <div class="item-all-images">
                         <span class="all-images-label"><i class="fa-solid fa-images"></i> All Photos:</span>
@@ -63,6 +119,7 @@
                                     src="{{ image.image.url }}"
                                     alt="{{ order_item.item_name }} image {{ forloop.counter }}"
                                     class="thumb-image"
+                                    data-lightbox="{{ image.image.url }}"
                                 >
                             {% endfor %}
                         </div>
@@ -131,29 +188,38 @@
 
             <!-- Sidebar -->
             <div class="col-lg-4">
-                <!-- Buyer Info -->
+                <!-- Buyer Info (Name only, no phone/location) -->
                 <div class="card-box">
                     <h4 class="card-title"><i class="fa-solid fa-user"></i> Buyer Information</h4>
                     <div class="buyer-info">
                         <p><strong>{{ order.user.fullName }}</strong></p>
-                        <p><i class="fa-solid fa-user"></i> {{ order.user.user.username }}</p>
-                        {% if order.phone_number %}
-                            <p><i class="fa-solid fa-phone"></i> {{ order.phone_number }}</p>
-                        {% endif %}
-                        {% if order.location %}
-                            <p><i class="fa-solid fa-location-dot"></i> {{ order.location }}</p>
-                        {% endif %}
+                        <p><i class="fa-solid fa-user"></i> @{{ order.user.user.username }}</p>
                     </div>
                 </div>
 
-                <!-- Payment Info -->
+                <!-- Payment Info with Tax Breakdown -->
                 <div class="card-box mt-4">
-                    <h4 class="card-title"><i class="fa-solid fa-wallet"></i> Payment</h4>
+                    <h4 class="card-title"><i class="fa-solid fa-wallet"></i> Payment Summary</h4>
                     <div class="payment-info">
                         <p>
-                            <span>Total:</span>
+                            <span>Total Amount:</span>
                             <strong>{{ order.total_amount|intcomma }} MMK</strong>
                         </p>
+                        <p>
+                            <span>Platform Fee (10%):</span>
+                            <span style="color: #dc2626; font-weight: 600;">
+                                -{% widthratio order.total_amount 10 1 as tax %}{{ tax|intcomma }} MMK
+                            </span>
+                        </p>
+                        <hr style="margin: 10px 0; border-color: #e2e8f0;">
+                        <p>
+                            <span><strong>You Earn:</strong></span>
+                            <strong style="color: #16a34a; font-size: 16px;">
+                                {% widthratio order.total_amount 100 90 as payout %}
+                                {{ payout|intcomma }} MMK
+                            </strong>
+                        </p>
+                        <hr style="margin: 10px 0; border-color: #e2e8f0;">
                         <p>
                             <span>Status:</span>
                             <span class="payment-badge payment-{{ order.payment_status }}">
@@ -167,4 +233,8 @@
 
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/sale_detail.js' %}"></script>
 {% endblock %}

@@ -22,14 +22,6 @@ from django.core.paginator import Paginator
 # =========================================================
 
 def check_and_auto_ready_orders():
-    """
-    Automatically change expired pending orders
-    to ready_for_pickup.
-
-    The notification is handled inside OrderService
-    so that duplicate notifications are avoided.
-    """
-
     return OrderService.auto_ready_orders()
 
 
@@ -238,6 +230,7 @@ def order_detail(request, order_id):
         order.status == 'pending'
         and order.auto_ready_at
         and timezone.now() >= order.auto_ready_at
+        and order.seller_confirmed
     ):
         order.mark_ready_for_pickup()
         order.refresh_from_db()
@@ -680,3 +673,85 @@ def sale_detail(request, order_id):
         "sale_detail.html",
         context
     )
+
+# =========================================================
+# SELLER CONFIRM PICKUP DETAILS
+# =========================================================
+
+@login_required
+def confirm_seller_pickup(request, order_id):
+    """
+    Seller confirms their pickup location and phone number.
+    Order will only auto-ready when BOTH:
+    1. Seller confirms details
+    2. Countdown finishes
+    """
+
+    # -----------------------------------------------------
+    # GET ORDER
+    # -----------------------------------------------------
+
+    order = get_object_or_404(
+        Order,
+        id=order_id,
+        seller=request.user.profile,
+        status="pending"
+    )
+
+    # -----------------------------------------------------
+    # HANDLE FORM SUBMISSION
+    # -----------------------------------------------------
+
+    if request.method == "POST":
+
+        phone = request.POST.get("phone", "").strip()
+        location = request.POST.get("location", "").strip()
+
+        # -------------------------------------------------
+        # VALIDATE PHONE
+        # -------------------------------------------------
+
+        if not phone:
+            messages.error(request, "Phone number is required.")
+            return redirect("order:confirm_seller_pickup", order_id=order.id)
+
+        if not phone.isdigit():
+            messages.error(request, "Phone number must contain only numbers.")
+            return redirect("order:confirm_seller_pickup", order_id=order.id)
+
+        if len(phone) < 10 or len(phone) > 11:
+            messages.error(request, "Phone number must be 10-11 digits.")
+            return redirect("order:confirm_seller_pickup", order_id=order.id)
+
+        # -------------------------------------------------
+        # VALIDATE LOCATION
+        # -------------------------------------------------
+
+        if not location:
+            messages.error(request, "Pickup location is required.")
+            return redirect("order:confirm_seller_pickup", order_id=order.id)
+
+        # -------------------------------------------------
+        # SAVE CONFIRMATION
+        # -------------------------------------------------
+
+        try:
+            order.confirm_seller_details(phone, location)
+            messages.success(
+                request,
+                "Pickup details confirmed! Our team will contact you soon."
+            )
+            return redirect("order:order_detail", order_id=order.id)
+        except ValueError as e:
+            messages.error(request, str(e))
+            return redirect("order:confirm_seller_pickup", order_id=order.id)
+
+    # -----------------------------------------------------
+    # DISPLAY FORM
+    # -----------------------------------------------------
+
+    context = {
+        "order": order,
+    }
+
+    return render(request, "confirm_seller_pickup.html", context)

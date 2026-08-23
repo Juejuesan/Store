@@ -861,7 +861,8 @@ def read_notification(request, noti_id):
 def check_and_auto_ready_orders():
     """
     Automatically change pending orders to
-    ready_for_pickup after auto_ready_at.
+    ready_for_pickup after auto_ready_at AND
+    seller confirmed pickup details.
     """
 
     now = timezone.now()
@@ -870,12 +871,12 @@ def check_and_auto_ready_orders():
         status="pending",
         auto_ready_at__isnull=False,
         auto_ready_at__lte=now,
+        seller_confirmed=True,
     ).update(
         status="ready_for_pickup",
         ready_for_pickup_at=now,
         updated_at=now,
     )
-
 
 # =========================================================
 # ORDER STATUS COUNTS
@@ -1344,33 +1345,56 @@ def update_order_status(request, order_id, new_status):
 
 
         # =================================================
-        # CANCELLED
+        # CANCELLED - FIXED FOR ADMIN
         # =================================================
 
         elif new_status == "cancelled":
 
-            if not order.can_cancel:
-
+            # Admin can cancel pending OR ready_for_pickup
+            if order.status not in ["pending", "ready_for_pickup"]:
                 messages.error(
                     request,
-                    "Order cannot be cancelled.",
+                    "Order cannot be cancelled at this stage.",
                 )
-
                 return redirect(
                     "admin_order_detail",
                     order_id=order.id,
                 )
 
+            # Use by_admin=True to bypass user cancellation checks
             order.cancel_order(
-                "Cancelled by admin"
+                "Cancelled by admin",
+                by_admin=True
             )
 
+            AdminActivity.objects.create(
+                admin=request.user,
+                action="cancel_order",
+                message=(
+                    f"You cancelled Order #{order.id}. "
+                    f"Refund of MMK {order.total_amount:,.0f} "
+                    f"processed to buyer."
+                ),
+            )
+
+            # Buyer notification
             Notification.objects.create(
                 user=order.user.user,
                 message=(
-                    f"Your order has been cancelled. "
+                    f"Your order has been cancelled by admin. "
                     f"MMK {order.total_amount:,.0f} "
                     f"has been refunded to your wallet."
+                ),
+                notification_type="order_cancelled",
+                target_url=f"/orders/{order.id}/",
+            )
+
+            # Seller notification
+            Notification.objects.create(
+                user=order.seller.user,
+                message=(
+                    f"Order #{order.id} has been cancelled. "
+                    f"The item will not be picked up."
                 ),
                 notification_type="order_cancelled",
                 target_url=f"/orders/{order.id}/",
@@ -1380,7 +1404,7 @@ def update_order_status(request, order_id, new_status):
                 request,
                 (
                     f"Order #{order.id} cancelled. "
-                    f"Refund processed."
+                    f"Refund processed to buyer."
                 ),
             )
 

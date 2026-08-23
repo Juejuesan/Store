@@ -10,775 +10,275 @@
 
 {% block content %}
 
-<!-- =========================================================
-     MESSAGE ALERT
-     MODERN • CENTERED • CLICK OK TO CLOSE
-========================================================= -->
-
+<!-- MESSAGE ALERT -->
 {% if messages %}
-<div
-    id="messageOverlay"
-    class="message-overlay"
-    data-message-type="normal"
->
+<div id="messageOverlay" class="message-overlay" data-message-type="normal">
     <div class="message-box">
-
         {% for message in messages %}
-
         <div class="message-content">
-
-            <!-- ICON -->
             <div class="message-icon">
-
                 {% if 'success' in message.tags %}
-
                     <i class="fa-solid fa-circle-check"></i>
-
                 {% elif 'error' in message.tags %}
-
                     <i class="fa-solid fa-circle-xmark"></i>
-
                 {% elif 'warning' in message.tags %}
-
                     <i class="fa-solid fa-triangle-exclamation"></i>
-
                 {% else %}
-
                     <i class="fa-solid fa-circle-info"></i>
-
                 {% endif %}
-
             </div>
-
-
-            <!-- MESSAGE -->
             <div class="message-text">
-
                 {% if 'success' in message.tags %}
-
                     <h3>Success</h3>
-
                 {% elif 'error' in message.tags %}
-
                     <h3>Error</h3>
-
                 {% elif 'warning' in message.tags %}
-
                     <h3>Warning</h3>
-
                 {% else %}
-
                     <h3>Information</h3>
-
                 {% endif %}
-
-                <p>
-                    {{ message }}
-                </p>
-
+                <p>{{ message }}</p>
             </div>
-
-
-            <!-- OK BUTTON -->
-            <button
-                type="button"
-                class="message-ok-btn"
-                id="messageOkBtn"
-            >
-                <i class="fa-solid fa-check"></i>
-                OK
+            <button type="button" class="message-ok-btn" id="messageOkBtn">
+                <i class="fa-solid fa-check"></i> OK
             </button>
-
         </div>
-
         {% endfor %}
-
     </div>
 </div>
 {% endif %}
 
-
-<!-- =========================================================
-     ORDER DETAIL
-========================================================= -->
-
+<!-- ORDER DETAIL -->
 <div class="order-detail-container">
+    <!-- Back Button -->
+    <a href="{% url 'order:order_list' %}" class="back-btn mb-3">
+        <i class="fa-solid fa-arrow-left"></i> Back to Orders
+    </a>
 
     <!-- Header -->
     <div class="order-detail-header">
-
         <div class="header-left">
-            
-
-            <h2>
-                Order #{{ order.id }}
-            </h2>
-
+            <h2>Order #{{ order.id }}</h2>
         </div>
-
-
         <div class="header-right">
-
             <span class="status-badge status-{{ order.status }}">
                 {{ order.get_status_display }}
             </span>
-
         </div>
-
     </div>
 
-
-    <!-- =====================================================
-         STATUS MESSAGE
-    ====================================================== -->
-
+    <!-- STATUS MESSAGE -->
     <div class="status-message status-{{ order.status }}">
-
         {% if order.status == 'pending' %}
-
             <i class="fa-solid fa-clock"></i>
-
-            <span>
-                Your order is pending. Waiting for confirmation.
-            </span>
-
+            <span>Your order is pending. Waiting for confirmation.</span>
         {% elif order.status == 'ready_for_pickup' %}
-
             <i class="fa-solid fa-box-open"></i>
-
-            <span>
-                We are going to pick up your items from the seller.
-            </span>
-
+            <span>We are going to pick up your items from the seller.</span>
         {% elif order.status == 'picked_up' %}
-
             <i class="fa-solid fa-hand"></i>
-
-            <span>
-                We got the items for you! Preparing for delivery.
-            </span>
-
+            <span>We got the items for you! Preparing for delivery.</span>
         {% elif order.status == 'completed' %}
-
             <i class="fa-solid fa-check-circle"></i>
-
-            <span>
-                Delivered successfully! Thank you for shopping with us.
-            </span>
-
+            <span>Delivered successfully! Thank you for shopping with us.</span>
         {% elif order.status == 'cancelled' %}
-
             <i class="fa-solid fa-ban"></i>
-
-            <span>
-                Order cancelled. Refund processed.
-            </span>
-
+            <span>Order cancelled. Refund processed.</span>
         {% endif %}
-
     </div>
 
-
-    <!-- =====================================================
-         CANCELLATION WARNING
-    ====================================================== -->
-
+    <!-- CANCELLATION WARNING -->
     {% if is_buyer and order.status == 'pending' %}
-
         {% if not can_cancel_more %}
-
-            <!-- Monthly limit reached -->
-
             <div class="cancellation-limit-alert">
-
                 <i class="fa-solid fa-exclamation-triangle"></i>
-
                 <div>
-
-                    <strong>
-                        Cancellation Limit Reached
-                    </strong>
-
-                    <p>
-                        You have reached your monthly cancellation
-                        limit ({{ max_cancellations }} cancellations).
-                        You cannot cancel this order.
-                    </p>
-
+                    <strong>Cancellation Limit Reached</strong>
+                    <p>You have reached your monthly cancellation limit ({{ max_cancellations }} cancellations). You cannot cancel this order.</p>
                 </div>
-
             </div>
-
-
         {% elif order.can_cancel %}
-
-            <!-- Can cancel -->
-
             <div class="cancellation-warning">
-
                 <div class="warning-header">
-
-                    <span class="warning-icon">
-                        ⚠️
-                    </span>
-
-                    <h3>
-                        Cancellation Window
-                    </h3>
-
+                    <span class="warning-icon">⚠️</span>
+                    <h3>Cancellation Window</h3>
                 </div>
-
-
-                <p>
-                    You can cancel this order until:
-
-                    <strong>
-                        {{ order.cancel_deadline|date:"M d, Y H:i" }}
-                    </strong>
-                </p>
-
-
-                <!-- Countdown -->
-
-                <div
-                    class="countdown-timer"
-                    data-cancel-deadline="{{ order.cancel_deadline|date:'c' }}"
-                >
-
+                <p>You can cancel this order until: <strong>{{ order.cancel_deadline|date:"M d, Y H:i" }}</strong></p>
+                <div class="countdown-timer" data-cancel-deadline="{{ order.cancel_deadline|date:'c' }}">
                     <i class="fa-solid fa-hourglass-half"></i>
-
-                    <span class="countdown-text">
-                        Loading...
-                    </span>
-
+                    <span class="countdown-text">Loading...</span>
                 </div>
-
-
                 <p class="cancellation-info-text">
-
-                    Cancellations used this month:
-
-                    {{ cancellation_count }}
-                    /
-                    {{ max_cancellations }}
-
+                    Cancellations used this month: {{ cancellation_count }} / {{ max_cancellations }}
                 </p>
-
-
-                <!-- Cancel Form -->
-
-                <form
-                    method="post"
-                    action="{% url 'order:cancel_order' order.id %}"
-                    class="cancel-form"
-                    id="cancelOrderForm"
-                >
-
+                <form method="post" action="{% url 'order:cancel_order' order.id %}" class="cancel-form" id="cancelOrderForm">
                     {% csrf_token %}
-
-
                     <div class="form-group">
-
-                        <label for="cancellation_reason">
-                            Cancellation Reason (optional):
-                        </label>
-
-                        <textarea
-                            name="reason"
-                            id="cancellation_reason"
-                            rows="3"
-                            placeholder="Please let us know why you're cancelling..."
-                        ></textarea>
-
+                        <label for="cancellation_reason">Cancellation Reason (optional):</label>
+                        <textarea name="reason" id="cancellation_reason" rows="3" placeholder="Please let us know why you're cancelling..."></textarea>
                     </div>
-
-
-                    <button
-                        type="submit"
-                        class="btn btn-cancel"
-                        id="cancelOrderBtn"
-                    >
-
-                        <i class="fa-solid fa-ban"></i>
-
-                        Cancel Order
-
+                    <button type="submit" class="btn btn-cancel" id="cancelOrderBtn">
+                        <i class="fa-solid fa-ban"></i> Cancel Order
                     </button>
-
                 </form>
-
             </div>
-
-
         {% else %}
-
-            <!-- Countdown expired -->
-
             <div class="cancellation-expired">
-
                 <i class="fa-solid fa-lock"></i>
-
                 <div>
-
-                    <strong>
-                        Cancellation Window Expired
-                    </strong>
-
-                    <p>
-                        You can no longer cancel this order.
-                    </p>
-
+                    <strong>Cancellation Window Expired</strong>
+                    <p>You can no longer cancel this order.</p>
                 </div>
-
             </div>
-
         {% endif %}
-
     {% endif %}
 
-
-    <!-- =====================================================
-         ORDER INFO GRID
-    ====================================================== -->
-
+    <!-- ORDER INFO GRID -->
     <div class="order-info-grid">
-
-        <!-- Order Information -->
-
         <div class="info-card">
-
-            <h3>
-                Order Information
-            </h3>
-
-
+            <h3>Order Information</h3>
             <div class="info-row">
-
-                <span class="info-label">
-                    Order ID:
-                </span>
-
-                <span>
-                    #{{ order.id }}
-                </span>
-
+                <span class="info-label">Order ID:</span>
+                <span>#{{ order.id }}</span>
             </div>
-
-
             <div class="info-row">
-
-                <span class="info-label">
-                    Status:
-                </span>
-
-                <span class="status-badge status-{{ order.status }}">
-                    {{ order.get_status_display }}
-                </span>
-
+                <span class="info-label">Status:</span>
+                <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
             </div>
-
-
             <div class="info-row">
-
-                <span class="info-label">
-                    Payment Status:
-                </span>
-
-                <span>
-                    {{ order.get_payment_status_display }}
-                </span>
-
+                <span class="info-label">Payment Status:</span>
+                <span>{{ order.get_payment_status_display }}</span>
             </div>
-
-
             <div class="info-row">
-
-                <span class="info-label">
-                    Total Amount:
-                </span>
-
-                <span class="total-amount">
-                    {{ order.total_amount|intcomma }} Ks
-                </span>
-
+                <span class="info-label">Total Amount:</span>
+                <span class="total-amount">{{ order.total_amount|intcomma }} Ks</span>
             </div>
-
-
             <div class="info-row">
-
-                <span class="info-label">
-                    Order Date:
-                </span>
-
-                <span>
-                    {{ order.created_at|date:"M d, Y H:i" }}
-                </span>
-
+                <span class="info-label">Order Date:</span>
+                <span>{{ order.created_at|date:"M d, Y H:i" }}</span>
             </div>
-
+            <div class="info-row">
+                <span class="info-label">Seller:</span>
+                <span>{{ order.seller.fullName|default:order.seller.user.username }}</span>
+            </div>
         </div>
-
-
-        <!-- Seller / Buyer Information -->
-
-        <div class="info-card">
-
-            {% if is_buyer %}
-
-                <h3>
-                    Seller Information
-                </h3>
-
-                <div class="info-row">
-
-                    <span class="info-label">
-                        Username:
-                    </span>
-
-                    <span>
-                        {{ order.seller.user.username }}
-                    </span>
-
-                </div>
-
-            {% else %}
-
-                <h3>
-                    Buyer Information
-                </h3>
-
-                <div class="info-row">
-
-                    <span class="info-label">
-                        Username:
-                    </span>
-
-                    <span>
-                        {{ order.user.user.username }}
-                    </span>
-
-                </div>
-
-
-                <div class="info-row">
-
-                    <span class="info-label">
-                        Phone:
-                    </span>
-
-                    <span>
-                        {{ order.user.phone_number|default:"-" }}
-                    </span>
-
-                </div>
-
-            {% endif %}
-
-
-            {% if order.phone_number %}
-
-            <div class="info-row">
-
-                <span class="info-label">
-                    Contact Phone:
-                </span>
-
-                <span>
-                    {{ order.phone_number }}
-                </span>
-
-            </div>
-
-            {% endif %}
-
-
-            {% if order.location %}
-
-            <div class="info-row">
-
-                <span class="info-label">
-                    Pickup Location:
-                </span>
-
-                <span>
-                    {{ order.location }}
-                </span>
-
-            </div>
-
-            {% endif %}
-
-        </div>
-
     </div>
 
-
-    <!-- =====================================================
-         ORDER TIMELINE
-    ====================================================== -->
-
+    <!-- ORDER TIMELINE -->
     <div class="order-timeline">
-
-        <h3>
-            Order Timeline
-        </h3>
-
+        <h3>Order Timeline</h3>
         <div class="timeline">
-
             <div class="timeline-item completed">
-
                 <div class="timeline-marker"></div>
-
                 <div class="timeline-content">
-
-                    <h4>
-                        Order Placed
-                    </h4>
-
-                    <p>
-                        {{ order.pending_at|date:"M d, Y H:i" }}
-                    </p>
-
+                    <h4>Order Placed</h4>
+                    <p>{{ order.pending_at|date:"M d, Y H:i" }}</p>
                 </div>
-
             </div>
-
-
             {% if order.ready_for_pickup_at %}
-
             <div class="timeline-item completed">
-
                 <div class="timeline-marker"></div>
-
                 <div class="timeline-content">
-
-                    <h4>
-                        Ready for Pickup
-                    </h4>
-
-                    <p>
-                        {{ order.ready_for_pickup_at|date:"M d, Y H:i" }}
-                    </p>
-
+                    <h4>Ready for Pickup</h4>
+                    <p>{{ order.ready_for_pickup_at|date:"M d, Y H:i" }}</p>
                 </div>
-
             </div>
-
             {% endif %}
-
-
             {% if order.picked_up_at %}
-
             <div class="timeline-item completed">
-
                 <div class="timeline-marker"></div>
-
                 <div class="timeline-content">
-
-                    <h4>
-                        Picked Up by Our Team
-                    </h4>
-
-                    <p>
-                        {{ order.picked_up_at|date:"M d, Y H:i" }}
-                    </p>
-
+                    <h4>Picked Up by Our Team</h4>
+                    <p>{{ order.picked_up_at|date:"M d, Y H:i" }}</p>
                 </div>
-
             </div>
-
             {% endif %}
-
-
             {% if order.completed_at %}
-
             <div class="timeline-item completed">
-
                 <div class="timeline-marker"></div>
-
                 <div class="timeline-content">
-
-                    <h4>
-                        Delivered Successfully
-                    </h4>
-
-                    <p>
-                        {{ order.completed_at|date:"M d, Y H:i" }}
-                    </p>
-
+                    <h4>Delivered Successfully</h4>
+                    <p>{{ order.completed_at|date:"M d, Y H:i" }}</p>
                 </div>
-
             </div>
-
             {% endif %}
-
-
             {% if order.cancelled_at %}
-
             <div class="timeline-item cancelled">
-
                 <div class="timeline-marker"></div>
-
                 <div class="timeline-content">
-
-                    <h4>
-                        Cancelled
-                    </h4>
-
-                    <p>
-                        {{ order.cancelled_at|date:"M d, Y H:i" }}
-                    </p>
-
+                    <h4>Cancelled</h4>
+                    <p>{{ order.cancelled_at|date:"M d, Y H:i" }}</p>
                 </div>
-
             </div>
-
             {% endif %}
-
         </div>
-
     </div>
 
-
-    <!-- =====================================================
-         ORDER ITEMS
-    ====================================================== -->
-
+    <!-- ORDER ITEMS -->
     <div class="order-items-section">
-
-        <h3>
-            Order Items
-        </h3>
-
-
+        <h3>Order Items</h3>
         <div class="order-items-list">
-
             {% for order_item in order.items.all %}
-
             <div class="order-item-card">
-
                 <div class="order-item-image">
-
                     {% with first_image=order_item.item.images.first %}
-
                         {% if first_image %}
-
-                            <img
-                                src="{{ first_image.image.url }}"
-                                alt="{{ order_item.item_name }}"
-                            >
-
+                            <img src="{{ first_image.image.url }}" alt="{{ order_item.item_name }}" class="main-item-image" data-lightbox="{{ first_image.image.url }}">
                         {% else %}
-
-                            <div class="item-placeholder">
-                                📦
-                            </div>
-
+                            <div class="item-placeholder">📦</div>
                         {% endif %}
-
                     {% endwith %}
 
+                    {% if order_item.item.images.count > 1 %}
+                    <div class="item-thumbnails">
+                        {% for image in order_item.item.images.all %}
+                            <img src="{{ image.image.url }}" alt="{{ order_item.item_name }} {{ forloop.counter }}" class="item-thumb" data-lightbox="{{ image.image.url }}">
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
-
 
                 <div class="order-item-details">
-
-                    <h4 class="order-item-name">
-                        {{ order_item.item_name }}
-                    </h4>
-
-
+                    <h4 class="order-item-name">{{ order_item.item_name }}</h4>
                     {% if order_item.size_variant %}
-
-                    <p class="order-item-size">
-                        Size:
-                        {{ order_item.size_variant.size }}
-                    </p>
-
+                    <p class="order-item-size">Size: {{ order_item.size_variant.size }}</p>
                     {% endif %}
-
-
                     {% if order_item.item.post %}
-
                     <p class="order-item-category">
-
                         {{ order_item.item.post.category.name }}
-
                         {% if order_item.item.post.condition == 'new' %}
-
-                            <span class="condition-badge new">
-                                New
-                            </span>
-
+                            <span class="condition-badge new">New</span>
                         {% else %}
-
-                            <span class="condition-badge used">
-                                Second Hand
-                            </span>
-
+                            <span class="condition-badge used">Second Hand</span>
                         {% endif %}
-
                     </p>
-
                     {% endif %}
-
                 </div>
-
 
                 <div class="order-item-pricing">
-
                     <div class="price-row">
-                        <span>
-                            Unit:
-                            {{ order_item.unit_price|intcomma }} Ks
-                        </span>
+                        <span>Unit: {{ order_item.unit_price|intcomma }} Ks</span>
                     </div>
-
-
                     <div class="price-row">
-                        <span>
-                            Qty:
-                            {{ order_item.quantity }}
-                        </span>
+                        <span>Qty: {{ order_item.quantity }}</span>
                     </div>
-
-
                     <div class="price-row total">
-                        <span>
-                            {{ order_item.total_price|intcomma }} Ks
-                        </span>
+                        <span>{{ order_item.total_price|intcomma }} Ks</span>
                     </div>
-
                 </div>
-
             </div>
-
             {% endfor %}
-
         </div>
-
 
         <div class="order-total-summary">
-
-            <span>
-                Total Amount:
-            </span>
-
-            <span class="grand-total">
-                {{ order.total_amount|intcomma }} Ks
-            </span>
-
+            <span>Total Amount:</span>
+            <span class="grand-total">{{ order.total_amount|intcomma }} Ks</span>
         </div>
-
     </div>
-
 </div>
 
 {% endblock %}
 
-
 {% block extra_js %}
-
 <script src="{% static 'js/order_detail.js' %}"></script>
-
 {% endblock %}

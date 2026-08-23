@@ -1,0 +1,126 @@
+/* Order Item Row */
+.order-item-row {
+    display: flex;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f1f5f9;
+    align-items: center;
+}
+
+.order-item-row:last-child {
+    border-bottom: none;
+}
+
+.item-images {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+}
+
+.order-item-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.item-all-thumbs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.item-thumb {
+    width: 25px;
+    height: 25px;
+    object-fit: cover;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.size-tag {
+    font-size: 11px;
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 2px solid #e2e8f0;
+}
+
+/* Lightbox */
+.admin-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    cursor: pointer;
+}
+
+.admin-lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.admin-lightbox-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000000;
+}
+
+/* Card Header Colors */
+.card-header.bg-warning {
+    background: #f59e0b !important;
+    color: #000 !important;
+}
+
+.card-header.bg-warning h5 {
+    color: #000 !important;
+    margin: 0;
+}
+
+.card-header.bg-info {
+    background: #06b6d4 !important;
+    color: #fff !important;
+}
+
+.card-header.bg-info h5 {
+    color: #fff !important;
+    margin: 0;
+}

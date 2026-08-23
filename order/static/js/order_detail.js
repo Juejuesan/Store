@@ -1,625 +1,290 @@
 // =========================================================
 // ORDER DETAIL JAVASCRIPT
+// CLEAN • STABLE • RESPONSIVE
 // =========================================================
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
 
-    // =====================================================
-    // 1. MESSAGE ALERT
-    // MODERN • CENTERED • CLICK OK TO CLOSE
-    // =====================================================
+    /* =====================================================
+       1. COUNTDOWN TIMER FOR CANCELLATION
+    ===================================================== */
 
-    const messageOverlay =
-        document.getElementById('messageOverlay');
-
-    const messageOkBtn =
-        document.getElementById('messageOkBtn');
-
-
-    // -----------------------------------------------------
-    // CLOSE MESSAGE FUNCTION
-    // -----------------------------------------------------
-
-    function closeMessageAlert() {
-
-        if (!messageOverlay) {
-            return;
-        }
-
-        // Prevent multiple clicks
-        if (
-            messageOverlay.classList.contains(
-                'message-closing'
-            )
-        ) {
-            return;
-        }
-
-        // Start closing animation
-        messageOverlay.classList.add(
-            'message-closing'
-        );
-
-        // Remove after animation
-        setTimeout(function () {
-
-            if (
-                messageOverlay &&
-                document.body.contains(
-                    messageOverlay
-                )
-            ) {
-                messageOverlay.remove();
-            }
-
-        }, 350);
-    }
-
-
-    // -----------------------------------------------------
-    // SHOW MESSAGE
-    // -----------------------------------------------------
-
-    if (messageOverlay) {
-
-        messageOverlay.style.display = 'flex';
-        messageOverlay.style.opacity = '1';
-
-
-        // -------------------------------------------------
-        // OK BUTTON
-        // -------------------------------------------------
-
-        if (messageOkBtn) {
-
-            messageOkBtn.addEventListener(
-                'click',
-                function () {
-
-                    closeMessageAlert();
-
-                }
-            );
-
-        }
-
-
-        // -------------------------------------------------
-        // CLICK OUTSIDE BOX TO CLOSE
-        // -------------------------------------------------
-
-        messageOverlay.addEventListener(
-            'click',
-            function (event) {
-
-                if (
-                    event.target ===
-                    messageOverlay
-                ) {
-
-                    closeMessageAlert();
-
-                }
-
-            }
-        );
-
-
-        // -------------------------------------------------
-        // ESC KEY TO CLOSE
-        // -------------------------------------------------
-
-        document.addEventListener(
-            'keydown',
-            function (event) {
-
-                if (
-                    event.key === 'Escape'
-                ) {
-
-                    closeMessageAlert();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    // =====================================================
-    // 2. COUNTDOWN TIMER FOR CANCELLATION
-    // =====================================================
-
-    const countdownElement =
-        document.querySelector(
-            '.countdown-timer'
-        );
-
+    const countdownElement = document.querySelector('.countdown-timer');
 
     if (countdownElement) {
-
-        const deadline =
-            new Date(
-                countdownElement.getAttribute(
-                    'data-cancel-deadline'
-                )
-            );
-
-
-        const countdownText =
-            countdownElement.querySelector(
-                '.countdown-text'
-            );
-
-
-        const cancelForm =
-            document.getElementById(
-                'cancelOrderForm'
-            );
-
-
-        const cancelBtn =
-            document.getElementById(
-                'cancelOrderBtn'
-            );
-
-
-        const warningBox =
-            document.querySelector(
-                '.cancellation-warning'
-            );
-
-
-        // -------------------------------------------------
-        // UPDATE COUNTDOWN
-        // -------------------------------------------------
+        const deadline = new Date(countdownElement.getAttribute('data-cancel-deadline'));
+        const countdownText = countdownElement.querySelector('.countdown-text');
+        const cancelForm = document.getElementById('cancelOrderForm');
+        const cancelBtn = document.getElementById('cancelOrderBtn');
+        const warningBox = document.querySelector('.cancellation-warning');
 
         function updateCountdown() {
-
-            const now =
-                new Date();
-
-
-            const timeLeft =
-                deadline - now;
-
-
-            // ---------------------------------------------
-            // COUNTDOWN FINISHED
-            // ---------------------------------------------
+            const now = new Date();
+            const timeLeft = deadline - now;
 
             if (timeLeft <= 0) {
-
                 if (countdownText) {
-
-                    countdownText.textContent =
-                        'Cancellation window expired';
-
+                    countdownText.textContent = 'Cancellation window expired';
                 }
-
-
-                countdownElement.classList.add(
-                    'expired'
-                );
-
-
-                // Hide cancel form
+                countdownElement.classList.add('expired');
 
                 if (cancelForm) {
-
-                    cancelForm.style.display =
-                        'none';
-
+                    cancelForm.style.display = 'none';
                 }
-
-
-                // Disable cancel button
-
-                if (cancelBtn) {
-
-                    cancelBtn.disabled = true;
-
-                }
-
-
-                // Replace warning box
 
                 if (warningBox) {
-
                     warningBox.innerHTML = `
-
                         <div class="cancellation-expired">
-
                             <i class="fa-solid fa-lock"></i>
-
                             <div>
-
-                                <strong>
-                                    Cancellation Window Expired
-                                </strong>
-
-                                <p>
-                                    You can no longer cancel this order.
-                                    Our team will process your order soon.
-                                </p>
-
+                                <strong>Cancellation Window Expired</strong>
+                                <p>You can no longer cancel this order. Our team will process your order soon.</p>
                             </div>
-
                         </div>
-
                     `;
-
                 }
-
-
                 return;
-
             }
 
-
-            // ---------------------------------------------
-            // CALCULATE TIME
-            // ---------------------------------------------
-
-            const hours =
-                Math.floor(
-                    timeLeft /
-                    3600000
-                );
-
-
-            const minutes =
-                Math.floor(
-                    (
-                        timeLeft %
-                        3600000
-                    ) /
-                    60000
-                );
-
-
-            const seconds =
-                Math.floor(
-                    (
-                        timeLeft %
-                        60000
-                    ) /
-                    1000
-                );
-
-
-            // ---------------------------------------------
-            // DISPLAY COUNTDOWN
-            // ---------------------------------------------
+            const hours = Math.floor(timeLeft / 3600000);
+            const minutes = Math.floor((timeLeft % 3600000) / 60000);
+            const seconds = Math.floor((timeLeft % 60000) / 1000);
 
             if (countdownText) {
-
                 if (hours > 0) {
-
-                    countdownText.textContent =
-                        `${hours}h ${minutes}m ${seconds}s remaining`;
-
+                    countdownText.textContent = `${hours}h ${minutes}m ${seconds}s remaining`;
+                } else if (minutes > 0) {
+                    countdownText.textContent = `${minutes}m ${seconds}s remaining`;
+                } else {
+                    countdownText.textContent = `${seconds}s remaining`;
                 }
-
-                else if (minutes > 0) {
-
-                    countdownText.textContent =
-                        `${minutes}m ${seconds}s remaining`;
-
-                }
-
-                else {
-
-                    countdownText.textContent =
-                        `${seconds}s remaining`;
-
-                }
-
             }
-
         }
-
-
-        // -------------------------------------------------
-        // RUN IMMEDIATELY
-        // -------------------------------------------------
 
         updateCountdown();
-
-
-        // -------------------------------------------------
-        // UPDATE EVERY SECOND
-        // -------------------------------------------------
-
-        const countdownInterval =
-            setInterval(
-                updateCountdown,
-                1000
-            );
-
-
-        // -------------------------------------------------
-        // STOP INTERVAL WHEN PAGE IS LEFT
-        // -------------------------------------------------
-
-        window.addEventListener(
-            'beforeunload',
-            function () {
-
-                clearInterval(
-                    countdownInterval
-                );
-
-            }
-        );
-
+        setInterval(updateCountdown, 1000);
     }
 
+    /* =====================================================
+       2. CANCEL FORM CONFIRMATION
+    ===================================================== */
 
-    // =====================================================
-    // 3. CUSTOM CANCEL CONFIRMATION MODAL
-    // =====================================================
-
-    const cancelForm =
-        document.querySelector(
-            '.cancel-form'
-        );
-
+    const cancelForm = document.querySelector('.cancel-form');
 
     if (cancelForm) {
+        cancelForm.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-        cancelForm.addEventListener(
-            'submit',
-            function (e) {
-
-                // Prevent normal submit first
-                e.preventDefault();
-
-                // Show custom confirmation modal
-                showCancelConfirmModal(
-                    cancelForm
-                );
-
-            }
-        );
-
+            showCancelConfirmModal(cancelForm);
+        });
     }
 
-
-    // =====================================================
-    // 4. CUSTOM CONFIRMATION MODAL
-    // =====================================================
-
     function showCancelConfirmModal(form) {
+        let modal = document.getElementById('cancelConfirmModal');
 
-        // Check if modal already exists
-        let modal =
-            document.getElementById(
-                'cancelConfirmModal'
-            );
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'cancelConfirmModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 99999;
+            `;
 
-
-        if (modal) {
-            return;
-        }
-
-
-        // -------------------------------------------------
-        // CREATE MODAL
-        // -------------------------------------------------
-
-        modal =
-            document.createElement(
-                'div'
-            );
-
-
-        modal.id =
-            'cancelConfirmModal';
-
-
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 99999;
-        `;
-
-
-        // -------------------------------------------------
-        // MODAL HTML
-        // -------------------------------------------------
-
-        modal.innerHTML = `
-
-            <div style="
-                background: white;
-                border-radius: 12px;
-                padding: 25px;
-                max-width: 400px;
-                width: 90%;
-                text-align: center;
-            ">
-
-                <i
-                    class="fa-solid fa-triangle-exclamation"
-                    style="
-                        font-size: 40px;
-                        color: #f59e0b;
-                        margin-bottom: 15px;
-                    "
-                ></i>
-
-
-                <h4 style="
-                    margin-bottom: 10px;
-                    color: #172033;
-                ">
-                    Cancel Order?
-                </h4>
-
-
-                <p style="
-                    color: #64748b;
-                    margin-bottom: 20px;
-                ">
-                    Are you sure you want to cancel this order?
-                    This action cannot be undone.
-                </p>
-
-
-                <div style="
-                    display: flex;
-                    gap: 10px;
-                    justify-content: center;
-                ">
-
-                    <button
-                        type="button"
-                        id="cancelConfirmNo"
-                        style="
-                            padding: 10px 20px;
-                            border: 1px solid #cbd5e1;
-                            background: white;
-                            border-radius: 8px;
-                            cursor: pointer;
-                            font-weight: 600;
-                        "
-                    >
-                        Keep Order
-                    </button>
-
-
-                    <button
-                        type="button"
-                        id="cancelConfirmYes"
-                        style="
-                            padding: 10px 20px;
-                            border: none;
-                            background: #ef4444;
-                            color: white;
-                            border-radius: 8px;
-                            cursor: pointer;
-                            font-weight: 600;
-                        "
-                    >
-                        Yes, Cancel Order
-                    </button>
-
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 25px; max-width: 400px; width: 90%; text-align: center;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 40px; color: #f59e0b; margin-bottom: 15px;"></i>
+                    <h4 style="margin-bottom: 10px; color: #172033;">Cancel Order?</h4>
+                    <p style="color: #64748b; margin-bottom: 20px;">Are you sure you want to cancel this order? This action cannot be undone.</p>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button id="cancelConfirmNo" style="padding: 10px 20px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            Keep Order
+                        </button>
+                        <button id="cancelConfirmYes" style="padding: 10px 20px; border: none; background: #ef4444; color: white; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            Yes, Cancel Order
+                        </button>
+                    </div>
                 </div>
+            `;
 
-            </div>
+            document.body.appendChild(modal);
 
-        `;
+            document.getElementById('cancelConfirmNo').addEventListener('click', function() {
+                modal.remove();
+            });
 
+            document.getElementById('cancelConfirmYes').addEventListener('click', function() {
+                modal.remove();
 
-        // -------------------------------------------------
-        // ADD MODAL TO PAGE
-        // -------------------------------------------------
-
-        document.body.appendChild(
-            modal
-        );
-
-
-        // -------------------------------------------------
-        // KEEP ORDER BUTTON
-        // -------------------------------------------------
-
-        const noButton =
-            document.getElementById(
-                'cancelConfirmNo'
-            );
-
-
-        if (noButton) {
-
-            noButton.addEventListener(
-                'click',
-                function () {
-
-                    modal.remove();
-
+                const submitBtn = form.querySelector('.btn-cancel');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cancelling...';
                 }
-            );
 
+                form.submit();
+            });
+
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+    }
+
+    /* =====================================================
+       3. IMAGE PREVIEW (LIGHTBOX)
+    ===================================================== */
+
+    function openLightbox(imageUrl) {
+        // Remove existing lightbox
+        const existingLightbox = document.querySelector('.admin-lightbox');
+        if (existingLightbox) {
+            existingLightbox.remove();
         }
 
+        // Create lightbox
+        const lightbox = document.createElement('div');
+        lightbox.className = 'admin-lightbox';
+        lightbox.setAttribute('role', 'dialog');
+        lightbox.setAttribute('aria-modal', 'true');
+        lightbox.setAttribute('aria-label', 'Full screen image');
 
-        // -------------------------------------------------
-        // YES, CANCEL ORDER BUTTON
-        // -------------------------------------------------
+        // Create close button
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'admin-lightbox-close';
+        closeBtn.setAttribute('aria-label', 'Close image viewer');
+        closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
 
-        const yesButton =
-            document.getElementById(
-                'cancelConfirmYes'
-            );
+        // Create image
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = 'Full size image';
+        img.draggable = false;
 
+        // Add to lightbox
+        lightbox.appendChild(closeBtn);
+        lightbox.appendChild(img);
+        document.body.appendChild(lightbox);
 
-        if (yesButton) {
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
 
-            yesButton.addEventListener(
-                'click',
-                function () {
+        let isClosing = false;
 
-                    // Remove confirmation modal
-                    modal.remove();
+        function closeLightbox() {
+            if (isClosing || !lightbox) return;
 
+            isClosing = true;
 
-                    // Show loading state
-                    const submitBtn =
-                        form.querySelector(
-                            '.btn-cancel'
-                        );
+            document.removeEventListener('keydown', handleEscape);
 
+            lightbox.classList.add('closing');
 
-                    if (submitBtn) {
-
-                        submitBtn.disabled =
-                            true;
-
-
-                        submitBtn.innerHTML =
-                            '<i class="fa-solid fa-spinner fa-spin"></i> Cancelling...';
-
-                    }
-
-
-                    // Submit the form
-                    form.submit();
-
+            setTimeout(() => {
+                if (lightbox && document.body.contains(lightbox)) {
+                    lightbox.remove();
                 }
-            );
-
+                document.body.style.overflow = '';
+            }, 300);
         }
 
+        // Close on button click
+        closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeLightbox();
+        });
 
-        // -------------------------------------------------
-        // CLICK OUTSIDE MODAL
-        // -------------------------------------------------
-
-        modal.addEventListener(
-            'click',
-            function (event) {
-
-                if (
-                    event.target === modal
-                ) {
-
-                    modal.remove();
-
-                }
-
+        // Close on lightbox click (click outside image)
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                closeLightbox();
             }
-        );
+        });
 
+        // Prevent image click from closing
+        img.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Close on Escape key
+        function handleEscape(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        }
+
+        document.addEventListener('keydown', handleEscape);
+
+        // Focus close button
+        setTimeout(() => closeBtn.focus(), 100);
+    }
+
+    /* =====================================================
+       4. AUTO INITIALIZE IMAGES WITH data-lightbox
+    ===================================================== */
+
+    document.querySelectorAll('[data-lightbox]').forEach(img => {
+        img.style.cursor = 'pointer';
+
+        img.addEventListener('click', function() {
+            const imageUrl = this.getAttribute('data-lightbox');
+            if (imageUrl) {
+                openLightbox(imageUrl);
+            }
+        });
+    });
+
+    /* =====================================================
+       5. MESSAGE OVERLAY AUTO CLOSE
+    ===================================================== */
+
+    const messageOverlay = document.getElementById('messageOverlay');
+    const messageOkBtn = document.getElementById('messageOkBtn');
+
+    if (messageOverlay) {
+        // Close on OK button click
+        if (messageOkBtn) {
+            messageOkBtn.addEventListener('click', function() {
+                closeMessageOverlay();
+            });
+        }
+
+        // Close on overlay click
+        messageOverlay.addEventListener('click', function(e) {
+            if (e.target === messageOverlay) {
+                closeMessageOverlay();
+            }
+        });
+
+        // Auto close after 3 seconds
+        setTimeout(closeMessageOverlay, 3000);
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMessageOverlay();
+            }
+        });
+    }
+
+    function closeMessageOverlay() {
+        const overlay = document.getElementById('messageOverlay');
+        if (overlay) {
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => {
+                overlay.remove();
+            }, 300);
+        }
     }
 
 });
