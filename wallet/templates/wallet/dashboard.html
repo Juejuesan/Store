@@ -583,174 +583,199 @@ Wallet Dashboard
     <!-- TABLE -->
     <div class="transaction-table-wrapper">
 
-        <table class="table transaction-table align-middle">
+                <table class="table history-table align-middle">
 
-            <thead>
+                   <colgroup>
 
-                <tr>
+                       <col class="col-type">
+                       <col class="col-amount">
+                       <col class="col-status">
+                       <col class="col-description">
+                       <col class="col-reference">
+                       <col class="col-date">
 
-                    <th>Date</th>
+                   </colgroup>
 
-                    <th>Type</th>
+                   <thead>
 
-                    <th>Amount</th>
+                       <tr>
 
-                    <th>Status</th>
+                           <th>Type</th>
+                           <th>Amount</th>
+                           <th>Status</th>
+                           <th>Description</th>
+                           <th>Reference</th>
+                           <th>Date</th>
 
-                </tr>
+                       </tr>
 
-            </thead>
+                   </thead>
 
-            <tbody>
+                    <tbody>
 
-                {% for t in transactions %}
+                        {% for transaction in transactions %}
 
-                <tr>
+                        <tr
+                            class="history-row"
+                            data-type="{{ transaction.transaction_type }}">
 
-                    <!-- DATE -->
+                            <!-- Transaction Type -->
 
-                    <td>
+                            <td>
 
-                        <div class="transaction-date">
+                                {% if transaction.transaction_type == "Deposit" %}
 
-                            <strong>
-                                {{ t.created_at|date:"d M Y" }}
-                            </strong>
+                                    <span class="type-badge deposit">
 
-                            <small>
-                                {{ t.created_at|date:"h:i A" }}
-                            </small>
+                                        <i class="fa-solid fa-arrow-down"></i>
 
-                        </div>
+                                        Deposit
 
-                    </td>
+                                    </span>
 
+                                {% elif transaction.transaction_type == "Withdraw" %}
 
-                    <!-- TYPE -->
+                                    <span class="type-badge withdraw">
 
-                    <td>
+                                        <i class="fa-solid fa-arrow-up"></i>
 
-                        {% if t.transaction_type == "Deposit" %}
+                                        Withdraw
 
-                            <span class="transaction-type deposit">
+                                    </span>
 
-                                <i class="fa-solid fa-arrow-down"></i>
+                                {% elif transaction.transaction_type == "Payment" %}
 
-                                Deposit
+                                    <span class="type-badge payment">
 
-                            </span>
+                                        <i class="fa-solid fa-cart-shopping"></i>
 
-                        {% else %}
+                                        Payment
 
-                            <span class="transaction-type withdraw">
+                                    </span>
 
-                                <i class="fa-solid fa-arrow-up"></i>
+                                {% else %}
 
-                                Withdraw
+                                    <span class="type-badge refund">
 
-                            </span>
+                                        <i class="fa-solid fa-rotate-left"></i>
 
-                        {% endif %}
+                                        Refund
 
-                    </td>
+                                    </span>
 
+                                {% endif %}
 
-                    <!-- AMOUNT -->
+                            </td>
 
-                    <td>
+                            <!-- Amount -->
 
-                        {% if t.transaction_type == "Deposit" %}
+                            <td>
 
-                            <strong class="transaction-amount positive">
+                                <strong>
 
-                                + MMK {{ t.amount }}
+                                    {{ transaction.amount }}
 
-                            </strong>
+                                    MMK
 
-                        {% else %}
+                                </strong>
 
-                            <strong class="transaction-amount negative">
+                            </td>
 
-                                - MMK {{ t.amount }}
+                            <!-- Status -->
 
-                            </strong>
+                            <td>
 
-                        {% endif %}
+                                {% if transaction.status == "Approved" %}
 
-                    </td>
+                                    <span class="status-badge approved">
 
+                                        Approved
 
-                    <!-- STATUS -->
+                                    </span>
 
-                    <td>
+                                {% elif transaction.status == "Rejected" %}
 
-                        {% if t.status == "Pending" %}
+                                    <span class="status-badge rejected">
 
-                            <span class="transaction-status pending">
+                                        Rejected
 
-                                <i class="fa-solid fa-clock"></i>
+                                    </span>
 
-                                Pending
+                                {% else %}
 
-                            </span>
+                                    <span class="status-badge pending">
 
-                        {% elif t.status == "Approved" %}
+                                        Pending
 
-                            <span class="transaction-status approved">
+                                    </span>
 
-                                <i class="fa-solid fa-check"></i>
+                                {% endif %}
 
-                                Approved
+                            </td>
 
-                            </span>
+                            <!-- Description -->
 
-                        {% else %}
+                            <td>
 
-                            <span class="transaction-status rejected">
+                                {{ transaction.description|default:"-" }}
 
-                                <i class="fa-solid fa-xmark"></i>
+                            </td>
 
-                                Rejected
+                            <!-- Reference -->
 
-                            </span>
+                            <td>
 
-                        {% endif %}
+                                {{ transaction.reference_id|default:"-" }}
 
-                    </td>
+                            </td>
+                            <!-- Date -->
 
-                </tr>
+                            <td class="transaction-date">
 
-                {% empty %}
+                               <span>
+                                   {{ transaction.created_at|date:"d M Y" }}
+                               </span>
 
-                <tr>
+                               <small>
+                                   {{ transaction.created_at|date:"h:i A" }}
+                               </small>
 
-                    <td colspan="4">
+                           </td>
 
-                        <div class="empty-table">
+                        </tr>
 
-                            <i class="fa-solid fa-wallet"></i>
+                        {% empty %}
 
-                            <h4>
-                                No Transactions Yet
-                            </h4>
+                        <tr>
 
-                            <p>
-                                Your wallet transactions will appear here.
-                            </p>
+                            <td colspan="6" class="text-center py-5">
 
-                        </div>
+                                <i class="fa-solid fa-wallet fa-4x text-secondary mb-3"></i>
 
-                    </td>
+                                <h4>
 
-                </tr>
+                                    No Transactions Found
 
-                {% endfor %}
+                                </h4>
 
-            </tbody>
+                                <p class="text-muted">
 
-        </table>
+                                    Your wallet activities will appear here once
+                                    you start using your wallet.
 
-    </div>
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
 </div>
                 <!-- ==========================================
