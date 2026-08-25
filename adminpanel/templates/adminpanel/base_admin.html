@@ -137,21 +137,14 @@
     </a>
 
 </li>
-                <li>
-
-                    <a href="{% url 'admin_orders' %}">
- 
-                        <i class="fa-solid fa-cart-shopping"></i> 
- 
-                        <span> 
- 
-                            Orders 
- 
-                        </span> 
- 
-                    </a> 
- 
-                </li> 
+               <li class="{% if request.resolver_match.url_name == 'admin_orders' or request.resolver_match.url_name == 'order_detail' %}active{% endif %}">
+    <a href="{% url 'admin_orders' %}">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>
+            Orders
+        </span>
+    </a>
+</li>
  
                 <li class="{% if request.resolver_match.url_name == 'wallet_requests' %}active{% endif %}"> 
  
@@ -167,37 +160,37 @@
  
 </li> 
  
-                <li> 
+<!--                <li> -->
+<!-- -->
+<!--                    <a href="#"> -->
+<!-- -->
+<!--                        <i class="fa-solid fa-chart-column"></i> -->
+<!-- -->
+<!--                        <span> -->
+<!-- -->
+<!--                            Reports -->
+<!-- -->
+<!--                        </span> -->
+<!-- -->
+<!--                    </a> -->
+<!-- -->
+<!--                </li> -->
  
-                    <a href="#"> 
- 
-                        <i class="fa-solid fa-chart-column"></i> 
- 
-                        <span> 
- 
-                            Reports 
- 
-                        </span> 
- 
-                    </a> 
- 
-                </li> 
- 
-                <li> 
- 
-                    <a href="#"> 
- 
-                        <i class="fa-solid fa-gear"></i> 
- 
-                        <span> 
- 
-                            Settings 
- 
-                        </span> 
- 
-                    </a> 
- 
-                </li>
+<!--                <li> -->
+<!-- -->
+<!--                    <a href="#"> -->
+<!-- -->
+<!--                        <i class="fa-solid fa-gear"></i> -->
+<!-- -->
+<!--                        <span> -->
+<!-- -->
+<!--                            Settings -->
+<!-- -->
+<!--                        </span> -->
+<!-- -->
+<!--                    </a> -->
+<!-- -->
+<!--                </li>-->
                 <li>
                     <a href="{% url 'admin_logout' %}">
     <i class="fa-solid fa-right-from-bracket"></i>
@@ -256,27 +249,27 @@
  
             </div> 
  
-            <!-- Notification --> 
- 
-            <button class="notification-btn" 
-        id="notificationBell" 
-        type="button"> 
- 
-    <i class="fa-regular fa-bell"></i> 
- 
-    {% if admin_notification_count > 0 %} 
- 
-    <span class="notify-count" 
-          id="adminNotificationBadge"> 
- 
-        {{ admin_notification_count }} 
- 
-    </span> 
- 
-    {% endif %} 
- 
-</button> 
- 
+<!--            &lt;!&ndash; Notification &ndash;&gt; -->
+<!-- -->
+<!--            <button class="notification-btn" -->
+<!--        id="notificationBell" -->
+<!--        type="button"> -->
+<!-- -->
+<!--    <i class="fa-regular fa-bell"></i> -->
+<!-- -->
+<!--    {% if admin_notification_count > 0 %} -->
+<!-- -->
+<!--    <span class="notify-count" -->
+<!--          id="adminNotificationBadge"> -->
+<!-- -->
+<!--        {{ admin_notification_count }} -->
+<!-- -->
+<!--    </span> -->
+<!-- -->
+<!--    {% endif %} -->
+<!-- -->
+<!--</button> -->
+<!-- -->
             <!-- Theme --> 
  
             <button id="themeToggle" 
