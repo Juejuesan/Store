@@ -11,3 +11,5 @@ db.sqlite3
 media/
 
 .env
+
+hf_cache/
