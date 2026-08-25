@@ -1,5 +1,6 @@
 {% extends "base1.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}
 Deposit Wallet
@@ -28,22 +29,16 @@ Deposit Wallet
             <div>
 
                 <span class="deposit-small-title">
-
                     TRUSTY WALLET
-
                 </span>
 
                 <h1>
-
                     Deposit Money
-
                 </h1>
 
                 <p>
-
                     Top up your wallet securely using KBZ Pay, Wave Pay,
                     AYA Pay or CB Pay.
-
                 </p>
 
             </div>
@@ -64,6 +59,7 @@ Deposit Wallet
 
         </div>
 
+
         <!-- =========================
             WALLET CARD
         ========================== -->
@@ -73,17 +69,13 @@ Deposit Wallet
             <div class="wallet-left">
 
                 <span>
-
                     Current Wallet Balance
-
                 </span>
 
                 <h2>
 
                     <strong>
-
-                        {{ wallet.balance }}
-
+                        {{ wallet.balance|intcomma }}
                     </strong>
 
                     MMK
@@ -91,10 +83,8 @@ Deposit Wallet
                 </h2>
 
                 <p>
-
                     Your deposit will be reviewed by an administrator
                     before it is added to your wallet.
-
                 </p>
 
             </div>
@@ -110,6 +100,7 @@ Deposit Wallet
             </div>
 
         </div>
+
 
         <!-- =========================
             CONTENT
@@ -135,95 +126,115 @@ Deposit Wallet
 
                     </div>
 
+
                     <form
                         method="POST"
                         enctype="multipart/form-data"
                         id="depositForm">
 
                         {% csrf_token %}
-                                                <div class="row g-4">
 
-                            <select
-    name="{{ form.payment_method.html_name }}"
-    id="{{ form.payment_method.id_for_label }}"
-    class="form-select modern-input"
-    required
->
-    <option value="" disabled selected>
-        Choose Payment Method
-    </option>
+                        <div class="row g-4">
 
-    <option value="KBZ Pay">KBZ Pay</option>
-    <option value="Wave Pay">Wave Pay</option>
-    <option value="AYA Pay">AYA Pay</option>
-    <option value="CB Pay">CB Pay</option>
-</select>
+
+                            <!-- Payment Method -->
+
+                            <div class="col-12">
+
+                                <label class="form-label">
+                                    Payment Method
+                                </label>
+
+                                <select
+                                    name="{{ form.payment_method.html_name }}"
+                                    id="{{ form.payment_method.id_for_label }}"
+                                    class="form-select modern-input"
+                                    required
+                                >
+
+                                    <option value="" disabled selected>
+                                        Choose Payment Method
+                                    </option>
+
+                                    <option value="KBZ Pay">
+                                        KBZ Pay
+                                    </option>
+
+                                    <option value="Wave Pay">
+                                        Wave Pay
+                                    </option>
+
+                                    <option value="AYA Pay">
+                                        AYA Pay
+                                    </option>
+
+                                    <option value="CB Pay">
+                                        CB Pay
+                                    </option>
+
+                                </select>
+
+                            </div>
+
 
                             <!-- Sender Name -->
-                            <div class="mb-4">
+
+                            <div class="col-12">
+
                                 <label class="form-label">
-                                     Sender Name
+                                    Sender Name
                                 </label>
 
                                 {{ form.sender_name }}
 
-
                             </div>
+
 
                             <!-- Sender Phone -->
 
                             <div class="col-md-6">
 
                                 <label class="form-label">
-
                                     Sender Phone
-
                                 </label>
 
                                 {{ form.sender_phone }}
 
-
                             </div>
+
 
                             <!-- Amount -->
 
                             <div class="col-md-6">
 
                                 <label class="form-label">
-
                                     Deposit Amount
-
                                 </label>
 
                                 {{ form.amount }}
 
-
                             </div>
+
 
                             <!-- Transaction ID -->
 
                             <div class="col-md-6">
 
                                 <label class="form-label">
-
                                     Transaction ID
-
                                 </label>
 
                                 {{ form.transaction_id }}
 
-
-
                             </div>
+
 
                             <!-- Screenshot -->
 
                             <div class="col-12">
 
                                 <label class="form-label">
-
                                     Payment Screenshot
-
                                 </label>
 
                                 <div class="upload-box">
@@ -235,24 +246,19 @@ Deposit Wallet
                                         <i class="fa-solid fa-cloud-arrow-up"></i>
 
                                         <h5>
-
                                             Upload Payment Screenshot
-
                                         </h5>
 
                                         <p>
-
                                             JPG, PNG or WEBP (Maximum 5 MB)
-
                                         </p>
 
                                     </div>
 
                                 </div>
 
-
-
                             </div>
+
 
                             <!-- Image Preview -->
 
@@ -264,19 +270,19 @@ Deposit Wallet
 
                             </div>
 
+
                             <!-- Note -->
 
                             <div class="col-12">
 
                                 <label class="form-label">
-
                                     Note (Optional)
-
                                 </label>
 
                                 {{ form.note }}
 
                             </div>
+
 
                             <!-- Submit -->
 
@@ -302,9 +308,12 @@ Deposit Wallet
                 </div>
 
             </div>
-                        <!-- RIGHT COLUMN -->
+
+
+            <!-- RIGHT COLUMN -->
 
             <div class="col-lg-4">
+
 
                 <!-- PAYMENT INFO -->
 
@@ -322,39 +331,56 @@ Deposit Wallet
 
                         <li>
 
-                            <strong>KBZ Pay</strong>
+                            <strong>
+                                KBZ Pay
+                            </strong>
 
-                            <span>09-123-456-789</span>
-
-                        </li>
-
-                        <li>
-
-                            <strong>Wave Pay</strong>
-
-                            <span>09-987-654-321</span>
+                            <span>
+                                09-123-456-789
+                            </span>
 
                         </li>
 
                         <li>
 
-                            <strong>AYA Pay</strong>
+                            <strong>
+                                Wave Pay
+                            </strong>
 
-                            <span>09-111-222-333</span>
+                            <span>
+                                09-987-654-321
+                            </span>
 
                         </li>
 
                         <li>
 
-                            <strong>CB Pay</strong>
+                            <strong>
+                                AYA Pay
+                            </strong>
 
-                            <span>09-444-555-666</span>
+                            <span>
+                                09-111-222-333
+                            </span>
+
+                        </li>
+
+                        <li>
+
+                            <strong>
+                                CB Pay
+                            </strong>
+
+                            <span>
+                                09-444-555-666
+                            </span>
 
                         </li>
 
                     </ul>
 
                 </div>
+
 
                 <!-- DEPOSIT RULES -->
 
@@ -378,32 +404,25 @@ Deposit Wallet
                         </li>
 
                         <li>
-
                             Transaction ID must be unique.
-
                         </li>
 
                         <li>
-
                             Upload a clear payment screenshot.
-
                         </li>
 
                         <li>
-
                             Requests are reviewed by admin.
-
                         </li>
 
                         <li>
-
                             Fake transactions will be rejected.
-
                         </li>
 
                     </ul>
 
                 </div>
+
 
                 <!-- PROCESS -->
 
@@ -443,6 +462,7 @@ Deposit Wallet
 
                 </div>
 
+
                 <!-- SECURITY -->
 
                 <div class="glass-card security-card">
@@ -456,27 +476,19 @@ Deposit Wallet
                     </h4>
 
                     <p>
-
                         ✔ Always transfer to the official Trusty Shop payment account.
-
                     </p>
 
                     <p>
-
                         ✔ Never edit or crop your payment screenshot.
-
                     </p>
 
                     <p>
-
                         ✔ Keep your transaction ID for future reference.
-
                     </p>
 
                     <p>
-
                         ✔ Deposits are manually verified for your protection.
-
                     </p>
 
                 </div>
@@ -484,7 +496,9 @@ Deposit Wallet
             </div>
 
         </div>
-                <!-- ==========================================
+
+
+        <!-- ==========================================
             RECENT DEPOSIT REQUESTS
         =========================================== -->
 
@@ -502,6 +516,7 @@ Deposit Wallet
 
             </div>
 
+
             <div class="table-responsive">
 
                 <table class="table deposit-table align-middle">
@@ -510,19 +525,30 @@ Deposit Wallet
 
                         <tr>
 
-                            <th>Date</th>
+                            <th>
+                                Date
+                            </th>
 
-                            <th>Transaction ID</th>
+                            <th>
+                                Transaction ID
+                            </th>
 
-                            <th>Method</th>
+                            <th>
+                                Method
+                            </th>
 
-                            <th>Amount</th>
+                            <th>
+                                Amount
+                            </th>
 
-                            <th>Status</th>
+                            <th>
+                                Status
+                            </th>
 
                         </tr>
 
                     </thead>
+
 
                     <tbody>
 
@@ -530,11 +556,16 @@ Deposit Wallet
 
                         <tr>
 
+                            <!-- Date -->
+
                             <td>
 
                                 {{ deposit.created_at|date:"d M Y H:i" }}
 
                             </td>
+
+
+                            <!-- Transaction ID -->
 
                             <td>
 
@@ -542,42 +573,45 @@ Deposit Wallet
 
                             </td>
 
+
+                            <!-- Method -->
+
                             <td>
 
                                 {{ deposit.payment_method }}
 
                             </td>
 
+
+                            <!-- Amount -->
+
                             <td>
 
-                                MMK {{ deposit.amount }}
+                                MMK {{ deposit.amount|intcomma }}
 
                             </td>
+
+
+                            <!-- Status -->
 
                             <td>
 
                                 {% if deposit.status == "Pending" %}
 
                                     <span class="badge bg-warning">
-
                                         Pending
-
                                     </span>
 
                                 {% elif deposit.status == "Approved" %}
 
                                     <span class="badge bg-success">
-
                                         Approved
-
                                     </span>
 
                                 {% else %}
 
                                     <span class="badge bg-danger">
-
                                         Rejected
-
                                     </span>
 
                                 {% endif %}
@@ -586,24 +620,24 @@ Deposit Wallet
 
                         </tr>
 
+
                         {% empty %}
 
                         <tr>
 
-                            <td colspan="5" class="text-center py-5">
+                            <td
+                                colspan="5"
+                                class="text-center py-5"
+                            >
 
                                 <i class="fa-solid fa-wallet fa-3x mb-3 text-secondary"></i>
 
                                 <h5>
-
                                     No Deposit Requests Yet
-
                                 </h5>
 
                                 <p>
-
                                     Your submitted deposits will appear here.
-
                                 </p>
 
                             </td>
@@ -623,7 +657,9 @@ Deposit Wallet
     </div>
 
 </section>
+
 {% endblock %}
+
 
 {% block extra_js %}
 

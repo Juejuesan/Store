@@ -1,5 +1,6 @@
 {% extends "base1.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}
 Wallet Dashboard
@@ -29,22 +30,16 @@ Wallet Dashboard
             <div>
 
                 <span class="wallet-small-title">
-
                     TRUSTY WALLET
-
                 </span>
 
                 <h1>
-
                     Welcome,
-                    {{ request.user.profile.fullName }}                    👋
-
+                    {{ request.user.profile.fullName }} 👋
                 </h1>
 
                 <p>
-
                     Manage your deposits, withdrawals and wallet securely.
-
                 </p>
 
             </div>
@@ -66,8 +61,10 @@ Wallet Dashboard
             </div>
 
         </div>
-                <!-- ==========================================
-                WALLET BALANCE CARD
+
+
+        <!-- ==========================================
+             WALLET BALANCE CARD
         =========================================== -->
 
         <div class="wallet-card glass-card mt-4">
@@ -75,9 +72,7 @@ Wallet Dashboard
             <div class="wallet-card-left">
 
                 <span>
-
                     Available Balance
-
                 </span>
 
                 <h2>
@@ -86,19 +81,17 @@ Wallet Dashboard
                         id="balanceCounter"
                         data-balance="{{ wallet.balance }}">
 
-                        {{ wallet.balance }}
+                        {{ wallet.balance|intcomma }}
 
                     </strong>
 
-                     MMK
+                    MMK
 
                 </h2>
 
                 <p>
-
                     Your wallet is protected by the
                     Trusty Escrow System.
-
                 </p>
 
             </div>
@@ -119,7 +112,7 @@ Wallet Dashboard
 
 
         <!-- ==========================================
-                QUICK ACTIONS
+             QUICK ACTIONS
         =========================================== -->
 
         <div class="row mt-5 g-4">
@@ -136,22 +129,19 @@ Wallet Dashboard
                     </div>
 
                     <h4>
-
                         Deposit
-
                     </h4>
 
                     <p>
-
                         Add money to your wallet using
                         KBZ Pay, Wave Pay or other
                         supported payment methods.
-
                     </p>
 
                 </a>
 
             </div>
+
 
             <div class="col-lg-4">
 
@@ -165,22 +155,19 @@ Wallet Dashboard
                     </div>
 
                     <h4>
-
                         Withdraw
-
                     </h4>
 
                     <p>
-
                         Transfer money safely from your
                         wallet to your bank or mobile
                         payment account.
-
                     </p>
 
                 </a>
 
             </div>
+
 
             <div class="col-lg-4">
 
@@ -194,17 +181,13 @@ Wallet Dashboard
                     </div>
 
                     <h4>
-
                         History
-
                     </h4>
 
                     <p>
-
                         View all deposits,
                         withdrawals and wallet
                         transaction records.
-
                     </p>
 
                 </a>
@@ -212,8 +195,10 @@ Wallet Dashboard
             </div>
 
         </div>
-                <!-- ==========================================
-                WALLET OVERVIEW
+
+
+        <!-- ==========================================
+             WALLET OVERVIEW
         =========================================== -->
 
         <div class="row mt-5 g-4">
@@ -233,9 +218,7 @@ Wallet Dashboard
                         <span>Total Balance</span>
 
                         <h3>
-
-                            MMK {{ wallet.balance }}
-
+                            MMK {{ wallet.balance|intcomma }}
                         </h3>
 
                     </div>
@@ -243,6 +226,7 @@ Wallet Dashboard
                 </div>
 
             </div>
+
 
             <div class="col-lg-3 col-md-6">
 
@@ -259,9 +243,7 @@ Wallet Dashboard
                         <span>Deposits</span>
 
                         <h3>
-
                             {{ deposits|length }}
-
                         </h3>
 
                     </div>
@@ -269,6 +251,7 @@ Wallet Dashboard
                 </div>
 
             </div>
+
 
             <div class="col-lg-3 col-md-6">
 
@@ -285,9 +268,7 @@ Wallet Dashboard
                         <span>Withdrawals</span>
 
                         <h3>
-
                             {{ withdrawals|length }}
-
                         </h3>
 
                     </div>
@@ -295,6 +276,7 @@ Wallet Dashboard
                 </div>
 
             </div>
+
 
             <div class="col-lg-3 col-md-6">
 
@@ -311,9 +293,7 @@ Wallet Dashboard
                         <span>Account Status</span>
 
                         <h3>
-
                             Secure
-
                         </h3>
 
                     </div>
@@ -326,7 +306,7 @@ Wallet Dashboard
 
 
         <!-- ==========================================
-                TRUST BANNER
+             TRUST BANNER
         =========================================== -->
 
         <div class="trust-banner mt-5">
@@ -361,9 +341,7 @@ Wallet Dashboard
                         <i class="fa-solid fa-shield-heart"></i>
 
                         <span>
-
                             Escrow Protected
-
                         </span>
 
                     </div>
@@ -373,243 +351,253 @@ Wallet Dashboard
             </div>
 
         </div>
-                <!-- ==========================================
-     RECENT ACTIVITY
-=========================================== -->
-
-<div class="section-header mt-5">
-
-    <div>
-        <span class="section-label">
-            WALLET ACTIVITY
-        </span>
-
-        <h2>
-            Recent Activity
-        </h2>
-    </div>
-
-    <a href="{% url 'wallet:history' %}"
-       class="view-all-btn">
-
-        View All
-
-        <i class="fa-solid fa-arrow-right"></i>
-
-    </a>
-
-</div>
-
-
-<div class="activity-box">
-
-    <!-- ==========================
-         DEPOSITS
-    =========================== -->
-
-    {% for deposit in deposits %}
-
-    <div class="activity-item">
-
-        <div class="activity-left">
-
-            <div class="activity-icon success">
-
-                <i class="fa-solid fa-arrow-down"></i>
-
-            </div>
-
-            <div>
-
-                <h5>
-                    Deposit
-                </h5>
-
-                <!-- REAL DEPOSIT DATE + TIME -->
-
-                <small>
-                    {{ deposit.created_at|date:"d M Y h:i A" }}
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <div class="activity-right">
-
-            <span class="amount plus">
-
-                + MMK {{ deposit.amount }}
-
-            </span>
-
-            <span class="status approved">
-
-                <i class="fa-solid fa-check"></i>
-
-                {{ deposit.status }}
-
-            </span>
-
-        </div>
-
-    </div>
-
-    {% empty %}
-
-    <div class="empty-state">
-
-        <i class="fa-solid fa-wallet"></i>
-
-        <h5>
-            No Deposits Yet
-        </h5>
-
-        <p>
-            Your deposit activity will appear here.
-        </p>
-
-    </div>
-
-    {% endfor %}
-
-
-    <!-- ==========================
-         WITHDRAWALS
-    =========================== -->
-
-    {% for withdraw in withdrawals %}
-
-    <div class="activity-item">
-
-        <div class="activity-left">
-
-            <div class="activity-icon danger">
-
-                <i class="fa-solid fa-arrow-up"></i>
-
-            </div>
-
-            <div>
-
-                <h5>
-                    Withdrawal
-                </h5>
-
-                <!-- REAL WITHDRAWAL DATE + TIME -->
-
-                <small>
-                    {{ withdraw.created_at|date:"d M Y h:i A" }}
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <div class="activity-right">
-
-            <span class="amount minus">
-
-                - MMK {{ withdraw.amount }}
-
-            </span>
-
-            <span class="status approved">
-
-                <i class="fa-solid fa-check"></i>
-
-                {{ withdraw.status }}
-
-            </span>
-
-        </div>
-
-    </div>
-
-    {% endfor %}
-
-</div>
 
 
         <!-- ==========================================
-     RECENT TRANSACTIONS
-=========================================== -->
+             RECENT ACTIVITY
+        =========================================== -->
 
-<div class="transaction-card mt-5">
-
-    <!-- HEADER -->
-    <div class="card-header-custom">
-
-        <div class="transaction-header-left">
-
-            <div class="transaction-header-icon">
-
-                <i class="fa-solid fa-clock-rotate-left"></i>
-
-            </div>
+        <div class="section-header mt-5">
 
             <div>
 
-                <span class="transaction-label">
+                <span class="section-label">
                     WALLET ACTIVITY
                 </span>
 
-                <h3>
-                    Recent Transactions
-                </h3>
+                <h2>
+                    Recent Activity
+                </h2>
+
+            </div>
+
+            <a href="{% url 'wallet:history' %}"
+               class="view-all-btn">
+
+                View All
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="activity-box">
+
+            <!-- ==========================
+                 DEPOSITS
+            =========================== -->
+
+            {% for deposit in deposits %}
+
+            <div class="activity-item">
+
+                <div class="activity-left">
+
+                    <div class="activity-icon success">
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h5>
+                            Deposit
+                        </h5>
+
+                        <small>
+                            {{ deposit.created_at|date:"d M Y h:i A" }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="activity-right">
+
+                    <span class="amount plus">
+
+                        + MMK {{ deposit.amount|intcomma }}
+
+                    </span>
+
+                    <span class="status approved">
+
+                        <i class="fa-solid fa-check"></i>
+
+                        {{ deposit.status }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-state">
+
+                <i class="fa-solid fa-wallet"></i>
+
+                <h5>
+                    No Deposits Yet
+                </h5>
 
                 <p>
-                    Your latest wallet transactions
+                    Your deposit activity will appear here.
                 </p>
 
             </div>
 
+            {% endfor %}
+
+
+            <!-- ==========================
+                 WITHDRAWALS
+            =========================== -->
+
+            {% for withdraw in withdrawals %}
+
+            <div class="activity-item">
+
+                <div class="activity-left">
+
+                    <div class="activity-icon danger">
+
+                        <i class="fa-solid fa-arrow-up"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h5>
+                            Withdrawal
+                        </h5>
+
+                        <small>
+                            {{ withdraw.created_at|date:"d M Y h:i A" }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="activity-right">
+
+                    <span class="amount minus">
+
+                        - MMK {{ withdraw.amount|intcomma }}
+
+                    </span>
+
+                    <span class="status approved">
+
+                        <i class="fa-solid fa-check"></i>
+
+                        {{ withdraw.status }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
         </div>
 
-        <a href="{% url 'wallet:history' %}"
-           class="transaction-view-all">
 
-            View All
+        <!-- ==========================================
+             RECENT TRANSACTIONS
+        =========================================== -->
 
-            <i class="fa-solid fa-arrow-right"></i>
+        <div class="transaction-card mt-5">
 
-        </a>
+            <!-- HEADER -->
 
-    </div>
+            <div class="card-header-custom">
+
+                <div class="transaction-header-left">
+
+                    <div class="transaction-header-icon">
+
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span class="transaction-label">
+                            WALLET ACTIVITY
+                        </span>
+
+                        <h3>
+                            Recent Transactions
+                        </h3>
+
+                        <p>
+                            Your latest wallet transactions
+                        </p>
+
+                    </div>
+
+                </div>
 
 
-    <!-- TABLE -->
-    <div class="transaction-table-wrapper">
+                <a href="{% url 'wallet:history' %}"
+                   class="transaction-view-all">
+
+                    View All
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="transaction-table-wrapper">
 
                 <table class="table history-table align-middle">
 
-                   <colgroup>
+                    <colgroup>
 
-                       <col class="col-type">
-                       <col class="col-amount">
-                       <col class="col-status">
-                       <col class="col-description">
-                       <col class="col-reference">
-                       <col class="col-date">
+                        <col class="col-type">
+                        <col class="col-amount">
+                        <col class="col-status">
+                        <col class="col-description">
+                        <col class="col-reference">
+                        <col class="col-date">
 
-                   </colgroup>
+                    </colgroup>
 
-                   <thead>
 
-                       <tr>
+                    <thead>
 
-                           <th>Type</th>
-                           <th>Amount</th>
-                           <th>Status</th>
-                           <th>Description</th>
-                           <th>Reference</th>
-                           <th>Date</th>
+                        <tr>
 
-                       </tr>
+                            <th>Type</th>
 
-                   </thead>
+                            <th>Amount</th>
+
+                            <th>Status</th>
+
+                            <th>Description</th>
+
+                            <th>Reference</th>
+
+                            <th>Date</th>
+
+                        </tr>
+
+                    </thead>
+
 
                     <tbody>
 
@@ -667,19 +655,21 @@ Wallet Dashboard
 
                             </td>
 
+
                             <!-- Amount -->
 
                             <td>
 
                                 <strong>
 
-                                    {{ transaction.amount }}
+                                    {{ transaction.amount|intcomma }}
 
                                     MMK
 
                                 </strong>
 
                             </td>
+
 
                             <!-- Status -->
 
@@ -688,30 +678,25 @@ Wallet Dashboard
                                 {% if transaction.status == "Approved" %}
 
                                     <span class="status-badge approved">
-
                                         Approved
-
                                     </span>
 
                                 {% elif transaction.status == "Rejected" %}
 
                                     <span class="status-badge rejected">
-
                                         Rejected
-
                                     </span>
 
                                 {% else %}
 
                                     <span class="status-badge pending">
-
                                         Pending
-
                                     </span>
 
                                 {% endif %}
 
                             </td>
+
 
                             <!-- Description -->
 
@@ -721,6 +706,7 @@ Wallet Dashboard
 
                             </td>
 
+
                             <!-- Reference -->
 
                             <td>
@@ -728,21 +714,28 @@ Wallet Dashboard
                                 {{ transaction.reference_id|default:"-" }}
 
                             </td>
+
+
                             <!-- Date -->
 
                             <td class="transaction-date">
 
-                               <span>
-                                   {{ transaction.created_at|date:"d M Y" }}
-                               </span>
+                                <span>
 
-                               <small>
-                                   {{ transaction.created_at|date:"h:i A" }}
-                               </small>
+                                    {{ transaction.created_at|date:"d M Y" }}
 
-                           </td>
+                                </span>
+
+                                <small>
+
+                                    {{ transaction.created_at|date:"h:i A" }}
+
+                                </small>
+
+                            </td>
 
                         </tr>
+
 
                         {% empty %}
 
@@ -753,9 +746,7 @@ Wallet Dashboard
                                 <i class="fa-solid fa-wallet fa-4x text-secondary mb-3"></i>
 
                                 <h4>
-
                                     No Transactions Found
-
                                 </h4>
 
                                 <p class="text-muted">
@@ -777,9 +768,11 @@ Wallet Dashboard
 
             </div>
 
-</div>
-                <!-- ==========================================
-                SMART WALLET TIPS
+        </div>
+
+
+        <!-- ==========================================
+             SMART WALLET TIPS
         =========================================== -->
 
         <div class="wallet-tips mt-5">
@@ -792,6 +785,7 @@ Wallet Dashboard
 
             </div>
 
+
             <div class="tips-grid">
 
                 <div class="tip-card">
@@ -799,9 +793,7 @@ Wallet Dashboard
                     <i class="fa-solid fa-credit-card"></i>
 
                     <h5>
-
                         Deposit Faster
-
                     </h5>
 
                     <p>
@@ -813,14 +805,13 @@ Wallet Dashboard
 
                 </div>
 
+
                 <div class="tip-card">
 
                     <i class="fa-solid fa-user-shield"></i>
 
                     <h5>
-
                         Keep Your Profile Updated
-
                     </h5>
 
                     <p>
@@ -833,14 +824,13 @@ Wallet Dashboard
 
                 </div>
 
+
                 <div class="tip-card">
 
                     <i class="fa-solid fa-shield-heart"></i>
 
                     <h5>
-
                         Stay Secure
-
                     </h5>
 
                     <p>
@@ -861,6 +851,7 @@ Wallet Dashboard
 </section>
 
 {% endblock %}
+
 
 {% block extra_js %}
 

@@ -1,5 +1,6 @@
 {% extends "base1.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Withdraw Wallet{% endblock %}
 
@@ -45,14 +46,19 @@
             <div class="withdraw-avatar">
 
                 {% if user.profile.profile_pic %}
+
                     <img src="{{ user.profile.profile_pic.url }}" alt="">
+
                 {% else %}
+
                     <img src="{% static 'images/default-profile.png' %}" alt="">
+
                 {% endif %}
 
             </div>
 
         </div>
+
 
         <!-- ==========================
              WALLET BALANCE
@@ -68,7 +74,7 @@
 
                 <h2>
 
-                    {{ wallet.balance }}
+                    {{ wallet.balance|intcomma }}
 
                     <strong>MMK</strong>
 
@@ -90,7 +96,9 @@
             </div>
 
         </div>
-                <!-- ==========================
+
+
+        <!-- ==========================
              WITHDRAW FORM
         =========================== -->
 
@@ -114,82 +122,97 @@
 
                     </div>
 
+
                     <form method="POST" id="withdrawForm">
 
                         {% csrf_token %}
 
-                        <select
-    name="{{ form.payment_method.html_name }}"
-    id="{{ form.payment_method.id_for_label }}"
-    class="form-select modern-input"
-    required
->
-    <option value="" disabled selected>
-        Choose Payment Method
-    </option>
 
-    <option value="KBZ Pay">KBZ Pay</option>
-    <option value="Wave Pay">Wave Pay</option>
-    <option value="AYA Pay">AYA Pay</option>
-    <option value="CB Pay">CB Pay</option>
-    <option value="Bank Transfer">Bank Transfer</option>
-</select>
+                        <select
+                            name="{{ form.payment_method.html_name }}"
+                            id="{{ form.payment_method.id_for_label }}"
+                            class="form-select modern-input"
+                            required
+                        >
+
+                            <option value="" disabled selected>
+                                Choose Payment Method
+                            </option>
+
+                            <option value="KBZ Pay">
+                                KBZ Pay
+                            </option>
+
+                            <option value="Wave Pay">
+                                Wave Pay
+                            </option>
+
+                            <option value="AYA Pay">
+                                AYA Pay
+                            </option>
+
+                            <option value="CB Pay">
+                                CB Pay
+                            </option>
+
+                            <option value="Bank Transfer">
+                                Bank Transfer
+                            </option>
+
+                        </select>
+
+
                         <!-- Receiver Name -->
 
                         <div class="mb-4">
 
                             <label class="form-label">
-
                                 Receiver Name
-
                             </label>
 
                             {{ form.receiver_name }}
 
                         </div>
 
+
                         <!-- Receiver Phone -->
 
                         <div class="mb-4">
 
                             <label class="form-label">
-
                                 Receiver Phone
-
                             </label>
 
                             {{ form.receiver_phone }}
 
                         </div>
 
+
                         <!-- Amount -->
 
                         <div class="mb-4">
 
                             <label class="form-label">
-
                                 Withdraw Amount
-
                             </label>
 
                             {{ form.amount }}
 
-
                         </div>
+
 
                         <!-- Note -->
 
                         <div class="mb-4">
 
                             <label class="form-label">
-
                                 Note (Optional)
-
                             </label>
 
                             {{ form.note }}
 
                         </div>
+
 
                         <!-- Submit -->
 
@@ -208,15 +231,20 @@
                 </div>
 
             </div>
-                        <!-- RIGHT COLUMN -->
+
+
+            <!-- RIGHT COLUMN -->
 
             <div class="col-lg-4">
+
 
                 <!-- ==========================
                      PAYMENT METHODS
                 =========================== -->
 
-                <div class="glass-card info-card mb-4" id="payment-methods">
+                <div
+                    class="glass-card info-card mb-4"
+                    id="payment-methods">
 
                     <h4>
 
@@ -225,6 +253,7 @@
                         Supported Payment Methods
 
                     </h4>
+
 
                     <ul class="payment-list">
 
@@ -272,6 +301,7 @@
 
                 </div>
 
+
                 <!-- ==========================
                      WITHDRAW RULES
                 =========================== -->
@@ -285,6 +315,7 @@
                         Withdrawal Rules
 
                     </h4>
+
 
                     <ul class="rule-list">
 
@@ -311,6 +342,7 @@
                     </ul>
 
                 </div>
+
 
                 <!-- ==========================
                      SECURITY TIPS
@@ -352,7 +384,9 @@
             </div>
 
         </div>
-                <!-- ==========================================
+
+
+        <!-- ==========================================
              RECENT WITHDRAWAL REQUESTS
         =========================================== -->
 
@@ -369,6 +403,7 @@
                 </h3>
 
             </div>
+
 
             <div class="table-responsive">
 
@@ -392,6 +427,7 @@
 
                     </thead>
 
+
                     <tbody>
 
                         {% for withdraw in request.user.withdraws.all %}
@@ -404,17 +440,20 @@
 
                             </td>
 
+
                             <td>
 
-                                {{ withdraw.amount }} MMK
+                                {{ withdraw.amount|intcomma }} MMK
 
                             </td>
+
 
                             <td>
 
                                 {{ withdraw.payment_method }}
 
                             </td>
+
 
                             <td>
 
@@ -446,6 +485,7 @@
 
                             </td>
 
+
                             <td>
 
                                 {{ withdraw.created_at|date:"d M Y H:i" }}
@@ -454,13 +494,18 @@
 
                         </tr>
 
+
                         {% empty %}
 
                         <tr>
 
-                            <td colspan="5" class="text-center py-5">
+                            <td
+                                colspan="5"
+                                class="text-center py-5">
 
-                                <i class="fa-solid fa-wallet fa-3x mb-3 text-secondary"></i>
+                                <i
+                                    class="fa-solid fa-wallet fa-3x mb-3 text-secondary">
+                                </i>
 
                                 <h5>
 
@@ -470,7 +515,8 @@
 
                                 <p>
 
-                                    Your withdrawal history will appear here after you submit your first request.
+                                    Your withdrawal history will appear here
+                                    after you submit your first request.
 
                                 </p>
 
@@ -493,6 +539,7 @@
 </section>
 
 {% endblock %}
+
 
 {% block extra_js %}
 
