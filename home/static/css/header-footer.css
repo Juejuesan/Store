@@ -613,6 +613,10 @@ footer a:hover{
     color:#1565C0 !important;
 }
 
+.cute-navbar.scrolled .profile-link:hover .nav-profile-icon {
+    color: #1565C0 !important;
+}
+
 
 
 

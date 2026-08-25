@@ -1,11 +1,9 @@
-
-from .models import Profile
 from django import forms
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+
 from .models import Profile
 from .emailValidator import check_email_with_abstract
-from .models import Profile
 
 
 # =========================================================
@@ -127,6 +125,10 @@ class RegisterForm(forms.ModelForm):
             ),
         }
 
+    # ---------------------------------------------------------
+    # USERNAME VALIDATION
+    # ---------------------------------------------------------
+
     def clean_username(self):
         username = self.cleaned_data.get("username")
 
@@ -138,6 +140,10 @@ class RegisterForm(forms.ModelForm):
             )
 
         return username
+
+    # ---------------------------------------------------------
+    # EMAIL VALIDATION
+    # ---------------------------------------------------------
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -158,6 +164,10 @@ class RegisterForm(forms.ModelForm):
             raise forms.ValidationError(message)
 
         return email
+
+    # ---------------------------------------------------------
+    # PHONE VALIDATION
+    # ---------------------------------------------------------
 
     def clean_phone_number(self):
         phone = self.cleaned_data.get("phone_number")
@@ -191,6 +201,10 @@ class RegisterForm(forms.ModelForm):
 
         return phone
 
+    # ---------------------------------------------------------
+    # PASSWORD VALIDATION
+    # ---------------------------------------------------------
+
     def clean_password(self):
         password = self.cleaned_data.get("password")
 
@@ -218,6 +232,10 @@ class RegisterForm(forms.ModelForm):
             )
 
         return password
+
+    # ---------------------------------------------------------
+    # CONFIRM PASSWORD
+    # ---------------------------------------------------------
 
     def clean(self):
         cleaned_data = super().clean()
@@ -286,6 +304,7 @@ class ProfilePicForm(forms.ModelForm):
 
     class Meta:
         model = Profile
+
         fields = [
             "profile_pic",
         ]
@@ -430,6 +449,10 @@ class ResetPasswordForm(forms.Form):
         ),
     )
 
+    # ---------------------------------------------------------
+    # NEW PASSWORD VALIDATION
+    # ---------------------------------------------------------
+
     def clean_new_password(self):
         password = self.cleaned_data.get("new_password")
 
@@ -458,6 +481,10 @@ class ResetPasswordForm(forms.Form):
 
         return password
 
+    # ---------------------------------------------------------
+    # CONFIRM PASSWORD
+    # ---------------------------------------------------------
+
     def clean(self):
         cleaned_data = super().clean()
 
@@ -476,42 +503,51 @@ class ResetPasswordForm(forms.Form):
 
         return cleaned_data
 
-    # =========================================================
-    # PROFILE EDIT FORM
-    # =========================================================
 
+# =========================================================
+# PROFILE EDIT FORM
+# =========================================================
 
 class ProfileEditForm(forms.ModelForm):
 
-        class Meta:
-            model = Profile
+    class Meta:
+        model = Profile
 
-            fields = [
-                "fullName",
-                "phone_number",
-                "gender",
-            ]
+        fields = [
+            "fullName",
+            "phone_number",
+            "gender",
+            "address",
+        ]
 
-            widgets = {
-                "fullName": forms.TextInput(
-                    attrs={
-                        "class": "form-control",
-                        "placeholder": "Enter your full name",
-                    }
-                ),
+        widgets = {
+            "fullName": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter your full name",
+                }
+            ),
 
-                "phone_number": forms.TextInput(
-                    attrs={
-                        "class": "form-control",
-                        "placeholder": "Enter your phone number",
-                    }
-                ),
+            "phone_number": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter your phone number",
+                    "inputmode": "numeric",
+                    "maxlength": "11",
+                }
+            ),
 
+            "gender": forms.Select(
+                attrs={
+                    "class": "form-control",
+                }
+            ),
 
-                "gender": forms.Select(
-                    attrs={
-                        "class": "form-control",
-                    }
-                ),
-            }
-
+            "address": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter your address",
+                    "rows": 3,
+                }
+            ),
+        }
